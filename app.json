@@ -1,0 +1,53 @@
+{
+  "expo": {
+    "name": "Elizade",
+    "slug": "elizade",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/elizade-logo.png",
+    "scheme": "elizade",
+    "userInterfaceStyle": "automatic",
+    "backgroundColor": "#000000",
+    "newArchEnabled": true,
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.elizade.app",
+      "infoPlist": {
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": false
+        }
+      }
+    },
+    "android": {
+      "package": "com.elizade.app",
+      "usesCleartextTraffic": false,
+      "allowBackup": false,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/elizade-logo.png",
+        "backgroundColor": "#000000"
+      }
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-asset",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#000000",
+          "image": "./assets/elizade-logo.png",
+          "imageWidth": 220,
+          "resizeMode": "contain",
+          "dark": {
+            "backgroundColor": "#000000",
+            "image": "./assets/elizade-logo.png"
+          }
+        }
+      ],
+      "expo-secure-store"
+    ]
+  }
+}
