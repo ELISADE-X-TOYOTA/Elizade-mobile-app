@@ -25,6 +25,7 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
   const [category, setCategory] = useState(WARRANTY_CLAIM_CATEGORIES[0]);
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>();
   const [done, setDone] = useState(false);
 
   const close = () => {
@@ -37,10 +38,17 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
 
   const submit = async () => {
     setLoading(true);
+    setError(undefined);
     try {
-      await createClaim({ vehicleId, category, description: cleanText(description) || category });
+      await createClaim({
+        ownedVehicleId: vehicleId,
+        claimType: category,
+        description: cleanText(description) || category,
+      });
       setDone(true);
       onSubmitted();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not submit this claim.');
     } finally {
       setLoading(false);
     }
@@ -115,6 +123,11 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
               </ScrollView>
 
               <View style={{ paddingHorizontal: spacing.lg, paddingTop: 8 }}>
+                {error ? (
+                  <Txt variant="bodySmall" color={t.colors.error} style={{ marginBottom: spacing.sm }}>
+                    {error}
+                  </Txt>
+                ) : null}
                 <PrimaryButton label="Submit Claim" icon="shield-checkmark" loading={loading} onPress={submit} />
               </View>
             </>

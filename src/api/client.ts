@@ -61,11 +61,19 @@ function toQuery(params?: Query): string {
   return s ? `?${s}` : '';
 }
 
+/**
+ * Loopback + RFC1918 private ranges, the only hosts allowed over cleartext and
+ * only in dev: localhost, 127.x, the Android-emulator host alias 10.0.2.2,
+ * 10.x, 192.168.x and 172.16–172.31.x (a physical device reaching the dev
+ * machine over Wi-Fi lands in one of these).
+ */
+const PRIVATE_HOST =
+  /^https?:\/\/(localhost|127\.\d+\.\d+\.\d+|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+)(:\d+)?(\/|$)/;
+
 /** Rejects non-HTTPS bases outside local development (no cleartext in prod). */
 function resolveBaseUrl(): string {
   const base = APP.apiBaseUrl.replace(/\/+$/, '');
-  const isLocal = /^https?:\/\/(localhost|127\.0\.0\.1|10\.0\.2\.2|192\.168\.)/.test(base);
-  if (!base.startsWith('https://') && !(__DEV__ && isLocal)) {
+  if (!base.startsWith('https://') && !(__DEV__ && PRIVATE_HOST.test(base))) {
     throw new ApiError('Insecure API endpoint blocked. HTTPS is required.', 0);
   }
   return base;

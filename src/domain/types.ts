@@ -237,7 +237,14 @@ export interface RecallNotice {
   status: RecallStatus;
 }
 
-export type ClaimStatus = 'submitted' | 'under_review' | 'approved' | 'rejected';
+/** Mirrors the backend ClaimStatus enum. */
+export type ClaimStatus =
+  | 'submitted'
+  | 'under_review'
+  | 'approved'
+  | 'rejected'
+  | 'escalated'
+  | 'closed';
 
 export interface WarrantyClaim {
   id: string;
@@ -274,11 +281,20 @@ export const CLAIM_STATUS_META: Record<ClaimStatus, { label: string; tone: Tone 
   under_review: { label: 'Under Review', tone: 'warning' },
   approved: { label: 'Approved', tone: 'success' },
   rejected: { label: 'Rejected', tone: 'error' },
+  escalated: { label: 'Escalated', tone: 'warning' },
+  closed: { label: 'Closed', tone: 'muted' },
 };
 
 // ── Support tickets (Phase 4, mirrors web support-api) ───────────────
 export type TicketCategory = 'sales' | 'service' | 'warranty' | 'billing' | 'general';
-export type TicketStatus = 'open' | 'in_progress' | 'resolved' | 'closed';
+/** Mirrors the backend TicketStatus enum. */
+export type TicketStatus =
+  | 'open'
+  | 'assigned'
+  | 'in_progress'
+  | 'waiting_customer'
+  | 'resolved'
+  | 'closed';
 
 export interface TicketMessage {
   id: string;
@@ -315,7 +331,9 @@ export const TICKET_CATEGORY_META: Record<
 
 export const TICKET_STATUS_META: Record<TicketStatus, { label: string; tone: Tone }> = {
   open: { label: 'Open', tone: 'info' },
+  assigned: { label: 'Assigned', tone: 'info' },
   in_progress: { label: 'In Progress', tone: 'warning' },
+  waiting_customer: { label: 'Awaiting You', tone: 'warning' },
   resolved: { label: 'Resolved', tone: 'success' },
   closed: { label: 'Closed', tone: 'muted' },
 };

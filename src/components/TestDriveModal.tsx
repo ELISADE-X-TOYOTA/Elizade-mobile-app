@@ -3,7 +3,8 @@ import { useMemo, useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { SHOWROOMS } from '../data/mock';
+import { bookTestDrive, reserveVehicle } from '../data/salesRepository';
+import { useBranches } from '../hooks/useBranches';
 import { Vehicle, vehicleTitle } from '../domain/types';
 import { radius, spacing } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
@@ -21,26 +22,65 @@ interface Props {
 }
 
 const TIME_SLOTS = ['9:00 AM', '10:30 AM', '12:00 PM', '2:00 PM', '4:00 PM'];
+/** Hour-of-day for each slot above, applied to the selected date. */
+const SLOT_HOURS = [9, 10, 12, 14, 16];
 
 /** Test-drive scheduling and reservation-with-deposit flow for Elizade sales. */
 export function TestDriveModal({ visible, vehicle, mode, onClose }: Props) {
   const t = useTheme();
   const insets = useSafeAreaInsets();
+  const { branches } = useBranches();
   const [showroom, setShowroom] = useState(0);
   const [dateIdx, setDateIdx] = useState(0);
   const [slot, setSlot] = useState(0);
   const [done, setDone] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>();
+  const [reference, setReference] = useState<string>();
 
   const dates = useMemo(() => Array.from({ length: 7 }, (_, i) => new Date(Date.now() + i * 86_400_000)), []);
   const deposit = Math.max(2_000_000, Math.round((vehicle.price * 0.05) / 100_000) * 100_000);
 
   const close = () => {
     onClose();
-    setTimeout(() => setDone(false), 250);
+    setTimeout(() => {
+      setDone(false);
+      setError(undefined);
+    }, 250);
   };
 
   const isTestDrive = mode === 'testdrive';
   const title = isTestDrive ? 'Book a Test Drive' : 'Reserve Vehicle';
+
+  const submit = async () => {
+    const branch = branches[showroom];
+    if (isTestDrive && !branch) {
+      setError('Select a showroom to continue.');
+      return;
+    }
+    setLoading(true);
+    setError(undefined);
+    try {
+      if (isTestDrive) {
+        const at = new Date(dates[dateIdx]);
+        at.setHours(SLOT_HOURS[slot] ?? 9, 0, 0, 0);
+        const res = await bookTestDrive({
+          vehicleId: vehicle.id,
+          branchId: branch.id,
+          scheduledAt: at.toISOString(),
+        });
+        setReference(res.reference);
+      } else {
+        const res = await reserveVehicle({ vehicleId: vehicle.id, depositAmount: deposit });
+        setReference(res.reference);
+      }
+      setDone(true);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not complete this request.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={close}>
@@ -50,7 +90,14 @@ export function TestDriveModal({ visible, vehicle, mode, onClose }: Props) {
           <View style={[styles.handle, { backgroundColor: t.colors.border }]} />
 
           {done ? (
-            <Success mode={mode} vehicle={vehicle} showroom={SHOWROOMS[showroom].name} deposit={deposit} onDone={close} />
+            <Success
+              mode={mode}
+              vehicle={vehicle}
+              showroom={branches[showroom]?.name ?? 'Elizade'}
+              deposit={deposit}
+              reference={reference}
+              onDone={close}
+            />
           ) : (
             <>
               <Txt variant="titleLarge" style={{ paddingHorizontal: spacing.lg, paddingTop: 8 }}>
@@ -62,7 +109,7 @@ export function TestDriveModal({ visible, vehicle, mode, onClose }: Props) {
 
               <ScrollView style={{ maxHeight: 380 }} contentContainerStyle={{ padding: spacing.lg }} showsVerticalScrollIndicator={false}>
                 <Label text="Showroom" />
-                {SHOWROOMS.map((s, i) => (
+                {branches.map((s, i) => (
                   <SelectRow
                     key={s.id}
                     icon="storefront-outline"
@@ -150,10 +197,16 @@ export function TestDriveModal({ visible, vehicle, mode, onClose }: Props) {
               </ScrollView>
 
               <View style={{ paddingHorizontal: spacing.lg, paddingTop: 8 }}>
+                {error ? (
+                  <Txt variant="bodySmall" color={t.colors.error} style={{ marginBottom: spacing.sm }}>
+                    {error}
+                  </Txt>
+                ) : null}
                 <PrimaryButton
                   label={isTestDrive ? 'Confirm Test Drive' : `Pay Deposit · ${price(deposit)}`}
                   icon={isTestDrive ? 'car-sport' : 'lock-closed'}
-                  onPress={() => setDone(true)}
+                  loading={loading}
+                  onPress={submit}
                 />
               </View>
             </>
@@ -215,16 +268,19 @@ function Success({
   vehicle,
   showroom,
   deposit,
+  reference,
   onDone,
 }: {
   mode: SalesMode;
   vehicle: Vehicle;
   showroom: string;
   deposit: number;
+  /** Reference of the record created on the backend. */
+  reference?: string;
   onDone: () => void;
 }) {
   const t = useTheme();
-  const ref = `ELZ-${(Date.now() % 10000).toString().padStart(4, '0')}`;
+  const ref = reference ?? '—';
   return (
     <View style={{ padding: spacing.xl, alignItems: 'center' }}>
       <Animated.View entering={ZoomIn.duration(500)} style={[styles.successIcon, { backgroundColor: t.colors.success + '1F' }]}>

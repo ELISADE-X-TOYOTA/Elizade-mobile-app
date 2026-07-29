@@ -34,6 +34,10 @@ export default function Otp() {
   };
 
   const verify = async () => {
+    if (!email) {
+      setError('Missing email address. Go back and request a new code.');
+      return;
+    }
     setLoading(true);
     setError(undefined);
     try {

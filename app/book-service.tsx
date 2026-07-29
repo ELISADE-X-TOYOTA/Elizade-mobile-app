@@ -7,7 +7,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PrimaryButton } from '../src/components/PrimaryButton';
 import { Txt } from '../src/components/Txt';
 import { createAppointment } from '../src/data/serviceRepository';
-import { OWNED_VEHICLES, SHOWROOMS } from '../src/data/mock';
+import { useBranches } from '../src/hooks/useBranches';
+import { useOwnedVehicles } from '../src/hooks/useGarage';
 import { SERVICE_TYPE_META, ServiceType } from '../src/domain/types';
 import { radius, spacing } from '../src/theme/spacing';
 import { useTheme } from '../src/theme/useTheme';
@@ -15,12 +16,17 @@ import { cleanText } from '../src/utils/sanitize';
 
 const TYPES = Object.keys(SERVICE_TYPE_META) as ServiceType[];
 const TIME_SLOTS = ['9:00 AM', '10:30 AM', '12:00 PM', '2:00 PM', '4:00 PM'];
+/** Hour-of-day for each slot above, applied to the selected date. */
+const SLOT_HOURS = [9, 10, 12, 14, 16];
 
 export default function BookService() {
   const t = useTheme();
   const insets = useSafeAreaInsets();
 
   const { type: typeParam } = useLocalSearchParams<{ type?: ServiceType }>();
+  // Real garage + branches: the payload needs backend ids, not demo ones.
+  const { vehicles: ownedVehicles } = useOwnedVehicles();
+  const { branches } = useBranches();
   const [vehicle, setVehicle] = useState(0);
   const [type, setType] = useState<ServiceType>(
     typeParam && (['periodic', 'repair', 'inspection', 'recall'] as ServiceType[]).includes(typeParam) ? typeParam : 'periodic',
@@ -30,24 +36,35 @@ export default function BookService() {
   const [slot, setSlot] = useState(0);
   const [issue, setIssue] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>();
   const [done, setDone] = useState(false);
 
   const dates = useMemo(() => Array.from({ length: 7 }, (_, i) => new Date(Date.now() + i * 86_400_000)), []);
 
   const submit = async () => {
+    const owned = ownedVehicles[vehicle];
+    const centre = branches[branch];
+    if (!owned || !centre) {
+      setError('Select a vehicle and service centre to continue.');
+      return;
+    }
     setLoading(true);
-    const owned = OWNED_VEHICLES[vehicle];
+    setError(undefined);
+    // Apply the chosen time slot to the chosen day.
     const at = new Date(dates[dateIdx]);
+    at.setHours(SLOT_HOURS[slot] ?? 9, 0, 0, 0);
     try {
       await createAppointment({
-        vehicleId: owned.id,
-        branchId: SHOWROOMS[branch].id,
+        ownedVehicleId: owned.id,
+        branchId: centre.id,
         serviceType: type,
         scheduledAt: at.toISOString(),
         issueDescription: cleanText(issue) || SERVICE_TYPE_META[type].label,
         mileageAtBooking: owned.mileage,
       });
       setDone(true);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not book this service.');
     } finally {
       setLoading(false);
     }
@@ -64,7 +81,7 @@ export default function BookService() {
             Service Requested!
           </Txt>
           <Txt variant="bodyLarge" tone="secondary" center style={{ marginTop: spacing.sm }}>
-            Your {SERVICE_TYPE_META[type].label.toLowerCase()} at {SHOWROOMS[branch].name} has been requested. We'll confirm shortly.
+            Your {SERVICE_TYPE_META[type].label.toLowerCase()} at {branches[branch]?.name ?? 'Elizade'} has been requested. We'll confirm shortly.
           </Txt>
         </View>
         <View style={{ paddingBottom: insets.bottom + spacing.md }}>
@@ -87,16 +104,22 @@ export default function BookService() {
 
       <ScrollView contentContainerStyle={{ padding: spacing.screenH, paddingBottom: 40 }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
         <Label text="Vehicle" />
-        {OWNED_VEHICLES.map((v, i) => (
-          <SelectRow
-            key={v.id}
-            icon="car-sport-outline"
-            title={`${v.make} ${v.model}`}
-            subtitle={`${v.registrationNumber} · ${v.mileage.toLocaleString()} km`}
-            selected={vehicle === i}
-            onPress={() => setVehicle(i)}
-          />
-        ))}
+        {ownedVehicles.length === 0 ? (
+          <Txt tone="secondary">
+            No vehicles in your garage yet. Add one from Profile → My Vehicles to book a service.
+          </Txt>
+        ) : (
+          ownedVehicles.map((v, i) => (
+            <SelectRow
+              key={v.id}
+              icon="car-sport-outline"
+              title={`${v.make} ${v.model}`}
+              subtitle={`${v.registrationNumber} · ${v.mileage.toLocaleString()} km`}
+              selected={vehicle === i}
+              onPress={() => setVehicle(i)}
+            />
+          ))
+        )}
 
         <Label text="Service type" />
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
@@ -122,7 +145,7 @@ export default function BookService() {
         </View>
 
         <Label text="Service centre" />
-        {SHOWROOMS.map((s, i) => (
+        {branches.map((s, i) => (
           <SelectRow
             key={s.id}
             icon="business-outline"
@@ -180,8 +203,20 @@ export default function BookService() {
           ]}
         />
 
+        {error ? (
+          <Txt variant="bodySmall" color={t.colors.error} style={{ marginTop: spacing.md }}>
+            {error}
+          </Txt>
+        ) : null}
+
         <View style={{ height: spacing.xl }} />
-        <PrimaryButton label="Request Service" icon="construct" loading={loading} onPress={submit} />
+        <PrimaryButton
+          label="Request Service"
+          icon="construct"
+          loading={loading}
+          disabled={ownedVehicles.length === 0 || branches.length === 0}
+          onPress={submit}
+        />
       </ScrollView>
     </View>
   );

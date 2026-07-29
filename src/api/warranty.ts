@@ -1,17 +1,20 @@
-import { RecallNotice, WarrantyCertificate, WarrantyClaim } from '../domain/types';
 import { apiFetch } from './client';
+import type { CustomerRecallDto, WarrantyCertificateDto, WarrantyClaimDto } from './dto';
 
-/** Warranty endpoints — mirror the web warranty-api. */
+/** Customer warranty endpoints — backend `/warranty` router. */
+
 export interface CreateClaimBody {
-  vehicleId: string;
-  category: string;
+  ownedVehicleId: string;
+  claimType: string;
   description: string;
+  conditions?: string | null;
+  currentMileage?: number | null;
 }
 
 export const warrantyApi = {
-  certificates: () => apiFetch<WarrantyCertificate[]>('/warranty/certificates'),
-  recalls: () => apiFetch<RecallNotice[]>('/warranty/recalls'),
-  claims: () => apiFetch<WarrantyClaim[]>('/warranty/claims'),
+  certificates: () => apiFetch<WarrantyCertificateDto[]>('/warranty/certificates'),
+  recalls: () => apiFetch<CustomerRecallDto[]>('/warranty/recalls'),
+  claims: () => apiFetch<WarrantyClaimDto[]>('/warranty/claims'),
   createClaim: (body: CreateClaimBody) =>
-    apiFetch<WarrantyClaim>('/warranty/claims', { method: 'POST', body }),
+    apiFetch<WarrantyClaimDto>('/warranty/claims', { method: 'POST', body }),
 };

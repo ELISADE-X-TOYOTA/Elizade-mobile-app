@@ -117,7 +117,8 @@ export default function Register() {
         // Request a one-time code (sent to the phone by the backend).
         setLoading(true);
         try {
-          await requestOtp({ phone, email, purpose: 'register', firstName, lastName });
+          // The backend delivers the code by email; phone is stored on profile.
+          await requestOtp({ email, purpose: 'register', firstName, lastName });
           setStep('otp');
         } catch (e) {
           setError(e instanceof Error ? e.message : 'Could not send code');
@@ -133,7 +134,6 @@ export default function Register() {
           // In mock mode, demonstrate the invalid-code path locally.
           if (DEMO_MODE && joinedCode !== DEMO_OTP) throw new Error('invalid');
           const user = await verifyOtp({
-            phone,
             email,
             code: joinedCode,
             profile: { firstName, lastName, email, phone },

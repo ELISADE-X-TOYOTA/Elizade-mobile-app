@@ -7,7 +7,7 @@ import { NetworkCarImage } from '../src/components/NetworkCarImage';
 import { PrimaryButton } from '../src/components/PrimaryButton';
 import { Skeleton } from '../src/components/Skeleton';
 import { Txt } from '../src/components/Txt';
-import { addVehicleByVin } from '../src/data/garageRepository';
+import { addVehicleByVin, ClaimResult } from '../src/data/garageRepository';
 import { OwnedVehicle } from '../src/domain/types';
 import { useOwnedVehicles } from '../src/hooks/useGarage';
 import { radius, spacing } from '../src/theme/spacing';
@@ -103,15 +103,23 @@ function AddVehicleModal({ visible, onClose, onAdded }: { visible: boolean; onCl
   const insets = useSafeAreaInsets();
   const [vin, setVin] = useState('');
   const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<ClaimResult>();
 
   const submit = async () => {
     if (vin.trim().length < 6) return;
     setLoading(true);
+    setResult(undefined);
     try {
-      await addVehicleByVin(cleanVin(vin));
-      onAdded();
-      setVin('');
-      onClose();
+      const res = await addVehicleByVin(cleanVin(vin));
+      setResult(res);
+      if (res.ok) {
+        onAdded();
+        setVin('');
+        // Leave the sheet open briefly so the outcome is readable.
+        setTimeout(onClose, 1800);
+      }
+    } catch (e) {
+      setResult({ ok: false, message: e instanceof Error ? e.message : 'Could not submit request.' });
     } finally {
       setLoading(false);
     }
@@ -137,6 +145,15 @@ function AddVehicleModal({ visible, onClose, onAdded }: { visible: boolean; onCl
               placeholderTextColor={t.colors.textTertiary}
               style={[t.type.bodyLarge, { marginTop: spacing.lg, color: t.colors.textPrimary, backgroundColor: t.colors.surfaceAlt, borderRadius: radius.md, borderWidth: 1, borderColor: t.colors.border, padding: 14, letterSpacing: 1 }]}
             />
+            {result ? (
+              <Txt
+                variant="bodySmall"
+                color={result.ok ? t.colors.success : t.colors.error}
+                style={{ marginTop: spacing.md }}
+              >
+                {result.message}
+              </Txt>
+            ) : null}
             <View style={{ height: spacing.lg }} />
             <PrimaryButton label="Claim Vehicle" icon="car-sport" loading={loading} disabled={vin.trim().length < 6} onPress={submit} />
           </View>

@@ -19,13 +19,30 @@ async function branchMap(): Promise<Map<string, Branch>> {
   return branchCache;
 }
 
+/** Server-side query options passed straight through to `GET /vehicles`. */
+export interface VehicleQuery {
+  fuelType?: string;
+  transmission?: string;
+  maxPrice?: number;
+  sort?: string;
+}
+
 /** All vehicles — from the live API, or bundled mock data when USE_MOCK. */
-export async function fetchVehicles(): Promise<Vehicle[]> {
+export async function fetchVehicles(query: VehicleQuery = {}): Promise<Vehicle[]> {
   if (APP.useMock) {
     await delay(500);
-    return VEHICLES;
+    // Approximate the server filters so mock mode behaves the same.
+    return VEHICLES.filter(
+      (v) =>
+        (!query.fuelType || v.fuelType === query.fuelType) &&
+        (!query.transmission || v.transmission === query.transmission) &&
+        (!query.maxPrice || v.price <= query.maxPrice),
+    );
   }
-  const [res, branches] = await Promise.all([listPublicVehicles({ limit: 50 }), branchMap()]);
+  const [res, branches] = await Promise.all([
+    listPublicVehicles({ limit: 50, ...query }),
+    branchMap(),
+  ]);
   return res.items.map((item) => mapListItemToVehicle(item, branches));
 }
 

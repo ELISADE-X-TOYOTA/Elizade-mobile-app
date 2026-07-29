@@ -1,17 +1,23 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
-import { memo, useCallback, useMemo } from 'react';
-import { FlatList, ListRenderItemInfo, Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { FlatList, ListRenderItemInfo, Pressable, RefreshControl, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import Animated, { FadeInRight } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CarCard } from '../../src/components/CarCard';
 import { NetworkCarImage } from '../../src/components/NetworkCarImage';
 import { CarCardSkeleton } from '../../src/components/Skeleton';
 import { SectionHeader } from '../../src/components/SectionHeader';
+import { clean } from '../../src/utils/sanitize';
 import { Txt } from '../../src/components/Txt';
 import { MOCK_USER } from '../../src/data/mock';
-import { CATEGORY_META, Vehicle, VehicleCategory, initials, vehicleTitle } from '../../src/domain/types';
+import { CATEGORY_META, Vehicle, VehicleCategory, vehicleTitle } from '../../src/domain/types';
+import { Avatar } from '../../src/components/Avatar';
+import { DashboardPanel } from '../../src/components/DashboardPanel';
+import { FilterSheet, VehicleFilters } from '../../src/components/FilterSheet';
+import { OnboardingTour } from '../../src/components/OnboardingTour';
+import { useDashboard } from '../../src/hooks/useDashboard';
 import { useNotifications } from '../../src/hooks/useNotifications';
 import { useVehicles } from '../../src/hooks/useVehicles';
 import { useStore } from '../../src/store/useStore';
@@ -38,14 +44,82 @@ export default function Home() {
   const category = useStore((s) => s.categoryFilter);
   const setCategory = useStore((s) => s.setCategoryFilter);
   const user = useStore((s) => s.currentUser) ?? MOCK_USER;
-  const { vehicles, loading, error, reload } = useVehicles();
-  const { unread, reload: reloadNotifs } = useNotifications();
-  useFocusEffect(useCallback(() => { reloadNotifs(); }, [reloadNotifs]));
 
-  const list = useMemo(
-    () => (category ? vehicles.filter((v) => v.category === category) : vehicles),
-    [vehicles, category],
+  // Search box + server-side filters.
+  const [search, setSearch] = useState('');
+  const [query, setQuery] = useState('');
+  const [filters, setFilters] = useState<VehicleFilters>({});
+  const [filterOpen, setFilterOpen] = useState(false);
+
+  // Debounce typing so we filter on a pause, not on every keystroke.
+  useEffect(() => {
+    const id = setTimeout(() => setQuery(search.trim().toLowerCase()), 250);
+    return () => clearTimeout(id);
+  }, [search]);
+
+  // First-run walkthrough: only for a signed-in user who hasn't seen it.
+  const hasOnboarded = useStore((s) => s.hasCompletedOnboarding);
+  const completeOnboarding = useStore((s) => s.completeOnboarding);
+  const signedInUser = useStore((s) => s.currentUser);
+  const [tourOpen, setTourOpen] = useState(false);
+
+  useEffect(() => {
+    if (signedInUser && !hasOnboarded(signedInUser.id)) {
+      // Let the dashboard paint first so the spotlight lands on real content.
+      const id = setTimeout(() => setTourOpen(true), 700);
+      return () => clearTimeout(id);
+    }
+  }, [signedInUser, hasOnboarded]);
+
+  const finishTour = useCallback(() => {
+    setTourOpen(false);
+    if (signedInUser) completeOnboarding(signedInUser.id);
+  }, [signedInUser, completeOnboarding]);
+
+  const { vehicles, loading, error, reload } = useVehicles(filters);
+  const { unread, reload: reloadNotifs } = useNotifications();
+  const { summary, loading: summaryLoading, reload: reloadSummary } = useDashboard();
+
+  // Refresh the personal panel whenever Home regains focus — bookings made or
+  // approvals given elsewhere in the app should show here immediately.
+  useFocusEffect(
+    useCallback(() => {
+      reloadNotifs();
+      reloadSummary();
+    }, [reloadNotifs, reloadSummary]),
   );
+
+  /**
+   * The hook's count already merges the server list with the local welcome
+   * notice, so it — not the dashboard figure — is what the bell reflects.
+   */
+  const unreadCount = unread;
+
+  /**
+   * Category is derived client-side (the API has no category field), and the
+   * free-text query matches make, model, trim or location.
+   */
+  const list = useMemo(() => {
+    let out = category ? vehicles.filter((v) => v.category === category) : vehicles;
+    if (query) {
+      out = out.filter((v) =>
+        `${v.make} ${v.model} ${v.trim} ${v.location}`.toLowerCase().includes(query),
+      );
+    }
+    return out;
+  }, [vehicles, category, query]);
+
+  /** Only offer filter options the loaded inventory actually contains. */
+  const fuelTypes = useMemo(
+    () => [...new Set(vehicles.map((v) => v.fuelType).filter(Boolean))].sort(),
+    [vehicles],
+  );
+  const transmissions = useMemo(
+    () => [...new Set(vehicles.map((v) => v.transmission).filter(Boolean))].sort(),
+    [vehicles],
+  );
+  const activeFilters = Object.values(filters).filter(Boolean).length;
+  const isSearching = query.length > 0 || !!category || activeFilters > 0;
 
   // PERF: stable identities so memoised CarCards aren't invalidated each render.
   const renderPopular = useCallback(
@@ -67,18 +141,23 @@ export default function Home() {
         {/* Header */}
         <LinearGradient colors={t.gradients.hero} style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
           <View style={styles.row}>
-            <View style={[styles.avatar, { backgroundColor: t.colors.surfaceAlt }]}>
-              <Txt variant="titleMedium">{initials(user)}</Txt>
-            </View>
+            <Pressable
+              onPress={() => router.push('/(tabs)/profile')}
+              accessibilityRole="button"
+              accessibilityLabel="Open your profile"
+              hitSlop={6}
+            >
+              <Avatar user={user} size={48} />
+            </Pressable>
             <View style={{ flex: 1, marginLeft: 12 }}>
               <Txt variant="bodySmall" tone="secondary">
-                {greeting()} 👋
+                {greeting()}
               </Txt>
               <Txt variant="titleLarge">{user.firstName}</Txt>
             </View>
             <Pressable onPress={() => router.push('/notifications')} style={[styles.iconBtn, { backgroundColor: t.colors.surfaceAlt }]}>
               <Ionicons name="notifications-outline" size={22} color={t.colors.textPrimary} />
-              {unread > 0 && <View style={styles.badgeDot} />}
+              {unreadCount > 0 && <View style={styles.badgeDot} />}
             </Pressable>
           </View>
 
@@ -91,14 +170,42 @@ export default function Home() {
             ]}
           >
             <Ionicons name="search" size={20} color={t.colors.textSecondary} style={{ marginHorizontal: 8 }} />
-            <Txt tone="secondary" style={{ flex: 1 }}>
-              What car are you looking for?
-            </Txt>
-            <LinearGradient colors={t.gradients.accent} style={styles.searchBtn}>
-              <Ionicons name="options" size={20} color={t.colors.primaryDark} />
-            </LinearGradient>
+            <TextInput
+              value={search}
+              onChangeText={(v) => setSearch(clean(v, 60))}
+              placeholder="What car are you looking for?"
+              placeholderTextColor={t.colors.textTertiary}
+              returnKeyType="search"
+              autoCorrect={false}
+              accessibilityLabel="Search vehicles"
+              style={[t.type.bodyMedium, { flex: 1, color: t.colors.textPrimary, paddingVertical: 0 }]}
+            />
+            {search.length > 0 && (
+              <Pressable onPress={() => setSearch('')} hitSlop={8} accessibilityLabel="Clear search">
+                <Ionicons name="close-circle" size={18} color={t.colors.textTertiary} />
+              </Pressable>
+            )}
+            <Pressable
+              onPress={() => setFilterOpen(true)}
+              accessibilityLabel="Filter vehicles"
+              style={{ marginLeft: 8 }}
+            >
+              <LinearGradient colors={t.gradients.accent} style={styles.searchBtn}>
+                <Ionicons name="options" size={20} color={t.colors.primaryDark} />
+              </LinearGradient>
+              {activeFilters > 0 && (
+                <View style={[styles.filterCount, { backgroundColor: t.colors.primary }]}>
+                  <Txt variant="labelSmall" color={t.colors.onPrimary}>
+                    {activeFilters}
+                  </Txt>
+                </View>
+              )}
+            </Pressable>
           </View>
         </LinearGradient>
+
+        {/* Personal at-a-glance: next appointment / service due + alerts */}
+        <DashboardPanel summary={summary} loading={summaryLoading} />
 
         {/* Categories */}
         <ScrollView
@@ -120,7 +227,19 @@ export default function Home() {
 
         {/* Popular */}
         <View style={{ paddingHorizontal: spacing.screenH, marginBottom: spacing.sm }}>
-          <SectionHeader title="Popular Cars" onAction={() => router.push('/(tabs)/shop')} />
+          <SectionHeader
+            title={isSearching ? `${list.length} result${list.length === 1 ? '' : 's'}` : 'Popular Cars'}
+            actionLabel={isSearching ? 'Clear' : 'See all'}
+            onAction={
+              isSearching
+                ? () => {
+                    setSearch('');
+                    setCategory(null);
+                    setFilters({});
+                  }
+                : () => router.push('/(tabs)/shop')
+            }
+          />
         </View>
         {error ? (
           <ErrorState message={error} onRetry={reload} />
@@ -150,15 +269,17 @@ export default function Home() {
             getItemLayout={getCarouselLayout}
             renderItem={renderPopular}
             ListEmptyComponent={
-              <Txt tone="secondary" style={{ paddingVertical: 40 }}>
-                No cars in this category yet.
+              <Txt tone="secondary" style={{ paddingVertical: 40, paddingHorizontal: spacing.screenH }}>
+                {isSearching
+                  ? 'No vehicles match your search. Try a different make, model or filter.'
+                  : 'No vehicles available right now.'}
               </Txt>
             }
           />
         )}
 
-        {/* Recommended */}
-        {!loading && !error && list.length > 0 && (
+        {/* Recommended — hidden while searching, since the list above IS the result set */}
+        {!loading && !error && !isSearching && list.length > 0 && (
           <>
             <View style={{ paddingHorizontal: spacing.screenH, marginTop: spacing.xl, marginBottom: spacing.sm }}>
               <SectionHeader title="Recommended For You" />
@@ -171,6 +292,17 @@ export default function Home() {
           </>
         )}
       </ScrollView>
+
+      <FilterSheet
+        visible={filterOpen}
+        value={filters}
+        fuelTypes={fuelTypes}
+        transmissions={transmissions}
+        onApply={setFilters}
+        onClose={() => setFilterOpen(false)}
+      />
+
+      <OnboardingTour visible={tourOpen} onDone={finishTour} />
     </View>
   );
 }
@@ -295,6 +427,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     marginTop: spacing.xl,
   },
+  filterCount: { position: 'absolute', top: -4, right: -4, minWidth: 18, height: 18, borderRadius: 9, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 4 },
   searchBtn: { width: 44, height: 44, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center' },
   chip: {
     flexDirection: 'row',

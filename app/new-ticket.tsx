@@ -29,7 +29,7 @@ export default function NewTicket() {
     if (!valid) return;
     setLoading(true);
     try {
-      const ticket = await createTicket({ subject: clean(subject, 140), category, message: cleanText(message) });
+      const ticket = await createTicket({ subject: clean(subject, 140), category, body: cleanText(message) });
       router.replace(`/ticket/${ticket.id}`);
     } finally {
       setLoading(false);

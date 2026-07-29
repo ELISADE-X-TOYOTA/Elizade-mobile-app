@@ -2,11 +2,13 @@ import { UserProfile } from '../domain/types';
 import { apiFetch } from './client';
 import { setToken } from './session';
 
-/** Mirrors the web auth-api. OTP is delivered to a phone for register; login
- *  passes an email (backend must support email-OTP for login). */
+/**
+ * Passwordless email OTP — matches the backend `/auth` router exactly.
+ * `POST /auth/otp/request` takes { email, purpose, firstName?, lastName? };
+ * registration supplies the names so the account is created on verify.
+ */
 export interface OtpRequestBody {
-  phone?: string;
-  email?: string;
+  email: string;
   purpose: 'login' | 'register';
   firstName?: string;
   lastName?: string;
@@ -26,7 +28,7 @@ export function requestOtp(body: OtpRequestBody) {
   });
 }
 
-export async function verifyOtp(params: { phone?: string; email?: string; code: string }) {
+export async function verifyOtp(params: { email: string; code: string }) {
   const data = await apiFetch<AuthResponse>('/auth/otp/verify', {
     method: 'POST',
     body: params,

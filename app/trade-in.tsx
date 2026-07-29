@@ -10,12 +10,30 @@ import { Txt } from '../src/components/Txt';
 import { radius, spacing } from '../src/theme/spacing';
 import { useTheme } from '../src/theme/useTheme';
 import { price } from '../src/utils/format';
-import { cleanDigits, cleanName } from '../src/utils/sanitize';
+import { submitTradeIn } from '../src/data/salesRepository';
+import { clean, cleanDigits, cleanName } from '../src/utils/sanitize';
 
 const CONDITIONS = [
-  { key: 'excellent', label: 'Excellent', factor: 1.0 },
-  { key: 'good', label: 'Good', factor: 0.85 },
-  { key: 'fair', label: 'Fair', factor: 0.7 },
+  {
+    key: 'excellent',
+    label: 'Excellent',
+    factor: 1.0,
+    // The API requires a meaningful note (min 10 chars), so each option
+    // carries a description the assessor can actually act on.
+    note: 'Excellent condition — full service history, no known faults or bodywork damage.',
+  },
+  {
+    key: 'good',
+    label: 'Good',
+    factor: 0.85,
+    note: 'Good condition — regularly serviced, minor cosmetic wear consistent with age.',
+  },
+  {
+    key: 'fair',
+    label: 'Fair',
+    factor: 0.7,
+    note: 'Fair condition — road-worthy but needs attention; visible wear and/or minor faults.',
+  },
 ];
 
 export default function TradeIn() {
@@ -27,6 +45,7 @@ export default function TradeIn() {
   const [mileage, setMileage] = useState('');
   const [condition, setCondition] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>();
   const [done, setDone] = useState(false);
 
   const estimate = useMemo(() => {
@@ -41,12 +60,23 @@ export default function TradeIn() {
 
   const valid = make.trim() && model.trim() && estimate;
 
-  const submit = () => {
+  const submit = async () => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    setError(undefined);
+    try {
+      await submitTradeIn({
+        make: cleanName(make),
+        model: clean(model, 60),
+        year: parseInt(year, 10),
+        mileage: parseInt(mileage.replace(/\D/g, ''), 10),
+        conditionNotes: CONDITIONS[condition].note,
+      });
       setDone(true);
-    }, 900);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not submit for valuation.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (done) {
@@ -136,6 +166,12 @@ export default function TradeIn() {
             Add photos of your vehicle
           </Txt>
         </Pressable>
+
+        {error ? (
+          <Txt variant="bodySmall" color={t.colors.error} style={{ marginTop: spacing.md }}>
+            {error}
+          </Txt>
+        ) : null}
 
         <View style={{ height: spacing.xl }} />
         <PrimaryButton label="Submit for Assessment" icon="cash-outline" loading={loading} disabled={!valid} onPress={submit} />

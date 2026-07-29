@@ -1,4 +1,6 @@
 import { apiFetch } from '../api/client';
+import { mapNotification } from '../api/customer-mappers';
+import type { NotificationDto } from '../api/dto';
 import { APP } from '../constants/app';
 import { AppNotification } from '../domain/types';
 import { NOTIFICATIONS } from './mock';
@@ -12,7 +14,7 @@ export async function fetchNotifications(): Promise<AppNotification[]> {
     await delay(300);
     return [...items];
   }
-  return apiFetch<AppNotification[]>('/notifications');
+  return (await apiFetch<NotificationDto[]>('/notifications')).map(mapNotification);
 }
 
 export async function markNotificationRead(id: string): Promise<void> {

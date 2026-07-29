@@ -6,7 +6,7 @@ import { MOCK_USER } from './mock';
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-/** Request a one-time code. Login sends an email; register sends phone+email. */
+/** Request a one-time code, delivered to the email address. */
 export async function requestOtp(body: authApi.OtpRequestBody): Promise<void> {
   if (APP.useMock) {
     await delay(700);
@@ -17,9 +17,9 @@ export async function requestOtp(body: authApi.OtpRequestBody): Promise<void> {
 
 /** Verify the code and return the signed-in user (token persisted internally). */
 export async function verifyOtp(params: {
-  phone?: string;
-  email?: string;
+  email: string;
   code: string;
+  /** Locally-collected details, used only to shape the mock user. */
   profile?: Partial<UserProfile>;
 }): Promise<UserProfile> {
   if (APP.useMock) {
@@ -28,11 +28,10 @@ export async function verifyOtp(params: {
     return {
       ...MOCK_USER,
       ...params.profile,
-      email: params.email ?? params.profile?.email ?? MOCK_USER.email,
-      phone: params.phone ?? MOCK_USER.phone,
+      email: params.email || params.profile?.email || MOCK_USER.email,
     };
   }
-  const res = await authApi.verifyOtp({ phone: params.phone, email: params.email, code: params.code });
+  const res = await authApi.verifyOtp({ email: params.email, code: params.code });
   return res.user;
 }
 

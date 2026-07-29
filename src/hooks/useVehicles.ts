@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { fetchVehicle, fetchVehicles } from '../data/vehicleRepository';
+import { fetchVehicle, fetchVehicles, VehicleQuery } from '../data/vehicleRepository';
 import { Vehicle } from '../domain/types';
 
 interface ListState {
@@ -8,16 +8,23 @@ interface ListState {
   error?: string;
 }
 
-/** Loads the vehicle list with loading/error state and a pull-to-refresh reload. */
-export function useVehicles() {
+/**
+ * Loads the vehicle list with loading/error state and pull-to-refresh.
+ *
+ * `query` maps to real `/vehicles` parameters. It's serialised into the effect
+ * key so changing a filter re-queries the backend, and an unchanged object
+ * identity (a new `{}` each render) doesn't cause a refetch loop.
+ */
+export function useVehicles(query: VehicleQuery = {}) {
   const [state, setState] = useState<ListState>({ vehicles: [], loading: true });
+  const key = JSON.stringify(query);
 
   const load = useCallback(() => {
     setState((s) => ({ ...s, loading: true, error: undefined }));
-    fetchVehicles()
+    fetchVehicles(JSON.parse(key) as VehicleQuery)
       .then((vehicles) => setState({ vehicles, loading: false }))
       .catch((e) => setState({ vehicles: [], loading: false, error: e?.message ?? 'Failed to load' }));
-  }, []);
+  }, [key]);
 
   useEffect(() => load(), [load]);
   return { ...state, reload: load };

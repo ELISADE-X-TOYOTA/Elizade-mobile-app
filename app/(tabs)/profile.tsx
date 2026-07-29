@@ -1,13 +1,15 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { ReactNode, useState } from 'react';
+import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Avatar } from '../../src/components/Avatar';
 import { Txt } from '../../src/components/Txt';
 import { logout } from '../../src/data/authRepository';
+import { pickAndUploadAvatar, removeAvatar } from '../../src/data/profileRepository';
 import { MOCK_USER } from '../../src/data/mock';
-import { fullName, initials } from '../../src/domain/types';
+import { fullName } from '../../src/domain/types';
 import { ThemeMode, useStore } from '../../src/store/useStore';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
@@ -19,10 +21,41 @@ export default function Profile() {
   const user = useStore((s) => s.currentUser) ?? MOCK_USER;
   const setCurrentUser = useStore((s) => s.setCurrentUser);
 
+  const [photoOpen, setPhotoOpen] = useState(false);
+  const [avatarBusy, setAvatarBusy] = useState(false);
+  const [avatarError, setAvatarError] = useState<string>();
+
   const signOut = async () => {
     await logout();
     setCurrentUser(null);
     router.replace('/(auth)/login');
+  };
+
+  /** Pick → upload → PATCH /users/me, then reflect the new photo everywhere. */
+  const changePhoto = async (source: 'library' | 'camera') => {
+    setPhotoOpen(false);
+    setAvatarError(undefined);
+    setAvatarBusy(true);
+    try {
+      const res = await pickAndUploadAvatar(user, source);
+      if (!res) return; // cancelled
+      if (res.ok && res.user) setCurrentUser(res.user);
+      else setAvatarError(res.message);
+    } finally {
+      setAvatarBusy(false);
+    }
+  };
+
+  const clearPhoto = async () => {
+    setPhotoOpen(false);
+    setAvatarBusy(true);
+    try {
+      const res = await removeAvatar(user);
+      if (res.ok && res.user) setCurrentUser(res.user);
+      else setAvatarError(res.message);
+    } finally {
+      setAvatarBusy(false);
+    }
   };
 
   const stats: { label: string; value: string; icon: keyof typeof Ionicons.glyphMap }[] = [
@@ -37,11 +70,21 @@ export default function Profile() {
         {/* Header */}
         <LinearGradient colors={t.gradients.hero} style={[styles.header, { paddingTop: insets.top + spacing.md }]}>
           <View style={styles.row}>
-            <View style={styles.avatarRing}>
-              <View style={[styles.avatar, { backgroundColor: t.colors.surfaceAlt }]}>
-                <Txt variant="headlineSmall">{initials(user)}</Txt>
+            <Pressable
+              onPress={() => setPhotoOpen(true)}
+              accessibilityRole="button"
+              accessibilityLabel="Change profile photo"
+              style={styles.avatarRing}
+            >
+              <Avatar user={user} size={68} variant="headlineSmall" />
+              <View style={[styles.cameraBadge, { backgroundColor: t.colors.accent, borderColor: t.colors.background }]}>
+                {avatarBusy ? (
+                  <ActivityIndicator size="small" color={t.colors.onAccent} />
+                ) : (
+                  <Ionicons name="camera" size={13} color={t.colors.onAccent} />
+                )}
               </View>
-            </View>
+            </Pressable>
             <View style={{ flex: 1, marginLeft: 16 }}>
               <Txt variant="titleLarge">{fullName(user)}</Txt>
               <Txt variant="bodySmall" tone="secondary">
@@ -56,6 +99,11 @@ export default function Profile() {
             </View>
             <Ionicons name="settings-outline" size={22} color={t.colors.textSecondary} />
           </View>
+          {avatarError ? (
+            <Txt variant="bodySmall" color={t.colors.error} style={{ marginTop: spacing.sm }}>
+              {avatarError}
+            </Txt>
+          ) : null}
         </LinearGradient>
 
         {/* Stats */}
@@ -101,7 +149,56 @@ export default function Profile() {
           <Row icon="log-out-outline" label="Logout" danger last onPress={signOut} />
         </Group>
       </ScrollView>
+
+      {/* Choose a photo source */}
+      <Modal visible={photoOpen} transparent animationType="slide" onRequestClose={() => setPhotoOpen(false)}>
+        <View style={styles.backdrop}>
+          <Pressable style={{ flex: 1 }} onPress={() => setPhotoOpen(false)} />
+          <View style={[styles.sheet, { backgroundColor: t.colors.surface, paddingBottom: insets.bottom + spacing.lg }]}>
+            <View style={[styles.handle, { backgroundColor: t.colors.border }]} />
+            <Txt variant="titleLarge" style={{ paddingHorizontal: spacing.lg, paddingTop: 8 }}>
+              Profile photo
+            </Txt>
+            <View style={{ padding: spacing.lg, gap: 10 }}>
+              <PhotoOption icon="images-outline" label="Choose from library" onPress={() => changePhoto('library')} />
+              <PhotoOption icon="camera-outline" label="Take a photo" onPress={() => changePhoto('camera')} />
+              {user.avatar ? (
+                <PhotoOption icon="trash-outline" label="Remove photo" danger onPress={clearPhoto} />
+              ) : null}
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
+  );
+}
+
+function PhotoOption({
+  icon,
+  label,
+  danger,
+  onPress,
+}: {
+  icon: keyof typeof Ionicons.glyphMap;
+  label: string;
+  danger?: boolean;
+  onPress: () => void;
+}) {
+  const t = useTheme();
+  const color = danger ? t.colors.error : t.colors.primary;
+  return (
+    <Pressable
+      onPress={onPress}
+      style={[styles.photoOption, { backgroundColor: t.colors.surfaceAlt, borderColor: t.colors.border }]}
+    >
+      <View style={[styles.photoIcon, { backgroundColor: color + '1A' }]}>
+        <Ionicons name={icon} size={20} color={color} />
+      </View>
+      <Txt variant="titleSmall" color={danger ? t.colors.error : undefined} style={{ flex: 1 }}>
+        {label}
+      </Txt>
+      <Ionicons name="chevron-forward" size={18} color={t.colors.textSecondary} />
+    </Pressable>
   );
 }
 
@@ -212,6 +309,12 @@ function ThemeSelector() {
 const styles = StyleSheet.create({
   header: { paddingHorizontal: spacing.screenH, paddingBottom: spacing.xl, borderBottomLeftRadius: 32, borderBottomRightRadius: 32 },
   row: { flexDirection: 'row', alignItems: 'center' },
+  backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)' },
+  sheet: { borderTopLeftRadius: 28, borderTopRightRadius: 28, paddingTop: 12 },
+  handle: { width: 44, height: 5, borderRadius: 3, alignSelf: 'center', marginBottom: 8 },
+  photoOption: { flexDirection: 'row', alignItems: 'center', padding: 14, borderRadius: 16, borderWidth: 1, gap: 12 },
+  photoIcon: { width: 38, height: 38, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
+  cameraBadge: { position: 'absolute', right: -2, bottom: -2, width: 26, height: 26, borderRadius: 13, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
   avatarRing: { padding: 3, borderRadius: 40, borderWidth: 2, borderColor: '#F5B301' },
   avatar: { width: 68, height: 68, borderRadius: 34, backgroundColor: 'rgba(255,255,255,0.2)', alignItems: 'center', justifyContent: 'center' },
   verified: { flexDirection: 'row', alignItems: 'center', marginTop: 8, backgroundColor: 'rgba(245,179,1,0.22)', alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 4, borderRadius: radius.pill },

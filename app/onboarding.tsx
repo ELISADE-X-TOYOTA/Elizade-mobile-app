@@ -19,22 +19,25 @@ import { useTheme } from '../src/theme/useTheme';
 
 const { width } = Dimensions.get('window');
 
+/**
+ * The three pillars of Elizade Connect — Shop, Service, Ownership. Icons match
+ * the tabs each slide introduces, so onboarding previews the real navigation.
+ */
 const SLIDES = [
   {
     icon: 'car-sport' as const,
-    headline: 'Find Your Dream Car',
-    description:
-      'Browse thousands of verified vehicles from trusted dealerships and private sellers.',
+    headline: 'Find Your Next Toyota',
+    description: 'Browse verified new Toyota, Jetour & JAC vehicles from Elizade showrooms.',
   },
   {
-    icon: 'calendar' as const,
-    headline: 'Rent Anytime',
-    description: 'Book cars instantly for business, travel, or weekend adventures.',
+    icon: 'construct' as const,
+    headline: 'Service Made Simple',
+    description: 'Book, track and get reminders for every service at any Elizade centre.',
   },
   {
-    icon: 'swap-horizontal' as const,
-    headline: 'Buy, Sell & Rent Easily',
-    description: 'Everything automotive in one powerful mobile app.',
+    icon: 'shield-checkmark' as const,
+    headline: 'Own With Confidence',
+    description: 'Digital warranty, recalls and support in one place.',
   },
 ];
 

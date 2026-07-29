@@ -1,19 +1,24 @@
-import { SupportTicket, TicketCategory, TicketMessage } from '../domain/types';
+import { TicketCategory } from '../domain/types';
 import { apiFetch } from './client';
+import type { TicketDetailDto, TicketListDto, TicketMessageDto } from './dto';
 
-/** Support ticket endpoints — mirror the web support-api. */
+/** Customer support endpoints — backend `/support` router. */
+
 export interface CreateTicketBody {
-  subject: string;
   category: TicketCategory;
-  message: string;
+  subject: string;
+  /** Opening message. */
+  body: string;
+  priority?: string;
 }
 
 export const supportApi = {
-  list: () => apiFetch<SupportTicket[]>('/support/tickets'),
-  get: (id: string) => apiFetch<{ ticket: SupportTicket; messages: TicketMessage[] }>(`/support/tickets/${id}`),
-  create: (body: CreateTicketBody) => apiFetch<SupportTicket>('/support/tickets', { method: 'POST', body }),
+  list: () => apiFetch<TicketListDto[]>('/support/tickets'),
+  get: (id: string) => apiFetch<TicketDetailDto>(`/support/tickets/${id}`),
+  create: (body: CreateTicketBody) =>
+    apiFetch<TicketDetailDto>('/support/tickets', { method: 'POST', body }),
   reply: (id: string, body: string) =>
-    apiFetch<TicketMessage>(`/support/tickets/${id}/messages`, { method: 'POST', body: { body } }),
+    apiFetch<TicketMessageDto>(`/support/tickets/${id}/messages`, { method: 'POST', body: { body } }),
   rate: (id: string, rating: number) =>
-    apiFetch<SupportTicket>(`/support/tickets/${id}/rating`, { method: 'POST', body: { rating } }),
+    apiFetch<TicketDetailDto>(`/support/tickets/${id}/rate`, { method: 'POST', body: { rating } }),
 };

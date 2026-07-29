@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { SHOWROOMS } from '../data/mock';
+import { requestQuote } from '../data/salesRepository';
+import { useBranches } from '../hooks/useBranches';
 import { Vehicle, vehicleTitle } from '../domain/types';
 import { radius, spacing } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
@@ -25,20 +26,38 @@ export function QuoteModal({ visible, vehicle, onClose }: Props) {
   const insets = useSafeAreaInsets();
   const [showroom, setShowroom] = useState(0);
   const [addons, setAddons] = useState<string[]>([]);
+  const { branches } = useBranches();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>();
   const [done, setDone] = useState(false);
 
   const close = () => {
     onClose();
-    setTimeout(() => setDone(false), 250);
+    setTimeout(() => {
+      setDone(false);
+      setError(undefined);
+    }, 250);
   };
 
-  const submit = () => {
+  const submit = async () => {
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    setError(undefined);
+    try {
+      // Showroom + add-ons ride along as notes: the quote endpoint takes the
+      // vehicle and free-text, and sales price the extras manually.
+      const notes = [
+        `Preferred showroom: ${branches[showroom]?.name ?? 'Any'}`,
+        addons.length ? `Add-ons: ${addons.join(', ')}` : null,
+      ]
+        .filter(Boolean)
+        .join('. ');
+      await requestQuote({ vehicleId: vehicle.id, notes });
       setDone(true);
-    }, 800);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not request a quote.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const toggle = (a: string) => setAddons((p) => (p.includes(a) ? p.filter((x) => x !== a) : [...p, a]));
@@ -77,7 +96,7 @@ export function QuoteModal({ visible, vehicle, onClose }: Props) {
                 <Txt variant="titleMedium" style={{ marginBottom: spacing.sm }}>
                   Pickup showroom
                 </Txt>
-                {SHOWROOMS.slice(0, 4).map((s, i) => (
+                {branches.slice(0, 4).map((s, i) => (
                   <Pressable
                     key={s.id}
                     onPress={() => setShowroom(i)}
@@ -114,6 +133,11 @@ export function QuoteModal({ visible, vehicle, onClose }: Props) {
               </ScrollView>
 
               <View style={{ paddingHorizontal: spacing.lg, paddingTop: 8 }}>
+                {error ? (
+                  <Txt variant="bodySmall" color={t.colors.error} style={{ marginBottom: spacing.sm }}>
+                    {error}
+                  </Txt>
+                ) : null}
                 <PrimaryButton label="Request Quote" icon="document-text" loading={loading} onPress={submit} />
               </View>
             </>

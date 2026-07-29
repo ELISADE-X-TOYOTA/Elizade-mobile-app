@@ -1,3 +1,4 @@
+import { mapTicket, mapTicketMessage } from '../api/customer-mappers';
 import { CreateTicketBody, supportApi } from '../api/support';
 import { APP } from '../constants/app';
 import { SupportTicket, TicketMessage } from '../domain/types';
@@ -13,15 +14,22 @@ export async function fetchTickets(): Promise<SupportTicket[]> {
     await delay(400);
     return [...tickets];
   }
-  return supportApi.list();
+  return (await supportApi.list()).map((t) => mapTicket(t));
 }
 
-export async function fetchTicket(id: string): Promise<{ ticket?: SupportTicket; messages: TicketMessage[] }> {
+export async function fetchTicket(
+  id: string,
+): Promise<{ ticket?: SupportTicket; messages: TicketMessage[] }> {
   if (APP.useMock) {
     await delay(300);
     return { ticket: tickets.find((t) => t.id === id), messages: messages[id] ?? [] };
   }
-  return supportApi.get(id);
+  const detail = await supportApi.get(id);
+  const msgs = (detail.messages ?? []).map((m) => mapTicketMessage(m, id));
+  return {
+    ticket: mapTicket(detail, msgs[msgs.length - 1]?.body ?? ''),
+    messages: msgs,
+  };
 }
 
 export async function createTicket(body: CreateTicketBody): Promise<SupportTicket> {
@@ -37,15 +45,15 @@ export async function createTicket(body: CreateTicketBody): Promise<SupportTicke
       status: 'open',
       createdAt: iso,
       updatedAt: iso,
-      lastMessage: body.message,
+      lastMessage: body.body,
     };
     tickets = [ticket, ...tickets];
     messages[id] = [
-      { id: `m${Date.now()}`, ticketId: id, author: 'customer', authorName: 'You', body: body.message, createdAt: iso },
+      { id: `m${Date.now()}`, ticketId: id, author: 'customer', authorName: 'You', body: body.body, createdAt: iso },
     ];
     return ticket;
   }
-  return supportApi.create(body);
+  return mapTicket(await supportApi.create(body), body.body);
 }
 
 export async function replyToTicket(id: string, body: string): Promise<TicketMessage> {
@@ -67,7 +75,7 @@ export async function replyToTicket(id: string, body: string): Promise<TicketMes
     }
     return msg;
   }
-  return supportApi.reply(id, body);
+  return mapTicketMessage(await supportApi.reply(id, body), id);
 }
 
 export async function rateTicket(id: string, rating: number): Promise<void> {
