@@ -52,7 +52,10 @@ export default function Register() {
   const setCurrentUser = useStore((s) => s.setCurrentUser);
 
   const [step, setStep] = useState<Step>('name');
-  const [name, setName] = useState('');
+  // Captured separately rather than splitting one field on a space: that lost
+  // the surname for single-word entries and mangled multi-part names.
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState<string[]>(Array(6).fill(''));
@@ -101,14 +104,14 @@ export default function Register() {
     return () => sub.remove();
   });
 
-  const firstName = name.split(' ')[0];
-  const lastName = name.split(' ').slice(1).join(' ');
+  const namesValid = isValidName(firstName) && isValidName(lastName);
 
   const next = async () => {
     setError(undefined);
     switch (step) {
       case 'name':
-        if (!isValidName(name)) return setError('Please enter your full name');
+        if (!isValidName(firstName)) return setError('Please enter your first name');
+        if (!isValidName(lastName)) return setError('Please enter your last name');
         return setStep('email');
       case 'email':
         if (!isValidEmail(email)) return setError('Enter a valid email');
@@ -152,13 +155,13 @@ export default function Register() {
   };
 
   if (done) {
-    return <Success firstName={name.split(' ')[0] || 'there'} onDone={() => router.replace('/(tabs)/home')} />;
+    return <Success firstName={firstName || 'there'} onDone={() => router.replace('/(tabs)/home')} />;
   }
 
   const ctaLabel =
     step === 'otp' ? 'Verify & Create Account' : step === 'phone' ? 'Continue' : 'Continue';
   const ctaDisabled =
-    (step === 'name' && !isValidName(name)) ||
+    (step === 'name' && !namesValid) ||
     (step === 'email' && !isValidEmail(email)) ||
     (step === 'otp' && joinedCode.length < 6);
 
@@ -202,17 +205,29 @@ export default function Register() {
                 title="What's your name?"
                 subtitle="Tell us who you are so we can personalise your Elizade experience."
               >
-                <AppTextField
-                  label="Full Name"
-                  placeholder="John Adewale"
-                  icon="person-outline"
-                  value={name}
-                  onChangeText={setName}
-                  sanitize={cleanName}
-                  maxLength={80}
-                  autoCapitalize="words"
-                  error={error}
-                />
+                <View style={{ gap: spacing.lg }}>
+                  <AppTextField
+                    label="First Name"
+                    placeholder="John"
+                    icon="person-outline"
+                    value={firstName}
+                    onChangeText={setFirstName}
+                    sanitize={cleanName}
+                    maxLength={40}
+                    autoCapitalize="words"
+                  />
+                  <AppTextField
+                    label="Last Name"
+                    placeholder="Adewale"
+                    icon="person-outline"
+                    value={lastName}
+                    onChangeText={setLastName}
+                    sanitize={cleanName}
+                    maxLength={40}
+                    autoCapitalize="words"
+                    error={error}
+                  />
+                </View>
               </StepBody>
             )}
 
