@@ -25,6 +25,8 @@ import Animated, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppTextField } from '../../src/components/AppTextField';
 import { PrimaryButton } from '../../src/components/PrimaryButton';
+import { SendingOverlay } from '../../src/components/SendingOverlay';
+import { Toast, ToastState } from '../../src/components/Toast';
 import { Txt } from '../../src/components/Txt';
 import { APP } from '../../src/constants/app';
 import { requestOtp, verifyOtp } from '../../src/data/authRepository';
@@ -45,6 +47,9 @@ const DEMO_OTP = '123456';
 type Step = 'name' | 'email' | 'phone' | 'otp';
 const ORDER: Step[] = ['name', 'email', 'phone', 'otp'];
 
+/** Minimum time the sending animation stays up, so a fast response doesn't flash. */
+const MIN_ANIMATION_MS = 1100;
+
 /** Multi-step registration wizard with a progress bar. */
 export default function Register() {
   const t = useTheme();
@@ -56,6 +61,9 @@ export default function Register() {
   // the surname for single-word entries and mangled multi-part names.
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [otherName, setOtherName] = useState('');
+  const [sending, setSending] = useState(false);
+  const [toast, setToast] = useState<ToastState | null>(null);
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState<string[]>(Array(6).fill(''));
@@ -117,16 +125,33 @@ export default function Register() {
         if (!isValidEmail(email)) return setError('Enter a valid email');
         return setStep('phone');
       case 'phone': {
-        // Request a one-time code (sent to the phone by the backend).
-        setLoading(true);
+        setSending(true);
+        const startedAt = Date.now();
         try {
-          // The backend delivers the code by email; phone is stored on profile.
-          await requestOtp({ email, purpose: 'register', firstName, lastName });
+          await requestOtp({ email, purpose: 'register', firstName, lastName, otherName });
+          // Hold the animation briefly so the transition reads as deliberate.
+          const elapsed = Date.now() - startedAt;
+          if (elapsed < MIN_ANIMATION_MS) {
+            await new Promise((r) => setTimeout(r, MIN_ANIMATION_MS - elapsed));
+          }
+          setSending(false);
           setStep('otp');
         } catch (e) {
-          setError(e instanceof Error ? e.message : 'Could not send code');
-        } finally {
-          setLoading(false);
+          setSending(false);
+          const msg = e instanceof Error ? e.message : 'Could not send code';
+          // 409 from the backend: this email is already registered.
+          if (/already exists/i.test(msg)) {
+            setToast({
+              tone: 'error',
+              title: 'Email already registered',
+              message: `${email} already has an Elizade Connect account.`,
+              actionLabel: 'Sign in instead',
+              onAction: () => router.replace({ pathname: '/(auth)/login' }),
+            });
+            setStep('email');
+          } else {
+            setToast({ tone: 'error', title: "Couldn't send your code", message: msg });
+          }
         }
         return;
       }
@@ -227,6 +252,16 @@ export default function Register() {
                     autoCapitalize="words"
                     error={error}
                   />
+                  <AppTextField
+                    label="Other Name (optional)"
+                    placeholder="Middle name"
+                    icon="person-outline"
+                    value={otherName}
+                    onChangeText={setOtherName}
+                    sanitize={cleanName}
+                    maxLength={40}
+                    autoCapitalize="words"
+                  />
                 </View>
               </StepBody>
             )}
@@ -319,6 +354,17 @@ export default function Register() {
           )}
         </View>
       </KeyboardAvoidingView>
+
+      <SendingOverlay visible={sending} email={email} />
+      <Toast
+        visible={!!toast}
+        tone={toast?.tone}
+        title={toast?.title ?? ''}
+        message={toast?.message}
+        actionLabel={toast?.actionLabel}
+        onAction={toast?.onAction}
+        onDismiss={() => setToast(null)}
+      />
     </View>
   );
 }

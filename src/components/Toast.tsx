@@ -1,0 +1,126 @@
+import { Ionicons } from '@expo/vector-icons';
+import { useEffect } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
+import Animated, { SlideInUp, SlideOutUp } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { radius, spacing } from '../theme/spacing';
+import { useTheme } from '../theme/useTheme';
+import { Txt } from './Txt';
+
+export type ToastTone = 'error' | 'success' | 'info';
+
+export interface ToastState {
+  tone: ToastTone;
+  title: string;
+  message?: string;
+  /** Optional inline action, e.g. "Sign in instead". */
+  actionLabel?: string;
+  onAction?: () => void;
+}
+
+interface Props extends Partial<ToastState> {
+  visible: boolean;
+  onDismiss: () => void;
+  /** Auto-hide delay; pass 0 to require manual dismissal. */
+  duration?: number;
+}
+
+const ICONS: Record<ToastTone, keyof typeof Ionicons.glyphMap> = {
+  error: 'alert-circle',
+  success: 'checkmark-circle',
+  info: 'information-circle',
+};
+
+/**
+ * Drop-in notification banner.
+ *
+ * Rendered above the screen content (not in a Modal) so it can coexist with an
+ * open keyboard — a Modal would dismiss the keyboard and lose focus, which is
+ * exactly wrong when the message is about a field the user is still editing.
+ */
+export function Toast({
+  visible,
+  tone = 'info',
+  title = '',
+  message,
+  actionLabel,
+  onAction,
+  onDismiss,
+  duration = 5000,
+}: Props) {
+  const t = useTheme();
+  const insets = useSafeAreaInsets();
+
+  useEffect(() => {
+    if (!visible || duration <= 0) return;
+    const id = setTimeout(onDismiss, duration);
+    return () => clearTimeout(id);
+  }, [visible, duration, onDismiss]);
+
+  if (!visible) return null;
+
+  const accent =
+    tone === 'error' ? t.colors.error : tone === 'success' ? t.colors.success : t.colors.info;
+
+  return (
+    <Animated.View
+      entering={SlideInUp.springify().damping(18)}
+      exiting={SlideOutUp.duration(180)}
+      style={[styles.wrap, { top: insets.top + spacing.xs }]}
+      pointerEvents="box-none"
+    >
+      <View
+        style={[
+          styles.card,
+          { backgroundColor: t.colors.surface, borderColor: accent + '55' },
+          t.shadows.elevated,
+        ]}
+      >
+        <View style={[styles.iconWrap, { backgroundColor: accent + '1A' }]}>
+          <Ionicons name={ICONS[tone]} size={20} color={accent} />
+        </View>
+
+        <View style={{ flex: 1 }}>
+          <Txt variant="titleSmall">{title}</Txt>
+          {message ? (
+            <Txt variant="bodySmall" tone="secondary" style={{ marginTop: 2 }}>
+              {message}
+            </Txt>
+          ) : null}
+
+          {actionLabel && onAction ? (
+            <Pressable
+              onPress={() => {
+                onDismiss();
+                onAction();
+              }}
+              hitSlop={8}
+              style={{ marginTop: 8 }}
+            >
+              <Txt variant="titleSmall" color={accent}>
+                {actionLabel}
+              </Txt>
+            </Pressable>
+          ) : null}
+        </View>
+
+        <Pressable onPress={onDismiss} hitSlop={10} accessibilityLabel="Dismiss">
+          <Ionicons name="close" size={18} color={t.colors.textTertiary} />
+        </Pressable>
+      </View>
+    </Animated.View>
+  );
+}
+
+const styles = StyleSheet.create({
+  wrap: { position: 'absolute', left: spacing.screenH, right: spacing.screenH, zIndex: 100 },
+  card: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 12,
+    padding: spacing.md,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+  },
+  iconWrap: { width: 36, height: 36, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center' },
+});

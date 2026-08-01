@@ -59,6 +59,8 @@ export interface UserProfile {
   id: string;
   firstName: string;
   lastName: string;
+  /** Optional middle / other name. */
+  otherName?: string | null;
   email: string;
   phone: string;
   city: string;

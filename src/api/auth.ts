@@ -12,6 +12,8 @@ export interface OtpRequestBody {
   purpose: 'login' | 'register';
   firstName?: string;
   lastName?: string;
+  /** Optional middle / other name. */
+  otherName?: string;
 }
 
 export interface AuthResponse {
