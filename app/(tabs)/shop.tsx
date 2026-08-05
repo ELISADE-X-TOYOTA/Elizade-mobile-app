@@ -29,7 +29,7 @@ export default function Shop() {
   );
 
   return (
-    <View style={{ flex: 1, backgroundColor: t.colors.surfaceAlt, paddingTop: insets.top }}>
+    <View style={{ flex: 1, backgroundColor: 'transparent', paddingTop: insets.top }}>
       <View style={{ paddingHorizontal: spacing.screenH, paddingVertical: spacing.sm }}>
         <Txt variant="headlineMedium">Showroom</Txt>
         <Txt tone="secondary">Explore Elizade's latest Toyota, Jetour & JAC vehicles</Txt>

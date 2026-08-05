@@ -76,6 +76,9 @@ export function mapListItemToVehicle(item: VehicleListItem, branches?: Map<strin
     location: branch ? `${branch.city}, ${branch.state}` : 'Elizade Showroom',
     images: item.primaryImageUrl ? [resolveMediaUrl(item.primaryImageUrl)] : [''],
     features: [],
+    // The list endpoint carries no specs — the compare screen re-fetches each
+    // vehicle's detail rather than comparing these empty bags.
+    specs: {},
     dealerName: branch?.name ?? 'Elizade Motors',
     ...derived(item.id, category),
   };
@@ -88,7 +91,8 @@ export function mapDetailToVehicle(d: VehicleDetail): Vehicle {
     : d.primaryImageUrl
       ? [resolveMediaUrl(d.primaryImageUrl)]
       : [''];
-  const featureKeys = Object.keys(d.specs ?? {}).slice(0, 8);
+  const specs = d.specs ?? {};
+  const featureKeys = Object.keys(specs).slice(0, 8);
   return {
     id: d.id,
     make: d.make,
@@ -105,6 +109,12 @@ export function mapDetailToVehicle(d: VehicleDetail): Vehicle {
     location: [d.branchCity, d.branchState].filter(Boolean).join(', ') || 'Elizade Showroom',
     images,
     features: featureKeys.length ? featureKeys : ['Bluetooth', 'Navigation', 'Air Conditioning'],
+    // Values preserved (not just keys) so the compare matrix has real data.
+    specs: Object.fromEntries(
+      Object.entries(specs)
+        .filter(([, v]) => v != null && String(v).trim() !== '')
+        .map(([k, v]) => [k, String(v).trim()]),
+    ),
     dealerName: d.branchName || 'Elizade Motors',
     ...derived(d.id, category),
   };

@@ -13,6 +13,7 @@ import { useOwnedVehicles } from '../src/hooks/useGarage';
 import { radius, spacing } from '../src/theme/spacing';
 import { useTheme } from '../src/theme/useTheme';
 import { cleanVin } from '../src/utils/sanitize';
+import { ON_DARK_INK } from '../src/theme/colors';
 
 export default function Garage() {
   const t = useTheme();
@@ -21,7 +22,7 @@ export default function Garage() {
   const [addOpen, setAddOpen] = useState(false);
 
   return (
-    <View style={{ flex: 1, backgroundColor: t.colors.surfaceAlt }}>
+    <View style={{ flex: 1, backgroundColor: 'transparent' }}>
       <View style={{ paddingTop: insets.top + spacing.xs, paddingHorizontal: spacing.screenH, paddingBottom: spacing.sm }}>
         <Pressable onPress={() => router.back()} style={[styles.backBtn, { backgroundColor: t.colors.surface, borderColor: t.colors.border }]}>
           <Ionicons name="arrow-back" size={22} color={t.colors.textPrimary} />
@@ -64,7 +65,7 @@ function VehicleCard({ vehicle }: { vehicle: OwnedVehicle }) {
       <View style={{ height: 140 }}>
         <NetworkCarImage uri={vehicle.image} />
         <View style={[styles.reg, { backgroundColor: 'rgba(0,0,0,0.55)' }]}>
-          <Txt variant="labelSmall" color="#fff">
+          <Txt variant="labelSmall" color={ON_DARK_INK}>
             {vehicle.registrationNumber}
           </Txt>
         </View>

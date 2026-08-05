@@ -18,6 +18,7 @@ import { useAppointments } from '../../src/hooks/useService';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
 import { price } from '../../src/utils/format';
+import { ON_DARK_INK } from '../../src/theme/colors';
 
 const TABS = ['Upcoming', 'Active', 'History'] as const;
 const UPCOMING: AppointmentStatus[] = ['requested', 'confirmed'];
@@ -41,7 +42,7 @@ export default function Service() {
   const dueInDays = Math.round((new Date(owned.nextServiceDue).getTime() - Date.now()) / 86_400_000);
 
   return (
-    <View style={{ flex: 1, backgroundColor: t.colors.surfaceAlt, paddingTop: insets.top }}>
+    <View style={{ flex: 1, backgroundColor: 'transparent', paddingTop: insets.top }}>
       <View style={[styles.headerRow, { paddingHorizontal: spacing.screenH }]}>
         <Txt variant="headlineMedium" style={{ flex: 1 }}>
           Service
@@ -69,14 +70,14 @@ export default function Service() {
               <Txt variant="labelSmall" color="rgba(255,255,255,0.7)">
                 NEXT SERVICE DUE
               </Txt>
-              <Txt variant="titleMedium" color="#fff">
+              <Txt variant="titleMedium" color={ON_DARK_INK}>
                 {owned.make} {owned.model} · in {dueInDays} days
               </Txt>
               <Txt variant="bodySmall" color="rgba(255,255,255,0.8)">
                 At {owned.nextServiceMileage.toLocaleString()} km · Tap to book
               </Txt>
             </View>
-            <Ionicons name="chevron-forward" size={22} color="#fff" />
+            <Ionicons name="chevron-forward" size={22} color={ON_DARK_INK} />
           </LinearGradient>
         </Pressable>
 

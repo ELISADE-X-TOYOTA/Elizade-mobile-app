@@ -23,7 +23,7 @@ export default function Support() {
   useFocusEffect(useCallback(() => { reload(); }, [reload]));
 
   return (
-    <View style={{ flex: 1, backgroundColor: t.colors.surfaceAlt, paddingTop: insets.top }}>
+    <View style={{ flex: 1, backgroundColor: 'transparent', paddingTop: insets.top }}>
       <View style={[styles.headerRow, { paddingHorizontal: spacing.screenH }]}>
         <Txt variant="headlineMedium" style={{ flex: 1 }}>
           Support

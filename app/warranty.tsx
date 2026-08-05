@@ -20,6 +20,7 @@ import {
 import { useWarranty } from '../src/hooks/useWarranty';
 import { radius, spacing } from '../src/theme/spacing';
 import { useTheme } from '../src/theme/useTheme';
+import { ON_DARK_INK } from '../src/theme/colors';
 
 export default function Warranty() {
   const t = useTheme();
@@ -30,7 +31,7 @@ export default function Warranty() {
   const openRecalls = recalls.filter((r) => r.status !== 'resolved');
 
   return (
-    <View style={{ flex: 1, backgroundColor: t.colors.surfaceAlt }}>
+    <View style={{ flex: 1, backgroundColor: 'transparent' }}>
       <View style={{ paddingTop: insets.top + spacing.xs, paddingHorizontal: spacing.screenH, paddingBottom: spacing.sm }}>
         <Pressable onPress={() => router.back()} style={[styles.backBtn, { backgroundColor: t.colors.surface, borderColor: t.colors.border }]}>
           <Ionicons name="arrow-back" size={22} color={t.colors.textPrimary} />
@@ -118,11 +119,11 @@ function CertificateCard({ cert }: { cert: WarrantyCertificate }) {
     <LinearGradient colors={t.gradients.primary} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.cert}>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <MaterialCommunityIcons name="shield-car" size={26} color={t.colors.accent} />
-        <Txt variant="titleMedium" color="#fff" style={{ flex: 1, marginLeft: 10 }}>
+        <Txt variant="titleMedium" color={ON_DARK_INK} style={{ flex: 1, marginLeft: 10 }}>
           {cert.coverageType}
         </Txt>
         <View style={[styles.statusPill, { backgroundColor: color(meta.tone) }]}>
-          <Txt variant="labelSmall" color="#fff">
+          <Txt variant="labelSmall" color={ON_DARK_INK}>
             {meta.label}
           </Txt>
         </View>
@@ -133,7 +134,7 @@ function CertificateCard({ cert }: { cert: WarrantyCertificate }) {
           <Txt variant="labelSmall" color="rgba(255,255,255,0.6)">
             VALID UNTIL
           </Txt>
-          <Txt variant="titleMedium" color="#fff">
+          <Txt variant="titleMedium" color={ON_DARK_INK}>
             {end.toLocaleDateString('en', { day: 'numeric', month: 'short', year: 'numeric' })}
           </Txt>
         </View>
@@ -141,7 +142,7 @@ function CertificateCard({ cert }: { cert: WarrantyCertificate }) {
           <Txt variant="labelSmall" color="rgba(255,255,255,0.6)">
             MILEAGE LIMIT
           </Txt>
-          <Txt variant="titleMedium" color="#fff">
+          <Txt variant="titleMedium" color={ON_DARK_INK}>
             {cert.mileageLimit.toLocaleString()} km
           </Txt>
         </View>
@@ -155,7 +156,7 @@ function CertificateCard({ cert }: { cert: WarrantyCertificate }) {
         {cert.coverageItems.map((item) => (
           <View key={item} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 3 }}>
             <Ionicons name="checkmark-circle" size={15} color={t.colors.accent} />
-            <Txt variant="bodySmall" color="#fff" style={{ marginLeft: 8 }}>
+            <Txt variant="bodySmall" color={ON_DARK_INK} style={{ marginLeft: 8 }}>
               {item}
             </Txt>
           </View>

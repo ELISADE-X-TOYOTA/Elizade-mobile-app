@@ -35,6 +35,34 @@ export async function verifyOtp(params: {
   return res.user;
 }
 
+export interface EmailCheck {
+  available: boolean;
+  reason?: string;
+}
+
+/**
+ * Is this email free to register? Side-effect free (no code dispatched).
+ *
+ * A network/server failure resolves as `available: true` rather than throwing:
+ * this is a convenience pre-check, and blocking signup because the check
+ * itself failed would be worse than letting the real `409` catch it later.
+ */
+export async function checkEmailAvailable(email: string): Promise<EmailCheck> {
+  if (APP.useMock) {
+    await delay(400);
+    const taken = email.trim().toLowerCase() === MOCK_USER.email.toLowerCase();
+    return taken
+      ? { available: false, reason: 'Account already exists.' }
+      : { available: true };
+  }
+  try {
+    const res = await authApi.checkEmailAvailable(email);
+    return { available: res.available, reason: res.reason ?? undefined };
+  } catch {
+    return { available: true };
+  }
+}
+
 export async function logout(): Promise<void> {
   await setToken(null);
 }

@@ -1,6 +1,7 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { OVERLAY_CHIP, OVERLAY_CHIP_INK } from '../../src/theme/colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NetworkCarImage } from '../../src/components/NetworkCarImage';
 import { PrimaryButton } from '../../src/components/PrimaryButton';
@@ -20,7 +21,7 @@ export default function GarageVehicle() {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, backgroundColor: t.colors.surfaceAlt }}>
+      <View style={{ flex: 1, backgroundColor: 'transparent' }}>
         <Skeleton height={280} radius={0} />
         <View style={{ padding: spacing.screenH, gap: 14 }}>
           <Skeleton height={26} width="60%" />
@@ -32,7 +33,7 @@ export default function GarageVehicle() {
 
   if (!vehicle) {
     return (
-      <View style={{ flex: 1, backgroundColor: t.colors.surfaceAlt, paddingTop: insets.top + 60, paddingHorizontal: spacing.screenH }}>
+      <View style={{ flex: 1, backgroundColor: 'transparent', paddingTop: insets.top + 60, paddingHorizontal: spacing.screenH }}>
         <Pressable onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={24} color={t.colors.textPrimary} />
         </Pressable>
@@ -52,12 +53,12 @@ export default function GarageVehicle() {
   ];
 
   return (
-    <View style={{ flex: 1, backgroundColor: t.colors.surfaceAlt }}>
+    <View style={{ flex: 1, backgroundColor: 'transparent' }}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
         <View style={{ height: 280 }}>
           <NetworkCarImage uri={vehicle.image} />
           <Pressable onPress={() => router.back()} style={[styles.circle, { top: insets.top + 6 }]}>
-            <Ionicons name="arrow-back" size={20} color="#083E4C" />
+            <Ionicons name="arrow-back" size={20} color={OVERLAY_CHIP_INK} />
           </Pressable>
         </View>
 
@@ -150,7 +151,7 @@ function HistoryRow({ item }: { item: ServiceHistoryItem }) {
 }
 
 const styles = StyleSheet.create({
-  circle: { position: 'absolute', left: 16, width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.9)', alignItems: 'center', justifyContent: 'center' },
+  circle: { position: 'absolute', left: 16, width: 40, height: 40, borderRadius: 20, backgroundColor: OVERLAY_CHIP, alignItems: 'center', justifyContent: 'center' },
   sheet: { marginTop: -24, borderTopLeftRadius: 28, borderTopRightRadius: 28, padding: spacing.screenH, paddingTop: spacing.xl },
   specGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginTop: spacing.lg },
   specCard: { width: '47%', flexGrow: 1, flexDirection: 'row', alignItems: 'center', padding: 12, borderRadius: radius.md, borderWidth: 1 },

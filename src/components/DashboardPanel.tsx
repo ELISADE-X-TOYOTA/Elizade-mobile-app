@@ -9,6 +9,7 @@ import { radius, spacing } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
 import { Skeleton } from './Skeleton';
 import { Txt } from './Txt';
+import { ON_DARK_INK } from '../theme/colors';
 
 interface Props {
   summary: DashboardSummaryDto | null;
@@ -108,7 +109,7 @@ export const DashboardPanel = memo(function DashboardPanel({ summary, loading }:
 
             {appt ? (
               <>
-                <Txt variant="titleMedium" color="#fff" numberOfLines={1}>
+                <Txt variant="titleMedium" color={ON_DARK_INK} numberOfLines={1}>
                   {SERVICE_TYPE_META[appt.serviceType as ServiceType]?.label ?? appt.serviceType} ·{' '}
                   {new Date(appt.scheduledAt).toLocaleDateString('en', {
                     day: 'numeric',
@@ -121,7 +122,7 @@ export const DashboardPanel = memo(function DashboardPanel({ summary, loading }:
               </>
             ) : (
               <>
-                <Txt variant="titleMedium" color="#fff" numberOfLines={1}>
+                <Txt variant="titleMedium" color={ON_DARK_INK} numberOfLines={1}>
                   {vehicle?.label}
                   {dueDays !== null && dueDays >= 0 ? ` · in ${dueDays} days` : ' · due now'}
                 </Txt>
@@ -134,7 +135,7 @@ export const DashboardPanel = memo(function DashboardPanel({ summary, loading }:
             )}
           </View>
 
-          <Ionicons name="chevron-forward" size={22} color="#fff" />
+          <Ionicons name="chevron-forward" size={22} color={ON_DARK_INK} />
         </LinearGradient>
       </Pressable>
 

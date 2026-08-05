@@ -10,6 +10,7 @@ import {
 import { radius } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
 import { Txt } from './Txt';
+import { ON_DARK_INK } from '../theme/colors';
 
 type Variant = 'primary' | 'accent' | 'outline';
 
@@ -36,7 +37,7 @@ export function PrimaryButton({
   const t = useTheme();
   const isOutline = variant === 'outline';
   const fg =
-    variant === 'accent' ? t.colors.onAccent : isOutline ? t.colors.primary : '#FFFFFF';
+    variant === 'accent' ? t.colors.onAccent : isOutline ? t.colors.primary : ON_DARK_INK;
   const colors = variant === 'accent' ? t.gradients.accent : t.gradients.primary;
   const off = disabled || loading;
 

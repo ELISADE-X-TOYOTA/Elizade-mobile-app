@@ -1,12 +1,12 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FlatList, ListRenderItemInfo, Pressable, RefreshControl, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import Animated, { FadeInRight } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CarCard } from '../../src/components/CarCard';
-import { NetworkCarImage } from '../../src/components/NetworkCarImage';
+import { IMAGE_FALLBACK, NetworkCarImage } from '../../src/components/NetworkCarImage';
 import { CarCardSkeleton } from '../../src/components/Skeleton';
 import { SectionHeader } from '../../src/components/SectionHeader';
 import { clean } from '../../src/utils/sanitize';
@@ -16,7 +16,7 @@ import { CATEGORY_META, Vehicle, VehicleCategory, vehicleTitle } from '../../src
 import { Avatar } from '../../src/components/Avatar';
 import { DashboardPanel } from '../../src/components/DashboardPanel';
 import { FilterSheet, VehicleFilters } from '../../src/components/FilterSheet';
-import { OnboardingTour } from '../../src/components/OnboardingTour';
+import { IntroGuide } from '../../src/components/IntroGuide';
 import { useDashboard } from '../../src/hooks/useDashboard';
 import { useNotifications } from '../../src/hooks/useNotifications';
 import { useVehicles } from '../../src/hooks/useVehicles';
@@ -132,7 +132,7 @@ export default function Home() {
   );
 
   return (
-    <View style={{ flex: 1, backgroundColor: t.colors.surfaceAlt }}>
+    <View style={{ flex: 1, backgroundColor: 'transparent' }}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 120 }}
@@ -157,7 +157,7 @@ export default function Home() {
             </View>
             <Pressable onPress={() => router.push('/notifications')} style={[styles.iconBtn, { backgroundColor: t.colors.surfaceAlt }]}>
               <Ionicons name="notifications-outline" size={22} color={t.colors.textPrimary} />
-              {unreadCount > 0 && <View style={styles.badgeDot} />}
+              {unreadCount > 0 && <View style={[styles.badgeDot, { backgroundColor: t.colors.accent }]} />}
             </Pressable>
           </View>
 
@@ -208,6 +208,7 @@ export default function Home() {
         <DashboardPanel summary={summary} loading={summaryLoading} />
 
         {/* Categories */}
+        <View>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -224,6 +225,7 @@ export default function Home() {
             />
           ))}
         </ScrollView>
+        </View>
 
         {/* Popular */}
         <View style={{ paddingHorizontal: spacing.screenH, marginBottom: spacing.sm }}>
@@ -302,7 +304,7 @@ export default function Home() {
         onClose={() => setFilterOpen(false)}
       />
 
-      <OnboardingTour visible={tourOpen} onDone={finishTour} />
+      <IntroGuide visible={tourOpen} onDone={finishTour} />
     </View>
   );
 }
@@ -364,7 +366,7 @@ const RecommendedTile = memo(function RecommendedTile({ vehicle }: { vehicle: Ve
       style={[styles.tile, { backgroundColor: t.colors.surface, borderColor: t.colors.border }, t.shadows.soft]}
     >
       <View style={styles.thumb}>
-        <LinearGradient colors={['#2A2A2E', '#141416']} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={IMAGE_FALLBACK} style={StyleSheet.absoluteFill} />
         <NetworkCarImage uri={v.images[0]} />
       </View>
       <View style={{ flex: 1, marginLeft: 12 }}>
@@ -394,31 +396,14 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 32,
   },
   row: { flexDirection: 'row', alignItems: 'center' },
-  avatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   iconBtn: {
     width: 46,
     height: 46,
     borderRadius: radius.md,
-    backgroundColor: 'rgba(255,255,255,0.15)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  badgeDot: {
-    position: 'absolute',
-    top: 12,
-    right: 12,
-    width: 9,
-    height: 9,
-    borderRadius: 5,
-    backgroundColor: '#F5B301',
-  },
+  badgeDot: { position: 'absolute', top: 12, right: 12, width: 9, height: 9, borderRadius: 5 },
   search: {
     flexDirection: 'row',
     alignItems: 'center',

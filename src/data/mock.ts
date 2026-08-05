@@ -62,6 +62,17 @@ function base(v: Partial<Vehicle> & Pick<Vehicle, 'id' | 'make' | 'model' | 'tri
     location: 'Victoria Island, Lagos',
     images: [],
     features: ['Bluetooth', 'Navigation', 'Reverse Camera', 'Cruise Control', 'Apple CarPlay', 'Android Auto'],
+    // Mirrors the shape of the backend's `specs` JSONB so mock mode drives the
+    // compare matrix through exactly the same path as live data. Per-vehicle
+    // overrides in VEHICLES below give the comparison something to differ on.
+    specs: {
+      Seating: '5',
+      'Fuel Economy': '12.0 km/L',
+      Drivetrain: 'FWD',
+      Infotainment: '8" Touchscreen',
+      Safety: 'Toyota Safety Sense 2.5',
+      Warranty: '3 Years / 100,000 km',
+    },
     listingTypes: ['sale'],
     ownerHistory: 0,
     isVerified: true,

@@ -13,9 +13,6 @@ export interface ToastState {
   tone: ToastTone;
   title: string;
   message?: string;
-  /** Optional inline action, e.g. "Sign in instead". */
-  actionLabel?: string;
-  onAction?: () => void;
 }
 
 interface Props extends Partial<ToastState> {
@@ -25,6 +22,9 @@ interface Props extends Partial<ToastState> {
   duration?: number;
 }
 
+/** Long enough to read a short sentence, short enough to stay unobtrusive. */
+const DEFAULT_DURATION = 3500;
+
 const ICONS: Record<ToastTone, keyof typeof Ionicons.glyphMap> = {
   error: 'alert-circle',
   success: 'checkmark-circle',
@@ -32,21 +32,22 @@ const ICONS: Record<ToastTone, keyof typeof Ionicons.glyphMap> = {
 };
 
 /**
- * Drop-in notification banner.
+ * Drop-in notification banner — informational only, no actions.
  *
  * Rendered above the screen content (not in a Modal) so it can coexist with an
  * open keyboard — a Modal would dismiss the keyboard and lose focus, which is
  * exactly wrong when the message is about a field the user is still editing.
+ *
+ * Auto-dismisses so it never blocks the flow; the close button is a courtesy
+ * for dismissing early, not a required interaction.
  */
 export function Toast({
   visible,
   tone = 'info',
   title = '',
   message,
-  actionLabel,
-  onAction,
   onDismiss,
-  duration = 5000,
+  duration = DEFAULT_DURATION,
 }: Props) {
   const t = useTheme();
   const insets = useSafeAreaInsets();
@@ -64,7 +65,9 @@ export function Toast({
 
   return (
     <Animated.View
-      entering={SlideInUp.springify().damping(18)}
+      // Plain slide, no spring: a straight timed glide down and back up, with
+      // no bounce or overshoot.
+      entering={SlideInUp.duration(220)}
       exiting={SlideOutUp.duration(180)}
       style={[styles.wrap, { top: insets.top + spacing.xs }]}
       pointerEvents="box-none"
@@ -86,21 +89,6 @@ export function Toast({
             <Txt variant="bodySmall" tone="secondary" style={{ marginTop: 2 }}>
               {message}
             </Txt>
-          ) : null}
-
-          {actionLabel && onAction ? (
-            <Pressable
-              onPress={() => {
-                onDismiss();
-                onAction();
-              }}
-              hitSlop={8}
-              style={{ marginTop: 8 }}
-            >
-              <Txt variant="titleSmall" color={accent}>
-                {actionLabel}
-              </Txt>
-            </Pressable>
           ) : null}
         </View>
 

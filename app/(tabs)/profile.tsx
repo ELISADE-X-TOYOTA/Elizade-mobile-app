@@ -65,7 +65,7 @@ export default function Profile() {
   ];
 
   return (
-    <View style={{ flex: 1, backgroundColor: t.colors.surfaceAlt }}>
+    <View style={{ flex: 1, backgroundColor: 'transparent' }}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
         {/* Header */}
         <LinearGradient colors={t.gradients.hero} style={[styles.header, { paddingTop: insets.top + spacing.md }]}>
@@ -74,7 +74,7 @@ export default function Profile() {
               onPress={() => setPhotoOpen(true)}
               accessibilityRole="button"
               accessibilityLabel="Change profile photo"
-              style={styles.avatarRing}
+              style={[styles.avatarRing, { borderColor: t.colors.accent }]}
             >
               <Avatar user={user} size={68} variant="headlineSmall" />
               <View style={[styles.cameraBadge, { backgroundColor: t.colors.accent, borderColor: t.colors.background }]}>
@@ -315,9 +315,8 @@ const styles = StyleSheet.create({
   photoOption: { flexDirection: 'row', alignItems: 'center', padding: 14, borderRadius: 16, borderWidth: 1, gap: 12 },
   photoIcon: { width: 38, height: 38, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
   cameraBadge: { position: 'absolute', right: -2, bottom: -2, width: 26, height: 26, borderRadius: 13, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
-  avatarRing: { padding: 3, borderRadius: 40, borderWidth: 2, borderColor: '#F5B301' },
-  avatar: { width: 68, height: 68, borderRadius: 34, backgroundColor: 'rgba(255,255,255,0.2)', alignItems: 'center', justifyContent: 'center' },
-  verified: { flexDirection: 'row', alignItems: 'center', marginTop: 8, backgroundColor: 'rgba(245,179,1,0.22)', alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 4, borderRadius: radius.pill },
+  avatarRing: { padding: 3, borderRadius: 40, borderWidth: 2 },
+  verified: { flexDirection: 'row', alignItems: 'center', marginTop: 8, alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 4, borderRadius: radius.pill },
   stat: { flex: 1, alignItems: 'center', paddingVertical: 14, borderRadius: radius.lg, borderWidth: 1 },
   group: { marginHorizontal: spacing.screenH, borderRadius: radius.lg, borderWidth: 1, overflow: 'hidden' },
   rowItem: { flexDirection: 'row', alignItems: 'center', padding: spacing.md, gap: 0 },

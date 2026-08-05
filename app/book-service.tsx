@@ -72,7 +72,7 @@ export default function BookService() {
 
   if (done) {
     return (
-      <View style={{ flex: 1, backgroundColor: t.colors.background, paddingHorizontal: spacing.screenH }}>
+      <View style={{ flex: 1, backgroundColor: 'transparent', paddingHorizontal: spacing.screenH }}>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <Animated.View entering={ZoomIn.duration(500)} style={[styles.successIcon, { backgroundColor: t.colors.success + '1F' }]}>
             <Ionicons name="checkmark-circle" size={72} color={t.colors.success} />
@@ -92,7 +92,7 @@ export default function BookService() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: t.colors.background }}>
+    <View style={{ flex: 1, backgroundColor: 'transparent' }}>
       <View style={{ paddingTop: insets.top + spacing.xs, paddingHorizontal: spacing.screenH }}>
         <Pressable onPress={() => router.back()} style={[styles.backBtn, { backgroundColor: t.colors.surfaceAlt, borderColor: t.colors.border }]}>
           <Ionicons name="arrow-back" size={22} color={t.colors.textPrimary} />

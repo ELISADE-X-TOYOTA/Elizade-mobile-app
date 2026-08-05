@@ -48,7 +48,7 @@ export default function TicketDetail() {
   const showRating = ticket?.status === 'resolved' || ticket?.status === 'closed';
 
   return (
-    <View style={{ flex: 1, backgroundColor: t.colors.surfaceAlt }}>
+    <View style={{ flex: 1, backgroundColor: 'transparent' }}>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={insets.top}>
         {/* Header */}
         <View style={[styles.header, { paddingTop: insets.top + spacing.xs, backgroundColor: t.colors.surface, borderColor: t.colors.border }]}>

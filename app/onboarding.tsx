@@ -57,7 +57,7 @@ export default function Onboarding() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: t.colors.background, paddingTop: insets.top }}>
+    <View style={{ flex: 1, backgroundColor: 'transparent', paddingTop: insets.top }}>
       <Pressable
         onPress={() => router.replace('/(auth)/login')}
         style={{ alignSelf: 'flex-end', padding: spacing.md }}

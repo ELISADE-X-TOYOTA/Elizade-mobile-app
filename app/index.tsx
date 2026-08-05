@@ -42,7 +42,7 @@ export default function Splash() {
   return (
     <View style={styles.root}>
       <Animated.View entering={FadeIn.duration(500)} style={logoStyle}>
-        <Image source={require('../assets/elizade-logo.png')} style={styles.logo} resizeMode="contain" />
+        <Image source={require('../assets/elizade-wordmark.png')} style={styles.logo} resizeMode="contain" />
       </Animated.View>
 
       {/* Completes the platform wordmark: Elizade → CONNECT */}
@@ -83,7 +83,10 @@ export default function Splash() {
 
 const styles = StyleSheet.create({
   root: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#000000' },
-  logo: { width: 320, height: 150 },
+  // Cropped transparent wordmark (442x143) — height follows the intrinsic
+  // aspect so the mark fills the width instead of being letterboxed inside a
+  // square canvas the way the old logo asset was.
+  logo: { width: 300, aspectRatio: 442 / 143 },
   connect: { letterSpacing: 8, marginTop: -6 },
   tagline: { marginTop: 14, letterSpacing: 0.5 },
   silhouette: { width: 240, marginTop: 48, alignItems: 'center' },

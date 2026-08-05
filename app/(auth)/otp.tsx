@@ -18,6 +18,7 @@ export default function Otp() {
   const t = useTheme();
   const { email, purpose } = useLocalSearchParams<{ email?: string; purpose?: string }>();
   const setCurrentUser = useStore((s) => s.setCurrentUser);
+  const completeOnboarding = useStore((s) => s.completeOnboarding);
 
   const [digits, setDigits] = useState<string[]>(Array(LEN).fill(''));
   const [loading, setLoading] = useState(false);
@@ -62,6 +63,9 @@ export default function Otp() {
       try {
         const user = await verifyOtp({ email, code: fullCode });
         setCurrentUser(user);
+        // This is the sign-in path, so the account already exists: mark the
+        // intro as seen. The guide is only for users who just registered.
+        completeOnboarding(user.id);
         router.replace('/(tabs)/home');
       } catch (e) {
         setError(e instanceof Error ? e.message : 'Invalid or expired code');
@@ -74,7 +78,7 @@ export default function Otp() {
         setLoading(false);
       }
     },
-    [email, setCurrentUser],
+    [email, setCurrentUser, completeOnboarding],
   );
 
   /**
@@ -208,7 +212,7 @@ export default function Otp() {
           <Pressable onPress={resend} disabled={resending} hitSlop={8}>
             <Txt tone="secondary">
               Didn't receive it?{'  '}
-              <Txt variant="titleSmall" color={t.colors.primary}>
+              <Txt variant="titleSmall" color={t.colors.accentText}>
                 {resending ? 'Sending…' : 'Resend code'}
               </Txt>
             </Txt>

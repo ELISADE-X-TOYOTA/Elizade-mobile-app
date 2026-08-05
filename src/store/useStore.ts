@@ -1,9 +1,38 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import { UserProfile, VehicleCategory } from '../domain/types';
+import { UserProfile, Vehicle, VehicleCategory, vehicleTitle } from '../domain/types';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
+
+/** Side-by-side comparison holds exactly two vehicles. */
+export const COMPARE_LIMIT = 2;
+
+/** The minimum a vehicle needs to render in the comparison tray. */
+export interface CompareEntry {
+  id: string;
+  title: string;
+  trim: string;
+  image: string;
+  price: number;
+}
+
+/**
+ * What `toggleCompare` did, so the caller can give the right feedback.
+ * `swapped` carries the title of the vehicle that was displaced.
+ */
+export type CompareResult =
+  | { action: 'added'; count: number }
+  | { action: 'removed'; count: number }
+  | { action: 'swapped'; count: number; replaced: string };
+
+const entryOf = (v: Vehicle): CompareEntry => ({
+  id: v.id,
+  title: vehicleTitle(v),
+  trim: v.trim,
+  image: v.images?.[0] ?? '',
+  price: v.price,
+});
 
 interface AppState {
   themeMode: ThemeMode;
@@ -41,6 +70,32 @@ interface AppState {
   favorites: string[];
   toggleFavorite: (id: string) => void;
   isFavorite: (id: string) => boolean;
+
+  /**
+   * Vehicles staged for side-by-side comparison, max {@link COMPARE_LIMIT}.
+   *
+   * Lightweight snapshots rather than ids: the tray has to render a thumbnail
+   * and title the instant a card is tapped, and the card already holds that
+   * data. Storing ids alone would mean a network round-trip just to label the
+   * dock. The compare SCREEN still re-fetches full details, because list
+   * payloads carry no engine or specs.
+   *
+   * Deliberately NOT persisted — a stale comparison resurrected days later is
+   * noise, and prices/availability would be out of date.
+   */
+  compare: CompareEntry[];
+  /** Adds, removes if already staged, or swaps out the challenger when full. */
+  toggleCompare: (v: Vehicle) => CompareResult;
+  removeFromCompare: (id: string) => void;
+  clearCompare: () => void;
+  isComparing: (id: string) => boolean;
+  /**
+   * Title of the vehicle a swap just displaced, shown briefly in the tray.
+   * Replacing a car the user picked should never happen silently — without
+   * this they could open the comparison to find a vehicle they didn't choose.
+   */
+  swapNotice: string | null;
+  dismissSwapNotice: () => void;
 
   categoryFilter: VehicleCategory | null;
   setCategoryFilter: (c: VehicleCategory | null) => void;
@@ -86,6 +141,36 @@ export const useStore = create<AppState>()(
             : [...s.favorites, id],
         })),
       isFavorite: (id) => get().favorites.includes(id),
+
+      compare: [],
+      toggleCompare: (vehicle) => {
+        const current = get().compare;
+        const existing = current.find((c) => c.id === vehicle.id);
+        if (existing) {
+          const next = current.filter((c) => c.id !== vehicle.id);
+          set({ compare: next, swapNotice: null });
+          return { action: 'removed', count: next.length };
+        }
+        if (current.length < COMPARE_LIMIT) {
+          const next = [...current, entryOf(vehicle)];
+          set({ compare: next, swapNotice: null });
+          return { action: 'added', count: next.length };
+        }
+        // At the limit, replace the most recent pick and keep the first as the
+        // anchor. Tapping a third car is never a dead end this way, which is
+        // what "easy swap" needs — and the tray's per-slot remove buttons stay
+        // available for anyone who wants to drop the anchor instead.
+        const replaced = current[COMPARE_LIMIT - 1];
+        const next = [...current.slice(0, COMPARE_LIMIT - 1), entryOf(vehicle)];
+        set({ compare: next, swapNotice: replaced.title });
+        return { action: 'swapped', count: next.length, replaced: replaced.title };
+      },
+      removeFromCompare: (id) =>
+        set((s) => ({ compare: s.compare.filter((c) => c.id !== id), swapNotice: null })),
+      clearCompare: () => set({ compare: [], swapNotice: null }),
+      swapNotice: null,
+      dismissSwapNotice: () => set({ swapNotice: null }),
+      isComparing: (id) => get().compare.some((c) => c.id === id),
 
       categoryFilter: null,
       setCategoryFilter: (categoryFilter) => set({ categoryFilter }),

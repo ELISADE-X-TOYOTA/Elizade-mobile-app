@@ -43,3 +43,20 @@ export async function verifyOtp(params: { email: string; code: string }) {
 export function fetchCurrentUser() {
   return apiFetch<UserProfile>('/auth/me');
 }
+
+export interface EmailAvailability {
+  email: string;
+  available: boolean;
+  reason: string | null;
+}
+
+/**
+ * Read-only check used by the signup form while the user types.
+ * Unlike `requestOtp`, this dispatches no code, so it is safe to poll.
+ */
+export function checkEmailAvailable(email: string) {
+  return apiFetch<EmailAvailability>('/auth/email-available', {
+    query: { email },
+    auth: false,
+  });
+}

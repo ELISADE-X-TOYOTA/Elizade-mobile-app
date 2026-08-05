@@ -33,6 +33,18 @@ export interface Vehicle {
   location: string;
   images: string[];
   features: string[];
+  /**
+   * Free-form spec bag straight from the backend's `vehicles.specs` JSONB.
+   *
+   * This is the ONLY trustworthy source of detailed specs. `seats` and
+   * `horsepower` above are synthesised per-category by the mapper for card
+   * display, so they are identical for every SUV and must never be presented
+   * as real, comparable figures — see `buildComparison`.
+   *
+   * Empty `{}` on list results: `GET /vehicles` omits specs, only the detail
+   * endpoint returns them.
+   */
+  specs: Record<string, string>;
   listingTypes: ListingType[];
   ownerHistory: number;
   isVerified: boolean;

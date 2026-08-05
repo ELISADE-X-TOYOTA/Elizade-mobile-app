@@ -12,10 +12,12 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { CompareButton } from '../../src/components/CompareButton';
 import { NetworkCarImage } from '../../src/components/NetworkCarImage';
 import { PrimaryButton } from '../../src/components/PrimaryButton';
 import { Skeleton } from '../../src/components/Skeleton';
 import { Txt } from '../../src/components/Txt';
+import { ON_DARK_INK, OVERLAY_CHIP, OVERLAY_CHIP_INK } from '../../src/theme/colors';
 import { vehicleSubtitle, vehicleTitle } from '../../src/domain/types';
 import { useVehicle } from '../../src/hooks/useVehicles';
 import { useStore } from '../../src/store/useStore';
@@ -61,7 +63,7 @@ export default function CarDetails() {
   ];
 
   return (
-    <View style={{ flex: 1, backgroundColor: t.colors.surfaceAlt }}>
+    <View style={{ flex: 1, backgroundColor: 'transparent' }}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 140 }}>
         {/* Image carousel */}
         <View style={{ height: 340 }}>
@@ -82,6 +84,7 @@ export default function CarDetails() {
           <View style={[styles.topbar, { top: insets.top + 4 }]}>
             <CircleBtn icon="arrow-back" onPress={() => router.back()} />
             <View style={{ flexDirection: 'row', gap: 8 }}>
+              <CompareButton vehicle={v} size={40} />
               <CircleBtn icon="share-social-outline" onPress={() => {}} />
               <CircleBtn
                 icon={isFav ? 'heart' : 'heart-outline'}
@@ -93,8 +96,8 @@ export default function CarDetails() {
 
           {/* 360 chip */}
           <View style={styles.chip360}>
-            <MaterialCommunityIcons name="rotate-360" size={18} color="#fff" />
-            <Txt variant="bodySmall" color="#fff" style={{ marginLeft: 6 }}>
+            <MaterialCommunityIcons name="rotate-360" size={18} color={ON_DARK_INK} />
+            <Txt variant="bodySmall" color={ON_DARK_INK} style={{ marginLeft: 6 }}>
               360° View
             </Txt>
           </View>
@@ -200,7 +203,7 @@ export default function CarDetails() {
           {/* Owner */}
           <View style={[styles.owner, { backgroundColor: t.colors.surface, borderColor: t.colors.border }, t.shadows.soft]}>
             <View style={[styles.ownerAvatar, { backgroundColor: t.colors.primary }]}>
-              <Ionicons name="storefront" size={22} color="#fff" />
+              <Ionicons name="storefront" size={22} color={ON_DARK_INK} />
             </View>
             <View style={{ flex: 1, marginLeft: 12 }}>
               <Txt variant="titleMedium">{v.dealerName}</Txt>
@@ -253,7 +256,7 @@ export default function CarDetails() {
 function DetailLoading() {
   const t = useTheme();
   return (
-    <View style={{ flex: 1, backgroundColor: t.colors.surfaceAlt }}>
+    <View style={{ flex: 1, backgroundColor: 'transparent' }}>
       <Skeleton height={340} radius={0} />
       <View style={{ padding: spacing.screenH, gap: 14 }}>
         <Skeleton height={28} width="60%" />
@@ -270,7 +273,7 @@ function DetailError({ message }: { message?: string }) {
   const t = useTheme();
   const insets = useSafeAreaInsets();
   return (
-    <View style={{ flex: 1, backgroundColor: t.colors.surfaceAlt, paddingTop: insets.top + 60, paddingHorizontal: spacing.screenH }}>
+    <View style={{ flex: 1, backgroundColor: 'transparent', paddingTop: insets.top + 60, paddingHorizontal: spacing.screenH }}>
       <Pressable onPress={() => router.back()} style={{ marginBottom: 20 }}>
         <Ionicons name="arrow-back" size={24} color={t.colors.textPrimary} />
       </Pressable>
@@ -285,7 +288,7 @@ function DetailError({ message }: { message?: string }) {
 function CircleBtn({ icon, onPress, tint }: { icon: keyof typeof Ionicons.glyphMap; onPress: () => void; tint?: string }) {
   return (
     <Pressable onPress={onPress} style={styles.circle}>
-      <Ionicons name={icon} size={20} color={tint ?? '#141A21'} />
+      <Ionicons name={icon} size={20} color={tint ?? OVERLAY_CHIP_INK} />
     </Pressable>
   );
 }
@@ -315,7 +318,7 @@ function RoundAction({ icon }: { icon: keyof typeof Ionicons.glyphMap }) {
 
 const styles = StyleSheet.create({
   topbar: { position: 'absolute', left: 16, right: 16, flexDirection: 'row', justifyContent: 'space-between' },
-  circle: { width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.9)', alignItems: 'center', justifyContent: 'center' },
+  circle: { width: 40, height: 40, borderRadius: 20, backgroundColor: OVERLAY_CHIP, alignItems: 'center', justifyContent: 'center' },
   chip360: { position: 'absolute', right: 16, bottom: 56, flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.45)', paddingHorizontal: 12, paddingVertical: 8, borderRadius: radius.pill },
   dots: { position: 'absolute', bottom: 44, left: 0, right: 0, flexDirection: 'row', justifyContent: 'center', gap: 6 },
   sheet: { marginTop: -24, borderTopLeftRadius: 28, borderTopRightRadius: 28, padding: spacing.screenH, paddingTop: spacing.xl },

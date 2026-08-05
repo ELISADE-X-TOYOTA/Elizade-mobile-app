@@ -37,7 +37,7 @@ export default function NewTicket() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: t.colors.background }}>
+    <View style={{ flex: 1, backgroundColor: 'transparent' }}>
       <View style={{ paddingTop: insets.top + spacing.xs, paddingHorizontal: spacing.screenH }}>
         <Pressable onPress={() => router.back()} style={[styles.backBtn, { backgroundColor: t.colors.surfaceAlt, borderColor: t.colors.border }]}>
           <Ionicons name="arrow-back" size={22} color={t.colors.textPrimary} />

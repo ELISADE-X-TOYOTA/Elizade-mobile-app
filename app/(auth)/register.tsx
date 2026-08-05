@@ -1,8 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
+  ActivityIndicator,
   BackHandler,
   KeyboardAvoidingView,
   NativeSyntheticEvent,
@@ -30,6 +31,7 @@ import { Toast, ToastState } from '../../src/components/Toast';
 import { Txt } from '../../src/components/Txt';
 import { APP } from '../../src/constants/app';
 import { requestOtp, verifyOtp } from '../../src/data/authRepository';
+import { EmailAvailabilityResult, useEmailAvailability } from '../../src/hooks/useEmailAvailability';
 import { useStore } from '../../src/store/useStore';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
@@ -50,6 +52,9 @@ const ORDER: Step[] = ['name', 'email', 'phone', 'otp'];
 /** Minimum time the sending animation stays up, so a fast response doesn't flash. */
 const MIN_ANIMATION_MS = 1100;
 
+/** OTP length — must match the backend's OTP_LENGTH. */
+const LEN = 6;
+
 /** Multi-step registration wizard with a progress bar. */
 export default function Register() {
   const t = useTheme();
@@ -66,7 +71,7 @@ export default function Register() {
   const [toast, setToast] = useState<ToastState | null>(null);
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [code, setCode] = useState<string[]>(Array(6).fill(''));
+  const [code, setCode] = useState<string[]>(Array(LEN).fill(''));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
   const [otpError, setOtpError] = useState(false);
@@ -74,6 +79,8 @@ export default function Register() {
 
   const index = ORDER.indexOf(step);
   const joinedCode = code.join('');
+  /** Guards against auto-submit firing twice for one completed code. */
+  const submitted = useRef(false);
 
   // Animated progress fill.
   const progress = useSharedValue(0.25);
@@ -114,6 +121,48 @@ export default function Register() {
 
   const namesValid = isValidName(firstName) && isValidName(lastName);
 
+  /** Verify the code and finish registration. Shared by auto-submit and the
+   *  explicit button, so both paths behave identically. */
+  const verifyCode = useCallback(
+    async (fullCode: string) => {
+      setLoading(true);
+      try {
+        // In mock mode, demonstrate the invalid-code path locally.
+        if (DEMO_MODE && fullCode !== DEMO_OTP) throw new Error('invalid');
+        const user = await verifyOtp({
+          email,
+          code: fullCode,
+          profile: { firstName, lastName, email, phone },
+        });
+        setCurrentUser(user);
+        setDone(true);
+      } catch {
+        setOtpError(true);
+        shake();
+        // Clear so the next attempt starts fresh, and re-arm auto-submit.
+        setCode(Array(LEN).fill(''));
+        submitted.current = false;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [email, firstName, lastName, phone, setCurrentUser],
+  );
+
+  /**
+   * Auto-verify the moment the sixth digit lands — no manual tap needed.
+   * Runs in an effect rather than the keystroke handler so it also fires when
+   * autofill populates every box at once.
+   */
+  useEffect(() => {
+    if (step === 'otp' && joinedCode.length === LEN && !submitted.current && !loading) {
+      submitted.current = true;
+      verifyCode(joinedCode);
+    }
+  }, [step, joinedCode, loading, verifyCode]);
+  // Live format + availability check while the user types on the email step.
+  const emailCheck = useEmailAvailability(step === 'email' ? email : '');
+
   const next = async () => {
     setError(undefined);
     switch (step) {
@@ -135,18 +184,19 @@ export default function Register() {
             await new Promise((r) => setTimeout(r, MIN_ANIMATION_MS - elapsed));
           }
           setSending(false);
+          submitted.current = false;
           setStep('otp');
         } catch (e) {
           setSending(false);
           const msg = e instanceof Error ? e.message : 'Could not send code';
-          // 409 from the backend: this email is already registered.
+          // 409 from the backend: this email is already registered. Informational
+          // only — the user is returned to the email step to edit it, so the
+          // toast needs no action of its own.
           if (/already exists/i.test(msg)) {
             setToast({
               tone: 'error',
-              title: 'Email already registered',
-              message: `${email} already has an Elizade Connect account.`,
-              actionLabel: 'Sign in instead',
-              onAction: () => router.replace({ pathname: '/(auth)/login' }),
+              title: 'This email is already registered',
+              message: 'Please use another email or return to login.',
             });
             setStep('email');
           } else {
@@ -156,24 +206,9 @@ export default function Register() {
         return;
       }
       case 'otp': {
-        if (joinedCode.length < 6) return;
-        setLoading(true);
-        try {
-          // In mock mode, demonstrate the invalid-code path locally.
-          if (DEMO_MODE && joinedCode !== DEMO_OTP) throw new Error('invalid');
-          const user = await verifyOtp({
-            email,
-            code: joinedCode,
-            profile: { firstName, lastName, email, phone },
-          });
-          setCurrentUser(user);
-          setDone(true);
-        } catch {
-          setOtpError(true);
-          shake();
-        } finally {
-          setLoading(false);
-        }
+        if (joinedCode.length < LEN) return;
+        submitted.current = true;
+        await verifyCode(joinedCode);
         return;
       }
     }
@@ -187,11 +222,11 @@ export default function Register() {
     step === 'otp' ? 'Verify & Create Account' : step === 'phone' ? 'Continue' : 'Continue';
   const ctaDisabled =
     (step === 'name' && !namesValid) ||
-    (step === 'email' && !isValidEmail(email)) ||
-    (step === 'otp' && joinedCode.length < 6);
+    (step === 'email' && !emailCheck.eligible) ||
+    (step === 'otp' && joinedCode.length < LEN);
 
   return (
-    <View style={{ flex: 1, backgroundColor: t.colors.background }}>
+    <View style={{ flex: 1, backgroundColor: 'transparent' }}>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         {/* Header: back + progress */}
         <View style={{ paddingTop: insets.top + spacing.xs, paddingHorizontal: spacing.screenH }}>
@@ -277,8 +312,9 @@ export default function Register() {
                   onChangeText={setEmail}
                   sanitize={cleanEmail}
                   maxLength={254}
-                  error={error}
+                  error={emailCheck.status === 'taken' ? emailCheck.reason ?? 'Already registered' : error}
                 />
+                <EmailStatusHint check={emailCheck} />
               </StepBody>
             )}
 
@@ -315,21 +351,26 @@ export default function Register() {
                       setOtpError(false);
                     }}
                     error={otpError}
+                    disabled={loading}
                   />
                 </Animated.View>
                 {otpError ? (
                   <Txt variant="bodySmall" color={t.colors.error} style={{ marginTop: 10 }}>
                     That code isn't right. Please try again.
                   </Txt>
-                ) : DEMO_MODE ? (
+                ) : (
                   <Txt variant="bodySmall" tone="tertiary" style={{ marginTop: 10 }}>
-                    Demo code: {DEMO_OTP}
+                    {loading
+                      ? 'Verifying…'
+                      : DEMO_MODE
+                        ? `Demo code: ${DEMO_OTP}`
+                        : 'Verification starts automatically once all six digits are in.'}
                   </Txt>
-                ) : null}
+                )}
                 <Pressable style={{ marginTop: spacing.md }}>
                   <Txt tone="secondary">
                     Didn't get it?{'  '}
-                    <Txt variant="titleSmall" color={t.colors.primary}>
+                    <Txt variant="titleSmall" color={t.colors.accentText}>
                       Resend code
                     </Txt>
                   </Txt>
@@ -346,7 +387,7 @@ export default function Register() {
             <Pressable onPress={() => router.replace('/(auth)/login')} style={{ marginTop: spacing.md, alignItems: 'center' }}>
               <Txt tone="secondary">
                 Already have an account?{'  '}
-                <Txt variant="titleSmall" color={t.colors.primary}>
+                <Txt variant="titleSmall" color={t.colors.accentText}>
                   Login
                 </Txt>
               </Txt>
@@ -361,12 +402,38 @@ export default function Register() {
         tone={toast?.tone}
         title={toast?.title ?? ''}
         message={toast?.message}
-        actionLabel={toast?.actionLabel}
-        onAction={toast?.onAction}
         onDismiss={() => setToast(null)}
       />
     </View>
   );
+}
+
+/** Live feedback under the email field: checking / available / taken. */
+function EmailStatusHint({ check }: { check: EmailAvailabilityResult }) {
+  const t = useTheme();
+  // 'taken' is already surfaced as the field's error, and 'invalid' is left
+  // silent so it doesn't nag mid-typing.
+  if (check.status === 'checking') {
+    return (
+      <View style={styles.hintRow}>
+        <ActivityIndicator size="small" color={t.colors.textSecondary} />
+        <Txt variant="bodySmall" tone="secondary" style={{ marginLeft: 8 }}>
+          Checking availability…
+        </Txt>
+      </View>
+    );
+  }
+  if (check.status === 'available') {
+    return (
+      <View style={styles.hintRow}>
+        <Ionicons name="checkmark-circle" size={16} color={t.colors.success} />
+        <Txt variant="bodySmall" color={t.colors.success} style={{ marginLeft: 6 }}>
+          Email is available
+        </Txt>
+      </View>
+    );
+  }
+  return null;
 }
 
 function StepBody({ title, subtitle, children }: { title: string; subtitle: string; children: React.ReactNode }) {
@@ -385,20 +452,39 @@ function OtpBoxes({
   value,
   onChange,
   error,
+  disabled,
 }: {
   value: string[];
   onChange: (v: string[]) => void;
   error?: boolean;
+  disabled?: boolean;
 }) {
   const t = useTheme();
   const refs = useRef<(TextInput | null)[]>([]);
 
   const set = (i: number, v: string) => {
-    const clean = v.replace(/[^0-9]/g, '').slice(-1);
+    const cleaned = v.replace(/[^0-9]/g, '');
+    if (!cleaned) {
+      const nextVal = [...value];
+      nextVal[i] = '';
+      onChange(nextVal);
+      return;
+    }
+
+    // A pasted or autofilled block arrives in one box — spread it across the
+    // rest, otherwise the code would be truncated to a single digit.
+    if (cleaned.length > 1) {
+      const nextVal = [...value];
+      for (let k = 0; k < cleaned.length && i + k < LEN; k++) nextVal[i + k] = cleaned[k];
+      onChange(nextVal);
+      refs.current[Math.min(i + cleaned.length, LEN - 1)]?.focus();
+      return;
+    }
+
     const nextVal = [...value];
-    nextVal[i] = clean;
+    nextVal[i] = cleaned;
     onChange(nextVal);
-    if (clean && i < 5) refs.current[i + 1]?.focus();
+    if (i < LEN - 1) refs.current[i + 1]?.focus();
   };
 
   const onKey = (i: number, e: NativeSyntheticEvent<TextInputKeyPressEventData>) => {
@@ -417,7 +503,15 @@ function OtpBoxes({
           onChangeText={(v) => set(i, v)}
           onKeyPress={(e) => onKey(i, e)}
           keyboardType="number-pad"
-          maxLength={1}
+          // One-time-code autofill: iOS reads it from Messages, Android from
+          // SMS Retriever — both deliver the whole code to the first box.
+          textContentType="oneTimeCode"
+          autoComplete="one-time-code"
+          autoFocus={i === 0}
+          editable={!disabled}
+          maxLength={i === 0 ? LEN : 1}
+          selectTextOnFocus
+          accessibilityLabel={`Digit ${i + 1}`}
           style={[
             t.type.headlineSmall,
             {
@@ -441,7 +535,7 @@ function Success({ firstName, onDone }: { firstName: string; onDone: () => void 
   const t = useTheme();
   const insets = useSafeAreaInsets();
   return (
-    <View style={{ flex: 1, backgroundColor: t.colors.background, paddingHorizontal: spacing.screenH }}>
+    <View style={{ flex: 1, backgroundColor: 'transparent', paddingHorizontal: spacing.screenH }}>
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Animated.View
           entering={ZoomIn.duration(500)}
@@ -464,6 +558,7 @@ function Success({ firstName, onDone }: { firstName: string; onDone: () => void 
 }
 
 const styles = StyleSheet.create({
+  hintRow: { flexDirection: 'row', alignItems: 'center', marginTop: spacing.sm, minHeight: 20 },
   backBtn: {
     width: 42,
     height: 42,

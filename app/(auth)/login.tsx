@@ -81,7 +81,7 @@ export default function Login() {
         >
           <Txt tone="secondary">
             Don't have an account?{'  '}
-            <Txt variant="titleSmall" color={t.colors.primary}>
+            <Txt variant="titleSmall" color={t.colors.accentText}>
               Sign Up
             </Txt>
           </Txt>

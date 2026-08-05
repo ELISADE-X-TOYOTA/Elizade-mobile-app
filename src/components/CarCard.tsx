@@ -1,11 +1,13 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { memo, useCallback } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+import { OVERLAY_CHIP, OVERLAY_CHIP_INK } from '../theme/colors';
 import { CATEGORY_META, Vehicle, vehicleTitle } from '../domain/types';
 import { useStore } from '../store/useStore';
 import { radius, spacing } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
 import { priceCompact } from '../utils/format';
+import { CompareButton } from './CompareButton';
 import { NetworkCarImage } from './NetworkCarImage';
 import { Txt } from './Txt';
 
@@ -37,9 +39,9 @@ function CarCardBase({ vehicle, onPress, wide, width }: Props) {
     >
       <View style={{ height: wide ? 168 : 118 }}>
         <NetworkCarImage uri={vehicle.images[0]} />
-        <View style={[styles.badge, { backgroundColor: '#FFFFFF' }]}>
-          <MaterialCommunityIcons name={meta.icon as any} size={13} color={t.colors.primaryDark} />
-          <Txt variant="labelSmall" color={t.colors.primaryDark} style={{ marginLeft: 4 }}>
+        <View style={styles.badge}>
+          <MaterialCommunityIcons name={meta.icon as any} size={13} color={OVERLAY_CHIP_INK} />
+          <Txt variant="labelSmall" color={OVERLAY_CHIP_INK} style={{ marginLeft: 4 }}>
             {meta.label}
           </Txt>
         </View>
@@ -51,9 +53,12 @@ function CarCardBase({ vehicle, onPress, wide, width }: Props) {
           <Ionicons
             name={isFav ? 'heart' : 'heart-outline'}
             size={18}
-            color={isFav ? t.colors.error : t.colors.textSecondary}
+            // Fixed ink, not textSecondary — this chip is light in both themes,
+            // so a themed foreground turned the outline heart pale-on-white.
+            color={isFav ? t.colors.error : OVERLAY_CHIP_INK}
           />
         </Pressable>
+        <CompareButton vehicle={vehicle} style={styles.compare} />
       </View>
 
       <View style={{ padding: 14 }}>
@@ -121,6 +126,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: radius.pill,
+    backgroundColor: OVERLAY_CHIP,
   },
   fav: {
     position: 'absolute',
@@ -129,10 +135,12 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
-    backgroundColor: 'rgba(255,255,255,0.92)',
+    backgroundColor: OVERLAY_CHIP,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  // Stacked under the favourite button, sharing its right gutter.
+  compare: { position: 'absolute', top: 48, right: 8 },
   spec: {
     flexDirection: 'row',
     alignItems: 'center',

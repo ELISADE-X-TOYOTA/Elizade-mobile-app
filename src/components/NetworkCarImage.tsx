@@ -21,7 +21,10 @@ interface Props {
   priority?: 'low' | 'normal' | 'high';
 }
 
-const FALLBACK_COLORS = ['#2A2A2E', '#141416'] as const;
+/** Neutral placeholder behind vehicle photography. Theme-independent: it
+ *  stands in for an image, not for a themed surface. */
+export const IMAGE_FALLBACK = ['#2A2A2E', '#141416'] as const;
+const FALLBACK_COLORS = IMAGE_FALLBACK;
 
 function NetworkCarImageBase({ uri, style, radius = 0, priority = 'normal' }: Props) {
   const [failed, setFailed] = useState(false);

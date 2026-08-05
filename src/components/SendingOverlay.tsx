@@ -14,7 +14,7 @@ import Animated, {
   withSequence,
   withTiming,
 } from 'react-native-reanimated';
-import { radius, spacing } from '../theme/spacing';
+import { spacing } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
 import { Txt } from './Txt';
 
@@ -104,9 +104,15 @@ export function SendingOverlay({ visible, email, message = 'Sending your code' }
             <Ionicons name="mail" size={26} color={t.colors.accent} />
           </Animated.View>
 
-          <Animated.View style={[styles.logoWrap, { backgroundColor: t.colors.primary }, logoStyle]}>
+          {/*
+            No backdrop container — the mark sits directly on the screen inside
+            the halo. `elizade-wordmark.png` is the alpha-cut asset, so nothing
+            boxes it in; `elizade-logo.png` is a JPEG (no alpha) and would
+            reintroduce a black block here.
+          */}
+          <Animated.View style={[styles.logoWrap, logoStyle]}>
             <Image
-              source={require('../../assets/elizade-logo.png')}
+              source={require('../../assets/elizade-wordmark.png')}
               style={styles.logo}
               contentFit="contain"
               transition={0}
@@ -129,27 +135,30 @@ export function SendingOverlay({ visible, email, message = 'Sending your code' }
   );
 }
 
-const LOGO = 132;
+/** Diameter of the expanding halo ring. */
+const HALO = 150;
+/**
+ * Wordmark width. The asset is now cropped to the glyphs, so this is the mark's
+ * real on-screen width — unlike the old square logo, where `contain` fitted the
+ * 1024×1024 canvas and rendered the wordmark itself at roughly 22px across.
+ */
+const MARK_W = 132;
+/** Intrinsic aspect of elizade-wordmark.png (442×143). */
+const MARK_ASPECT = 442 / 143;
 
 const styles = StyleSheet.create({
   root: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacing.screenH },
-  stage: { width: LOGO, height: LOGO, alignItems: 'center', justifyContent: 'center' },
+  stage: { width: HALO, height: HALO, alignItems: 'center', justifyContent: 'center' },
   halo: {
     position: 'absolute',
-    width: LOGO,
-    height: LOGO,
-    borderRadius: LOGO / 2,
+    width: HALO,
+    height: HALO,
+    borderRadius: HALO / 2,
     borderWidth: 2,
   },
-  logoWrap: {
-    width: LOGO,
-    height: LOGO,
-    borderRadius: radius.xl,
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-  },
-  logo: { width: LOGO * 0.72, height: LOGO * 0.42 },
-  mail: { position: 'absolute', top: -6 },
+  // Sizing/animation wrapper only — no fill, no clipping.
+  logoWrap: { alignItems: 'center', justifyContent: 'center' },
+  logo: { width: MARK_W, aspectRatio: MARK_ASPECT },
+  mail: { position: 'absolute', top: -14 },
   copy: { marginTop: spacing.xxl, alignItems: 'center' },
 });
