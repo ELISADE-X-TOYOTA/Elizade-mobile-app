@@ -118,6 +118,32 @@ export const BOOKING_STATUS_LABEL: Record<BookingStatus, string> = {
   cancelled: 'Cancelled',
 };
 
+/** Backend `TestDriveStatus` values from POST/GET /sales/test-drives. */
+export type TestDriveStatus = 'requested' | 'confirmed' | 'completed' | 'cancelled';
+
+export interface TestDriveBooking {
+  id: string;
+  vehicleId: string;
+  vehicleLabel: string;
+  branchId: string;
+  branchName: string;
+  scheduledAt: string;
+  status: TestDriveStatus;
+  notes?: string | null;
+  leadId?: string | null;
+  createdAt: string;
+}
+
+export const TEST_DRIVE_STATUS_META: Record<
+  TestDriveStatus,
+  { label: string; tone: 'info' | 'success' | 'warning' | 'error' }
+> = {
+  requested: { label: 'Requested', tone: 'info' },
+  confirmed: { label: 'Confirmed', tone: 'success' },
+  completed: { label: 'Completed', tone: 'success' },
+  cancelled: { label: 'Cancelled', tone: 'error' },
+};
+
 // ── Service & ownership (mirrors web src/types) ──────────────────────
 export interface OwnedVehicle {
   id: string;

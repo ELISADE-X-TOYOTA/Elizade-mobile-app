@@ -11,6 +11,7 @@ import { useTheme } from '../../src/theme/useTheme';
 const TABS: Record<string, { label: string; icon: keyof typeof Ionicons.glyphMap; active: keyof typeof Ionicons.glyphMap }> = {
   home: { label: 'Home', icon: 'home-outline', active: 'home' },
   shop: { label: 'Shop', icon: 'storefront-outline', active: 'storefront' },
+  bookings: { label: 'Bookings', icon: 'calendar-outline', active: 'calendar' },
   service: { label: 'Service', icon: 'construct-outline', active: 'construct' },
   support: { label: 'Support', icon: 'headset-outline', active: 'headset' },
   profile: { label: 'Profile', icon: 'person-outline', active: 'person' },
@@ -21,6 +22,7 @@ export default function TabsLayout() {
     <Tabs tabBar={(props) => <FloatingTabBar {...props} />} screenOptions={{ headerShown: false }}>
       <Tabs.Screen name="home" />
       <Tabs.Screen name="shop" />
+      <Tabs.Screen name="bookings" />
       <Tabs.Screen name="service" />
       <Tabs.Screen name="support" />
       <Tabs.Screen name="profile" />

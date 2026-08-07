@@ -241,12 +241,16 @@ export default function CarDetails() {
             <PrimaryButton label="Reserve" variant="outline" onPress={() => setSale('reserve')} />
           </View>
           <View style={{ flex: 1 }}>
-            <PrimaryButton label="Test Drive" icon="car-sport" onPress={() => setSale('testdrive')} />
+            <PrimaryButton
+              label="Test Drive"
+              icon="car-sport"
+              onPress={() => router.push(`/book-test-drive?vehicleId=${v.id}`)}
+            />
           </View>
         </View>
       </View>
 
-      <TestDriveModal visible={sale !== null} mode={sale ?? 'testdrive'} vehicle={v} onClose={() => setSale(null)} />
+      <TestDriveModal visible={sale === 'reserve'} mode="reserve" vehicle={v} onClose={() => setSale(null)} />
       <FinancingModal visible={financeOpen} vehiclePrice={v.price} vehicleTitle={vehicleTitle(v)} onClose={() => setFinanceOpen(false)} />
       <QuoteModal visible={quoteOpen} vehicle={v} onClose={() => setQuoteOpen(false)} />
     </View>
