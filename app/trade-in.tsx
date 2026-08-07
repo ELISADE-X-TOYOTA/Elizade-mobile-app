@@ -84,7 +84,7 @@ export default function TradeIn() {
       <View style={{ flex: 1, backgroundColor: 'transparent', paddingHorizontal: spacing.screenH }}>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <Animated.View entering={ZoomIn.duration(500)} style={[styles.successIcon, { backgroundColor: t.colors.success + '1F' }]}>
-            <Ionicons name="cash" size={64} color={t.colors.success} />
+            <Ionicons name="cash" size={64} color={t.colors.successText} />
           </Animated.View>
           <Txt variant="headlineLarge" center style={{ marginTop: spacing.xl }}>
             Valuation Requested
@@ -168,7 +168,7 @@ export default function TradeIn() {
         </Pressable>
 
         {error ? (
-          <Txt variant="bodySmall" color={t.colors.error} style={{ marginTop: spacing.md }}>
+          <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: spacing.md }}>
             {error}
           </Txt>
         ) : null}

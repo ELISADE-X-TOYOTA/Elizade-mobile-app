@@ -73,7 +73,7 @@ export default function Bookings() {
         refreshControl={<RefreshControl refreshing={loading} onRefresh={reload} tintColor={t.colors.primary} />}
       >
         {error ? (
-          <Txt color={t.colors.error} style={{ marginBottom: spacing.md }}>
+          <Txt color={t.colors.errorText} style={{ marginBottom: spacing.md }}>
             {error}
           </Txt>
         ) : null}

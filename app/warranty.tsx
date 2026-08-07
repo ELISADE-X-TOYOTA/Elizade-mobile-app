@@ -208,7 +208,7 @@ function RecallCard({ recall }: { recall: RecallNotice }) {
   return (
     <View style={[styles.card, { backgroundColor: t.colors.surface, borderColor: t.colors.border }]}>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Ionicons name="checkmark-circle" size={18} color={t.colors.success} />
+        <Ionicons name="checkmark-circle" size={18} color={t.colors.successText} />
         <Txt variant="titleSmall" style={{ flex: 1, marginLeft: 8 }}>
           {recall.title}
         </Txt>

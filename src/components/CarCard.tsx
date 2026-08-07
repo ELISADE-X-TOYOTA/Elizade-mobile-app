@@ -66,7 +66,7 @@ function CarCardBase({ vehicle, onPress, wide, width }: Props) {
           <Txt variant="titleMedium" numberOfLines={1} style={{ flex: 1 }}>
             {vehicleTitle(vehicle)}
           </Txt>
-          <Ionicons name="star" size={15} color={t.colors.warning} style={{ marginLeft: 6 }} />
+          <Ionicons name="star" size={15} color={t.colors.warningText} style={{ marginLeft: 6 }} />
           <Txt variant="titleSmall" style={{ marginLeft: 2 }}>
             {vehicle.rating.toFixed(1)}
           </Txt>

@@ -181,7 +181,7 @@ function HistoryCard({ item }: { item: ServiceHistoryItem }) {
     <View style={[styles.card, { backgroundColor: t.colors.surface, borderColor: t.colors.border }, t.shadows.soft]}>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <View style={[styles.typeIcon, { backgroundColor: t.colors.success + '18' }]}>
-          <Ionicons name="checkmark-done" size={20} color={t.colors.success} />
+          <Ionicons name="checkmark-done" size={20} color={t.colors.successText} />
         </View>
         <View style={{ flex: 1, marginLeft: 12 }}>
           <Txt variant="titleMedium" numberOfLines={1}>

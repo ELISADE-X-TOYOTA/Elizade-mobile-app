@@ -64,7 +64,7 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
           {done ? (
             <View style={{ padding: spacing.xl, alignItems: 'center' }}>
               <Animated.View entering={ZoomIn.duration(500)} style={[styles.successIcon, { backgroundColor: t.colors.success + '1F' }]}>
-                <Ionicons name="shield-checkmark" size={60} color={t.colors.success} />
+                <Ionicons name="shield-checkmark" size={60} color={t.colors.successText} />
               </Animated.View>
               <Txt variant="headlineMedium" style={{ marginTop: 20 }}>
                 Claim Submitted
@@ -124,7 +124,7 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
 
               <View style={{ paddingHorizontal: spacing.lg, paddingTop: 8 }}>
                 {error ? (
-                  <Txt variant="bodySmall" color={t.colors.error} style={{ marginBottom: spacing.sm }}>
+                  <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginBottom: spacing.sm }}>
                     {error}
                   </Txt>
                 ) : null}

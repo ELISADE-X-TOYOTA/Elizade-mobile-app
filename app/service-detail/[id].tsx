@@ -93,7 +93,7 @@ export default function ServiceDetail() {
             {job?.additionalWork && (
               <View style={[styles.card, styles.approvalCard, { backgroundColor: t.colors.surface, borderColor: t.colors.warning }]}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Ionicons name="alert-circle" size={20} color={t.colors.warning} />
+                  <Ionicons name="alert-circle" size={20} color={t.colors.warningText} />
                   <Txt variant="titleMedium" style={{ marginLeft: 8 }}>
                     Additional work needed
                   </Txt>

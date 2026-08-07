@@ -8,14 +8,12 @@ import { PrimaryButton } from '../src/components/PrimaryButton';
 import { Skeleton } from '../src/components/Skeleton';
 import { Txt } from '../src/components/Txt';
 import { bookTestDrive } from '../src/data/salesRepository';
+import { firstOpenSlot, isDayFull, isSlotPast, slotLabel, SLOTS, slotTime } from '../src/domain/booking';
 import { vehicleTitle } from '../src/domain/types';
 import { useBranches } from '../src/hooks/useBranches';
 import { useVehicle } from '../src/hooks/useVehicles';
 import { radius, spacing } from '../src/theme/spacing';
 import { useTheme } from '../src/theme/useTheme';
-
-const TIME_SLOTS = ['9:00 AM', '10:30 AM', '12:00 PM', '2:00 PM', '4:00 PM'];
-const SLOT_HOURS = [9, 10, 12, 14, 16];
 
 /**
  * Book a test drive for a catalogue vehicle.
@@ -38,6 +36,9 @@ export default function BookTestDrive() {
 
   const dates = useMemo(() => Array.from({ length: 7 }, (_, i) => new Date(Date.now() + i * 86_400_000)), []);
 
+  const slotPast = (dIdx: number, sIdx: number) => isSlotPast(dates[dIdx], sIdx);
+  const dayFull = (dIdx: number) => isDayFull(dates[dIdx]);
+
   const submit = async () => {
     if (!vehicle) {
       setError('Vehicle not found.');
@@ -48,10 +49,14 @@ export default function BookTestDrive() {
       setError('Select a showroom to continue.');
       return;
     }
+    // Backstop: the slot could have lapsed while the form sat open.
+    if (slotPast(dateIdx, slot)) {
+      setError('That time has already passed. Pick a later slot.');
+      return;
+    }
     setLoading(true);
     setError(undefined);
-    const at = new Date(dates[dateIdx]);
-    at.setHours(SLOT_HOURS[slot] ?? 9, 0, 0, 0);
+    const at = slotTime(dates[dateIdx], slot);
     try {
       const res = await bookTestDrive({
         vehicleId: vehicle.id,
@@ -72,7 +77,7 @@ export default function BookTestDrive() {
       <View style={{ flex: 1, backgroundColor: 'transparent', paddingHorizontal: spacing.screenH }}>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <Animated.View entering={ZoomIn.duration(500)} style={[styles.successIcon, { backgroundColor: t.colors.success + '1F' }]}>
-            <Ionicons name="checkmark-circle" size={72} color={t.colors.success} />
+            <Ionicons name="checkmark-circle" size={72} color={t.colors.successText} />
           </Animated.View>
           <Txt variant="headlineLarge" center style={{ marginTop: spacing.xl }}>
             Test Drive Booked!
@@ -125,7 +130,7 @@ export default function BookTestDrive() {
         {vehicleLoading ? (
           <Skeleton height={120} radius={radius.md} />
         ) : vehicleError || !vehicle ? (
-          <Txt color={t.colors.error}>{vehicleError ?? 'Vehicle not found.'}</Txt>
+          <Txt color={t.colors.errorText}>{vehicleError ?? 'Vehicle not found.'}</Txt>
         ) : (
           <>
             <Label text="Showroom" />
@@ -148,51 +153,93 @@ export default function BookTestDrive() {
 
             <Label text="Date" />
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
-              {dates.map((d, i) => (
-                <Pressable
-                  key={i}
-                  onPress={() => setDateIdx(i)}
-                  style={[
-                    styles.dateChip,
-                    {
-                      backgroundColor: dateIdx === i ? t.colors.primary : t.colors.surfaceAlt,
-                      borderColor: dateIdx === i ? t.colors.primary : t.colors.border,
-                    },
-                  ]}
-                >
-                  <Txt variant="labelSmall" color={dateIdx === i ? t.colors.onPrimary : t.colors.textSecondary}>
-                    {d.toLocaleDateString('en', { weekday: 'short' })}
-                  </Txt>
-                  <Txt variant="titleMedium" color={dateIdx === i ? t.colors.onPrimary : t.colors.textPrimary}>
-                    {d.getDate()}
-                  </Txt>
-                </Pressable>
-              ))}
+              {dates.map((d, i) => {
+                const selected = dateIdx === i;
+                // Today drops off the picker once its last slot has passed.
+                const full = dayFull(i);
+                return (
+                  <Pressable
+                    key={i}
+                    disabled={full}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected, disabled: full }}
+                    accessibilityLabel={d.toLocaleDateString('en', {
+                      weekday: 'long',
+                      day: 'numeric',
+                      month: 'long',
+                    })}
+                    onPress={() => {
+                      setDateIdx(i);
+                      // Moving to today can strand the selection on a lapsed
+                      // slot — pull it forward to the first one still bookable.
+                      if (slotPast(i, slot)) {
+                        const next = firstOpenSlot(dates[i]);
+                        if (next >= 0) setSlot(next);
+                      }
+                    }}
+                    style={[
+                      styles.dateChip,
+                      {
+                        backgroundColor: selected ? t.colors.primary : t.colors.surfaceAlt,
+                        borderColor: selected ? t.colors.primary : t.colors.border,
+                        opacity: full ? 0.4 : 1,
+                      },
+                    ]}
+                  >
+                    <Txt variant="labelSmall" color={selected ? t.colors.onPrimary : t.colors.textSecondary}>
+                      {d.toLocaleDateString('en', { weekday: 'short' })}
+                    </Txt>
+                    <Txt variant="titleMedium" color={selected ? t.colors.onPrimary : t.colors.textPrimary}>
+                      {d.getDate()}
+                    </Txt>
+                  </Pressable>
+                );
+              })}
             </ScrollView>
 
             <Label text="Time" />
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-              {TIME_SLOTS.map((time, i) => (
-                <Pressable
-                  key={time}
-                  onPress={() => setSlot(i)}
-                  style={[
-                    styles.slot,
-                    {
-                      backgroundColor: slot === i ? t.colors.primary : t.colors.surfaceAlt,
-                      borderColor: slot === i ? t.colors.primary : t.colors.border,
-                    },
-                  ]}
-                >
-                  <Txt variant="titleSmall" color={slot === i ? t.colors.onPrimary : t.colors.textPrimary}>
-                    {time}
-                  </Txt>
-                </Pressable>
-              ))}
+              {SLOTS.map((s, i) => {
+                const selected = slot === i;
+                const past = slotPast(dateIdx, i);
+                const label = slotLabel(s);
+                return (
+                  <Pressable
+                    key={label}
+                    disabled={past}
+                    onPress={() => setSlot(i)}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected, disabled: past }}
+                    accessibilityLabel={past ? `${label}, no longer available` : label}
+                    style={[
+                      styles.slot,
+                      {
+                        backgroundColor: selected ? t.colors.primary : t.colors.surfaceAlt,
+                        borderColor: selected ? t.colors.primary : t.colors.border,
+                        opacity: past ? 0.4 : 1,
+                      },
+                    ]}
+                  >
+                    <Txt
+                      variant="titleSmall"
+                      color={
+                        selected
+                          ? t.colors.onPrimary
+                          : past
+                            ? t.colors.textTertiary
+                            : t.colors.textPrimary
+                      }
+                      style={past ? { textDecorationLine: 'line-through' } : undefined}
+                    >
+                      {label}
+                    </Txt>
+                  </Pressable>
+                );
+              })}
             </View>
 
             {error ? (
-              <Txt variant="bodySmall" color={t.colors.error} style={{ marginTop: spacing.md }}>
+              <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: spacing.md }}>
                 {error}
               </Txt>
             ) : null}

@@ -130,8 +130,8 @@ export default function CarDetails() {
               </Txt>
             </View>
             <View style={[styles.ratingPill, { backgroundColor: t.colors.warning + '1F' }]}>
-              <Ionicons name="star" size={16} color={t.colors.warning} />
-              <Txt variant="titleSmall" color={t.colors.warning} style={{ marginLeft: 4 }}>
+              <Ionicons name="star" size={16} color={t.colors.warningText} />
+              <Txt variant="titleSmall" color={t.colors.warningText} style={{ marginLeft: 4 }}>
                 {v.rating}
               </Txt>
               <Txt variant="bodySmall" tone="secondary">
@@ -145,8 +145,8 @@ export default function CarDetails() {
             <Txt style={{ marginLeft: 4, flex: 1 }}>{v.location}</Txt>
             {v.isVerified && (
               <View style={[styles.verified, { backgroundColor: t.colors.success + '1F' }]}>
-                <Ionicons name="shield-checkmark" size={13} color={t.colors.success} />
-                <Txt variant="labelSmall" color={t.colors.success} style={{ marginLeft: 4 }}>
+                <Ionicons name="shield-checkmark" size={13} color={t.colors.successText} />
+                <Txt variant="labelSmall" color={t.colors.successText} style={{ marginLeft: 4 }}>
                   Verified
                 </Txt>
               </View>
@@ -182,7 +182,7 @@ export default function CarDetails() {
           <View style={styles.features}>
             {v.features.map((f) => (
               <View key={f} style={[styles.feature, { backgroundColor: t.colors.surface, borderColor: t.colors.border }]}>
-                <Ionicons name="checkmark-circle" size={15} color={t.colors.success} />
+                <Ionicons name="checkmark-circle" size={15} color={t.colors.successText} />
                 <Txt variant="titleSmall" style={{ marginLeft: 6 }}>
                   {f}
                 </Txt>
@@ -230,8 +230,8 @@ export default function CarDetails() {
             </Txt>
           </View>
           <View style={[styles.availChip, { backgroundColor: t.colors.success + '1F' }]}>
-            <Ionicons name="checkmark-circle" size={14} color={t.colors.success} />
-            <Txt variant="labelSmall" color={t.colors.success} style={{ marginLeft: 4 }}>
+            <Ionicons name="checkmark-circle" size={14} color={t.colors.successText} />
+            <Txt variant="labelSmall" color={t.colors.successText} style={{ marginLeft: 4 }}>
               Available
             </Txt>
           </View>

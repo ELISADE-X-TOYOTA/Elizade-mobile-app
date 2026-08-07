@@ -374,7 +374,7 @@ const RecommendedTile = memo(function RecommendedTile({ vehicle }: { vehicle: Ve
           {vehicleTitle(v)}
         </Txt>
         <View style={[styles.row, { marginTop: 2 }]}>
-          <Ionicons name="star" size={13} color={t.colors.warning} />
+          <Ionicons name="star" size={13} color={t.colors.warningText} />
           <Txt variant="bodySmall" tone="secondary" numberOfLines={1} style={{ marginLeft: 3 }}>
             {v.rating} · {v.location}
           </Txt>

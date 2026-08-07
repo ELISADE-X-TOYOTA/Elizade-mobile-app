@@ -92,7 +92,7 @@ export default function GarageVehicle() {
           {/* Warranty summary */}
           {warranty && (
             <Pressable onPress={() => router.push('/warranty')} style={[styles.warranty, { backgroundColor: t.colors.success + '14', borderColor: t.colors.success + '40' }]}>
-              <Ionicons name="shield-checkmark" size={22} color={t.colors.success} />
+              <Ionicons name="shield-checkmark" size={22} color={t.colors.successText} />
               <View style={{ flex: 1, marginLeft: 12 }}>
                 <Txt variant="titleSmall">Warranty active</Txt>
                 <Txt variant="bodySmall" tone="secondary">
@@ -133,7 +133,7 @@ function HistoryRow({ item }: { item: ServiceHistoryItem }) {
   return (
     <View style={[styles.historyRow, { backgroundColor: t.colors.surface, borderColor: t.colors.border }]}>
       <View style={[styles.dot, { backgroundColor: t.colors.success + '18' }]}>
-        <Ionicons name="checkmark" size={16} color={t.colors.success} />
+        <Ionicons name="checkmark" size={16} color={t.colors.successText} />
       </View>
       <View style={{ flex: 1, marginLeft: 12 }}>
         <Txt variant="titleSmall" numberOfLines={1}>

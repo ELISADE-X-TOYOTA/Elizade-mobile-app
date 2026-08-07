@@ -72,7 +72,7 @@ export function QuoteModal({ visible, vehicle, onClose }: Props) {
           {done ? (
             <View style={{ padding: spacing.xl, alignItems: 'center' }}>
               <Animated.View entering={ZoomIn.duration(500)} style={[styles.successIcon, { backgroundColor: t.colors.success + '1F' }]}>
-                <Ionicons name="document-text" size={56} color={t.colors.success} />
+                <Ionicons name="document-text" size={56} color={t.colors.successText} />
               </Animated.View>
               <Txt variant="headlineMedium" style={{ marginTop: 20 }}>
                 Quote Requested
@@ -134,7 +134,7 @@ export function QuoteModal({ visible, vehicle, onClose }: Props) {
 
               <View style={{ paddingHorizontal: spacing.lg, paddingTop: 8 }}>
                 {error ? (
-                  <Txt variant="bodySmall" color={t.colors.error} style={{ marginBottom: spacing.sm }}>
+                  <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginBottom: spacing.sm }}>
                     {error}
                   </Txt>
                 ) : null}

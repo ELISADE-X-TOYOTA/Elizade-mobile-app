@@ -87,7 +87,7 @@ export function AppTextField({
         )}
       </View>
       {error ? (
-        <Txt variant="bodySmall" color={t.colors.error} style={{ marginTop: 4 }}>
+        <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: 4 }}>
           {error}
         </Txt>
       ) : null}

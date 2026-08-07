@@ -142,7 +142,7 @@ export default function Compare() {
           >
             {groups.length === 0 ? (
               <View style={[styles.identical, { backgroundColor: t.colors.success + '14' }]}>
-                <Ionicons name="checkmark-circle" size={20} color={t.colors.success} />
+                <Ionicons name="checkmark-circle" size={20} color={t.colors.successText} />
                 <Txt tone="secondary" style={{ flex: 1, marginLeft: 10 }}>
                   These two match on every published spec. Turn the filter off to see the full table.
                 </Txt>

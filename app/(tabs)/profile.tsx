@@ -100,7 +100,7 @@ export default function Profile() {
             <Ionicons name="settings-outline" size={22} color={t.colors.textSecondary} />
           </View>
           {avatarError ? (
-            <Txt variant="bodySmall" color={t.colors.error} style={{ marginTop: spacing.sm }}>
+            <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: spacing.sm }}>
               {avatarError}
             </Txt>
           ) : null}

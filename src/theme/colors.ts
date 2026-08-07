@@ -80,6 +80,17 @@ const light = {
    * `onAccent` ink supplies the contrast.
    */
   accentText: '#8A6206',
+  /**
+   * Status colours as TEXT. The `brand` values above are tuned to be seen as
+   * FILLS and icons; used as type they fail badly — plain `success` (#22C55E)
+   * is 2.03:1 on white, effectively unreadable, and the common
+   * `colour + '22'` badge tint makes it marginally worse rather than better.
+   * These are the same hues pushed to where they clear 4.5:1 on that badge.
+   */
+  successText: '#166534',
+  warningText: '#92400E',
+  errorText: '#B91C1C',
+  infoText: '#1D4ED8',
   border: '#DFE3EA',
   textPrimary: '#141A21',
   textSecondary: '#5C6470',
@@ -111,6 +122,12 @@ const dark: typeof light = {
   canvas: '#0A0A0B',
   // On dark the brand gold is already 10.7:1 — no adjustment needed.
   accentText: '#F5B301',
+  // Success and warning already clear the bar on a dark card; red and blue do
+  // not (4.31:1 and 4.29:1 on their own badge tint), so both are lightened.
+  successText: '#22C55E',
+  warningText: '#F59E0B',
+  errorText: '#F87171',
+  infoText: '#60A5FA',
   // Lifted from #2A2A30 (1.29:1 — effectively invisible). Dark mode has no
   // shadows to separate a card from its backdrop, so the border is the *only*
   // thing defining a card edge and it has to actually be seen.

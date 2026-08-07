@@ -355,7 +355,7 @@ export default function Register() {
                   />
                 </Animated.View>
                 {otpError ? (
-                  <Txt variant="bodySmall" color={t.colors.error} style={{ marginTop: 10 }}>
+                  <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: 10 }}>
                     That code isn't right. Please try again.
                   </Txt>
                 ) : (
@@ -426,8 +426,8 @@ function EmailStatusHint({ check }: { check: EmailAvailabilityResult }) {
   if (check.status === 'available') {
     return (
       <View style={styles.hintRow}>
-        <Ionicons name="checkmark-circle" size={16} color={t.colors.success} />
-        <Txt variant="bodySmall" color={t.colors.success} style={{ marginLeft: 6 }}>
+        <Ionicons name="checkmark-circle" size={16} color={t.colors.successText} />
+        <Txt variant="bodySmall" color={t.colors.successText} style={{ marginLeft: 6 }}>
           Email is available
         </Txt>
       </View>
@@ -541,7 +541,7 @@ function Success({ firstName, onDone }: { firstName: string; onDone: () => void 
           entering={ZoomIn.duration(500)}
           style={[styles.successIcon, { backgroundColor: t.colors.success + '1F' }]}
         >
-          <Ionicons name="checkmark-circle" size={72} color={t.colors.success} />
+          <Ionicons name="checkmark-circle" size={72} color={t.colors.successText} />
         </Animated.View>
         <Txt variant="headlineLarge" center style={{ marginTop: spacing.xl }}>
           You're all set, {firstName}!

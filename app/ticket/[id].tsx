@@ -84,8 +84,8 @@ export default function TicketDetail() {
             <>
               {canReply && cat && (
                 <View style={[styles.sla, { backgroundColor: t.colors.info + '14' }]}>
-                  <Ionicons name="time-outline" size={15} color={t.colors.info} />
-                  <Txt variant="bodySmall" color={t.colors.info} style={{ marginLeft: 6 }}>
+                  <Ionicons name="time-outline" size={15} color={t.colors.infoText} />
+                  <Txt variant="bodySmall" color={t.colors.infoText} style={{ marginLeft: 6 }}>
                     Typical response within {cat.slaHours}h
                   </Txt>
                 </View>
@@ -161,7 +161,7 @@ function RatingCard({ rating, onRate }: { rating?: number; onRate: (n: number) =
   const t = useTheme();
   return (
     <View style={[styles.ratingCard, { backgroundColor: t.colors.surface, borderColor: t.colors.border }]}>
-      <Ionicons name="checkmark-circle" size={28} color={t.colors.success} />
+      <Ionicons name="checkmark-circle" size={28} color={t.colors.successText} />
       <Txt variant="titleMedium" style={{ marginTop: 8 }}>
         {rating ? 'Thanks for your feedback!' : 'How was our support?'}
       </Txt>
@@ -171,7 +171,7 @@ function RatingCard({ rating, onRate }: { rating?: number; onRate: (n: number) =
       <View style={{ flexDirection: 'row', gap: 8, marginTop: spacing.md }}>
         {[1, 2, 3, 4, 5].map((n) => (
           <Pressable key={n} onPress={() => !rating && onRate(n)} disabled={!!rating}>
-            <Ionicons name={rating && n <= rating ? 'star' : 'star-outline'} size={30} color={t.colors.warning} />
+            <Ionicons name={rating && n <= rating ? 'star' : 'star-outline'} size={30} color={t.colors.warningText} />
           </Pressable>
         ))}
       </View>

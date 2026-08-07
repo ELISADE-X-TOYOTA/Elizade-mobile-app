@@ -182,7 +182,7 @@ export default function Otp() {
       </Animated.View>
 
       {error ? (
-        <Txt variant="bodySmall" color={t.colors.error} style={{ marginTop: 10 }}>
+        <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: 10 }}>
           {error}
         </Txt>
       ) : (

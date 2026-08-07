@@ -75,7 +75,7 @@ export default function BookService() {
       <View style={{ flex: 1, backgroundColor: 'transparent', paddingHorizontal: spacing.screenH }}>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <Animated.View entering={ZoomIn.duration(500)} style={[styles.successIcon, { backgroundColor: t.colors.success + '1F' }]}>
-            <Ionicons name="checkmark-circle" size={72} color={t.colors.success} />
+            <Ionicons name="checkmark-circle" size={72} color={t.colors.successText} />
           </Animated.View>
           <Txt variant="headlineLarge" center style={{ marginTop: spacing.xl }}>
             Service Requested!
@@ -204,7 +204,7 @@ export default function BookService() {
         />
 
         {error ? (
-          <Txt variant="bodySmall" color={t.colors.error} style={{ marginTop: spacing.md }}>
+          <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: spacing.md }}>
             {error}
           </Txt>
         ) : null}

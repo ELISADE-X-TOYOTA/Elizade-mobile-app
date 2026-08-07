@@ -198,7 +198,7 @@ export function TestDriveModal({ visible, vehicle, mode, onClose }: Props) {
 
               <View style={{ paddingHorizontal: spacing.lg, paddingTop: 8 }}>
                 {error ? (
-                  <Txt variant="bodySmall" color={t.colors.error} style={{ marginBottom: spacing.sm }}>
+                  <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginBottom: spacing.sm }}>
                     {error}
                   </Txt>
                 ) : null}
@@ -284,7 +284,7 @@ function Success({
   return (
     <View style={{ padding: spacing.xl, alignItems: 'center' }}>
       <Animated.View entering={ZoomIn.duration(500)} style={[styles.successIcon, { backgroundColor: t.colors.success + '1F' }]}>
-        <Ionicons name="checkmark-circle" size={64} color={t.colors.success} />
+        <Ionicons name="checkmark-circle" size={64} color={t.colors.successText} />
       </Animated.View>
       <Txt variant="headlineMedium" style={{ marginTop: 24 }}>
         {mode === 'testdrive' ? 'Test Drive Booked!' : 'Vehicle Reserved!'}
