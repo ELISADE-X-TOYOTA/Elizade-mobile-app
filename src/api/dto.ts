@@ -200,9 +200,13 @@ export interface NotificationDto {
 export interface TestDriveDto {
   id: string;
   vehicleId: string;
+  vehicleLabel: string;
   branchId: string;
+  branchName: string;
   scheduledAt: string;
   status: string;
+  notes?: string | null;
+  leadId?: string | null;
   createdAt: string;
 }
 

@@ -54,6 +54,9 @@ export interface Branch {
   name: string;
   city: string;
   state: string;
+  /** `showroom` | `service_centre` | `both` — test drives require showroom/both. */
+  type?: string;
+  address?: string;
 }
 
 export interface ListVehiclesParams {

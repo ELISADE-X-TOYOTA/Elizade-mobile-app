@@ -130,6 +130,7 @@ export default function RootLayout() {
           <Stack.Screen name="(auth)" />
           <Stack.Screen name="(tabs)" options={{ animation: 'fade' }} />
           <Stack.Screen name="car/[id]" />
+          <Stack.Screen name="book-test-drive" />
           <Stack.Screen name="book-service" />
           <Stack.Screen name="service-detail/[id]" />
           <Stack.Screen name="warranty" />
