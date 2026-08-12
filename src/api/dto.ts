@@ -165,6 +165,8 @@ export interface TicketMessageDto {
   senderType: string;
   senderName: string | null;
   body: string;
+  /** Media URLs served from the API host (e.g. `/media/documents/<key>.jpg`). */
+  attachments?: string[];
   createdAt: string;
 }
 

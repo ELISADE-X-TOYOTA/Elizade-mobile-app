@@ -1,8 +1,70 @@
+import * as ImagePicker from 'expo-image-picker';
 import { mapTicket, mapTicketMessage } from '../api/customer-mappers';
-import { CreateTicketBody, supportApi } from '../api/support';
+import { CreateTicketBody, supportApi, uploadTicketAttachment } from '../api/support';
 import { APP } from '../constants/app';
 import { SupportTicket, TicketMessage } from '../domain/types';
 import { SUPPORT_TICKETS, TICKET_MESSAGES } from './mock';
+
+/** A picked-and-uploaded file, ready to send with a ticket or reply. */
+export interface PickedAttachment {
+  /** Server URL to send in `attachments`. */
+  url: string;
+  /** Local uri, for an instant thumbnail while the message is still a draft. */
+  previewUri: string;
+  name: string;
+}
+
+export type PickResult =
+  | { ok: true; attachment: PickedAttachment }
+  | { ok: false; message: string }
+  /** User backed out of the picker — not an error, show nothing. */
+  | null;
+
+/**
+ * Prompts for a photo, uploads it, and returns the URL to attach.
+ *
+ * Permissions are requested lazily, only once the user taps attach — asking on
+ * screen load trains people to deny. Mirrors `pickAndUploadAvatar`.
+ */
+export async function pickTicketAttachment(
+  source: 'library' | 'camera' = 'library',
+): Promise<PickResult> {
+  const perm =
+    source === 'camera'
+      ? await ImagePicker.requestCameraPermissionsAsync()
+      : await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+  if (!perm.granted) {
+    return {
+      ok: false,
+      message:
+        source === 'camera'
+          ? 'Camera access is needed to take a photo.'
+          : 'Photo access is needed to attach an image.',
+    };
+  }
+
+  const result =
+    source === 'camera'
+      ? await ImagePicker.launchCameraAsync({ quality: 0.7 })
+      : await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.7 });
+
+  if (result.canceled || !result.assets?.length) return null;
+  const asset = result.assets[0];
+  const name = asset.fileName ?? `attachment-${Date.now()}.jpg`;
+
+  if (APP.useMock) {
+    // Offline demo: skip the round-trip and show the local file.
+    return { ok: true, attachment: { url: asset.uri, previewUri: asset.uri, name } };
+  }
+
+  try {
+    const url = await uploadTicketAttachment(asset.uri, name, asset.mimeType ?? 'image/jpeg');
+    return { ok: true, attachment: { url, previewUri: asset.uri, name } };
+  } catch (e) {
+    return { ok: false, message: e instanceof Error ? e.message : 'Could not upload that file.' };
+  }
+}
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -49,14 +111,26 @@ export async function createTicket(body: CreateTicketBody): Promise<SupportTicke
     };
     tickets = [ticket, ...tickets];
     messages[id] = [
-      { id: `m${Date.now()}`, ticketId: id, author: 'customer', authorName: 'You', body: body.body, createdAt: iso },
+      {
+        id: `m${Date.now()}`,
+        ticketId: id,
+        author: 'customer',
+        authorName: 'You',
+        body: body.body,
+        attachments: body.attachments ?? [],
+        createdAt: iso,
+      },
     ];
     return ticket;
   }
   return mapTicket(await supportApi.create(body), body.body);
 }
 
-export async function replyToTicket(id: string, body: string): Promise<TicketMessage> {
+export async function replyToTicket(
+  id: string,
+  body: string,
+  attachments: string[] = [],
+): Promise<TicketMessage> {
   if (APP.useMock) {
     await delay(300);
     const msg: TicketMessage = {
@@ -65,6 +139,7 @@ export async function replyToTicket(id: string, body: string): Promise<TicketMes
       author: 'customer',
       authorName: 'You',
       body,
+      attachments,
       createdAt: new Date().toISOString(),
     };
     messages[id] = [...(messages[id] ?? []), msg];
@@ -75,7 +150,7 @@ export async function replyToTicket(id: string, body: string): Promise<TicketMes
     }
     return msg;
   }
-  return mapTicketMessage(await supportApi.reply(id, body), id);
+  return mapTicketMessage(await supportApi.reply(id, body, attachments), id);
 }
 
 export async function rateTicket(id: string, rating: number): Promise<void> {

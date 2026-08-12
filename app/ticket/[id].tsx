@@ -1,11 +1,19 @@
 import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { MAX_TICKET_ATTACHMENTS } from '../../src/api/support';
+import { AttachmentDrafts } from '../../src/components/AttachmentDrafts';
 import { Skeleton } from '../../src/components/Skeleton';
 import { Txt } from '../../src/components/Txt';
-import { rateTicket, replyToTicket } from '../../src/data/supportRepository';
+import {
+  pickTicketAttachment,
+  rateTicket,
+  replyToTicket,
+  type PickedAttachment,
+} from '../../src/data/supportRepository';
 import {
   SupportTicket,
   TICKET_CATEGORY_META,
@@ -25,15 +33,43 @@ export default function TicketDetail() {
   const { ticket, messages, loading, setMessages, setTicket } = useTicket(id ?? '');
   const [text, setText] = useState('');
   const [sending, setSending] = useState(false);
+  const [drafts, setDrafts] = useState<PickedAttachment[]>([]);
+  const [attaching, setAttaching] = useState(false);
+  const [attachError, setAttachError] = useState<string>();
+
+  // A photo on its own is a complete reply, so an empty box is sendable once
+  // something is attached — the API accepts either.
+  const canSend = (!!cleanText(text) || drafts.length > 0) && !sending;
+
+  const attach = async () => {
+    if (attaching || drafts.length >= MAX_TICKET_ATTACHMENTS) return;
+    setAttaching(true);
+    setAttachError(undefined);
+    const res = await pickTicketAttachment('library');
+    if (res && !res.ok) setAttachError(res.message);
+    if (res && res.ok) setDrafts((prev) => [...prev, res.attachment]);
+    setAttaching(false);
+  };
 
   const send = async () => {
     const body = cleanText(text);
-    if (!body || !id) return;
+    if (!id || (!body && !drafts.length)) return;
+    const urls = drafts.map((d) => d.url);
     setText('');
+    setDrafts([]);
+    setAttachError(undefined);
     setSending(true);
-    const msg = await replyToTicket(id, body);
-    setMessages((m) => [...m, msg]);
-    setSending(false);
+    try {
+      const msg = await replyToTicket(id, body, urls);
+      setMessages((m) => [...m, msg]);
+    } catch (e) {
+      // Put the draft back so the reply is not silently lost.
+      setText(body);
+      setDrafts(drafts);
+      setAttachError(e instanceof Error ? e.message : 'Could not send that reply.');
+    } finally {
+      setSending(false);
+    }
   };
 
   const rate = async (n: number) => {
@@ -105,18 +141,68 @@ export default function TicketDetail() {
         {/* Reply bar */}
         {canReply && (
           <View style={[styles.replyBar, { backgroundColor: t.colors.surface, borderColor: t.colors.border, paddingBottom: insets.bottom + 8 }]}>
-            <TextInput
-              value={text}
-              onChangeText={setText}
-              maxLength={1000}
-              placeholder="Type a reply…"
-              placeholderTextColor={t.colors.textTertiary}
-              style={[t.type.bodyLarge, { flex: 1, color: t.colors.textPrimary, backgroundColor: t.colors.surfaceAlt, borderRadius: radius.pill, paddingHorizontal: 16, paddingVertical: 10, maxHeight: 100 }]}
-              multiline
-            />
-            <Pressable onPress={send} disabled={sending || !text.trim()} style={[styles.sendBtn, { backgroundColor: text.trim() ? t.colors.primary : t.colors.border }]}>
-              <Ionicons name="send" size={18} color={t.colors.onPrimary} />
-            </Pressable>
+            {drafts.length > 0 && (
+              <View style={{ paddingHorizontal: 4, marginBottom: 4 }}>
+                <AttachmentDrafts
+                  items={drafts}
+                  onRemove={(url) => setDrafts((p) => p.filter((d) => d.url !== url))}
+                />
+              </View>
+            )}
+            {attachError ? (
+              <Txt variant="bodySmall" color={t.colors.errorText} style={{ paddingHorizontal: 6, marginBottom: 6 }}>
+                {attachError}
+              </Txt>
+            ) : null}
+
+            <View style={styles.replyRow}>
+              <Pressable
+                onPress={attach}
+                disabled={attaching || drafts.length >= MAX_TICKET_ATTACHMENTS}
+                hitSlop={8}
+                accessibilityRole="button"
+                accessibilityLabel="Attach a photo"
+                style={[
+                  styles.attachBtn,
+                  {
+                    backgroundColor: t.colors.surfaceAlt,
+                    borderColor: t.colors.border,
+                    opacity: attaching || drafts.length >= MAX_TICKET_ATTACHMENTS ? 0.5 : 1,
+                  },
+                ]}
+              >
+                {attaching ? (
+                  <ActivityIndicator size="small" color={t.colors.textSecondary} />
+                ) : (
+                  <Ionicons name="attach" size={19} color={t.colors.textSecondary} />
+                )}
+              </Pressable>
+
+              <TextInput
+                value={text}
+                onChangeText={setText}
+                maxLength={1000}
+                placeholder={drafts.length ? 'Add a note (optional)…' : 'Type a reply…'}
+                placeholderTextColor={t.colors.textTertiary}
+                style={[t.type.bodyLarge, { flex: 1, color: t.colors.textPrimary, backgroundColor: t.colors.surfaceAlt, borderRadius: radius.pill, paddingHorizontal: 16, paddingVertical: 10, maxHeight: 100 }]}
+                multiline
+              />
+
+              <Pressable
+                onPress={send}
+                disabled={!canSend}
+                accessibilityRole="button"
+                accessibilityLabel="Send reply"
+                accessibilityState={{ disabled: !canSend }}
+                style={[styles.sendBtn, { backgroundColor: canSend ? t.colors.primary : t.colors.border }]}
+              >
+                {sending ? (
+                  <ActivityIndicator size="small" color={t.colors.onPrimary} />
+                ) : (
+                  <Ionicons name="send" size={18} color={t.colors.onPrimary} />
+                )}
+              </Pressable>
+            </View>
           </View>
         )}
       </KeyboardAvoidingView>
@@ -146,9 +232,45 @@ function Bubble({ message }: { message: TicketMessage }) {
             : { backgroundColor: t.colors.surface, borderColor: t.colors.border, borderWidth: 1, borderTopLeftRadius: 4 },
         ]}
       >
-        <Txt variant="bodyLarge" color={mine ? t.colors.onPrimary : t.colors.textPrimary}>
-          {message.body}
-        </Txt>
+        {!!message.body && (
+          <Txt variant="bodyLarge" color={mine ? t.colors.onPrimary : t.colors.textPrimary}>
+            {message.body}
+          </Txt>
+        )}
+        {message.attachments.length > 0 && (
+          <View style={{ gap: 6, marginTop: message.body ? 8 : 0 }}>
+            {message.attachments.map((url) =>
+              url.toLowerCase().endsWith('.pdf') ? (
+                <View
+                  key={url}
+                  style={[styles.pdfChip, { borderColor: mine ? t.colors.onPrimary + '55' : t.colors.border }]}
+                >
+                  <Ionicons
+                    name="document-text-outline"
+                    size={17}
+                    color={mine ? t.colors.onPrimary : t.colors.textSecondary}
+                  />
+                  <Txt
+                    variant="bodySmall"
+                    color={mine ? t.colors.onPrimary : t.colors.textSecondary}
+                    style={{ marginLeft: 6 }}
+                  >
+                    Document
+                  </Txt>
+                </View>
+              ) : (
+                <Image
+                  key={url}
+                  source={{ uri: url }}
+                  style={styles.bubbleImage}
+                  contentFit="cover"
+                  transition={150}
+                  cachePolicy="memory-disk"
+                />
+              ),
+            )}
+          </View>
+        )}
       </View>
       <Txt variant="labelSmall" tone="tertiary" style={{ marginTop: 4, alignSelf: mine ? 'flex-end' : 'flex-start', marginHorizontal: 4 }}>
         {new Date(message.createdAt).toLocaleTimeString('en', { hour: 'numeric', minute: '2-digit' })}
@@ -186,6 +308,26 @@ const styles = StyleSheet.create({
   sla: { flexDirection: 'row', alignItems: 'center', alignSelf: 'center', paddingHorizontal: 12, paddingVertical: 6, borderRadius: radius.pill },
   bubble: { padding: 12, borderRadius: radius.lg },
   ratingCard: { alignItems: 'center', padding: spacing.lg, borderRadius: radius.lg, borderWidth: 1, marginTop: spacing.md },
-  replyBar: { flexDirection: 'row', alignItems: 'flex-end', gap: 10, paddingHorizontal: spacing.screenH, paddingTop: 10, borderTopWidth: 1 },
+  // Column: the drafts strip and any error stack ABOVE the input row.
+  // (It was a row when the bar held only the input and send button.)
+  replyBar: { paddingHorizontal: spacing.screenH, paddingTop: 10, borderTopWidth: 1 },
+  replyRow: { flexDirection: 'row', alignItems: 'flex-end', gap: 8 },
+  attachBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bubbleImage: { width: 200, height: 150, borderRadius: radius.sm },
+  pdfChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderRadius: radius.sm,
+    borderWidth: 1,
+  },
   sendBtn: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
 });

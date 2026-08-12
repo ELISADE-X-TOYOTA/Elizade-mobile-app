@@ -31,6 +31,7 @@ import type {
   WarrantyCertificateDto,
   WarrantyClaimDto,
 } from './dto';
+import { resolveMediaUrl } from './mappers';
 
 /**
  * Backend DTO → mobile domain translation.
@@ -259,6 +260,8 @@ export function mapTicketMessage(m: TicketMessageDto, ticketId: string): TicketM
     author: isCustomer ? 'customer' : 'agent',
     authorName: isCustomer ? 'You' : (m.senderName ?? 'Elizade Support'),
     body: m.body,
+    // Relative `/media/...` paths are resolved here, not in the UI.
+    attachments: (m.attachments ?? []).map(resolveMediaUrl).filter(Boolean),
     createdAt: m.createdAt,
   };
 }

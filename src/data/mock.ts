@@ -535,15 +535,15 @@ export const NOTIFICATIONS: AppNotification[] = [
 
 export const TICKET_MESSAGES: Record<string, TicketMessage[]> = {
   tk1: [
-    { id: 'm1', ticketId: 'tk1', author: 'customer', authorName: 'You', body: 'Hi, is the Land Cruiser 300 VX available? What is the drive-away price?', createdAt: hoursAgo(3) },
-    { id: 'm2', ticketId: 'tk1', author: 'agent', authorName: 'Amaka · Sales', body: 'Hello John! Yes — we have two units at our Victoria Island showroom. Drive-away is ₦185,000,000.', createdAt: hoursAgo(2) },
-    { id: 'm3', ticketId: 'tk1', author: 'agent', authorName: 'Amaka · Sales', body: 'We have two units at VI. Would you like to book a test drive?', createdAt: hoursAgo(1) },
+    { id: 'm1', ticketId: 'tk1', author: 'customer', authorName: 'You', body: 'Hi, is the Land Cruiser 300 VX available? What is the drive-away price?', attachments: [], createdAt: hoursAgo(3) },
+    { id: 'm2', ticketId: 'tk1', author: 'agent', authorName: 'Amaka · Sales', body: 'Hello John! Yes — we have two units at our Victoria Island showroom. Drive-away is ₦185,000,000.', attachments: [], createdAt: hoursAgo(2) },
+    { id: 'm3', ticketId: 'tk1', author: 'agent', authorName: 'Amaka · Sales', body: 'We have two units at VI. Would you like to book a test drive?', attachments: [], createdAt: hoursAgo(1) },
   ],
   tk2: [
-    { id: 'm4', ticketId: 'tk2', author: 'customer', authorName: 'You', body: 'Could you clarify the labour charge on ELZ-8501?', createdAt: hoursAgo(6) },
+    { id: 'm4', ticketId: 'tk2', author: 'customer', authorName: 'You', body: 'Could you clarify the labour charge on ELZ-8501?', attachments: [], createdAt: hoursAgo(6) },
   ],
   tk3: [
-    { id: 'm5', ticketId: 'tk3', author: 'customer', authorName: 'You', body: 'Is my A/C compressor repair covered under warranty?', createdAt: iso(-6) },
-    { id: 'm6', ticketId: 'tk3', author: 'agent', authorName: 'Tunde · Warranty', body: 'Your claim was approved and covered in full.', createdAt: iso(-3) },
+    { id: 'm5', ticketId: 'tk3', author: 'customer', authorName: 'You', body: 'Is my A/C compressor repair covered under warranty?', attachments: [], createdAt: iso(-6) },
+    { id: 'm6', ticketId: 'tk3', author: 'agent', authorName: 'Tunde · Warranty', body: 'Your claim was approved and covered in full.', attachments: [], createdAt: iso(-3) },
   ],
 };

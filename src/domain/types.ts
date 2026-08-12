@@ -342,8 +342,12 @@ export interface TicketMessage {
   author: 'customer' | 'agent';
   authorName: string;
   body: string;
+  /**
+   * Absolute image/PDF URLs. Resolved from the API's relative `/media/...`
+   * paths at map time so screens never need to know the host.
+   */
+  attachments: string[];
   createdAt: string;
-  attachmentCount?: number;
 }
 
 export interface SupportTicket {

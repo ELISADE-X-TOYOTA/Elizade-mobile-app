@@ -1,12 +1,18 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppTextField } from '../src/components/AppTextField';
+import { AttachmentDrafts } from '../src/components/AttachmentDrafts';
 import { PrimaryButton } from '../src/components/PrimaryButton';
 import { Txt } from '../src/components/Txt';
-import { createTicket } from '../src/data/supportRepository';
+import { MAX_TICKET_ATTACHMENTS } from '../src/api/support';
+import {
+  createTicket,
+  pickTicketAttachment,
+  type PickedAttachment,
+} from '../src/data/supportRepository';
 import { TICKET_CATEGORY_META, TicketCategory } from '../src/domain/types';
 import { radius, spacing } from '../src/theme/spacing';
 import { useTheme } from '../src/theme/useTheme';
@@ -21,15 +27,37 @@ export default function NewTicket() {
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [attachments, setAttachments] = useState<PickedAttachment[]>([]);
+  const [attaching, setAttaching] = useState(false);
+  const [attachError, setAttachError] = useState<string>();
 
   const sla = TICKET_CATEGORY_META[category].slaHours;
   const valid = subject.trim().length > 2 && message.trim().length > 2;
+  const attachmentsFull = attachments.length >= MAX_TICKET_ATTACHMENTS;
+
+  const attach = async () => {
+    if (attaching || attachmentsFull) return;
+    setAttaching(true);
+    setAttachError(undefined);
+    // Uploads immediately rather than at submit: the file is then already on
+    // the server when the ticket is created, so a slow photo can't stall — or
+    // silently fail — the thing the user actually pressed "Submit" for.
+    const res = await pickTicketAttachment('library');
+    if (res && !res.ok) setAttachError(res.message);
+    if (res && res.ok) setAttachments((prev) => [...prev, res.attachment]);
+    setAttaching(false);
+  };
 
   const submit = async () => {
     if (!valid) return;
     setLoading(true);
     try {
-      const ticket = await createTicket({ subject: clean(subject, 140), category, body: cleanText(message) });
+      const ticket = await createTicket({
+        subject: clean(subject, 140),
+        category,
+        body: cleanText(message),
+        attachments: attachments.map((a) => a.url),
+      });
       router.replace(`/ticket/${ticket.id}`);
     } finally {
       setLoading(false);
@@ -93,12 +121,38 @@ export default function NewTicket() {
           style={[t.type.bodyLarge, { minHeight: 120, textAlignVertical: 'top', color: t.colors.textPrimary, backgroundColor: t.colors.surfaceAlt, borderRadius: radius.md, borderWidth: 1, borderColor: t.colors.border, padding: 14 }]}
         />
 
-        <Pressable style={[styles.attach, { borderColor: t.colors.border }]}>
-          <Ionicons name="attach-outline" size={20} color={t.colors.primary} />
+        <AttachmentDrafts items={attachments} onRemove={(url) => setAttachments((p) => p.filter((a) => a.url !== url))} />
+
+        <Pressable
+          onPress={attach}
+          disabled={attaching || attachmentsFull}
+          accessibilityRole="button"
+          accessibilityLabel="Attach a photo"
+          accessibilityState={{ disabled: attaching || attachmentsFull }}
+          style={[
+            styles.attach,
+            { borderColor: t.colors.border, opacity: attaching || attachmentsFull ? 0.55 : 1 },
+          ]}
+        >
+          {attaching ? (
+            <ActivityIndicator size="small" color={t.colors.primary} />
+          ) : (
+            <Ionicons name="attach-outline" size={20} color={t.colors.primary} />
+          )}
           <Txt variant="titleSmall" color={t.colors.primary} style={{ marginLeft: 8 }}>
-            Attach documents or photos
+            {attaching
+              ? 'Uploading…'
+              : attachmentsFull
+                ? `Maximum ${MAX_TICKET_ATTACHMENTS} attachments`
+                : 'Attach a photo'}
           </Txt>
         </Pressable>
+
+        {attachError ? (
+          <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: 8 }}>
+            {attachError}
+          </Txt>
+        ) : null}
 
         <View style={{ height: spacing.xl }} />
         <PrimaryButton label="Submit Ticket" icon="send" loading={loading} disabled={!valid} onPress={submit} />
