@@ -144,6 +144,16 @@ export const TEST_DRIVE_STATUS_META: Record<
   cancelled: { label: 'Cancelled', tone: 'error' },
 };
 
+/** Customer watchlist entry — backend tracks model (+ optional trim/colour). */
+export interface WatchlistItem {
+  id: string;
+  model: string;
+  trim: string | null;
+  color: string | null;
+  isActive: boolean;
+  createdAt: string;
+}
+
 // ── Service & ownership (mirrors web src/types) ──────────────────────
 export interface OwnedVehicle {
   id: string;

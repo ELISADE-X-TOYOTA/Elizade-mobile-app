@@ -20,7 +20,7 @@ import { Txt } from '../../src/components/Txt';
 import { ON_DARK_INK, OVERLAY_CHIP, OVERLAY_CHIP_INK } from '../../src/theme/colors';
 import { vehicleSubtitle, vehicleTitle } from '../../src/domain/types';
 import { useVehicle } from '../../src/hooks/useVehicles';
-import { useStore } from '../../src/store/useStore';
+import { useWatchlistStore } from '../../src/store/useWatchlistStore';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
 import { mileage, priceCompact } from '../../src/utils/format';
@@ -35,8 +35,10 @@ export default function CarDetails() {
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { vehicle, loading, error } = useVehicle(id ?? '');
-  const favorites = useStore((s) => s.favorites);
-  const toggleFavorite = useStore((s) => s.toggleFavorite);
+  const isFav = useWatchlistStore((s) =>
+    vehicle ? s.items.some((i) => i.model === vehicle.model) : false,
+  );
+  const toggleVehicle = useWatchlistStore((s) => s.toggleVehicle);
   const [imgIndex, setImgIndex] = useState(0);
   const [sale, setSale] = useState<SalesMode | null>(null);
   const [financeOpen, setFinanceOpen] = useState(false);
@@ -49,7 +51,6 @@ export default function CarDetails() {
   if (error || !vehicle) return <DetailError message={error} />;
 
   const v = vehicle;
-  const isFav = favorites.includes(v.id);
 
   const specs: { icon: keyof typeof MaterialCommunityIcons.glyphMap; label: string; value: string }[] = [
     { icon: 'engine', label: 'Engine', value: v.engine },
@@ -89,7 +90,9 @@ export default function CarDetails() {
               <CircleBtn
                 icon={isFav ? 'heart' : 'heart-outline'}
                 tint={isFav ? t.colors.error : undefined}
-                onPress={() => toggleFavorite(v.id)}
+                onPress={() => {
+                  toggleVehicle(v).catch(() => {});
+                }}
               />
             </View>
           </View>

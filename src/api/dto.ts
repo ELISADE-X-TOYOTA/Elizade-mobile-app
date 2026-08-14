@@ -198,6 +198,16 @@ export interface NotificationDto {
   createdAt: string;
 }
 
+// ── Watchlist ────────────────────────────────────────────────────────
+export interface WatchlistItemDto {
+  id: string;
+  model: string;
+  trim: string | null;
+  color: string | null;
+  isActive: boolean;
+  createdAt: string;
+}
+
 // ── Sales ────────────────────────────────────────────────────────────
 export interface TestDriveDto {
   id: string;

@@ -33,6 +33,7 @@ import { APP } from '../../src/constants/app';
 import { requestOtp, verifyOtp } from '../../src/data/authRepository';
 import { EmailAvailabilityResult, useEmailAvailability } from '../../src/hooks/useEmailAvailability';
 import { useStore } from '../../src/store/useStore';
+import { useWatchlistStore } from '../../src/store/useWatchlistStore';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
 import { cleanEmail, cleanName, cleanPhone, isValidEmail, isValidName } from '../../src/utils/sanitize';
@@ -60,6 +61,7 @@ export default function Register() {
   const t = useTheme();
   const insets = useSafeAreaInsets();
   const setCurrentUser = useStore((s) => s.setCurrentUser);
+  const loadWatchlist = useWatchlistStore((s) => s.load);
 
   const [step, setStep] = useState<Step>('name');
   // Captured separately rather than splitting one field on a space: that lost
@@ -135,6 +137,7 @@ export default function Register() {
           profile: { firstName, lastName, email, phone },
         });
         setCurrentUser(user);
+        loadWatchlist().catch(() => {});
         setDone(true);
       } catch {
         setOtpError(true);
@@ -146,7 +149,7 @@ export default function Register() {
         setLoading(false);
       }
     },
-    [email, firstName, lastName, phone, setCurrentUser],
+    [email, firstName, lastName, phone, setCurrentUser, loadWatchlist],
   );
 
   /**
