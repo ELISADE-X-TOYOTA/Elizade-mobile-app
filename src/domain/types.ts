@@ -312,6 +312,13 @@ export interface WarrantyClaim {
   submittedAt: string;
 }
 
+export interface WarrantyEligibility {
+  eligible: boolean;
+  reason: string | null;
+  coverageMonthsRemaining: number | null;
+  coverageKmRemaining: number | null;
+}
+
 export const WARRANTY_CLAIM_CATEGORIES = [
   'Engine & Drivetrain',
   'Electrical & Electronics',

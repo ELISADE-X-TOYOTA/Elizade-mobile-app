@@ -17,7 +17,7 @@ export default function GarageVehicle() {
   const t = useTheme();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { vehicle, history, warranty, loading } = useOwnedVehicle(id ?? '');
+  const { vehicle, history, warranty, eligibility, loading } = useOwnedVehicle(id ?? '');
 
   if (loading) {
     return (
@@ -103,6 +103,11 @@ export default function GarageVehicle() {
             </Pressable>
           )}
 
+          {/* Warranty eligibility badge — populated by /warranty/eligibility */}
+          {eligibility && (
+            <EligibilityBanner eligible={eligibility.eligible} monthsLeft={eligibility.coverageMonthsRemaining} kmLeft={eligibility.coverageKmRemaining} reason={eligibility.reason} />
+          )}
+
           {/* Quick actions */}
           <View style={{ flexDirection: 'row', gap: 12, marginTop: spacing.md }}>
             <View style={{ flex: 1 }}>
@@ -124,6 +129,47 @@ export default function GarageVehicle() {
           )}
         </View>
       </ScrollView>
+    </View>
+  );
+}
+
+function EligibilityBanner({
+  eligible,
+  monthsLeft,
+  kmLeft,
+  reason,
+}: {
+  eligible: boolean;
+  monthsLeft: number | null;
+  kmLeft: number | null;
+  reason: string | null;
+}) {
+  const t = useTheme();
+  const bg = tint(eligible ? t.colors.success : t.colors.error, 0.08);
+  const border = tint(eligible ? t.colors.success : t.colors.error, 0.25);
+  const iconColor = eligible ? t.colors.successText : t.colors.errorText;
+
+  return (
+    <View style={[styles.eligibility, { backgroundColor: bg, borderColor: border }]}>
+      <Ionicons name={eligible ? 'shield-checkmark' : 'shield-outline'} size={20} color={iconColor} />
+      <View style={{ flex: 1, marginLeft: 10 }}>
+        <Txt variant="titleSmall" color={iconColor}>
+          {eligible ? 'Eligible for warranty service' : 'Not eligible for warranty service'}
+        </Txt>
+        {eligible && (monthsLeft !== null || kmLeft !== null) && (
+          <Txt variant="bodySmall" tone="secondary">
+            {[monthsLeft !== null && `${monthsLeft} months`, kmLeft !== null && `${kmLeft.toLocaleString()} km`]
+              .filter(Boolean)
+              .join(' · ')}{' '}
+            remaining
+          </Txt>
+        )}
+        {!eligible && reason && (
+          <Txt variant="bodySmall" tone="secondary">
+            {reason}
+          </Txt>
+        )}
+      </View>
     </View>
   );
 }
@@ -157,6 +203,7 @@ const styles = StyleSheet.create({
   specCard: { width: '47%', flexGrow: 1, flexDirection: 'row', alignItems: 'center', padding: 12, borderRadius: radius.md, borderWidth: 1 },
   specIcon: { width: 36, height: 36, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center', marginRight: 10 },
   warranty: { flexDirection: 'row', alignItems: 'center', padding: 14, borderRadius: radius.md, borderWidth: 1, marginTop: spacing.lg },
+  eligibility: { flexDirection: 'row', alignItems: 'center', padding: 12, borderRadius: radius.md, borderWidth: 1, marginTop: spacing.sm },
   historyRow: { flexDirection: 'row', alignItems: 'center', padding: 14, borderRadius: radius.md, borderWidth: 1, marginBottom: 10 },
   dot: { width: 34, height: 34, borderRadius: 17, alignItems: 'center', justifyContent: 'center' },
 });

@@ -45,12 +45,15 @@ export async function fetchServiceJob(appointmentId: string): Promise<ServiceJob
   }
 }
 
-export async function fetchServiceHistory(): Promise<ServiceHistoryItem[]> {
+export async function fetchServiceHistory(vehicleId?: string): Promise<ServiceHistoryItem[]> {
   if (APP.useMock) {
     await delay(300);
+    if (vehicleId) {
+      return SERVICE_HISTORY.filter((item) => item.vehicleId === vehicleId);
+    }
     return SERVICE_HISTORY;
   }
-  const res = await serviceApi.history();
+  const res = await serviceApi.history(vehicleId);
   return (res.items ?? []).map(mapServiceHistory);
 }
 

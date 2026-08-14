@@ -159,6 +159,13 @@ export interface WarrantyClaimDto {
   updatedAt: string;
 }
 
+export interface WarrantyEligibilityDto {
+  eligible: boolean;
+  reason: string | null;
+  coverageMonthsRemaining: number | null;
+  coverageKmRemaining: number | null;
+}
+
 // ── Support ──────────────────────────────────────────────────────────
 export interface TicketMessageDto {
   id: string;

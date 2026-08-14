@@ -53,7 +53,7 @@ export async function fetchVehicleRecords(
   }
 
   const [historyRes, certs, vehicles] = await Promise.all([
-    serviceApi.history().catch(() => ({ items: [] as never[] })),
+    serviceApi.history(vehicleId).catch(() => ({ items: [] as never[] })),
     warrantyApi.certificates().catch(() => []),
     fetchOwnedVehicles().catch(() => [] as OwnedVehicle[]),
   ]);

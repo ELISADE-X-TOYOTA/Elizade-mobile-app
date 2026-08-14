@@ -142,8 +142,7 @@ export default function RootLayout() {
           <Stack.Screen name="notifications" />
           <Stack.Screen name="trade-in" />
           <Stack.Screen name="compare" />
-          <Stack.Screen name="watchlist" />
-          </Stack>
+        </Stack>
           {/*
             Mounted once, above the navigator, so a comparison survives the trip
             from the showroom grid into a car's details and back. It gates

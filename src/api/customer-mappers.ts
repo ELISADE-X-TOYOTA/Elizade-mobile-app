@@ -17,6 +17,7 @@ import {
   WarrantyCertificate,
   WarrantyClaim,
   WarrantyStatus,
+  WarrantyEligibility,
 } from '../domain/types';
 import type {
   CustomerRecallDto,
@@ -30,6 +31,7 @@ import type {
   TicketMessageDto,
   WarrantyCertificateDto,
   WarrantyClaimDto,
+  WarrantyEligibilityDto,
 } from './dto';
 import { resolveMediaUrl } from './mappers';
 
@@ -218,6 +220,15 @@ export function mapClaim(d: WarrantyClaimDto): WarrantyClaim {
       ? (d.status as ClaimStatus)
       : 'submitted',
     submittedAt: d.createdAt,
+  };
+}
+
+export function mapWarrantyEligibility(d: WarrantyEligibilityDto): WarrantyEligibility {
+  return {
+    eligible: d.eligible,
+    reason: d.reason,
+    coverageMonthsRemaining: d.coverageMonthsRemaining,
+    coverageKmRemaining: d.coverageKmRemaining,
   };
 }
 

@@ -13,6 +13,7 @@ import {
   Vehicle,
   WarrantyCertificate,
   WarrantyClaim,
+  WarrantyEligibility,
 } from '../domain/types';
 
 /** Bundled demo content for Elizade Connect — Elizade's real brands
@@ -448,6 +449,21 @@ export const WARRANTY_CLAIMS: WarrantyClaim[] = [
     submittedAt: iso(-4),
   },
 ];
+
+export const MOCK_WARRANTY_ELIGIBILITY: Record<string, WarrantyEligibility> = {
+  ov1: {
+    eligible: true,
+    reason: null,
+    coverageMonthsRemaining: 12,
+    coverageKmRemaining: 58800,
+  },
+  ov2: {
+    eligible: true,
+    reason: null,
+    coverageMonthsRemaining: 3,
+    coverageKmRemaining: 31600,
+  },
+};
 
 // ── Support tickets (Phase 4) ────────────────────────────────────────
 const hoursAgo = (h: number) => new Date(now - h * 3_600_000).toISOString();

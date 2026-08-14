@@ -26,8 +26,8 @@ export const serviceApi = {
   track: (appointmentId: string) =>
     apiFetch<ServiceTrackDto>(`/service/appointments/${appointmentId}/track`),
 
-  history: (page = 1, size = 50) =>
-    apiFetch<PaginatedDto<ServiceHistoryDto>>('/service/history', { query: { page, size } }),
+  history: (vehicleId?: string, page = 1, size = 50) =>
+    apiFetch<PaginatedDto<ServiceHistoryDto>>('/service/history', { query: { vehicleId, page, size } }),
 
   create: (body: CreateAppointmentBody) =>
     apiFetch<ServiceAppointmentDto>('/service/appointments', { method: 'POST', body }),

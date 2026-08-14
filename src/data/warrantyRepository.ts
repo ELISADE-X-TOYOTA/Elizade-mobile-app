@@ -1,8 +1,8 @@
-import { mapCertificate, mapClaim, mapRecall } from '../api/customer-mappers';
+import { mapCertificate, mapClaim, mapRecall, mapWarrantyEligibility } from '../api/customer-mappers';
 import { CreateClaimBody, warrantyApi } from '../api/warranty';
 import { APP } from '../constants/app';
-import { RecallNotice, WarrantyCertificate, WarrantyClaim } from '../domain/types';
-import { RECALLS, WARRANTY_CERTIFICATES, WARRANTY_CLAIMS, ownedVehicleById } from './mock';
+import { RecallNotice, WarrantyCertificate, WarrantyClaim, WarrantyEligibility } from '../domain/types';
+import { RECALLS, WARRANTY_CERTIFICATES, WARRANTY_CLAIMS, MOCK_WARRANTY_ELIGIBILITY, ownedVehicleById } from './mock';
 import { fetchOwnedVehicles } from './garageRepository';
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -57,4 +57,19 @@ export async function createClaim(body: CreateClaimBody): Promise<WarrantyClaim>
     return claim;
   }
   return mapClaim(await warrantyApi.createClaim(body));
+}
+
+export async function checkWarrantyEligibility(ownedVehicleId: string): Promise<WarrantyEligibility> {
+  if (APP.useMock) {
+    await delay(300);
+    return (
+      MOCK_WARRANTY_ELIGIBILITY[ownedVehicleId] ?? {
+        eligible: false,
+        reason: 'Vehicle not found or warranty expired',
+        coverageMonthsRemaining: null,
+        coverageKmRemaining: null,
+      }
+    );
+  }
+  return mapWarrantyEligibility(await warrantyApi.eligibility(ownedVehicleId));
 }

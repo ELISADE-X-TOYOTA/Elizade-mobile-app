@@ -1,5 +1,5 @@
 import { apiFetch } from './client';
-import type { CustomerRecallDto, WarrantyCertificateDto, WarrantyClaimDto } from './dto';
+import type { CustomerRecallDto, WarrantyCertificateDto, WarrantyClaimDto, WarrantyEligibilityDto } from './dto';
 
 /** Customer warranty endpoints — backend `/warranty` router. */
 
@@ -17,4 +17,6 @@ export const warrantyApi = {
   claims: () => apiFetch<WarrantyClaimDto[]>('/warranty/claims'),
   createClaim: (body: CreateClaimBody) =>
     apiFetch<WarrantyClaimDto>('/warranty/claims', { method: 'POST', body }),
+  eligibility: (ownedVehicleId: string) =>
+    apiFetch<WarrantyEligibilityDto>('/warranty/eligibility', { query: { ownedVehicleId } }),
 };
