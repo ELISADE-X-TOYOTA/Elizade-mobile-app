@@ -13,6 +13,7 @@ import { SERVICE_TYPE_META, ServiceType } from '../src/domain/types';
 import { radius, spacing } from '../src/theme/spacing';
 import { useTheme } from '../src/theme/useTheme';
 import { cleanText } from '../src/utils/sanitize';
+import { tint } from '../src/theme/colors';
 
 const TYPES = Object.keys(SERVICE_TYPE_META) as ServiceType[];
 const TIME_SLOTS = ['9:00 AM', '10:30 AM', '12:00 PM', '2:00 PM', '4:00 PM'];
@@ -74,7 +75,7 @@ export default function BookService() {
     return (
       <View style={{ flex: 1, backgroundColor: 'transparent', paddingHorizontal: spacing.screenH }}>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <Animated.View entering={ZoomIn.duration(500)} style={[styles.successIcon, { backgroundColor: t.colors.success + '1F' }]}>
+          <Animated.View entering={ZoomIn.duration(500)} style={[styles.successIcon, { backgroundColor: tint(t.colors.success, 0.12) }]}>
             <Ionicons name="checkmark-circle" size={72} color={t.colors.successText} />
           </Animated.View>
           <Txt variant="headlineLarge" center style={{ marginTop: spacing.xl }}>

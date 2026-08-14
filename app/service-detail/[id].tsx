@@ -16,6 +16,7 @@ import { useAppointments, useServiceJob } from '../../src/hooks/useService';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
 import { price } from '../../src/utils/format';
+import { solid } from '../../src/theme/colors';
 
 export default function ServiceDetail() {
   const t = useTheme();
@@ -91,7 +92,7 @@ export default function ServiceDetail() {
 
             {/* Additional work approval */}
             {job?.additionalWork && (
-              <View style={[styles.card, styles.approvalCard, { backgroundColor: t.colors.surface, borderColor: t.colors.warning }]}>
+              <View style={[styles.card, styles.approvalCard, { backgroundColor: t.colors.surface, borderColor: solid(t.colors.warning) }]}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Ionicons name="alert-circle" size={20} color={t.colors.warningText} />
                   <Txt variant="titleMedium" style={{ marginLeft: 8 }}>
@@ -118,9 +119,9 @@ export default function ServiceDetail() {
                     <Ionicons
                       name={job.additionalWork.status === 'approved' ? 'checkmark-circle' : 'close-circle'}
                       size={16}
-                      color={job.additionalWork.status === 'approved' ? t.colors.success : t.colors.error}
+                      color={job.additionalWork.status === 'approved' ? t.colors.successText : t.colors.errorText}
                     />
-                    <Txt variant="titleSmall" color={job.additionalWork.status === 'approved' ? t.colors.success : t.colors.error} style={{ marginLeft: 6 }}>
+                    <Txt variant="titleSmall" color={job.additionalWork.status === 'approved' ? t.colors.successText : t.colors.errorText} style={{ marginLeft: 6 }}>
                       {job.additionalWork.status === 'approved' ? 'Approved' : 'Declined'}
                     </Txt>
                   </View>
@@ -173,14 +174,14 @@ function Card({ children }: { children: React.ReactNode }) {
 
 function Stage({ stage, last, active }: { stage: ServiceStage; last: boolean; active: boolean }) {
   const t = useTheme();
-  const color = stage.completed ? t.colors.success : active ? t.colors.primary : t.colors.textTertiary;
+  const color = stage.completed ? t.colors.successText : active ? t.colors.primary : t.colors.textTertiary;
   return (
     <View style={{ flexDirection: 'row' }}>
       <View style={{ alignItems: 'center', marginRight: 12 }}>
         <View style={[styles.dot, { backgroundColor: stage.completed || active ? color : 'transparent', borderColor: color }]}>
           {stage.completed && <Ionicons name="checkmark" size={13} color={t.colors.onPrimary} />}
         </View>
-        {!last && <View style={{ width: 2, flex: 1, marginVertical: 2, backgroundColor: stage.completed ? t.colors.success : t.colors.border }} />}
+        {!last && <View style={{ width: 2, flex: 1, marginVertical: 2, backgroundColor: stage.completed ? solid(t.colors.success) : t.colors.border }} />}
       </View>
       <View style={{ paddingBottom: last ? 0 : spacing.md, flex: 1 }}>
         <Txt variant="titleSmall" color={active ? t.colors.primary : undefined}>

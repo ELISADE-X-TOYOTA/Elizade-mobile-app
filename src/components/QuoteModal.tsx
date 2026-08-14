@@ -11,6 +11,7 @@ import { useTheme } from '../theme/useTheme';
 import { price } from '../utils/format';
 import { PrimaryButton } from './PrimaryButton';
 import { Txt } from './Txt';
+import { tint } from '../theme/colors';
 
 interface Props {
   visible: boolean;
@@ -71,7 +72,7 @@ export function QuoteModal({ visible, vehicle, onClose }: Props) {
 
           {done ? (
             <View style={{ padding: spacing.xl, alignItems: 'center' }}>
-              <Animated.View entering={ZoomIn.duration(500)} style={[styles.successIcon, { backgroundColor: t.colors.success + '1F' }]}>
+              <Animated.View entering={ZoomIn.duration(500)} style={[styles.successIcon, { backgroundColor: tint(t.colors.success, 0.12) }]}>
                 <Ionicons name="document-text" size={56} color={t.colors.successText} />
               </Animated.View>
               <Txt variant="headlineMedium" style={{ marginTop: 20 }}>

@@ -88,10 +88,10 @@ function VehicleCard({ vehicle }: { vehicle: OwnedVehicle }) {
 
 function Stat({ icon, label, highlight }: { icon: string; label: string; highlight?: boolean }) {
   const t = useTheme();
-  const color = highlight ? t.colors.warning : t.colors.textSecondary;
+  const color = highlight ? t.colors.warningText : t.colors.textSecondary;
   return (
     <View style={[styles.stat, { backgroundColor: (highlight ? t.colors.warning : t.colors.primary) + '14' }]}>
-      <MaterialCommunityIcons name={icon as any} size={14} color={highlight ? t.colors.warning : t.colors.primary} />
+      <MaterialCommunityIcons name={icon as any} size={14} color={highlight ? t.colors.warningText : t.colors.primary} />
       <Txt variant="labelMedium" color={color} style={{ marginLeft: 5 }}>
         {label}
       </Txt>
@@ -149,7 +149,7 @@ function AddVehicleModal({ visible, onClose, onAdded }: { visible: boolean; onCl
             {result ? (
               <Txt
                 variant="bodySmall"
-                color={result.ok ? t.colors.success : t.colors.error}
+                color={result.ok ? t.colors.successText : t.colors.errorText}
                 style={{ marginTop: spacing.md }}
               >
                 {result.message}

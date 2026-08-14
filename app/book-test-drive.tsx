@@ -14,6 +14,7 @@ import { useBranches } from '../src/hooks/useBranches';
 import { useVehicle } from '../src/hooks/useVehicles';
 import { radius, spacing } from '../src/theme/spacing';
 import { useTheme } from '../src/theme/useTheme';
+import { tint } from '../src/theme/colors';
 
 /**
  * Book a test drive for a catalogue vehicle.
@@ -76,7 +77,7 @@ export default function BookTestDrive() {
     return (
       <View style={{ flex: 1, backgroundColor: 'transparent', paddingHorizontal: spacing.screenH }}>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <Animated.View entering={ZoomIn.duration(500)} style={[styles.successIcon, { backgroundColor: t.colors.success + '1F' }]}>
+          <Animated.View entering={ZoomIn.duration(500)} style={[styles.successIcon, { backgroundColor: tint(t.colors.success, 0.12) }]}>
             <Ionicons name="checkmark-circle" size={72} color={t.colors.successText} />
           </Animated.View>
           <Txt variant="headlineLarge" center style={{ marginTop: spacing.xl }}>

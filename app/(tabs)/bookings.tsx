@@ -36,11 +36,13 @@ export default function Bookings() {
     [bookings, tab],
   );
 
+  // *Text variants: this drives both the badge tint AND its label, so it has
+  // to be the readable value — the base fills are 2–3:1 as type.
   const toneColor = (tone: 'info' | 'success' | 'warning' | 'error') => {
-    if (tone === 'success') return t.colors.success;
-    if (tone === 'warning') return t.colors.warning;
-    if (tone === 'error') return t.colors.error;
-    return t.colors.info;
+    if (tone === 'success') return t.colors.successText;
+    if (tone === 'warning') return t.colors.warningText;
+    if (tone === 'error') return t.colors.errorText;
+    return t.colors.infoText;
   };
 
   return (

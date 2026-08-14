@@ -14,6 +14,7 @@ import {
 import { useTickets } from '../../src/hooks/useSupport';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
+import { solid } from '../../src/theme/colors';
 
 export default function Support() {
   const t = useTheme();
@@ -28,7 +29,7 @@ export default function Support() {
         <Txt variant="headlineMedium" style={{ flex: 1 }}>
           Support
         </Txt>
-        <Pressable onPress={() => router.push('/new-ticket')} style={[styles.newBtn, { backgroundColor: t.colors.accent }]}>
+        <Pressable onPress={() => router.push('/new-ticket')} style={[styles.newBtn, { backgroundColor: solid(t.colors.accent) }]}>
           <Ionicons name="add" size={20} color={t.colors.onAccent} />
           <Txt variant="titleSmall" color={t.colors.onAccent} style={{ marginLeft: 4 }}>
             New
@@ -66,7 +67,8 @@ export default function Support() {
 }
 
 function toneColorOf(t: ReturnType<typeof useTheme>, tone: Tone) {
-  return tone === 'success' ? t.colors.success : tone === 'warning' ? t.colors.warning : tone === 'error' ? t.colors.error : tone === 'info' ? t.colors.info : t.colors.textSecondary;
+  // *Text variants — these are rendered as type, not as fills.
+  return tone === 'success' ? t.colors.successText : tone === 'warning' ? t.colors.warningText : tone === 'error' ? t.colors.errorText : tone === 'info' ? t.colors.infoText : t.colors.textSecondary;
 }
 
 function QuickAction({ icon, label }: { icon: keyof typeof Ionicons.glyphMap; label: string }) {

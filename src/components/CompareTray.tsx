@@ -16,6 +16,7 @@ import { radius, spacing } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
 import { priceCompact } from '../utils/format';
 import { Txt } from './Txt';
+import { solid } from '../theme/colors';
 
 /**
  * Routes that own a comparison flow. The tray is mounted once at the root so a
@@ -75,7 +76,9 @@ export function CompareTray() {
           <Ionicons
             name={swapNotice ? 'swap-horizontal' : 'git-compare-outline'}
             size={16}
-            color={t.colors.accent}
+            // Sits on `surface` — white in light mode, where the brand gold is
+            // 1.85:1. `accentText` is the readable counterpart.
+            color={t.colors.accentText}
           />
           <Txt variant="labelSmall" tone="secondary" style={{ flex: 1, marginLeft: 6 }} numberOfLines={1}>
             {swapNotice
@@ -114,7 +117,7 @@ export function CompareTray() {
           accessibilityLabel="Open side-by-side comparison"
           style={[
             styles.cta,
-            { backgroundColor: ready ? t.colors.accent : t.colors.surfaceAlt },
+            { backgroundColor: ready ? solid(t.colors.accent) : t.colors.surfaceAlt },
           ]}
         >
           <Ionicons

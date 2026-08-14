@@ -126,11 +126,23 @@ export async function createTicket(body: CreateTicketBody): Promise<SupportTicke
   return mapTicket(await supportApi.create(body), body.body);
 }
 
+/**
+ * Posts a reply and returns BOTH the stored message and the refreshed ticket.
+ *
+ * The endpoint returns the ticket alongside the message because replying moves
+ * its status, SLA and updatedAt — so the caller can update the header without a
+ * second round-trip.
+ */
+export interface ReplyResult {
+  message: TicketMessage;
+  ticket?: SupportTicket;
+}
+
 export async function replyToTicket(
   id: string,
   body: string,
   attachments: string[] = [],
-): Promise<TicketMessage> {
+): Promise<ReplyResult> {
   if (APP.useMock) {
     await delay(300);
     const msg: TicketMessage = {
@@ -148,9 +160,16 @@ export async function replyToTicket(
       ticket.lastMessage = body;
       ticket.updatedAt = msg.createdAt;
     }
-    return msg;
+    return { message: msg, ticket };
   }
-  return mapTicketMessage(await supportApi.reply(id, body, attachments), id);
+  // `{ ticket, message }` — NOT a bare message. Reading the wrapper as a
+  // message yields undefined for every field, which surfaces as blank bubbles
+  // and a missing React key.
+  const res = await supportApi.reply(id, body, attachments);
+  return {
+    message: mapTicketMessage(res.message, id),
+    ticket: mapTicket(res.ticket),
+  };
 }
 
 export async function rateTicket(id: string, rating: number): Promise<void> {

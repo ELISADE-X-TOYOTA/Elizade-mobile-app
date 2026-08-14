@@ -2,7 +2,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, ViewStyle } from 'react-native';
 import { Vehicle } from '../domain/types';
 import { useStore } from '../store/useStore';
-import { OVERLAY_CHIP, OVERLAY_CHIP_INK } from '../theme/colors';
+import { OVERLAY_CHIP, OVERLAY_CHIP_INK, solid } from '../theme/colors';
 import { useTheme } from '../theme/useTheme';
 
 interface Props {
@@ -46,7 +46,7 @@ export function CompareButton({ vehicle, variant = 'chip', size = 34, style }: P
           width: size,
           height: size,
           borderRadius: size / 2,
-          backgroundColor: selected ? t.colors.accent : idleBg,
+          backgroundColor: selected ? solid(t.colors.accent) : idleBg,
           borderColor: isChip ? 'transparent' : t.colors.border,
           borderWidth: isChip ? 0 : 1,
         },

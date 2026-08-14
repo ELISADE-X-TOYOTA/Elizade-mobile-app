@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { radius, spacing } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
 import { Txt } from './Txt';
+import { solid } from '../theme/colors';
 
 export type ToastTone = 'error' | 'success' | 'info';
 
@@ -60,8 +61,11 @@ export function Toast({
 
   if (!visible) return null;
 
-  const accent =
+  // Fill token: this drives the border, the icon well and the glyph — all
+  // graphics. The toast's own text uses the theme's text tokens.
+  const accentFill =
     tone === 'error' ? t.colors.error : tone === 'success' ? t.colors.success : t.colors.info;
+  const accent = solid(accentFill);
 
   return (
     <Animated.View

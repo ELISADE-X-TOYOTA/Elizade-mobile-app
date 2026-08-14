@@ -350,6 +350,23 @@ export interface TicketMessage {
   createdAt: string;
 }
 
+/**
+ * A model the customer is tracking — NOT a saved listing.
+ *
+ * The backend keys these on `model` alone, so a customer can track
+ * "Land Cruiser" once; `trim` and `color` refine that interest rather than
+ * identifying a particular vehicle. Saving an individual car is the favourites
+ * heart, which is separate and device-local.
+ */
+export interface WatchlistItem {
+  id: string;
+  model: string;
+  trim?: string | null;
+  color?: string | null;
+  isActive: boolean;
+  createdAt: string;
+}
+
 export interface SupportTicket {
   id: string;
   reference: string;

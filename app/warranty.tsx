@@ -20,7 +20,7 @@ import {
 import { useWarranty } from '../src/hooks/useWarranty';
 import { radius, spacing } from '../src/theme/spacing';
 import { useTheme } from '../src/theme/useTheme';
-import { ON_DARK_INK } from '../src/theme/colors';
+import { ON_DARK_INK, solid } from '../src/theme/colors';
 
 export default function Warranty() {
   const t = useTheme();
@@ -66,7 +66,7 @@ export default function Warranty() {
               <Txt variant="titleLarge" style={{ flex: 1 }}>
                 Warranty Claims
               </Txt>
-              <Pressable onPress={() => setClaimOpen(true)} style={[styles.fileBtn, { backgroundColor: t.colors.accent }]}>
+              <Pressable onPress={() => setClaimOpen(true)} style={[styles.fileBtn, { backgroundColor: solid(t.colors.accent) }]}>
                 <Ionicons name="add" size={18} color={t.colors.onAccent} />
                 <Txt variant="titleSmall" color={t.colors.onAccent} style={{ marginLeft: 4 }}>
                   File
@@ -107,7 +107,8 @@ export default function Warranty() {
 function useToneColor() {
   const t = useTheme();
   return (tone: Tone) =>
-    tone === 'success' ? t.colors.success : tone === 'warning' ? t.colors.warning : tone === 'error' ? t.colors.error : tone === 'info' ? t.colors.info : t.colors.textSecondary;
+    // *Text variants — rendered as type on a tinted chip.
+    tone === 'success' ? t.colors.successText : tone === 'warning' ? t.colors.warningText : tone === 'error' ? t.colors.errorText : tone === 'info' ? t.colors.infoText : t.colors.textSecondary;
 }
 
 function CertificateCard({ cert }: { cert: WarrantyCertificate }) {
@@ -118,7 +119,7 @@ function CertificateCard({ cert }: { cert: WarrantyCertificate }) {
   return (
     <LinearGradient colors={t.gradients.primary} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.cert}>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <MaterialCommunityIcons name="shield-car" size={26} color={t.colors.accent} />
+        <MaterialCommunityIcons name="shield-car" size={26} color={solid(t.colors.accent)} />
         <Txt variant="titleMedium" color={ON_DARK_INK} style={{ flex: 1, marginLeft: 10 }}>
           {cert.coverageType}
         </Txt>
@@ -155,7 +156,7 @@ function CertificateCard({ cert }: { cert: WarrantyCertificate }) {
       <View style={[styles.coverBox, { backgroundColor: 'rgba(255,255,255,0.1)' }]}>
         {cert.coverageItems.map((item) => (
           <View key={item} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 3 }}>
-            <Ionicons name="checkmark-circle" size={15} color={t.colors.accent} />
+            <Ionicons name="checkmark-circle" size={15} color={solid(t.colors.accent)} />
             <Txt variant="bodySmall" color={ON_DARK_INK} style={{ marginLeft: 8 }}>
               {item}
             </Txt>

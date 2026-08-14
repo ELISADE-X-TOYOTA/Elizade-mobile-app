@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Component, ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { palette } from '../theme/colors';
+import { palette, solid, tint } from '../theme/colors';
 import { radius, spacing } from '../theme/spacing';
 import { type } from '../theme/typography';
 
@@ -44,8 +44,8 @@ export class ErrorBoundary extends Component<Props, State> {
     const c = palette.light;
     return (
       <View style={[styles.root, { backgroundColor: c.background }]}>
-        <View style={[styles.icon, { backgroundColor: c.error + '1A' }]}>
-          <Ionicons name="warning-outline" size={40} color={c.error} />
+        <View style={[styles.icon, { backgroundColor: tint(c.error, 0.1) }]}>
+          <Ionicons name="warning-outline" size={40} color={solid(c.error)} />
         </View>
         <Text style={[type.headlineSmall, { color: c.textPrimary, marginTop: spacing.lg }]}>
           Something went wrong
@@ -53,7 +53,7 @@ export class ErrorBoundary extends Component<Props, State> {
         <Text style={[type.bodyMedium, styles.body, { color: c.textSecondary }]}>
           The app hit an unexpected problem. Please try again — your data is safe.
         </Text>
-        <Pressable onPress={this.reset} style={[styles.btn, { backgroundColor: c.accent }]}>
+        <Pressable onPress={this.reset} style={[styles.btn, { backgroundColor: solid(c.accent) }]}>
           <Text style={[type.labelLarge, { color: c.onAccent }]}>Try Again</Text>
         </Pressable>
       </View>

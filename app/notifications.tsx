@@ -8,6 +8,7 @@ import { AppNotification, NOTIFICATION_META, Tone } from '../src/domain/types';
 import { useNotifications } from '../src/hooks/useNotifications';
 import { radius, spacing } from '../src/theme/spacing';
 import { useTheme } from '../src/theme/useTheme';
+import { solid } from '../src/theme/colors';
 
 export default function Notifications() {
   const t = useTheme();
@@ -56,7 +57,8 @@ export default function Notifications() {
 }
 
 function tone(t: ReturnType<typeof useTheme>, tn: Tone) {
-  return tn === 'success' ? t.colors.success : tn === 'warning' ? t.colors.warning : tn === 'error' ? t.colors.error : tn === 'info' ? t.colors.info : t.colors.textSecondary;
+  // *Text variants — rendered as type on a tinted chip.
+  return tn === 'success' ? t.colors.successText : tn === 'warning' ? t.colors.warningText : tn === 'error' ? t.colors.errorText : tn === 'info' ? t.colors.infoText : t.colors.textSecondary;
 }
 
 function NotificationRow({ notification, onPress }: { notification: AppNotification; onPress: () => void }) {
@@ -76,7 +78,7 @@ function NotificationRow({ notification, onPress }: { notification: AppNotificat
           <Txt variant="titleSmall" style={{ flex: 1 }} numberOfLines={1}>
             {notification.title}
           </Txt>
-          {!notification.read && <View style={[styles.unreadDot, { backgroundColor: t.colors.accent }]} />}
+          {!notification.read && <View style={[styles.unreadDot, { backgroundColor: solid(t.colors.accent) }]} />}
         </View>
         <Txt variant="bodySmall" tone="secondary" numberOfLines={2} style={{ marginTop: 2 }}>
           {notification.body}

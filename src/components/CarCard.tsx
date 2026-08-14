@@ -1,7 +1,7 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { memo, useCallback } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { OVERLAY_CHIP, OVERLAY_CHIP_INK } from '../theme/colors';
+import { OVERLAY_CHIP, OVERLAY_CHIP_INK, solid } from '../theme/colors';
 import { CATEGORY_META, Vehicle, vehicleTitle } from '../domain/types';
 import { useStore } from '../store/useStore';
 import { radius, spacing } from '../theme/spacing';
@@ -55,7 +55,7 @@ function CarCardBase({ vehicle, onPress, wide, width }: Props) {
             size={18}
             // Fixed ink, not textSecondary — this chip is light in both themes,
             // so a themed foreground turned the outline heart pale-on-white.
-            color={isFav ? t.colors.error : OVERLAY_CHIP_INK}
+            color={isFav ? solid(t.colors.error) : OVERLAY_CHIP_INK}
           />
         </Pressable>
         <CompareButton vehicle={vehicle} style={styles.compare} />

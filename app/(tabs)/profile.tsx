@@ -13,6 +13,7 @@ import { fullName } from '../../src/domain/types';
 import { ThemeMode, useStore } from '../../src/store/useStore';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
+import { solid, tint } from '../../src/theme/colors';
 
 export default function Profile() {
   const t = useTheme();
@@ -74,10 +75,10 @@ export default function Profile() {
               onPress={() => setPhotoOpen(true)}
               accessibilityRole="button"
               accessibilityLabel="Change profile photo"
-              style={[styles.avatarRing, { borderColor: t.colors.accent }]}
+              style={[styles.avatarRing, { borderColor: solid(t.colors.accent) }]}
             >
               <Avatar user={user} size={68} variant="headlineSmall" />
-              <View style={[styles.cameraBadge, { backgroundColor: t.colors.accent, borderColor: t.colors.background }]}>
+              <View style={[styles.cameraBadge, { backgroundColor: solid(t.colors.accent), borderColor: t.colors.background }]}>
                 {avatarBusy ? (
                   <ActivityIndicator size="small" color={t.colors.onAccent} />
                 ) : (
@@ -90,7 +91,7 @@ export default function Profile() {
               <Txt variant="bodySmall" tone="secondary">
                 {user.email}
               </Txt>
-              <View style={[styles.verified, { backgroundColor: t.colors.accent + '22' }]}>
+              <View style={[styles.verified, { backgroundColor: tint(t.colors.accent, 0.133) }]}>
                 <Ionicons name="checkmark-circle" size={14} color={t.colors.accentDark} />
                 <Txt variant="labelSmall" color={t.colors.textPrimary} style={{ marginLeft: 4 }}>
                   Verified Member
@@ -123,6 +124,7 @@ export default function Profile() {
 
         <Group title="My Garage">
           <Row icon="car-sport-outline" label="My Vehicles" onPress={() => router.push('/garage')} />
+          <Row icon="eye-outline" label="Watchlist" onPress={() => router.push('/watchlist')} />
           <Row icon="shield-checkmark-outline" label="Warranty & Recalls" onPress={() => router.push('/warranty')} />
           <Row icon="time-outline" label="Service History" onPress={() => router.push('/(tabs)/service')} last />
         </Group>
@@ -185,7 +187,7 @@ function PhotoOption({
   onPress: () => void;
 }) {
   const t = useTheme();
-  const color = danger ? t.colors.error : t.colors.primary;
+  const color = danger ? t.colors.errorText : t.colors.primary;
   return (
     <Pressable
       onPress={onPress}
@@ -194,7 +196,7 @@ function PhotoOption({
       <View style={[styles.photoIcon, { backgroundColor: color + '1A' }]}>
         <Ionicons name={icon} size={20} color={color} />
       </View>
-      <Txt variant="titleSmall" color={danger ? t.colors.error : undefined} style={{ flex: 1 }}>
+      <Txt variant="titleSmall" color={danger ? t.colors.errorText : undefined} style={{ flex: 1 }}>
         {label}
       </Txt>
       <Ionicons name="chevron-forward" size={18} color={t.colors.textSecondary} />
@@ -230,12 +232,12 @@ function Row({
   onPress?: () => void;
 }) {
   const t = useTheme();
-  const color = danger ? t.colors.error : t.colors.primary;
+  const color = danger ? t.colors.errorText : t.colors.primary;
   return (
     <>
       <Pressable onPress={onPress} style={styles.rowItem}>
         <IconBox icon={icon} color={color} />
-        <Txt variant="titleSmall" color={danger ? t.colors.error : t.colors.textPrimary} style={{ flex: 1 }}>
+        <Txt variant="titleSmall" color={danger ? t.colors.errorText : t.colors.textPrimary} style={{ flex: 1 }}>
           {label}
         </Txt>
         {trailing && (
@@ -288,7 +290,7 @@ function ThemeSelector() {
           const active = mode === o.key;
           return (
             <Pressable key={o.key} style={{ flex: 1 }} onPress={() => setMode(o.key)}>
-              <View style={[styles.themeSegItem, active && { backgroundColor: t.colors.accent }]}>
+              <View style={[styles.themeSegItem, active && { backgroundColor: solid(t.colors.accent) }]}>
                 <Ionicons name={o.icon} size={16} color={active ? t.colors.onAccent : t.colors.textSecondary} />
                 <Txt
                   variant="labelMedium"

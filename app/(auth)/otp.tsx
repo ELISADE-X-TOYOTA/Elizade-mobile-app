@@ -9,6 +9,7 @@ import { requestOtp, verifyOtp } from '../../src/data/authRepository';
 import { useStore } from '../../src/store/useStore';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
+import { solid } from '../../src/theme/colors';
 
 const LEN = 6;
 /** Seconds before "Resend code" becomes available again. */
@@ -173,7 +174,7 @@ export default function Otp() {
                 borderRadius: radius.md,
                 borderWidth: 1,
                 color: t.colors.textPrimary,
-                borderColor: error ? t.colors.error : d ? t.colors.primary : t.colors.border,
+                borderColor: error ? solid(t.colors.error) : d ? t.colors.primary : t.colors.border,
                 backgroundColor: d ? t.colors.primary + '14' : t.colors.surfaceAlt,
               },
             ]}

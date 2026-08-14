@@ -36,6 +36,7 @@ import { useStore } from '../../src/store/useStore';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
 import { cleanEmail, cleanName, cleanPhone, isValidEmail, isValidName } from '../../src/utils/sanitize';
+import { solid, tint } from '../../src/theme/colors';
 
 /**
  * Offline-demo code, used ONLY when running against mock data in a dev build.
@@ -521,7 +522,7 @@ function OtpBoxes({
               borderRadius: radius.md,
               borderWidth: 1,
               color: t.colors.textPrimary,
-              borderColor: error ? t.colors.error : d ? t.colors.primary : t.colors.border,
+              borderColor: error ? solid(t.colors.error) : d ? t.colors.primary : t.colors.border,
               backgroundColor: d ? t.colors.primary + '14' : t.colors.surfaceAlt,
             },
           ]}
@@ -539,7 +540,7 @@ function Success({ firstName, onDone }: { firstName: string; onDone: () => void 
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <Animated.View
           entering={ZoomIn.duration(500)}
-          style={[styles.successIcon, { backgroundColor: t.colors.success + '1F' }]}
+          style={[styles.successIcon, { backgroundColor: tint(t.colors.success, 0.12) }]}
         >
           <Ionicons name="checkmark-circle" size={72} color={t.colors.successText} />
         </Animated.View>

@@ -10,6 +10,7 @@ import { useTheme } from '../theme/useTheme';
 import { PrimaryButton } from './PrimaryButton';
 import { Txt } from './Txt';
 import { cleanText } from '../utils/sanitize';
+import { tint } from '../theme/colors';
 
 interface Props {
   visible: boolean;
@@ -63,7 +64,7 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
 
           {done ? (
             <View style={{ padding: spacing.xl, alignItems: 'center' }}>
-              <Animated.View entering={ZoomIn.duration(500)} style={[styles.successIcon, { backgroundColor: t.colors.success + '1F' }]}>
+              <Animated.View entering={ZoomIn.duration(500)} style={[styles.successIcon, { backgroundColor: tint(t.colors.success, 0.12) }]}>
                 <Ionicons name="shield-checkmark" size={60} color={t.colors.successText} />
               </Animated.View>
               <Txt variant="headlineMedium" style={{ marginTop: 20 }}>

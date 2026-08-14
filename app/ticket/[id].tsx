@@ -25,6 +25,7 @@ import { useTicket } from '../../src/hooks/useSupport';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
 import { cleanText } from '../../src/utils/sanitize';
+import { tint } from '../../src/theme/colors';
 
 export default function TicketDetail() {
   const t = useTheme();
@@ -60,8 +61,11 @@ export default function TicketDetail() {
     setAttachError(undefined);
     setSending(true);
     try {
-      const msg = await replyToTicket(id, body, urls);
-      setMessages((m) => [...m, msg]);
+      const { message, ticket: updated } = await replyToTicket(id, body, urls);
+      setMessages((m) => [...m, message]);
+      // Replying moves the ticket's status/SLA/updatedAt — take the server's
+      // version so the header does not go stale until the next refetch.
+      if (updated) setTicket(updated);
     } catch (e) {
       // Put the draft back so the reply is not silently lost.
       setText(body);
@@ -119,7 +123,7 @@ export default function TicketDetail() {
           ) : (
             <>
               {canReply && cat && (
-                <View style={[styles.sla, { backgroundColor: t.colors.info + '14' }]}>
+                <View style={[styles.sla, { backgroundColor: tint(t.colors.info, 0.08) }]}>
                   <Ionicons name="time-outline" size={15} color={t.colors.infoText} />
                   <Txt variant="bodySmall" color={t.colors.infoText} style={{ marginLeft: 6 }}>
                     Typical response within {cat.slaHours}h
@@ -211,7 +215,9 @@ export default function TicketDetail() {
 }
 
 function toneColor(t: ReturnType<typeof useTheme>, tone: Tone) {
-  return tone === 'success' ? t.colors.success : tone === 'warning' ? t.colors.warning : tone === 'error' ? t.colors.error : tone === 'info' ? t.colors.info : t.colors.textSecondary;
+  // *Text variants: these are read as TYPE on a tinted pill, and the base
+  // brand fills fail contrast at that job.
+  return tone === 'success' ? t.colors.successText : tone === 'warning' ? t.colors.warningText : tone === 'error' ? t.colors.errorText : tone === 'info' ? t.colors.infoText : t.colors.textSecondary;
 }
 
 function Bubble({ message }: { message: TicketMessage }) {

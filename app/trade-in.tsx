@@ -12,6 +12,7 @@ import { useTheme } from '../src/theme/useTheme';
 import { price } from '../src/utils/format';
 import { submitTradeIn } from '../src/data/salesRepository';
 import { clean, cleanDigits, cleanName } from '../src/utils/sanitize';
+import { tint } from '../src/theme/colors';
 
 const CONDITIONS = [
   {
@@ -83,7 +84,7 @@ export default function TradeIn() {
     return (
       <View style={{ flex: 1, backgroundColor: 'transparent', paddingHorizontal: spacing.screenH }}>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <Animated.View entering={ZoomIn.duration(500)} style={[styles.successIcon, { backgroundColor: t.colors.success + '1F' }]}>
+          <Animated.View entering={ZoomIn.duration(500)} style={[styles.successIcon, { backgroundColor: tint(t.colors.success, 0.12) }]}>
             <Ionicons name="cash" size={64} color={t.colors.successText} />
           </Animated.View>
           <Txt variant="headlineLarge" center style={{ marginTop: spacing.xl }}>

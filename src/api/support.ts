@@ -1,7 +1,11 @@
 import { APP } from '../constants/app';
 import { TicketCategory } from '../domain/types';
 import { apiFetch } from './client';
-import type { TicketDetailDto, TicketListDto, TicketMessageDto } from './dto';
+import type {
+  TicketDetailDto,
+  TicketListDto,
+  TicketMessageCreateDto,
+} from './dto';
 import { getToken } from './session';
 
 /** Customer support endpoints — backend `/support` router. */
@@ -63,7 +67,7 @@ export const supportApi = {
   create: (body: CreateTicketBody) =>
     apiFetch<TicketDetailDto>('/support/tickets', { method: 'POST', body }),
   reply: (id: string, body: string, attachments: string[] = []) =>
-    apiFetch<TicketMessageDto>(`/support/tickets/${id}/messages`, {
+    apiFetch<TicketMessageCreateDto>(`/support/tickets/${id}/messages`, {
       method: 'POST',
       body: { body, attachments },
     }),

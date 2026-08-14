@@ -13,6 +13,7 @@ import { useStore } from '../src/store/useStore';
 import { radius, spacing } from '../src/theme/spacing';
 import { useTheme } from '../src/theme/useTheme';
 import { priceCompact } from '../src/utils/format';
+import { solid, tint } from '../src/theme/colors';
 
 /**
  * Side-by-side vehicle comparison.
@@ -141,7 +142,7 @@ export default function Compare() {
             showsVerticalScrollIndicator={false}
           >
             {groups.length === 0 ? (
-              <View style={[styles.identical, { backgroundColor: t.colors.success + '14' }]}>
+              <View style={[styles.identical, { backgroundColor: tint(t.colors.success, 0.08) }]}>
                 <Ionicons name="checkmark-circle" size={20} color={t.colors.successText} />
                 <Txt tone="secondary" style={{ flex: 1, marginLeft: 10 }}>
                   These two match on every published spec. Turn the filter off to see the full table.
@@ -186,7 +187,7 @@ function VehicleColumn({
       <Txt variant="bodySmall" tone="secondary" numberOfLines={1} center>
         {trim || '—'}
       </Txt>
-      <Txt variant="titleMedium" color={t.colors.accent} center style={{ marginTop: 2 }}>
+      <Txt variant="titleMedium" color={t.colors.accentText} center style={{ marginTop: 2 }}>
         {priceCompact(price)}
       </Txt>
     </View>
@@ -198,7 +199,7 @@ function Group({ group }: { group: CompareGroup }) {
   return (
     <View style={{ marginBottom: spacing.lg }}>
       <View style={styles.groupHead}>
-        <Ionicons name={group.icon as keyof typeof Ionicons.glyphMap} size={16} color={t.colors.accent} />
+        <Ionicons name={group.icon as keyof typeof Ionicons.glyphMap} size={16} color={t.colors.accentText} />
         <Txt variant="titleMedium" style={{ marginLeft: 8 }}>
           {group.title}
         </Txt>
@@ -222,11 +223,11 @@ function Row({ row, last }: { row: CompareRow; last: boolean }) {
         // Differing rows are tinted whether or not the filter is on, so the
         // toggle changes what's listed without changing what "different" looks
         // like.
-        row.differs && { backgroundColor: t.colors.accent + '12' },
+        row.differs && { backgroundColor: tint(t.colors.accent, 0.07) },
       ]}
     >
       <View style={styles.rowLabel}>
-        {row.differs && <View style={[styles.dot, { backgroundColor: t.colors.accent }]} />}
+        {row.differs && <View style={[styles.dot, { backgroundColor: solid(t.colors.accent) }]} />}
         <Txt variant="labelSmall" tone="secondary">
           {row.label.toUpperCase()}
         </Txt>
@@ -270,7 +271,7 @@ function Cell({ value, emphasise }: { value: string | null; emphasise: boolean }
 function Switch({ on }: { on: boolean }) {
   const t = useTheme();
   const track = useAnimatedStyle(() => ({
-    backgroundColor: withTiming(on ? t.colors.accent : t.colors.border, { duration: 160 }),
+    backgroundColor: withTiming(on ? solid(t.colors.accent) : t.colors.border, { duration: 160 }),
   }));
   const thumb = useAnimatedStyle(() => ({
     transform: [{ translateX: withTiming(on ? 18 : 0, { duration: 160 }) }],

@@ -9,7 +9,7 @@ import { radius, spacing } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
 import { Skeleton } from './Skeleton';
 import { Txt } from './Txt';
-import { ON_DARK_INK } from '../theme/colors';
+import { ON_DARK_INK, solid } from '../theme/colors';
 
 interface Props {
   summary: DashboardSummaryDto | null;
@@ -37,8 +37,7 @@ export const DashboardPanel = memo(function DashboardPanel({ summary, loading }:
     );
   }
 
-  // Nothing to show for a brand-new customer with no vehicle or activity.
-  if (!summary || (!summary.primaryVehicle && !summary.nextAppointment)) return null;
+  if (!summary) return null;
 
   const appt = summary.nextAppointment;
   const vehicle = summary.primaryVehicle;
@@ -57,7 +56,7 @@ export const DashboardPanel = memo(function DashboardPanel({ summary, loading }:
       key: 'work',
       icon: 'alert-circle',
       label: `${summary.pendingAdditionalWork} approval${summary.pendingAdditionalWork > 1 ? 's' : ''} needed`,
-      tone: t.colors.warning,
+      tone: t.colors.warningText,
       onPress: () => router.push('/(tabs)/service'),
     });
   }
@@ -66,7 +65,7 @@ export const DashboardPanel = memo(function DashboardPanel({ summary, loading }:
       key: 'recall',
       icon: 'warning',
       label: `${summary.activeRecalls} open recall${summary.activeRecalls > 1 ? 's' : ''}`,
-      tone: t.colors.error,
+      tone: t.colors.errorText,
       onPress: () => router.push('/warranty'),
     });
   }
@@ -75,14 +74,32 @@ export const DashboardPanel = memo(function DashboardPanel({ summary, loading }:
       key: 'tickets',
       icon: 'chatbubble-ellipses',
       label: `${summary.openSupportTickets} open ticket${summary.openSupportTickets > 1 ? 's' : ''}`,
-      tone: t.colors.info,
+      tone: t.colors.infoText,
       onPress: () => router.push('/(tabs)/support'),
     });
   }
+  // Informational, not an alert — nothing here needs the customer to act, so it
+  // is appended last and carries the brand tone rather than a warning colour.
+  if (summary.watchlistCount > 0) {
+    alerts.push({
+      key: 'watchlist',
+      icon: 'eye',
+      label: `Tracking ${summary.watchlistCount} model${summary.watchlistCount > 1 ? 's' : ''}`,
+      tone: t.colors.accentText,
+      onPress: () => router.push('/watchlist'),
+    });
+  }
+
+  // A brand-new customer with no vehicle, no appointment and nothing tracked
+  // has nothing worth a panel. Checked AFTER the chips are built so someone who
+  // is only tracking models (a prospect, not yet an owner) still sees them.
+  const hasPrimaryCard = !!(appt || vehicle);
+  if (!hasPrimaryCard && alerts.length === 0) return null;
 
   return (
     <View style={{ paddingHorizontal: spacing.screenH, marginTop: spacing.lg }}>
       {/* Primary card: next appointment, else next service milestone */}
+      {hasPrimaryCard && (
       <Pressable
         onPress={() =>
           appt ? router.push(`/service-detail/${appt.id}`) : router.push('/book-service')
@@ -94,7 +111,7 @@ export const DashboardPanel = memo(function DashboardPanel({ summary, loading }:
           end={{ x: 1, y: 1 }}
           style={styles.card}
         >
-          <View style={[styles.iconWrap, { backgroundColor: t.colors.accent }]}>
+          <View style={[styles.iconWrap, { backgroundColor: solid(t.colors.accent) }]}>
             <MaterialCommunityIcons
               name={appt ? 'calendar-clock' : 'car-wrench'}
               size={24}
@@ -138,10 +155,11 @@ export const DashboardPanel = memo(function DashboardPanel({ summary, loading }:
           <Ionicons name="chevron-forward" size={22} color={ON_DARK_INK} />
         </LinearGradient>
       </Pressable>
+      )}
 
-      {/* Only things that need action */}
+      {/* Alerts first, then anything purely informational */}
       {alerts.length > 0 && (
-        <View style={styles.alertRow}>
+        <View style={[styles.alertRow, !hasPrimaryCard && { marginTop: 0 }]}>
           {alerts.map((a) => (
             <Pressable
               key={a.key}

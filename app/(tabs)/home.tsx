@@ -24,6 +24,7 @@ import { useStore } from '../../src/store/useStore';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
 import { greeting, priceCompact } from '../../src/utils/format';
+import { solid } from '../../src/theme/colors';
 
 const CATEGORIES = Object.keys(CATEGORY_META) as VehicleCategory[];
 
@@ -157,7 +158,7 @@ export default function Home() {
             </View>
             <Pressable onPress={() => router.push('/notifications')} style={[styles.iconBtn, { backgroundColor: t.colors.surfaceAlt }]}>
               <Ionicons name="notifications-outline" size={22} color={t.colors.textPrimary} />
-              {unreadCount > 0 && <View style={[styles.badgeDot, { backgroundColor: t.colors.accent }]} />}
+              {unreadCount > 0 && <View style={[styles.badgeDot, { backgroundColor: solid(t.colors.accent) }]} />}
             </Pressable>
           </View>
 
@@ -328,7 +329,7 @@ function Chip({
       onPress={onPress}
       style={[
         styles.chip,
-        { backgroundColor: active ? t.colors.accent : t.colors.surface, borderColor: active ? t.colors.accent : t.colors.border },
+        { backgroundColor: active ? solid(t.colors.accent) : t.colors.surface, borderColor: active ? solid(t.colors.accent) : t.colors.border },
       ]}
     >
       {mci ? (

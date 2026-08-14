@@ -1,7 +1,7 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { OVERLAY_CHIP, OVERLAY_CHIP_INK } from '../../src/theme/colors';
+import { OVERLAY_CHIP, OVERLAY_CHIP_INK, tint } from '../../src/theme/colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NetworkCarImage } from '../../src/components/NetworkCarImage';
 import { PrimaryButton } from '../../src/components/PrimaryButton';
@@ -91,7 +91,7 @@ export default function GarageVehicle() {
 
           {/* Warranty summary */}
           {warranty && (
-            <Pressable onPress={() => router.push('/warranty')} style={[styles.warranty, { backgroundColor: t.colors.success + '14', borderColor: t.colors.success + '40' }]}>
+            <Pressable onPress={() => router.push('/warranty')} style={[styles.warranty, { backgroundColor: tint(t.colors.success, 0.08), borderColor: tint(t.colors.success, 0.251) }]}>
               <Ionicons name="shield-checkmark" size={22} color={t.colors.successText} />
               <View style={{ flex: 1, marginLeft: 12 }}>
                 <Txt variant="titleSmall">Warranty active</Txt>
@@ -132,7 +132,7 @@ function HistoryRow({ item }: { item: ServiceHistoryItem }) {
   const t = useTheme();
   return (
     <View style={[styles.historyRow, { backgroundColor: t.colors.surface, borderColor: t.colors.border }]}>
-      <View style={[styles.dot, { backgroundColor: t.colors.success + '18' }]}>
+      <View style={[styles.dot, { backgroundColor: tint(t.colors.success, 0.094) }]}>
         <Ionicons name="checkmark" size={16} color={t.colors.successText} />
       </View>
       <View style={{ flex: 1, marginLeft: 12 }}>

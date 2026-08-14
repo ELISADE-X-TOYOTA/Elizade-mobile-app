@@ -10,6 +10,7 @@ import {
 import { radius, spacing } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
 import { Txt } from './Txt';
+import { solid } from '../theme/colors';
 
 interface Props {
   label: string;
@@ -55,7 +56,7 @@ export function AppTextField({
           styles.field,
           {
             backgroundColor: t.colors.surfaceAlt,
-            borderColor: error ? t.colors.error : focused ? t.colors.primary : t.colors.border,
+            borderColor: error ? solid(t.colors.error) : focused ? t.colors.primary : t.colors.border,
           },
         ]}
       >

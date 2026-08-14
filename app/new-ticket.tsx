@@ -17,6 +17,7 @@ import { TICKET_CATEGORY_META, TicketCategory } from '../src/domain/types';
 import { radius, spacing } from '../src/theme/spacing';
 import { useTheme } from '../src/theme/useTheme';
 import { clean, cleanText } from '../src/utils/sanitize';
+import { tint } from '../src/theme/colors';
 
 const CATEGORIES = Object.keys(TICKET_CATEGORY_META) as TicketCategory[];
 
@@ -98,7 +99,7 @@ export default function NewTicket() {
           })}
         </View>
 
-        <View style={[styles.sla, { backgroundColor: t.colors.info + '14' }]}>
+        <View style={[styles.sla, { backgroundColor: tint(t.colors.info, 0.08) }]}>
           <Ionicons name="time-outline" size={16} color={t.colors.infoText} />
           <Txt variant="bodySmall" color={t.colors.infoText} style={{ marginLeft: 8 }}>
             Expected first response within {sla} hours

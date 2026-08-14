@@ -17,6 +17,7 @@ import Animated, {
 import { spacing } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
 import { Txt } from './Txt';
+import { solid } from '../theme/colors';
 
 interface Props {
   visible: boolean;
@@ -95,13 +96,13 @@ export function SendingOverlay({ visible, email, message = 'Sending your code' }
         <Animated.View entering={FadeIn.duration(220)} style={styles.stage}>
           {/* Expanding halo behind the mark */}
           <Animated.View
-            style={[styles.halo, { borderColor: t.colors.accent }, haloStyle]}
+            style={[styles.halo, { borderColor: solid(t.colors.accent) }, haloStyle]}
             pointerEvents="none"
           />
 
           {/* Envelope drifting up out of the mark */}
           <Animated.View style={[styles.mail, mailStyle]} pointerEvents="none">
-            <Ionicons name="mail" size={26} color={t.colors.accent} />
+            <Ionicons name="mail" size={26} color={t.colors.accentText} />
           </Animated.View>
 
           {/*

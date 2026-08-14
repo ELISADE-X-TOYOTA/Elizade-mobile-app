@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { radius, spacing } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
 import { Txt } from './Txt';
+import { solid } from '../theme/colors';
 
 interface Props {
   title: string;
@@ -26,10 +27,10 @@ export function ComingSoon({ title, icon, headline, description, phase, features
       </View>
       <ScrollView contentContainerStyle={{ padding: spacing.screenH, paddingBottom: 120 }} showsVerticalScrollIndicator={false}>
         <LinearGradient colors={t.gradients.hero} style={[styles.hero, { borderColor: t.colors.border }]}>
-          <View style={[styles.iconWrap, { backgroundColor: t.colors.accent }]}>
+          <View style={[styles.iconWrap, { backgroundColor: solid(t.colors.accent) }]}>
             <Ionicons name={icon} size={30} color={t.colors.onAccent} />
           </View>
-          <View style={[styles.badge, { backgroundColor: t.colors.accent }]}>
+          <View style={[styles.badge, { backgroundColor: solid(t.colors.accent) }]}>
             <Txt variant="labelSmall" color={t.colors.onAccent}>
               {phase}
             </Txt>

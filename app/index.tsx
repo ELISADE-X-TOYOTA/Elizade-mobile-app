@@ -11,7 +11,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { Txt } from '../src/components/Txt';
-import { brand } from '../src/theme/colors';
+import { brand, solid } from '../src/theme/colors';
 
 /**
  * All-black launch screen for Elizade Connect.
@@ -47,7 +47,7 @@ export default function Splash() {
 
       {/* Completes the platform wordmark: Elizade → CONNECT */}
       <Animated.View entering={FadeIn.delay(450).duration(600)}>
-        <Txt variant="titleMedium" color={brand.accent} style={styles.connect}>
+        <Txt variant="titleMedium" color={solid(brand.accent)} style={styles.connect}>
           CONNECT
         </Txt>
       </Animated.View>
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.15)',
     overflow: 'hidden',
   },
-  roadFill: { height: 4, backgroundColor: brand.accent, borderRadius: 4 },
+  roadFill: { height: 4, backgroundColor: solid(brand.accent), borderRadius: 4 },
   footer: { position: 'absolute', bottom: 48, alignItems: 'center' },
   marques: { letterSpacing: 2.5 },
   authorised: { marginTop: 6, letterSpacing: 0.3 },

@@ -18,7 +18,7 @@ import { useAppointments } from '../../src/hooks/useService';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
 import { price } from '../../src/utils/format';
-import { ON_DARK_INK } from '../../src/theme/colors';
+import { ON_DARK_INK, solid, tint } from '../../src/theme/colors';
 
 const TABS = ['Upcoming', 'Active', 'History'] as const;
 const UPCOMING: AppointmentStatus[] = ['requested', 'confirmed'];
@@ -47,7 +47,7 @@ export default function Service() {
         <Txt variant="headlineMedium" style={{ flex: 1 }}>
           Service
         </Txt>
-        <Pressable onPress={() => router.push('/book-service')} style={[styles.addBtn, { backgroundColor: t.colors.accent }]}>
+        <Pressable onPress={() => router.push('/book-service')} style={[styles.addBtn, { backgroundColor: solid(t.colors.accent) }]}>
           <Ionicons name="add" size={20} color={t.colors.onAccent} />
           <Txt variant="titleSmall" color={t.colors.onAccent} style={{ marginLeft: 4 }}>
             Book
@@ -63,7 +63,7 @@ export default function Service() {
         {/* Reminder banner */}
         <Pressable onPress={() => router.push('/book-service')} style={{ paddingHorizontal: spacing.screenH }}>
           <LinearGradient colors={t.gradients.primary} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.reminder}>
-            <View style={[styles.reminderIcon, { backgroundColor: t.colors.accent }]}>
+            <View style={[styles.reminderIcon, { backgroundColor: solid(t.colors.accent) }]}>
               <MaterialCommunityIcons name="car-wrench" size={24} color={t.colors.onAccent} />
             </View>
             <View style={{ flex: 1, marginLeft: 14 }}>
@@ -132,7 +132,8 @@ function AppointmentCard({ appt }: { appt: ServiceAppointment }) {
   const meta = SERVICE_TYPE_META[appt.serviceType];
   const status = APPOINTMENT_STATUS_META[appt.status];
   const toneColor =
-    status.tone === 'success' ? t.colors.success : status.tone === 'warning' ? t.colors.warning : status.tone === 'info' ? t.colors.info : t.colors.textSecondary;
+    // *Text variants — rendered as type on a tinted pill.
+    status.tone === 'success' ? t.colors.successText : status.tone === 'warning' ? t.colors.warningText : status.tone === 'info' ? t.colors.infoText : t.colors.textSecondary;
   const date = new Date(appt.scheduledAt);
 
   return (
@@ -180,7 +181,7 @@ function HistoryCard({ item }: { item: ServiceHistoryItem }) {
   return (
     <View style={[styles.card, { backgroundColor: t.colors.surface, borderColor: t.colors.border }, t.shadows.soft]}>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <View style={[styles.typeIcon, { backgroundColor: t.colors.success + '18' }]}>
+        <View style={[styles.typeIcon, { backgroundColor: tint(t.colors.success, 0.094) }]}>
           <Ionicons name="checkmark-done" size={20} color={t.colors.successText} />
         </View>
         <View style={{ flex: 1, marginLeft: 12 }}>

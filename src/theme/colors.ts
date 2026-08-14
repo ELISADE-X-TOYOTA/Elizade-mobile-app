@@ -6,14 +6,64 @@
  * monochrome so the brand yellow always pops.
  */
 
+/**
+ * A colour that may only be used as a FILL — background, border, divider.
+ *
+ * WHY IT IS NOT A STRING: the status colours are tuned to be *seen* as blocks
+ * of colour. Used as type they fail WCAG badly (`success` #22C55E is 2.03:1 on
+ * white), and that mistake was made repeatedly and silently, because a hex
+ * string is valid anywhere a colour is accepted. TypeScript cannot make a
+ * string subtype unassignable to `string`, so the only way to get a compile
+ * error is for the token not to be a string at all.
+ *
+ * `<Txt color={t.colors.error}>` is now a type error. Use `errorText`.
+ * For a genuine fill, unwrap explicitly with {@link solid} or {@link tint} —
+ * the unwrap is the point, it makes "I meant this as a fill" visible in review.
+ */
+export interface FillColor {
+  readonly hex: string;
+  /** Structural marker; never read. Present so `FillColor` is not a string. */
+  readonly fillOnly: true;
+  /**
+   * Safety net for `token + '22'`.
+   *
+   * TypeScript CANNOT reject `+` when either side is a string — concatenation
+   * is legal against any type — so that pattern compiles and would otherwise
+   * yield the string "[object Object]22", an invalid colour that fails at
+   * runtime with no warning. Returning the hex makes the fallback correct.
+   * Prefer `tint()`: it is clearer and takes a readable 0–1 alpha.
+   */
+  toString(): string;
+}
+
+const fill = (hex: string): FillColor => ({ hex, fillOnly: true, toString: () => hex });
+
+/** The colour as an opaque fill. */
+export const solid = (c: FillColor): string => c.hex;
+
+/**
+ * The colour at low opacity, for a chip or badge background.
+ * `alpha` is 0–1; it becomes the 8-bit alpha suffix React Native understands.
+ */
+export const tint = (c: FillColor, alpha: number): string => {
+  const a = Math.round(Math.min(1, Math.max(0, alpha)) * 255);
+  return c.hex + a.toString(16).padStart(2, '0').toUpperCase();
+};
+
 export const brand = {
-  accent: '#F5B301', // Elizade gold-yellow
+  // Fill-only, like the status colours below: the brand gold is 1.85:1 on
+  // white, so as type it is unreadable in light mode. `accentText` is its
+  // readable counterpart. This is not hypothetical — the comparison screen
+  // shipped its price in `accent` and was invisible on the light canvas.
+  accent: fill('#F5B301'), // Elizade gold-yellow
   accentDark: '#D89A00',
   onAccent: '#1E1B00', // dark text/icons on the yellow accent
-  success: '#22C55E',
-  warning: '#F59E0B',
-  error: '#EF4444',
-  info: '#3B82F6',
+  // Fill-only — see FillColor. Their readable counterparts are the
+  // `successText` / `warningText` / `errorText` / `infoText` tokens below.
+  success: fill('#22C55E'),
+  warning: fill('#F59E0B'),
+  error: fill('#EF4444'),
+  info: fill('#3B82F6'),
 } as const;
 
 /** Yellow accent gradient — identical in both themes. */
@@ -75,11 +125,15 @@ const light = {
    *
    * Not `accent`: the brand gold #F5B301 is 1.85:1 on white — unreadable as
    * type. Yellow earns its contrast on dark and loses it on light, so this
-   * token deepens to bronze here (5.07:1 on surfaceAlt) while reading as the
-   * same warm brand hue. `accent` stays correct for FILLS, where the dark
-   * `onAccent` ink supplies the contrast.
+   * token deepens to bronze here while reading as the same warm brand hue.
+   * `accent` stays correct for FILLS, where the dark `onAccent` ink supplies
+   * the contrast.
+   *
+   * Deep enough to clear 4.5:1 in BOTH places it appears: on a plain surface
+   * (6.65:1) and as chip text over a tint of itself (5.18:1). The earlier
+   * #8A6206 passed the first and failed the second at 4.32:1.
    */
-  accentText: '#8A6206',
+  accentText: '#7A5600',
   /**
    * Status colours as TEXT. The `brand` values above are tuned to be seen as
    * FILLS and icons; used as type they fail badly — plain `success` (#22C55E)

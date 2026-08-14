@@ -187,6 +187,27 @@ export interface TicketDetailDto extends TicketListDto {
   messages: TicketMessageDto[];
 }
 
+/**
+ * `POST /support/tickets/{id}/messages` returns the new message AND the
+ * updated ticket (its status, SLA and updatedAt all move when a customer
+ * replies) — NOT a bare message. Typing it as `TicketMessageDto` silently
+ * yields `undefined` for every field.
+ */
+export interface TicketMessageCreateDto {
+  ticket: TicketDetailDto;
+  message: TicketMessageDto;
+}
+
+// ── Watchlist ────────────────────────────────────────────────────────
+export interface WatchlistItemDto {
+  id: string;
+  model: string;
+  trim: string | null;
+  color: string | null;
+  isActive: boolean;
+  createdAt: string;
+}
+
 // ── Notifications ────────────────────────────────────────────────────
 export interface NotificationDto {
   id: string;

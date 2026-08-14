@@ -17,7 +17,7 @@ import { NetworkCarImage } from '../../src/components/NetworkCarImage';
 import { PrimaryButton } from '../../src/components/PrimaryButton';
 import { Skeleton } from '../../src/components/Skeleton';
 import { Txt } from '../../src/components/Txt';
-import { ON_DARK_INK, OVERLAY_CHIP, OVERLAY_CHIP_INK } from '../../src/theme/colors';
+import { ON_DARK_INK, OVERLAY_CHIP, OVERLAY_CHIP_INK, solid, tint } from '../../src/theme/colors';
 import { vehicleSubtitle, vehicleTitle } from '../../src/domain/types';
 import { useVehicle } from '../../src/hooks/useVehicles';
 import { useStore } from '../../src/store/useStore';
@@ -88,7 +88,7 @@ export default function CarDetails() {
               <CircleBtn icon="share-social-outline" onPress={() => {}} />
               <CircleBtn
                 icon={isFav ? 'heart' : 'heart-outline'}
-                tint={isFav ? t.colors.error : undefined}
+                tint={isFav ? solid(t.colors.error) : undefined}
                 onPress={() => toggleFavorite(v.id)}
               />
             </View>
@@ -112,7 +112,7 @@ export default function CarDetails() {
                     width: i === imgIndex ? 20 : 7,
                     height: 7,
                     borderRadius: 4,
-                    backgroundColor: i === imgIndex ? t.colors.accent : 'rgba(255,255,255,0.6)',
+                    backgroundColor: i === imgIndex ? solid(t.colors.accent) : 'rgba(255,255,255,0.6)',
                   }}
                 />
               ))}
@@ -129,7 +129,7 @@ export default function CarDetails() {
                 {vehicleSubtitle(v)}
               </Txt>
             </View>
-            <View style={[styles.ratingPill, { backgroundColor: t.colors.warning + '1F' }]}>
+            <View style={[styles.ratingPill, { backgroundColor: tint(t.colors.warning, 0.12) }]}>
               <Ionicons name="star" size={16} color={t.colors.warningText} />
               <Txt variant="titleSmall" color={t.colors.warningText} style={{ marginLeft: 4 }}>
                 {v.rating}
@@ -144,7 +144,7 @@ export default function CarDetails() {
             <Ionicons name="location" size={16} color={t.colors.primary} />
             <Txt style={{ marginLeft: 4, flex: 1 }}>{v.location}</Txt>
             {v.isVerified && (
-              <View style={[styles.verified, { backgroundColor: t.colors.success + '1F' }]}>
+              <View style={[styles.verified, { backgroundColor: tint(t.colors.success, 0.12) }]}>
                 <Ionicons name="shield-checkmark" size={13} color={t.colors.successText} />
                 <Txt variant="labelSmall" color={t.colors.successText} style={{ marginLeft: 4 }}>
                   Verified
@@ -198,6 +198,19 @@ export default function CarDetails() {
             <ToolBtn icon="calculator" label="Financing" onPress={() => setFinanceOpen(true)} />
             <ToolBtn icon="document-text" label="Get Quote" onPress={() => setQuoteOpen(true)} />
             <ToolBtn icon="swap-horizontal" label="Trade-in" onPress={() => router.push('/trade-in')} />
+            {/* Hands the model/trim/colour to the watchlist sheet prefilled.
+                Tracks the MODEL, not this listing — the heart above saves the
+                individual car. */}
+            <ToolBtn
+              icon="eye-outline"
+              label="Track"
+              onPress={() =>
+                router.push({
+                  pathname: '/watchlist',
+                  params: { model: v.model, trim: v.trim, color: v.color },
+                })
+              }
+            />
           </View>
 
           {/* Owner */}
@@ -229,7 +242,7 @@ export default function CarDetails() {
               {priceCompact(v.price)}
             </Txt>
           </View>
-          <View style={[styles.availChip, { backgroundColor: t.colors.success + '1F' }]}>
+          <View style={[styles.availChip, { backgroundColor: tint(t.colors.success, 0.12) }]}>
             <Ionicons name="checkmark-circle" size={14} color={t.colors.successText} />
             <Txt variant="labelSmall" color={t.colors.successText} style={{ marginLeft: 4 }}>
               Available

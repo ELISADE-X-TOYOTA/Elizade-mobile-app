@@ -37,7 +37,9 @@ function mockSummary(): DashboardSummaryDto {
     activeWarrantyCertificates: 1,
     pendingWarrantyClaims: 1,
     activeRecalls: 1,
-    watchlistCount: 0,
+    // Matches the single item in the mock watchlist, so mock mode does not
+    // contradict itself.
+    watchlistCount: 1,
     pendingOwnershipRequests: 0,
     pendingReservations: 0,
     pendingQuotations: 0,
