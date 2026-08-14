@@ -3,7 +3,7 @@ import { memo, useCallback } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { OVERLAY_CHIP, OVERLAY_CHIP_INK } from '../theme/colors';
 import { CATEGORY_META, Vehicle, vehicleTitle } from '../domain/types';
-import { useStore } from '../store/useStore';
+import { useWatchlistStore } from '../store/useWatchlistStore';
 import { radius, spacing } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
 import { priceCompact } from '../utils/format';
@@ -22,10 +22,12 @@ interface Props {
 function CarCardBase({ vehicle, onPress, wide, width }: Props) {
   const t = useTheme();
   // PERF: subscribe to this card's boolean only — selecting the whole
-  // favorites array re-rendered every card whenever any heart was tapped.
-  const isFav = useStore((s) => s.favorites.includes(vehicle.id));
-  const toggleFavorite = useStore((s) => s.toggleFavorite);
-  const onToggleFav = useCallback(() => toggleFavorite(vehicle.id), [toggleFavorite, vehicle.id]);
+  // watchlist would re-render every card whenever any heart was tapped.
+  const isFav = useWatchlistStore((s) => s.items.some((i) => i.model === vehicle.model));
+  const toggleVehicle = useWatchlistStore((s) => s.toggleVehicle);
+  const onToggleFav = useCallback(() => {
+    toggleVehicle(vehicle).catch(() => {});
+  }, [toggleVehicle, vehicle]);
   const meta = CATEGORY_META[vehicle.category];
 
   return (
