@@ -1,68 +1,85 @@
 import { Ionicons } from '@expo/vector-icons';
-import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
 import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
+  Alert,
   Modal,
-  Platform,
   Pressable,
   RefreshControl,
   ScrollView,
   StyleSheet,
+  TextInput,
   View,
 } from 'react-native';
-import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AppTextField } from '../src/components/AppTextField';
 import { PrimaryButton } from '../src/components/PrimaryButton';
+import { Skeleton } from '../src/components/Skeleton';
 import { Txt } from '../src/components/Txt';
-import {
-  AlreadyWatchedError,
-  addToWatchlist,
-  removeFromWatchlist,
-  updateWatchlistItem,
-} from '../src/data/watchlistRepository';
 import { WatchlistItem } from '../src/domain/types';
-import { useWatchlist } from '../src/hooks/useWatchlist';
+import { useWatchlistStore } from '../src/store/useWatchlistStore';
 import { radius, spacing } from '../src/theme/spacing';
 import { useTheme } from '../src/theme/useTheme';
-import { clean } from '../src/utils/sanitize';
-import { tint } from '../src/theme/colors';
+import { solid } from '../src/theme/colors';
 
 /**
- * Models the customer is tracking.
- *
- * This is a MODEL watchlist, not saved listings — one entry per model, refined
- * by trim and colour. The favourites heart on a car card is a different thing
- * and deliberately stays separate.
- *
- * Deep link: `/watchlist?model=Land%20Cruiser&trim=300%20VX&color=Black`
- * opens straight into the add sheet, prefilled — that is how "Track this model"
- * on a vehicle page hands off.
+ * Saved models watchlist — backed by GET/PATCH/DELETE /watchlist.
  */
-export default function Watchlist() {
+export default function WatchlistScreen() {
   const t = useTheme();
   const insets = useSafeAreaInsets();
-  const { items, loading, error, reload, patch, drop, prepend } = useWatchlist();
-  const params = useLocalSearchParams<{ model?: string; trim?: string; color?: string }>();
+  const items = useWatchlistStore((s) => s.items);
+  const loading = useWatchlistStore((s) => s.loading);
+  const error = useWatchlistStore((s) => s.error);
+  const load = useWatchlistStore((s) => s.load);
+  const remove = useWatchlistStore((s) => s.remove);
+  const update = useWatchlistStore((s) => s.update);
 
-  const [sheet, setSheet] = useState<{ mode: 'add' | 'edit'; item?: WatchlistItem } | null>(null);
-  const [busyId, setBusyId] = useState<string>();
+  const [editing, setEditing] = useState<WatchlistItem | null>(null);
+  const [trim, setTrim] = useState('');
+  const [color, setColor] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [actionError, setActionError] = useState<string>();
 
-  // Arriving with a `model` param means "track this" was tapped elsewhere.
-  useEffect(() => {
-    if (params.model) setSheet({ mode: 'add' });
-  }, [params.model]);
+  useFocusEffect(
+    useCallback(() => {
+      load();
+    }, [load]),
+  );
 
-  const remove = async (item: WatchlistItem) => {
-    setBusyId(item.id);
+  const openEdit = (item: WatchlistItem) => {
+    setEditing(item);
+    setTrim(item.trim ?? '');
+    setColor(item.color ?? '');
+    setActionError(undefined);
+  };
+
+  const saveEdit = async () => {
+    if (!editing) return;
+    setSaving(true);
+    setActionError(undefined);
     try {
-      await removeFromWatchlist(item.id);
-      drop(item.id);
+      await update(editing.id, { trim: trim.trim() || null, color: color.trim() || null });
+      setEditing(null);
+    } catch (e) {
+      setActionError(e instanceof Error ? e.message : 'Could not update this item.');
     } finally {
-      setBusyId(undefined);
+      setSaving(false);
     }
+  };
+
+  const confirmRemove = (item: WatchlistItem) => {
+    Alert.alert('Remove from watchlist?', `${item.model} will no longer be tracked.`, [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Remove',
+        style: 'destructive',
+        onPress: () => {
+          remove(item.id).catch((e) =>
+            setActionError(e instanceof Error ? e.message : 'Could not remove this item.'),
+          );
+        },
+      },
+    ]);
   };
 
   return (
@@ -70,8 +87,6 @@ export default function Watchlist() {
       <View style={{ paddingTop: insets.top + spacing.xs, paddingHorizontal: spacing.screenH }}>
         <Pressable
           onPress={() => router.back()}
-          accessibilityRole="button"
-          accessibilityLabel="Go back"
           style={[styles.backBtn, { backgroundColor: t.colors.surfaceAlt, borderColor: t.colors.border }]}
         >
           <Ionicons name="arrow-back" size={22} color={t.colors.textPrimary} />
@@ -79,283 +94,173 @@ export default function Watchlist() {
         <Txt variant="headlineMedium" style={{ marginTop: spacing.md }}>
           Watchlist
         </Txt>
-        <Txt tone="secondary">
-          Models you're tracking. We'll let you know when stock or pricing changes.
+        <Txt tone="secondary" style={{ marginTop: 4 }}>
+          Models you are tracking
         </Txt>
       </View>
 
       <ScrollView
-        contentContainerStyle={{ padding: spacing.screenH, paddingBottom: insets.bottom + 120 }}
         showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={loading} onRefresh={reload} tintColor={t.colors.primary} />
-        }
+        contentContainerStyle={{ padding: spacing.screenH, paddingBottom: 120 }}
+        refreshControl={<RefreshControl refreshing={loading} onRefresh={load} tintColor={t.colors.primary} />}
       >
-        {error ? (
-          <View style={{ alignItems: 'center', marginTop: spacing.xxl }}>
-            <Ionicons name="cloud-offline-outline" size={40} color={t.colors.textTertiary} />
-            <Txt tone="secondary" center style={{ marginTop: spacing.md }}>
-              {error}
-            </Txt>
-            <Pressable onPress={reload} style={{ marginTop: spacing.md }}>
-              <Txt variant="titleSmall" color={t.colors.primary}>
-                Tap to retry
-              </Txt>
-            </Pressable>
-          </View>
-        ) : loading && !items.length ? (
-          <View style={{ gap: 12 }}>
-            {[0, 1, 2].map((i) => (
-              <View
-                key={i}
-                style={{ height: 84, borderRadius: radius.md, backgroundColor: t.colors.surfaceAlt }}
-              />
-            ))}
-          </View>
+        {error || actionError ? (
+          <Txt color={t.colors.errorText} style={{ marginBottom: spacing.md }}>
+            {actionError ?? error}
+          </Txt>
+        ) : null}
+
+        {loading && items.length === 0 ? (
+          <>
+            <Skeleton height={88} radius={radius.lg} />
+            <View style={{ height: 12 }} />
+            <Skeleton height={88} radius={radius.lg} />
+          </>
         ) : items.length === 0 ? (
-          <View style={{ alignItems: 'center', marginTop: spacing.xxl }}>
-            <Ionicons name="eye-outline" size={44} color={t.colors.textTertiary} />
-            <Txt variant="titleMedium" center style={{ marginTop: spacing.md }}>
-              Nothing tracked yet
-            </Txt>
-            <Txt tone="secondary" center style={{ marginTop: 4 }}>
-              Add a model and we'll keep you posted on new arrivals and price changes.
-            </Txt>
-          </View>
+          <EmptyState onBrowse={() => router.push('/(tabs)/shop')} />
         ) : (
           items.map((item) => (
-            <Animated.View
+            <View
               key={item.id}
-              entering={FadeIn.duration(180)}
-              exiting={FadeOut.duration(140)}
-              layout={LinearTransition.duration(180)}
-              style={[styles.card, { backgroundColor: t.colors.surface, borderColor: t.colors.border }]}
+              style={[styles.card, { backgroundColor: t.colors.surface, borderColor: t.colors.border }, t.shadows.soft]}
             >
-              <View style={[styles.icon, { backgroundColor: tint(t.colors.accent, 0.12) }]}>
-                <Ionicons name="car-sport-outline" size={20} color={t.colors.accentText} />
+              <View style={styles.cardTop}>
+                <View style={[styles.iconWrap, { backgroundColor: t.colors.primary + '14' }]}>
+                  <Ionicons name="heart" size={20} color={solid(t.colors.error)} />
+                </View>
+                <View style={{ flex: 1, marginLeft: 12 }}>
+                  <Txt variant="titleMedium" numberOfLines={1}>
+                    {item.model}
+                  </Txt>
+                  <Txt variant="bodySmall" tone="secondary" numberOfLines={1}>
+                    {[item.trim, item.color].filter(Boolean).join(' · ') || 'No trim or colour set'}
+                  </Txt>
+                </View>
               </View>
-
-              <View style={{ flex: 1, marginLeft: 12 }}>
-                <Txt variant="titleMedium" numberOfLines={1}>
-                  {item.model}
-                </Txt>
-                <Txt variant="bodySmall" tone="secondary" numberOfLines={1}>
-                  {[item.trim, item.color].filter(Boolean).join(' · ') || 'Any trim · any colour'}
-                </Txt>
+              <View style={[styles.actions, { borderTopColor: t.colors.border }]}>
+                <Pressable onPress={() => openEdit(item)} style={styles.actionBtn}>
+                  <Ionicons name="create-outline" size={18} color={t.colors.primary} />
+                  <Txt variant="titleSmall" color={t.colors.primary} style={{ marginLeft: 6 }}>
+                    Edit
+                  </Txt>
+                </Pressable>
+                <Pressable onPress={() => confirmRemove(item)} style={styles.actionBtn}>
+                  <Ionicons name="trash-outline" size={18} color={t.colors.errorText} />
+                  <Txt variant="titleSmall" color={t.colors.errorText} style={{ marginLeft: 6 }}>
+                    Remove
+                  </Txt>
+                </Pressable>
               </View>
-
-              <Pressable
-                onPress={() => setSheet({ mode: 'edit', item })}
-                hitSlop={8}
-                accessibilityRole="button"
-                accessibilityLabel={`Edit ${item.model}`}
-                style={{ padding: 6 }}
-              >
-                <Ionicons name="create-outline" size={19} color={t.colors.textSecondary} />
-              </Pressable>
-              <Pressable
-                onPress={() => remove(item)}
-                disabled={busyId === item.id}
-                hitSlop={8}
-                accessibilityRole="button"
-                accessibilityLabel={`Stop tracking ${item.model}`}
-                style={{ padding: 6 }}
-              >
-                {busyId === item.id ? (
-                  <ActivityIndicator size="small" color={t.colors.textSecondary} />
-                ) : (
-                  <Ionicons name="trash-outline" size={19} color={t.colors.errorText} />
-                )}
-              </Pressable>
-            </Animated.View>
+            </View>
           ))
         )}
       </ScrollView>
 
-      <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.md }]}>
-        <PrimaryButton
-          label="Track a model"
-          icon="add"
-          onPress={() => setSheet({ mode: 'add' })}
-        />
-      </View>
-
-      {sheet && (
-        <EditSheet
-          mode={sheet.mode}
-          item={sheet.item}
-          initial={
-            sheet.mode === 'add'
-              ? { model: params.model ?? '', trim: params.trim ?? '', color: params.color ?? '' }
-              : undefined
-          }
-          onClose={() => setSheet(null)}
-          onSaved={(item, mode) => {
-            mode === 'add' ? prepend(item) : patch(item);
-            setSheet(null);
-          }}
-        />
-      )}
+      <Modal visible={!!editing} transparent animationType="slide" onRequestClose={() => setEditing(null)}>
+        <View style={styles.backdrop}>
+          <Pressable style={{ flex: 1 }} onPress={() => setEditing(null)} />
+          <View style={[styles.sheet, { backgroundColor: t.colors.surface, paddingBottom: insets.bottom + spacing.lg }]}>
+            <View style={[styles.handle, { backgroundColor: t.colors.border }]} />
+            <Txt variant="titleLarge" style={{ paddingHorizontal: spacing.lg }}>
+              Edit preferences
+            </Txt>
+            <Txt tone="secondary" style={{ paddingHorizontal: spacing.lg, marginTop: 4 }}>
+              {editing?.model}
+            </Txt>
+            <View style={{ padding: spacing.lg, gap: 12 }}>
+              <Field label="Trim" value={trim} onChangeText={setTrim} placeholder="e.g. XLE" />
+              <Field label="Colour" value={color} onChangeText={setColor} placeholder="e.g. Pearl White" />
+              {actionError ? (
+                <Txt variant="bodySmall" color={t.colors.errorText}>
+                  {actionError}
+                </Txt>
+              ) : null}
+              <PrimaryButton label="Save" loading={saving} onPress={saveEdit} />
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
 
-function EditSheet({
-  mode,
-  item,
-  initial,
-  onClose,
-  onSaved,
+function Field({
+  label,
+  value,
+  onChangeText,
+  placeholder,
 }: {
-  mode: 'add' | 'edit';
-  item?: WatchlistItem;
-  initial?: { model: string; trim: string; color: string };
-  onClose: () => void;
-  onSaved: (item: WatchlistItem, mode: 'add' | 'edit') => void;
+  label: string;
+  value: string;
+  onChangeText: (v: string) => void;
+  placeholder: string;
 }) {
   const t = useTheme();
-  const insets = useSafeAreaInsets();
-  const [model, setModel] = useState(item?.model ?? initial?.model ?? '');
-  const [trim, setTrim] = useState(item?.trim ?? initial?.trim ?? '');
-  const [color, setColor] = useState(item?.color ?? initial?.color ?? '');
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string>();
-
-  const valid = model.trim().length > 0;
-
-  const save = async () => {
-    if (!valid) return;
-    setSaving(true);
-    setError(undefined);
-    try {
-      const saved =
-        mode === 'add'
-          ? await addToWatchlist({
-              model: clean(model, 100),
-              trim: clean(trim, 100) || null,
-              color: clean(color, 100) || null,
-            })
-          : await updateWatchlistItem(item!.id, {
-              trim: clean(trim, 100) || null,
-              color: clean(color, 100) || null,
-            });
-      onSaved(saved, mode);
-    } catch (e) {
-      // A 409 means this model is already tracked — say that, rather than
-      // showing a conflict code the customer can do nothing with.
-      setError(
-        e instanceof AlreadyWatchedError
-          ? e.message
-          : e instanceof Error
-            ? e.message
-            : 'Could not save that.',
-      );
-    } finally {
-      setSaving(false);
-    }
-  };
-
   return (
-    <Modal visible transparent animationType="slide" onRequestClose={onClose}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
-        <Pressable style={styles.backdrop} onPress={onClose} />
-        <View
-          style={[
-            styles.sheet,
-            { backgroundColor: t.colors.surface, paddingBottom: insets.bottom + spacing.lg },
-          ]}
-        >
-          <View style={[styles.handle, { backgroundColor: t.colors.border }]} />
-          <Txt variant="headlineSmall" style={{ marginBottom: 4 }}>
-            {mode === 'add' ? 'Track a model' : `Edit ${item?.model}`}
-          </Txt>
-          <Txt tone="secondary" style={{ marginBottom: spacing.lg }}>
-            {mode === 'add'
-              ? "Tell us what you're after and we'll watch for it."
-              : 'Refine the trim and colour you want.'}
-          </Txt>
+    <View>
+      <Txt variant="titleSmall" style={{ marginBottom: 6 }}>
+        {label}
+      </Txt>
+      <TextInput
+        value={value}
+        onChangeText={onChangeText}
+        placeholder={placeholder}
+        placeholderTextColor={t.colors.textTertiary}
+        style={[
+          t.type.bodyLarge,
+          {
+            color: t.colors.textPrimary,
+            backgroundColor: t.colors.surfaceAlt,
+            borderRadius: radius.md,
+            borderWidth: 1,
+            borderColor: t.colors.border,
+            paddingHorizontal: 14,
+            paddingVertical: 12,
+          },
+        ]}
+      />
+    </View>
+  );
+}
 
-          <View style={{ gap: spacing.lg }}>
-            {/* Model is immutable after creation — the API keys uniqueness on
-                it, and PATCH accepts only trim/color/isActive. */}
-            {mode === 'add' ? (
-              <AppTextField
-                label="Model"
-                placeholder="e.g. Land Cruiser"
-                icon="car-outline"
-                value={model}
-                onChangeText={setModel}
-                maxLength={100}
-                autoCapitalize="words"
-              />
-            ) : null}
-            <AppTextField
-              label="Trim (optional)"
-              placeholder="e.g. 300 VX"
-              icon="options-outline"
-              value={trim}
-              onChangeText={setTrim}
-              maxLength={100}
-              autoCapitalize="words"
-            />
-            <AppTextField
-              label="Colour (optional)"
-              placeholder="e.g. Attitude Black"
-              icon="color-palette-outline"
-              value={color}
-              onChangeText={setColor}
-              maxLength={100}
-              autoCapitalize="words"
-            />
-          </View>
-
-          {error ? (
-            <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: spacing.md }}>
-              {error}
-            </Txt>
-          ) : null}
-
-          <View style={{ height: spacing.xl }} />
-          <PrimaryButton
-            label={mode === 'add' ? 'Start tracking' : 'Save changes'}
-            loading={saving}
-            disabled={!valid}
-            onPress={save}
-          />
-        </View>
-      </KeyboardAvoidingView>
-    </Modal>
+function EmptyState({ onBrowse }: { onBrowse: () => void }) {
+  const t = useTheme();
+  return (
+    <View style={{ alignItems: 'center', paddingTop: 48, paddingHorizontal: spacing.md }}>
+      <View style={[styles.emptyIcon, { backgroundColor: t.colors.surfaceAlt }]}>
+        <Ionicons name="heart-outline" size={36} color={t.colors.textTertiary} />
+      </View>
+      <Txt variant="titleLarge" center style={{ marginTop: spacing.md }}>
+        No saved models yet
+      </Txt>
+      <Txt tone="secondary" center style={{ marginTop: spacing.sm }}>
+        Tap the heart on any vehicle to track that model.
+      </Txt>
+      <Pressable onPress={onBrowse} style={[styles.browseBtn, { backgroundColor: t.colors.primary, marginTop: spacing.xl }]}>
+        <Txt variant="titleSmall" color={t.colors.onPrimary}>
+          Browse showroom
+        </Txt>
+      </Pressable>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  backBtn: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  card: {
+  backBtn: { width: 42, height: 42, borderRadius: 21, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  card: { borderRadius: radius.lg, borderWidth: 1, padding: 14, marginBottom: 12 },
+  cardTop: { flexDirection: 'row', alignItems: 'center' },
+  iconWrap: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
+  actions: {
     flexDirection: 'row',
-    alignItems: 'center',
-    padding: 12,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    marginBottom: 10,
-  },
-  icon: { width: 40, height: 40, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center' },
-  footer: { position: 'absolute', left: spacing.screenH, right: spacing.screenH, bottom: 0 },
-  backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)' },
-  sheet: {
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
+    marginTop: 12,
     paddingTop: 12,
-    paddingHorizontal: spacing.screenH,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    gap: 16,
   },
-  handle: { width: 40, height: 4, borderRadius: 2, alignSelf: 'center', marginBottom: spacing.lg },
+  actionBtn: { flexDirection: 'row', alignItems: 'center' },
+  emptyIcon: { width: 72, height: 72, borderRadius: 36, alignItems: 'center', justifyContent: 'center' },
+  browseBtn: { paddingHorizontal: 20, height: 44, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
+  backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
+  sheet: { borderTopLeftRadius: 28, borderTopRightRadius: 28, paddingTop: 12 },
+  handle: { width: 44, height: 5, borderRadius: 3, alignSelf: 'center', marginBottom: 12 },
 });

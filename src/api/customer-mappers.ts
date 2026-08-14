@@ -17,7 +17,6 @@ import {
   WarrantyCertificate,
   WarrantyClaim,
   WarrantyStatus,
-  WatchlistItem,
 } from '../domain/types';
 import type {
   CustomerRecallDto,
@@ -31,7 +30,6 @@ import type {
   TicketMessageDto,
   WarrantyCertificateDto,
   WarrantyClaimDto,
-  WatchlistItemDto,
 } from './dto';
 import { resolveMediaUrl } from './mappers';
 
@@ -265,18 +263,6 @@ export function mapTicketMessage(m: TicketMessageDto, ticketId: string): TicketM
     // Relative `/media/...` paths are resolved here, not in the UI.
     attachments: (m.attachments ?? []).map(resolveMediaUrl).filter(Boolean),
     createdAt: m.createdAt,
-  };
-}
-
-// ── Watchlist ────────────────────────────────────────────────────────
-export function mapWatchlistItem(d: WatchlistItemDto): WatchlistItem {
-  return {
-    id: d.id,
-    model: d.model,
-    trim: d.trim,
-    color: d.color,
-    isActive: d.isActive,
-    createdAt: d.createdAt,
   };
 }
 

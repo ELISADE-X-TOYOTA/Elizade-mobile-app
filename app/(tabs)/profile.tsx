@@ -11,6 +11,7 @@ import { pickAndUploadAvatar, removeAvatar } from '../../src/data/profileReposit
 import { MOCK_USER } from '../../src/data/mock';
 import { fullName } from '../../src/domain/types';
 import { ThemeMode, useStore } from '../../src/store/useStore';
+import { useWatchlistStore } from '../../src/store/useWatchlistStore';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
 import { solid, tint } from '../../src/theme/colors';
@@ -18,7 +19,8 @@ import { solid, tint } from '../../src/theme/colors';
 export default function Profile() {
   const t = useTheme();
   const insets = useSafeAreaInsets();
-  const favorites = useStore((s) => s.favorites);
+  const savedCount = useWatchlistStore((s) => s.items.length);
+  const clearWatchlist = useWatchlistStore((s) => s.clear);
   const user = useStore((s) => s.currentUser) ?? MOCK_USER;
   const setCurrentUser = useStore((s) => s.setCurrentUser);
 
@@ -28,6 +30,7 @@ export default function Profile() {
 
   const signOut = async () => {
     await logout();
+    clearWatchlist();
     setCurrentUser(null);
     router.replace('/(auth)/login');
   };
@@ -61,7 +64,7 @@ export default function Profile() {
 
   const stats: { label: string; value: string; icon: keyof typeof Ionicons.glyphMap }[] = [
     { label: 'Vehicles', value: '1', icon: 'car-sport' },
-    { label: 'Saved', value: `${favorites.length}`, icon: 'heart' },
+    { label: 'Saved', value: `${savedCount}`, icon: 'heart' },
     { label: 'Services', value: '0', icon: 'construct' },
   ];
 
@@ -109,22 +112,30 @@ export default function Profile() {
 
         {/* Stats */}
         <View style={[styles.row, { paddingHorizontal: spacing.screenH, marginTop: spacing.md, gap: 8 }]}>
-          {stats.map((s) => (
-            <View key={s.label} style={[styles.stat, { backgroundColor: t.colors.surface, borderColor: t.colors.border }, t.shadows.soft]}>
-              <Ionicons name={s.icon} size={22} color={t.colors.primary} />
-              <Txt variant="titleLarge" style={{ marginTop: 6 }}>
-                {s.value}
-              </Txt>
-              <Txt variant="bodySmall" tone="secondary">
-                {s.label}
-              </Txt>
-            </View>
-          ))}
+          {stats.map((s) => {
+            const onPress = s.label === 'Saved' ? () => router.push('/watchlist') : undefined;
+            const Wrapper = onPress ? Pressable : View;
+            return (
+              <Wrapper
+                key={s.label}
+                onPress={onPress}
+                style={[styles.stat, { backgroundColor: t.colors.surface, borderColor: t.colors.border }, t.shadows.soft]}
+              >
+                <Ionicons name={s.icon} size={22} color={t.colors.primary} />
+                <Txt variant="titleLarge" style={{ marginTop: 6 }}>
+                  {s.value}
+                </Txt>
+                <Txt variant="bodySmall" tone="secondary">
+                  {s.label}
+                </Txt>
+              </Wrapper>
+            );
+          })}
         </View>
 
         <Group title="My Garage">
           <Row icon="car-sport-outline" label="My Vehicles" onPress={() => router.push('/garage')} />
-          <Row icon="eye-outline" label="Watchlist" onPress={() => router.push('/watchlist')} />
+          <Row icon="heart-outline" label="Watchlist" onPress={() => router.push('/watchlist')} />
           <Row icon="shield-checkmark-outline" label="Warranty & Recalls" onPress={() => router.push('/warranty')} />
           <Row icon="time-outline" label="Service History" onPress={() => router.push('/(tabs)/service')} last />
         </Group>

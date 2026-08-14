@@ -20,7 +20,7 @@ import { Txt } from '../../src/components/Txt';
 import { ON_DARK_INK, OVERLAY_CHIP, OVERLAY_CHIP_INK, solid, tint } from '../../src/theme/colors';
 import { vehicleSubtitle, vehicleTitle } from '../../src/domain/types';
 import { useVehicle } from '../../src/hooks/useVehicles';
-import { useStore } from '../../src/store/useStore';
+import { useWatchlistStore } from '../../src/store/useWatchlistStore';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
 import { mileage, priceCompact } from '../../src/utils/format';
@@ -35,8 +35,10 @@ export default function CarDetails() {
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { vehicle, loading, error } = useVehicle(id ?? '');
-  const favorites = useStore((s) => s.favorites);
-  const toggleFavorite = useStore((s) => s.toggleFavorite);
+  const isFav = useWatchlistStore((s) =>
+    vehicle ? s.items.some((i) => i.model === vehicle.model) : false,
+  );
+  const toggleVehicle = useWatchlistStore((s) => s.toggleVehicle);
   const [imgIndex, setImgIndex] = useState(0);
   const [sale, setSale] = useState<SalesMode | null>(null);
   const [financeOpen, setFinanceOpen] = useState(false);
@@ -49,7 +51,6 @@ export default function CarDetails() {
   if (error || !vehicle) return <DetailError message={error} />;
 
   const v = vehicle;
-  const isFav = favorites.includes(v.id);
 
   const specs: { icon: keyof typeof MaterialCommunityIcons.glyphMap; label: string; value: string }[] = [
     { icon: 'engine', label: 'Engine', value: v.engine },
@@ -88,8 +89,12 @@ export default function CarDetails() {
               <CircleBtn icon="share-social-outline" onPress={() => {}} />
               <CircleBtn
                 icon={isFav ? 'heart' : 'heart-outline'}
+                // Their handler (heart = server watchlist), our `solid()` —
+                // `error` is a FillColor now and will not compile bare.
                 tint={isFav ? solid(t.colors.error) : undefined}
-                onPress={() => toggleFavorite(v.id)}
+                onPress={() => {
+                  toggleVehicle(v).catch(() => {});
+                }}
               />
             </View>
           </View>
@@ -198,19 +203,6 @@ export default function CarDetails() {
             <ToolBtn icon="calculator" label="Financing" onPress={() => setFinanceOpen(true)} />
             <ToolBtn icon="document-text" label="Get Quote" onPress={() => setQuoteOpen(true)} />
             <ToolBtn icon="swap-horizontal" label="Trade-in" onPress={() => router.push('/trade-in')} />
-            {/* Hands the model/trim/colour to the watchlist sheet prefilled.
-                Tracks the MODEL, not this listing — the heart above saves the
-                individual car. */}
-            <ToolBtn
-              icon="eye-outline"
-              label="Track"
-              onPress={() =>
-                router.push({
-                  pathname: '/watchlist',
-                  params: { model: v.model, trim: v.trim, color: v.color },
-                })
-              }
-            />
           </View>
 
           {/* Owner */}

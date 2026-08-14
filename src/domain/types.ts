@@ -144,6 +144,23 @@ export const TEST_DRIVE_STATUS_META: Record<
   cancelled: { label: 'Cancelled', tone: 'error' },
 };
 
+/** Customer watchlist entry — backend tracks model (+ optional trim/colour). */
+/**
+ * A model the customer is tracking.
+ *
+ * The backend keys these on `model` alone — `trim` and `color` refine the
+ * interest, they do not identify a listing. The heart on a car card toggles
+ * one of these, so hearting any Land Cruiser marks the whole model as tracked.
+ */
+export interface WatchlistItem {
+  id: string;
+  model: string;
+  trim: string | null;
+  color: string | null;
+  isActive: boolean;
+  createdAt: string;
+}
+
 // ── Service & ownership (mirrors web src/types) ──────────────────────
 export interface OwnedVehicle {
   id: string;
@@ -347,23 +364,6 @@ export interface TicketMessage {
    * paths at map time so screens never need to know the host.
    */
   attachments: string[];
-  createdAt: string;
-}
-
-/**
- * A model the customer is tracking — NOT a saved listing.
- *
- * The backend keys these on `model` alone, so a customer can track
- * "Land Cruiser" once; `trim` and `color` refine that interest rather than
- * identifying a particular vehicle. Saving an individual car is the favourites
- * heart, which is separate and device-local.
- */
-export interface WatchlistItem {
-  id: string;
-  model: string;
-  trim?: string | null;
-  color?: string | null;
-  isActive: boolean;
   createdAt: string;
 }
 

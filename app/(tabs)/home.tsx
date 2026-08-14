@@ -21,6 +21,7 @@ import { useDashboard } from '../../src/hooks/useDashboard';
 import { useNotifications } from '../../src/hooks/useNotifications';
 import { useVehicles } from '../../src/hooks/useVehicles';
 import { useStore } from '../../src/store/useStore';
+import { useWatchlistStore } from '../../src/store/useWatchlistStore';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
 import { greeting, priceCompact } from '../../src/utils/format';
@@ -80,6 +81,7 @@ export default function Home() {
   const { vehicles, loading, error, reload } = useVehicles(filters);
   const { unread, reload: reloadNotifs } = useNotifications();
   const { summary, loading: summaryLoading, reload: reloadSummary } = useDashboard();
+  const loadWatchlist = useWatchlistStore((s) => s.load);
 
   // Refresh the personal panel whenever Home regains focus — bookings made or
   // approvals given elsewhere in the app should show here immediately.
@@ -87,7 +89,8 @@ export default function Home() {
     useCallback(() => {
       reloadNotifs();
       reloadSummary();
-    }, [reloadNotifs, reloadSummary]),
+      loadWatchlist();
+    }, [reloadNotifs, reloadSummary, loadWatchlist]),
   );
 
   /**

@@ -7,6 +7,7 @@ import { PrimaryButton } from '../../src/components/PrimaryButton';
 import { Txt } from '../../src/components/Txt';
 import { requestOtp, verifyOtp } from '../../src/data/authRepository';
 import { useStore } from '../../src/store/useStore';
+import { useWatchlistStore } from '../../src/store/useWatchlistStore';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
 import { solid } from '../../src/theme/colors';
@@ -20,6 +21,7 @@ export default function Otp() {
   const { email, purpose } = useLocalSearchParams<{ email?: string; purpose?: string }>();
   const setCurrentUser = useStore((s) => s.setCurrentUser);
   const completeOnboarding = useStore((s) => s.completeOnboarding);
+  const loadWatchlist = useWatchlistStore((s) => s.load);
 
   const [digits, setDigits] = useState<string[]>(Array(LEN).fill(''));
   const [loading, setLoading] = useState(false);
@@ -67,6 +69,7 @@ export default function Otp() {
         // This is the sign-in path, so the account already exists: mark the
         // intro as seen. The guide is only for users who just registered.
         completeOnboarding(user.id);
+        loadWatchlist().catch(() => {});
         router.replace('/(tabs)/home');
       } catch (e) {
         setError(e instanceof Error ? e.message : 'Invalid or expired code');
@@ -79,7 +82,7 @@ export default function Otp() {
         setLoading(false);
       }
     },
-    [email, setCurrentUser, completeOnboarding],
+    [email, setCurrentUser, completeOnboarding, loadWatchlist],
   );
 
   /**

@@ -1,96 +1,75 @@
+import type { WatchlistItemDto } from '../api/dto';
 import { ApiError } from '../api/client';
-import { mapWatchlistItem } from '../api/customer-mappers';
-import { watchlistApi, WatchlistCreateBody, WatchlistUpdateBody } from '../api/watchlist';
+import { WatchlistCreateBody, WatchlistUpdateBody, watchlistApi } from '../api/watchlist';
 import { APP } from '../constants/app';
 import { WatchlistItem } from '../domain/types';
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-/** In-memory stand-in for mock mode. */
-let mock: WatchlistItem[] = [
-  {
-    id: 'w1',
-    model: 'Land Cruiser',
-    trim: '300 VX',
-    color: 'Attitude Black',
-    isActive: true,
-    createdAt: new Date(Date.now() - 86_400_000 * 3).toISOString(),
-  },
-];
+/** In-memory mock list so heart + screen work offline in demo mode. */
+let mockItems: WatchlistItem[] = [];
 
-/** Raised when the model is already tracked (API 409). */
-export class AlreadyWatchedError extends Error {
-  constructor(public model: string) {
-    super(`You're already tracking the ${model}.`);
-  }
+function mapItem(d: WatchlistItemDto): WatchlistItem {
+  return {
+    id: d.id,
+    model: d.model,
+    trim: d.trim,
+    color: d.color,
+    isActive: d.isActive,
+    createdAt: d.createdAt,
+  };
 }
 
-export async function fetchWatchlist(): Promise<WatchlistItem[]> {
+export async function listWatchlist(): Promise<WatchlistItem[]> {
   if (APP.useMock) {
     await delay(300);
-    return mock.filter((w) => w.isActive);
+    return [...mockItems];
   }
-  return (await watchlistApi.list()).map(mapWatchlistItem);
+  return (await watchlistApi.list()).map(mapItem);
 }
 
-/**
- * Tracks a model.
- *
- * The API keys uniqueness on `model` ALONE, so adding a second entry for the
- * same model 409s no matter how the trim or colour differ. That is translated
- * into {@link AlreadyWatchedError} so callers can say something useful instead
- * of surfacing a raw conflict.
- */
-export async function addToWatchlist(body: WatchlistCreateBody): Promise<WatchlistItem> {
+export async function addWatchlistItem(body: WatchlistCreateBody): Promise<WatchlistItem> {
   if (APP.useMock) {
-    await delay(300);
-    if (mock.some((w) => w.isActive && w.model.toLowerCase() === body.model.trim().toLowerCase())) {
-      throw new AlreadyWatchedError(body.model);
-    }
+    await delay(400);
+    const existing = mockItems.find((i) => i.model === body.model.trim() && i.isActive);
+    if (existing) throw new ApiError('Model already in watchlist', 409);
     const item: WatchlistItem = {
-      id: `w${Date.now()}`,
+      id: `wl-${Date.now()}`,
       model: body.model.trim(),
       trim: body.trim?.trim() || null,
       color: body.color?.trim() || null,
       isActive: true,
       createdAt: new Date().toISOString(),
     };
-    mock = [item, ...mock];
+    mockItems = [item, ...mockItems];
     return item;
   }
-  try {
-    return mapWatchlistItem(await watchlistApi.add(body));
-  } catch (e) {
-    // Match on the STATUS, not the message: `apiFetch` swaps a server detail
-    // for a generic string whenever it looks unsafe to show, so the wording is
-    // not something to depend on.
-    if (e instanceof ApiError && e.status === 409) throw new AlreadyWatchedError(body.model);
-    throw e;
-  }
+  return mapItem(await watchlistApi.add(body));
 }
 
 export async function updateWatchlistItem(
-  id: string,
+  itemId: string,
   body: WatchlistUpdateBody,
 ): Promise<WatchlistItem> {
   if (APP.useMock) {
-    await delay(200);
-    const item = mock.find((w) => w.id === id);
-    if (!item) throw new Error('Watchlist item not found');
-    if (body.trim !== undefined) item.trim = body.trim?.trim() || null;
-    if (body.color !== undefined) item.color = body.color?.trim() || null;
-    if (body.isActive !== undefined) item.isActive = body.isActive;
-    return { ...item };
+    await delay(350);
+    const idx = mockItems.findIndex((i) => i.id === itemId);
+    if (idx < 0) throw new ApiError('Watchlist item not found', 404);
+    const next = { ...mockItems[idx] };
+    if (body.trim !== undefined) next.trim = body.trim?.trim() || null;
+    if (body.color !== undefined) next.color = body.color?.trim() || null;
+    if (body.isActive !== undefined) next.isActive = body.isActive;
+    mockItems = mockItems.map((i, n) => (n === idx ? next : i)).filter((i) => i.isActive);
+    return next;
   }
-  return mapWatchlistItem(await watchlistApi.update(id, body));
+  return mapItem(await watchlistApi.update(itemId, body));
 }
 
-/** Soft-deletes server-side; the item stops appearing in the list either way. */
-export async function removeFromWatchlist(id: string): Promise<void> {
+export async function removeWatchlistItem(itemId: string): Promise<void> {
   if (APP.useMock) {
-    await delay(200);
-    mock = mock.filter((w) => w.id !== id);
+    await delay(300);
+    mockItems = mockItems.filter((i) => i.id !== itemId);
     return;
   }
-  await watchlistApi.remove(id);
+  await watchlistApi.remove(itemId);
 }
