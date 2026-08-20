@@ -33,6 +33,7 @@ export interface TradeInBody {
   year: number;
   mileage: number;
   conditionNotes: string;
+  photoUrls?: string[];
 }
 
 export const salesApi = {

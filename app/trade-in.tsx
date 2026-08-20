@@ -4,13 +4,16 @@ import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { MAX_TICKET_ATTACHMENTS } from '../src/api/support';
 import { AppTextField } from '../src/components/AppTextField';
+import { AttachmentDrafts } from '../src/components/AttachmentDrafts';
 import { PrimaryButton } from '../src/components/PrimaryButton';
 import { Txt } from '../src/components/Txt';
 import { radius, spacing } from '../src/theme/spacing';
 import { useTheme } from '../src/theme/useTheme';
 import { price } from '../src/utils/format';
 import { submitTradeIn } from '../src/data/salesRepository';
+import { pickTicketAttachment, PickedAttachment } from '../src/data/supportRepository';
 import { clean, cleanDigits, cleanName } from '../src/utils/sanitize';
 import { tint } from '../src/theme/colors';
 
@@ -47,6 +50,8 @@ export default function TradeIn() {
   const [condition, setCondition] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
+  const [attachError, setAttachError] = useState<string>();
+  const [photos, setPhotos] = useState<PickedAttachment[]>([]);
   const [done, setDone] = useState(false);
 
   const estimate = useMemo(() => {
@@ -61,6 +66,21 @@ export default function TradeIn() {
 
   const valid = make.trim() && model.trim() && estimate;
 
+  const addPhoto = async () => {
+    if (photos.length >= MAX_TICKET_ATTACHMENTS) {
+      setAttachError(`You can attach up to ${MAX_TICKET_ATTACHMENTS} photos.`);
+      return;
+    }
+    setAttachError(undefined);
+    const res = await pickTicketAttachment('library');
+    if (!res) return;
+    if (!res.ok) {
+      setAttachError(res.message);
+      return;
+    }
+    setPhotos((prev) => [...prev, res.attachment]);
+  };
+
   const submit = async () => {
     setLoading(true);
     setError(undefined);
@@ -71,6 +91,7 @@ export default function TradeIn() {
         year: parseInt(year, 10),
         mileage: parseInt(mileage.replace(/\D/g, ''), 10),
         conditionNotes: CONDITIONS[condition].note,
+        photoUrls: photos.map((p) => p.url),
       });
       setDone(true);
     } catch (e) {
@@ -161,12 +182,22 @@ export default function TradeIn() {
           </View>
         )}
 
-        <Pressable style={[styles.attach, { borderColor: t.colors.border }]}>
+        <Pressable
+          onPress={addPhoto}
+          disabled={photos.length >= MAX_TICKET_ATTACHMENTS}
+          style={[styles.attach, { borderColor: t.colors.border, opacity: photos.length >= MAX_TICKET_ATTACHMENTS ? 0.5 : 1 }]}
+        >
           <Ionicons name="camera-outline" size={20} color={t.colors.primary} />
           <Txt variant="titleSmall" color={t.colors.primary} style={{ marginLeft: 8 }}>
             Add photos of your vehicle
           </Txt>
         </Pressable>
+        <AttachmentDrafts items={photos} onRemove={(url) => setPhotos((p) => p.filter((a) => a.url !== url))} />
+        {attachError ? (
+          <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: spacing.sm }}>
+            {attachError}
+          </Txt>
+        ) : null}
 
         {error ? (
           <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: spacing.md }}>

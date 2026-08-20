@@ -142,7 +142,6 @@ export default function RootLayout() {
           <Stack.Screen name="notifications" />
           <Stack.Screen name="trade-in" />
           <Stack.Screen name="compare" />
-          <Stack.Screen name="watchlist" />
           </Stack>
           {/*
             Mounted once, above the navigator, so a comparison survives the trip

@@ -9,6 +9,7 @@ export interface CreateClaimBody {
   description: string;
   conditions?: string | null;
   currentMileage?: number | null;
+  attachmentUrls?: string[];
 }
 
 export const warrantyApi = {

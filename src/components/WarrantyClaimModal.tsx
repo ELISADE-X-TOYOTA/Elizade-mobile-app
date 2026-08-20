@@ -1,16 +1,18 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
-import { Modal, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { MAX_TICKET_ATTACHMENTS } from '../api/support';
 import { createClaim, fetchEligibility } from '../data/warrantyRepository';
+import { pickTicketAttachment, PickedAttachment } from '../data/supportRepository';
 import { WARRANTY_CLAIM_CATEGORIES, WarrantyEligibility } from '../domain/types';
 import { radius, spacing } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
 import { PrimaryButton } from './PrimaryButton';
+import { AttachmentDrafts } from './AttachmentDrafts';
 import { Txt } from './Txt';
 import { cleanText } from '../utils/sanitize';
-import { ActivityIndicator } from 'react-native';
 import { tint } from '../theme/colors';
 
 interface Props {
@@ -28,6 +30,8 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
+  const [attachError, setAttachError] = useState<string>();
+  const [attachments, setAttachments] = useState<PickedAttachment[]>([]);
   const [done, setDone] = useState(false);
   const [eligibility, setEligibility] = useState<WarrantyEligibility | null>(null);
   const [checking, setChecking] = useState(false);
@@ -63,7 +67,24 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
     setTimeout(() => {
       setDone(false);
       setDescription('');
+      setAttachments([]);
+      setAttachError(undefined);
     }, 250);
+  };
+
+  const addAttachment = async () => {
+    if (attachments.length >= MAX_TICKET_ATTACHMENTS) {
+      setAttachError(`You can attach up to ${MAX_TICKET_ATTACHMENTS} files.`);
+      return;
+    }
+    setAttachError(undefined);
+    const res = await pickTicketAttachment('library');
+    if (!res) return;
+    if (!res.ok) {
+      setAttachError(res.message);
+      return;
+    }
+    setAttachments((prev) => [...prev, res.attachment]);
   };
 
   const submit = async () => {
@@ -74,6 +95,7 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
         ownedVehicleId: vehicleId,
         claimType: category,
         description: cleanText(description) || category,
+        attachmentUrls: attachments.map((a) => a.url),
       });
       setDone(true);
       onSubmitted();
@@ -186,12 +208,31 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
                   style={[t.type.bodyLarge, { minHeight: 100, textAlignVertical: 'top', color: t.colors.textPrimary, backgroundColor: t.colors.surfaceAlt, borderRadius: radius.md, borderWidth: 1, borderColor: t.colors.border, padding: 14 }]}
                 />
 
-                <Pressable style={[styles.attach, { borderColor: t.colors.border }]}>
+                <Pressable
+                  onPress={addAttachment}
+                  disabled={attachments.length >= MAX_TICKET_ATTACHMENTS}
+                  style={[
+                    styles.attach,
+                    {
+                      borderColor: t.colors.border,
+                      opacity: attachments.length >= MAX_TICKET_ATTACHMENTS ? 0.5 : 1,
+                    },
+                  ]}
+                >
                   <Ionicons name="camera-outline" size={20} color={t.colors.primary} />
                   <Txt variant="titleSmall" color={t.colors.primary} style={{ marginLeft: 8 }}>
-                    Add photos or video
+                    Add photos or documents
                   </Txt>
                 </Pressable>
+                <AttachmentDrafts
+                  items={attachments}
+                  onRemove={(url) => setAttachments((p) => p.filter((a) => a.url !== url))}
+                />
+                {attachError ? (
+                  <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: spacing.sm }}>
+                    {attachError}
+                  </Txt>
+                ) : null}
               </ScrollView>
 
               <View style={{ paddingHorizontal: spacing.lg, paddingTop: 8 }}>
