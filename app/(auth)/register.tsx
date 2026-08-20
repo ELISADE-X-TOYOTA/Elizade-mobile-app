@@ -499,6 +499,8 @@ function OtpBoxes({
     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
       {value.map((d, i) => (
         <TextInput
+          // iOS renders a LIGHT keyboard in dark mode without this.
+          keyboardAppearance={t.isDark ? 'dark' : 'light'}
           key={i}
           ref={(el) => {
             refs.current[i] = el;

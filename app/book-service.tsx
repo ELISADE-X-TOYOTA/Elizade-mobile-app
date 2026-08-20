@@ -192,6 +192,8 @@ export default function BookService() {
 
         <Label text="Describe the issue (optional)" />
         <TextInput
+          // iOS renders a LIGHT keyboard in dark mode without this.
+          keyboardAppearance={t.isDark ? 'dark' : 'light'}
           value={issue}
           onChangeText={setIssue}
           maxLength={1000}

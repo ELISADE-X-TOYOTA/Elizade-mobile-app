@@ -183,6 +183,8 @@ export default function TicketDetail() {
               </Pressable>
 
               <TextInput
+          // iOS renders a LIGHT keyboard in dark mode without this.
+          keyboardAppearance={t.isDark ? 'dark' : 'light'}
                 value={text}
                 onChangeText={setText}
                 maxLength={1000}

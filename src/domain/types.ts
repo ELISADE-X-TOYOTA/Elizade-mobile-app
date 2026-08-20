@@ -303,6 +303,19 @@ export type ClaimStatus =
   | 'escalated'
   | 'closed';
 
+/** Answer from `GET /warranty/eligibility`, shown before a claim is filed. */
+export interface WarrantyEligibility {
+  eligible: boolean;
+  /** Why not, when `eligible` is false — worth showing verbatim. */
+  reason?: string | null;
+  inServiceDate?: string | null;
+  coverageEnd?: string | null;
+  mileageLimitKm: number;
+  warrantyMonths: number;
+  currentMileage: number;
+  certificateNumber?: string | null;
+}
+
 export interface WarrantyClaim {
   id: string;
   vehicleTitle: string;

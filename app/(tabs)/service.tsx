@@ -58,7 +58,9 @@ export default function Service() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 120 }}
-        refreshControl={<RefreshControl refreshing={loading} onRefresh={reload} tintColor={t.colors.primary} />}
+        refreshControl={<RefreshControl refreshing={loading} onRefresh={reload} tintColor={t.colors.primary}
+              colors={[t.colors.primary]}
+              progressBackgroundColor={t.colors.surface} />}
       >
         {/* Reminder banner */}
         <Pressable onPress={() => router.push('/book-service')} style={{ paddingHorizontal: spacing.screenH }}>

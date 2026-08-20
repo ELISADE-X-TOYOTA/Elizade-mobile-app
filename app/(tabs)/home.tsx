@@ -140,7 +140,9 @@ export default function Home() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 120 }}
-        refreshControl={<RefreshControl refreshing={loading} onRefresh={reload} tintColor={t.colors.primary} />}
+        refreshControl={<RefreshControl refreshing={loading} onRefresh={reload} tintColor={t.colors.primary}
+              colors={[t.colors.primary]}
+              progressBackgroundColor={t.colors.surface} />}
       >
         {/* Header */}
         <LinearGradient colors={t.gradients.hero} style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
@@ -175,6 +177,8 @@ export default function Home() {
           >
             <Ionicons name="search" size={20} color={t.colors.textSecondary} style={{ marginHorizontal: 8 }} />
             <TextInput
+          // iOS renders a LIGHT keyboard in dark mode without this.
+          keyboardAppearance={t.isDark ? 'dark' : 'light'}
               value={search}
               onChangeText={(v) => setSearch(clean(v, 60))}
               placeholder="What car are you looking for?"

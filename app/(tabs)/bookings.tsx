@@ -72,7 +72,9 @@ export default function Bookings() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ padding: spacing.screenH, paddingBottom: 120 }}
-        refreshControl={<RefreshControl refreshing={loading} onRefresh={reload} tintColor={t.colors.primary} />}
+        refreshControl={<RefreshControl refreshing={loading} onRefresh={reload} tintColor={t.colors.primary}
+              colors={[t.colors.primary]}
+              progressBackgroundColor={t.colors.surface} />}
       >
         {error ? (
           <Txt color={t.colors.errorText} style={{ marginBottom: spacing.md }}>

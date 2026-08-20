@@ -113,6 +113,8 @@ export default function NewTicket() {
           Message
         </Txt>
         <TextInput
+          // iOS renders a LIGHT keyboard in dark mode without this.
+          keyboardAppearance={t.isDark ? 'dark' : 'light'}
           value={message}
           onChangeText={setMessage}
           maxLength={1000}

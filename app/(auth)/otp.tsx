@@ -151,6 +151,8 @@ export default function Otp() {
       <Animated.View style={[{ flexDirection: 'row', justifyContent: 'space-between' }, shakeStyle]}>
         {digits.map((d, i) => (
           <TextInput
+          // iOS renders a LIGHT keyboard in dark mode without this.
+          keyboardAppearance={t.isDark ? 'dark' : 'light'}
             key={i}
             ref={(el) => {
               inputs.current[i] = el;

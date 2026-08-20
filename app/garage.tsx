@@ -127,7 +127,7 @@ function AddVehicleModal({ visible, onClose, onAdded }: { visible: boolean; onCl
   };
 
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose} statusBarTranslucent>
       <View style={styles.backdrop}>
         <Pressable style={{ flex: 1 }} onPress={onClose} />
         <View style={[styles.sheet, { backgroundColor: t.colors.surface, paddingBottom: insets.bottom + spacing.md }]}>
@@ -138,6 +138,8 @@ function AddVehicleModal({ visible, onClose, onAdded }: { visible: boolean; onCl
               Enter your 17-character VIN / chassis number to claim your vehicle and its history.
             </Txt>
             <TextInput
+          // iOS renders a LIGHT keyboard in dark mode without this.
+          keyboardAppearance={t.isDark ? 'dark' : 'light'}
               value={vin}
               onChangeText={(v) => setVin(cleanVin(v))}
               maxLength={17}

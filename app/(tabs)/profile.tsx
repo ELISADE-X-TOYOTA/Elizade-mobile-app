@@ -164,7 +164,7 @@ export default function Profile() {
       </ScrollView>
 
       {/* Choose a photo source */}
-      <Modal visible={photoOpen} transparent animationType="slide" onRequestClose={() => setPhotoOpen(false)}>
+      <Modal visible={photoOpen} transparent animationType="slide" onRequestClose={() => setPhotoOpen(false)} statusBarTranslucent>
         <View style={styles.backdrop}>
           <Pressable style={{ flex: 1 }} onPress={() => setPhotoOpen(false)} />
           <View style={[styles.sheet, { backgroundColor: t.colors.surface, paddingBottom: insets.bottom + spacing.lg }]}>

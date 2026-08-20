@@ -36,7 +36,7 @@ export function FinancingModal({ visible, vehiclePrice, vehicleTitle, onClose }:
   }, [vehiclePrice, downPct, tenor, rate]);
 
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose} statusBarTranslucent>
       <View style={styles.backdrop}>
         <Pressable style={{ flex: 1 }} onPress={onClose} />
         <View style={[styles.sheet, { backgroundColor: t.colors.surface, paddingBottom: insets.bottom + spacing.md }]}>

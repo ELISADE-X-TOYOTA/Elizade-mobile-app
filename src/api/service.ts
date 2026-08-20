@@ -26,8 +26,15 @@ export const serviceApi = {
   track: (appointmentId: string) =>
     apiFetch<ServiceTrackDto>(`/service/appointments/${appointmentId}/track`),
 
-  history: (page = 1, size = 50) =>
-    apiFetch<PaginatedDto<ServiceHistoryDto>>('/service/history', { query: { page, size } }),
+  /**
+   * `vehicleId` filters SERVER-side. Fetching everything and filtering on the
+   * device silently loses records once a customer's total history exceeds one
+   * page — older entries for the requested vehicle simply fall off page 1.
+   */
+  history: (opts: { vehicleId?: string; page?: number; size?: number } = {}) =>
+    apiFetch<PaginatedDto<ServiceHistoryDto>>('/service/history', {
+      query: { vehicleId: opts.vehicleId, page: opts.page ?? 1, size: opts.size ?? 50 },
+    }),
 
   create: (body: CreateAppointmentBody) =>
     apiFetch<ServiceAppointmentDto>('/service/appointments', { method: 'POST', body }),

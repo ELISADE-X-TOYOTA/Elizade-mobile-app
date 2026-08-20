@@ -62,7 +62,10 @@ export const brand = {
   // `successText` / `warningText` / `errorText` / `infoText` tokens below.
   success: fill('#22C55E'),
   warning: fill('#F59E0B'),
-  error: fill('#EF4444'),
+  // #DC2626 rather than the lighter #EF4444: this is the fill behind white
+  // ink on destructive buttons, and #EF4444 gave only 3.76:1 — under the
+  // 4.5:1 bar for the 14px semiBold labels we use. Same hue, 4.83:1.
+  error: fill('#DC2626'),
   info: fill('#3B82F6'),
 } as const;
 

@@ -92,7 +92,9 @@ export default function Shop() {
           windowSize={7}
           removeClippedSubviews
           showsVerticalScrollIndicator={false}
-          refreshControl={<RefreshControl refreshing={loading} onRefresh={reload} tintColor={t.colors.primary} />}
+          refreshControl={<RefreshControl refreshing={loading} onRefresh={reload} tintColor={t.colors.primary}
+              colors={[t.colors.primary]}
+              progressBackgroundColor={t.colors.surface} />}
           ListEmptyComponent={
             <Txt tone="secondary" style={{ padding: spacing.screenH }}>
               No vehicles in this category.

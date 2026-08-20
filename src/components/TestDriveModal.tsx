@@ -84,7 +84,7 @@ export function TestDriveModal({ visible, vehicle, mode, onClose }: Props) {
   };
 
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={close}>
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={close} statusBarTranslucent>
       <View style={styles.backdrop}>
         <Pressable style={{ flex: 1 }} onPress={close} />
         <View style={[styles.sheet, { backgroundColor: t.colors.surface, paddingBottom: insets.bottom + spacing.md }]}>

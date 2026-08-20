@@ -1,7 +1,7 @@
 import { mapCertificate, mapClaim, mapRecall } from '../api/customer-mappers';
 import { CreateClaimBody, warrantyApi } from '../api/warranty';
 import { APP } from '../constants/app';
-import { RecallNotice, WarrantyCertificate, WarrantyClaim } from '../domain/types';
+import { RecallNotice, WarrantyCertificate, WarrantyClaim, WarrantyEligibility } from '../domain/types';
 import { RECALLS, WARRANTY_CERTIFICATES, WARRANTY_CLAIMS, ownedVehicleById } from './mock';
 import { fetchOwnedVehicles } from './garageRepository';
 
@@ -39,6 +39,28 @@ export async function fetchClaims(): Promise<WarrantyClaim[]> {
     return [...mockClaims];
   }
   return (await warrantyApi.claims()).map(mapClaim);
+}
+
+/**
+ * Is this vehicle still covered? Called when the claim sheet opens so the
+ * customer is told up front, rather than by a 422 after writing it all out.
+ */
+export async function fetchEligibility(vehicleId: string): Promise<WarrantyEligibility> {
+  if (APP.useMock) {
+    await delay(250);
+    return {
+      eligible: true,
+      reason: null,
+      inServiceDate: null,
+      coverageEnd: new Date(Date.now() + 400 * 86_400_000).toISOString(),
+      mileageLimitKm: 100_000,
+      warrantyMonths: 36,
+      currentMileage: 24_500,
+      certificateNumber: 'ELZ-WC-0001',
+    };
+  }
+  const d = await warrantyApi.eligibility(vehicleId);
+  return { ...d };
 }
 
 export async function createClaim(body: CreateClaimBody): Promise<WarrantyClaim> {

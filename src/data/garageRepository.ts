@@ -53,15 +53,15 @@ export async function fetchVehicleRecords(
   }
 
   const [historyRes, certs, vehicles] = await Promise.all([
-    serviceApi.history().catch(() => ({ items: [] as never[] })),
+    // Filtered server-side; fetching everything and filtering here dropped
+    // this vehicle's older records once total history passed one page.
+    serviceApi.history({ vehicleId }).catch(() => ({ items: [] as never[] })),
     warrantyApi.certificates().catch(() => []),
     fetchOwnedVehicles().catch(() => [] as OwnedVehicle[]),
   ]);
 
   const vehicle = vehicles.find((v) => v.id === vehicleId);
-  const history = (historyRes.items ?? [])
-    .map(mapServiceHistory)
-    .filter((h) => h.vehicleId === vehicleId);
+  const history = (historyRes.items ?? []).map(mapServiceHistory);
 
   // Certificates identify their vehicle by label, not id.
   const label = vehicle ? `${vehicle.year} ${vehicle.make} ${vehicle.model}` : '';

@@ -198,6 +198,21 @@ export interface TicketMessageCreateDto {
   message: TicketMessageDto;
 }
 
+/**
+ * `GET /warranty/eligibility?ownedVehicleId=` — whether the vehicle is still
+ * inside basic cover, and the numbers behind that answer.
+ */
+export interface WarrantyEligibilityDto {
+  eligible: boolean;
+  reason: string | null;
+  inServiceDate: string | null;
+  coverageEnd: string | null;
+  mileageLimitKm: number;
+  warrantyMonths: number;
+  currentMileage: number;
+  certificateNumber: string | null;
+}
+
 // ── Watchlist ────────────────────────────────────────────────────────
 export interface WatchlistItemDto {
   id: string;

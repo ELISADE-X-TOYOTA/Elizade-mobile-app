@@ -64,6 +64,8 @@ export function AppTextField({
           <Ionicons name={icon} size={20} color={t.colors.textSecondary} style={{ marginRight: 10 }} />
         )}
         <TextInput
+          // iOS renders a LIGHT keyboard in dark mode without this.
+          keyboardAppearance={t.isDark ? 'dark' : 'light'}
           value={value}
           onChangeText={(v) => onChangeText(sanitize ? sanitize(v) : v)}
           placeholder={placeholder}

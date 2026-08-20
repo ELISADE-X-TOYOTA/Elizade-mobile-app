@@ -40,7 +40,9 @@ export default function Support() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ padding: spacing.screenH, paddingTop: spacing.sm, paddingBottom: 120, gap: 12 }}
-        refreshControl={<RefreshControl refreshing={loading} onRefresh={reload} tintColor={t.colors.primary} />}
+        refreshControl={<RefreshControl refreshing={loading} onRefresh={reload} tintColor={t.colors.primary}
+              colors={[t.colors.primary]}
+              progressBackgroundColor={t.colors.surface} />}
       >
         {/* Quick contact */}
         <View style={{ flexDirection: 'row', gap: 12 }}>

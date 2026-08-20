@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import {
-  Alert,
+  ActivityIndicator,
   Modal,
   Pressable,
   RefreshControl,
@@ -19,7 +19,7 @@ import { WatchlistItem } from '../src/domain/types';
 import { useWatchlistStore } from '../src/store/useWatchlistStore';
 import { radius, spacing } from '../src/theme/spacing';
 import { useTheme } from '../src/theme/useTheme';
-import { solid } from '../src/theme/colors';
+import { ON_DARK_INK, solid, tint } from '../src/theme/colors';
 
 /**
  * Saved models watchlist — backed by GET/PATCH/DELETE /watchlist.
@@ -35,6 +35,11 @@ export default function WatchlistScreen() {
   const update = useWatchlistStore((s) => s.update);
 
   const [editing, setEditing] = useState<WatchlistItem | null>(null);
+  const [removing, setRemoving] = useState<WatchlistItem | null>(null);
+  const [removeBusy, setRemoveBusy] = useState(false);
+  // Separate from `actionError`, which renders at the top of the list — sharing
+  // it would show the same message twice when a removal fails.
+  const [removeError, setRemoveError] = useState<string>();
   const [trim, setTrim] = useState('');
   const [color, setColor] = useState('');
   const [saving, setSaving] = useState(false);
@@ -67,19 +72,32 @@ export default function WatchlistScreen() {
     }
   };
 
+  /*
+    A themed sheet rather than `Alert.alert`.
+
+    Native alerts follow the OS appearance, not the in-app theme — so a
+    customer running Dark in the app with a Light phone got a white dialog on
+    top of a black screen. This also lets the destructive action carry the
+    error state inline instead of firing a second alert on failure.
+  */
   const confirmRemove = (item: WatchlistItem) => {
-    Alert.alert('Remove from watchlist?', `${item.model} will no longer be tracked.`, [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Remove',
-        style: 'destructive',
-        onPress: () => {
-          remove(item.id).catch((e) =>
-            setActionError(e instanceof Error ? e.message : 'Could not remove this item.'),
-          );
-        },
-      },
-    ]);
+    setRemoveError(undefined);
+    setRemoving(item);
+  };
+
+  const doRemove = async () => {
+    if (!removing) return;
+    setRemoveBusy(true);
+    setRemoveError(undefined);
+    try {
+      await remove(removing.id);
+      setRemoving(null);
+    } catch (e) {
+      // Keep the sheet open so the message has somewhere to land.
+      setRemoveError(e instanceof Error ? e.message : 'Could not remove this item.');
+    } finally {
+      setRemoveBusy(false);
+    }
   };
 
   return (
@@ -102,7 +120,9 @@ export default function WatchlistScreen() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ padding: spacing.screenH, paddingBottom: 120 }}
-        refreshControl={<RefreshControl refreshing={loading} onRefresh={load} tintColor={t.colors.primary} />}
+        refreshControl={<RefreshControl refreshing={loading} onRefresh={load} tintColor={t.colors.primary}
+              colors={[t.colors.primary]}
+              progressBackgroundColor={t.colors.surface} />}
       >
         {error || actionError ? (
           <Txt color={t.colors.errorText} style={{ marginBottom: spacing.md }}>
@@ -156,7 +176,7 @@ export default function WatchlistScreen() {
         )}
       </ScrollView>
 
-      <Modal visible={!!editing} transparent animationType="slide" onRequestClose={() => setEditing(null)}>
+      <Modal visible={!!editing} transparent animationType="slide" onRequestClose={() => setEditing(null)} statusBarTranslucent>
         <View style={styles.backdrop}>
           <Pressable style={{ flex: 1 }} onPress={() => setEditing(null)} />
           <View style={[styles.sheet, { backgroundColor: t.colors.surface, paddingBottom: insets.bottom + spacing.lg }]}>
@@ -176,6 +196,82 @@ export default function WatchlistScreen() {
                 </Txt>
               ) : null}
               <PrimaryButton label="Save" loading={saving} onPress={saveEdit} />
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Destructive confirm — themed, so it matches the app rather than the OS. */}
+      <Modal
+        visible={!!removing}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+        onRequestClose={() => !removeBusy && setRemoving(null)}
+      >
+        <View style={styles.alertBackdrop}>
+          {/* Tapping outside cancels — but not mid-request, or the sheet would
+              vanish while the delete is still in flight. */}
+          <Pressable
+            style={StyleSheet.absoluteFill}
+            onPress={() => !removeBusy && setRemoving(null)}
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+          />
+          <View
+            style={[
+              styles.alertCard,
+              { backgroundColor: t.colors.surface, borderColor: t.colors.border },
+            ]}
+          >
+            <View style={[styles.alertIcon, { backgroundColor: tint(t.colors.error, 0.12) }]}>
+              <Ionicons name="trash-outline" size={22} color={t.colors.errorText} />
+            </View>
+
+            <Txt variant="titleLarge" center style={{ marginTop: spacing.md }}>
+              Remove from watchlist?
+            </Txt>
+            <Txt tone="secondary" center style={{ marginTop: 6 }}>
+              {removing?.model} will no longer be tracked. You can add it again at any time.
+            </Txt>
+
+            {removeError ? (
+              <Txt variant="bodySmall" color={t.colors.errorText} center style={{ marginTop: spacing.sm }}>
+                {removeError}
+              </Txt>
+            ) : null}
+
+            <View style={styles.alertActions}>
+              <Pressable
+                onPress={() => setRemoving(null)}
+                disabled={removeBusy}
+                accessibilityRole="button"
+                style={[
+                  styles.alertBtn,
+                  { borderColor: t.colors.border, opacity: removeBusy ? 0.5 : 1 },
+                ]}
+              >
+                <Txt variant="titleSmall">Cancel</Txt>
+              </Pressable>
+
+              <Pressable
+                onPress={doRemove}
+                disabled={removeBusy}
+                accessibilityRole="button"
+                accessibilityLabel={`Remove ${removing?.model ?? ''} from watchlist`}
+                style={[
+                  styles.alertBtn,
+                  { backgroundColor: solid(t.colors.error), borderColor: solid(t.colors.error) },
+                ]}
+              >
+                {removeBusy ? (
+                  <ActivityIndicator size="small" color={ON_DARK_INK} />
+                ) : (
+                  <Txt variant="titleSmall" color={ON_DARK_INK}>
+                    Remove
+                  </Txt>
+                )}
+              </Pressable>
             </View>
           </View>
         </View>
@@ -202,6 +298,8 @@ function Field({
         {label}
       </Txt>
       <TextInput
+          // iOS renders a LIGHT keyboard in dark mode without this.
+          keyboardAppearance={t.isDark ? 'dark' : 'light'}
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
@@ -261,6 +359,31 @@ const styles = StyleSheet.create({
   emptyIcon: { width: 72, height: 72, borderRadius: 36, alignItems: 'center', justifyContent: 'center' },
   browseBtn: { paddingHorizontal: 20, height: 44, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
   backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
+  alertBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: spacing.xl,
+  },
+  alertCard: {
+    width: '100%',
+    maxWidth: 380,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    padding: spacing.lg,
+    alignItems: 'center',
+  },
+  alertIcon: { width: 46, height: 46, borderRadius: 23, alignItems: 'center', justifyContent: 'center' },
+  alertActions: { flexDirection: 'row', gap: 10, marginTop: spacing.lg, alignSelf: 'stretch' },
+  alertBtn: {
+    flex: 1,
+    height: 46,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   sheet: { borderTopLeftRadius: 28, borderTopRightRadius: 28, paddingTop: 12 },
   handle: { width: 44, height: 5, borderRadius: 3, alignSelf: 'center', marginBottom: 12 },
 });
