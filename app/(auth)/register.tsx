@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useImperativeHandle, useRef, useState, forwardRef } from 'react';
 import {
   ActivityIndicator,
   BackHandler,
@@ -56,6 +56,8 @@ const MIN_ANIMATION_MS = 1100;
 
 /** OTP length — must match the backend's OTP_LENGTH. */
 const LEN = 6;
+/** Seconds before "Resend code" becomes available again. */
+const RESEND_SECONDS = 60;
 
 /** Multi-step registration wizard with a progress bar. */
 export default function Register() {
@@ -76,6 +78,9 @@ export default function Register() {
   const [phone, setPhone] = useState('');
   const [code, setCode] = useState<string[]>(Array(LEN).fill(''));
   const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resendError, setResendError] = useState<string>();
+  const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
   const [error, setError] = useState<string>();
   const [otpError, setOtpError] = useState(false);
   const [done, setDone] = useState(false);
@@ -84,6 +89,16 @@ export default function Register() {
   const joinedCode = code.join('');
   /** Guards against auto-submit firing twice for one completed code. */
   const submitted = useRef(false);
+  const otpBoxesRef = useRef<OtpBoxesHandle>(null);
+
+  // ── Resend countdown (OTP step only) ───────────────────────────────────
+  useEffect(() => {
+    if (step !== 'otp' || secondsLeft <= 0) return;
+    const id = setInterval(() => setSecondsLeft((s) => (s <= 1 ? 0 : s - 1)), 1000);
+    return () => clearInterval(id);
+  }, [step, secondsLeft]);
+
+  const resendMmss = `${Math.floor(secondsLeft / 60)}:${String(secondsLeft % 60).padStart(2, '0')}`;
 
   // Animated progress fill.
   const progress = useSharedValue(0.25);
@@ -153,6 +168,24 @@ export default function Register() {
     [email, firstName, lastName, phone, setCurrentUser, loadWatchlist],
   );
 
+  const resend = async () => {
+    if (secondsLeft > 0 || resending) return;
+    setResending(true);
+    setResendError(undefined);
+    try {
+      await requestOtp({ email, purpose: 'register', firstName, lastName, otherName });
+      setCode(Array(LEN).fill(''));
+      submitted.current = false;
+      setOtpError(false);
+      setSecondsLeft(RESEND_SECONDS);
+      otpBoxesRef.current?.focusFirst();
+    } catch (e) {
+      setResendError(e instanceof Error ? e.message : 'Could not resend the code');
+    } finally {
+      setResending(false);
+    }
+  };
+
   /**
    * Auto-verify the moment the sixth digit lands — no manual tap needed.
    * Runs in an effect rather than the keystroke handler so it also fires when
@@ -189,6 +222,8 @@ export default function Register() {
           }
           setSending(false);
           submitted.current = false;
+          setSecondsLeft(RESEND_SECONDS);
+          setResendError(undefined);
           setStep('otp');
         } catch (e) {
           setSending(false);
@@ -349,6 +384,7 @@ export default function Register() {
               <StepBody title="Verify your email" subtitle={`Enter the 6-digit code we sent to ${email}.`}>
                 <Animated.View style={shakeStyle}>
                   <OtpBoxes
+                    ref={otpBoxesRef}
                     value={code}
                     onChange={(v) => {
                       setCode(v);
@@ -362,6 +398,10 @@ export default function Register() {
                   <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: 10 }}>
                     That code isn't right. Please try again.
                   </Txt>
+                ) : resendError ? (
+                  <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: 10 }}>
+                    {resendError}
+                  </Txt>
                 ) : (
                   <Txt variant="bodySmall" tone="tertiary" style={{ marginTop: 10 }}>
                     {loading
@@ -371,14 +411,25 @@ export default function Register() {
                         : 'Verification starts automatically once all six digits are in.'}
                   </Txt>
                 )}
-                <Pressable style={{ marginTop: spacing.md }}>
-                  <Txt tone="secondary">
-                    Didn't get it?{'  '}
-                    <Txt variant="titleSmall" color={t.colors.accentText}>
-                      Resend code
+                <View style={{ marginTop: spacing.md, alignItems: 'center' }}>
+                  {secondsLeft > 0 ? (
+                    <Txt tone="secondary">
+                      Didn't get it?{'  '}
+                      <Txt variant="titleSmall" tone="tertiary">
+                        Resend in {resendMmss}
+                      </Txt>
                     </Txt>
-                  </Txt>
-                </Pressable>
+                  ) : (
+                    <Pressable onPress={resend} disabled={resending} hitSlop={8}>
+                      <Txt tone="secondary">
+                        Didn't get it?{'  '}
+                        <Txt variant="titleSmall" color={t.colors.accentText}>
+                          {resending ? 'Sending…' : 'Resend code'}
+                        </Txt>
+                      </Txt>
+                    </Pressable>
+                  )}
+                </View>
               </StepBody>
             )}
           </Animated.View>
@@ -452,19 +503,23 @@ function StepBody({ title, subtitle, children }: { title: string; subtitle: stri
   );
 }
 
-function OtpBoxes({
-  value,
-  onChange,
-  error,
-  disabled,
-}: {
-  value: string[];
-  onChange: (v: string[]) => void;
-  error?: boolean;
-  disabled?: boolean;
-}) {
+export type OtpBoxesHandle = { focusFirst: () => void };
+
+const OtpBoxes = forwardRef<
+  OtpBoxesHandle,
+  {
+    value: string[];
+    onChange: (v: string[]) => void;
+    error?: boolean;
+    disabled?: boolean;
+  }
+>(function OtpBoxes({ value, onChange, error, disabled }, ref) {
   const t = useTheme();
   const refs = useRef<(TextInput | null)[]>([]);
+
+  useImperativeHandle(ref, () => ({
+    focusFirst: () => refs.current[0]?.focus(),
+  }));
 
   const set = (i: number, v: string) => {
     const cleaned = v.replace(/[^0-9]/g, '');
@@ -535,7 +590,7 @@ function OtpBoxes({
       ))}
     </View>
   );
-}
+});
 
 function Success({ firstName, onDone }: { firstName: string; onDone: () => void }) {
   const t = useTheme();

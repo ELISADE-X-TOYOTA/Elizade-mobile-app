@@ -60,6 +60,7 @@ export interface Branch {
 }
 
 export interface ListVehiclesParams {
+  q?: string;
   make?: string;
   model?: string;
   minPrice?: number;

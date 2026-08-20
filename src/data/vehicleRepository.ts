@@ -21,6 +21,7 @@ async function branchMap(): Promise<Map<string, Branch>> {
 
 /** Server-side query options passed straight through to `GET /vehicles`. */
 export interface VehicleQuery {
+  q?: string;
   fuelType?: string;
   transmission?: string;
   maxPrice?: number;
@@ -31,13 +32,17 @@ export interface VehicleQuery {
 export async function fetchVehicles(query: VehicleQuery = {}): Promise<Vehicle[]> {
   if (APP.useMock) {
     await delay(500);
-    // Approximate the server filters so mock mode behaves the same.
-    return VEHICLES.filter(
-      (v) =>
-        (!query.fuelType || v.fuelType === query.fuelType) &&
-        (!query.transmission || v.transmission === query.transmission) &&
-        (!query.maxPrice || v.price <= query.maxPrice),
-    );
+    const q = query.q?.trim().toLowerCase();
+    return VEHICLES.filter((v) => {
+      if (query.fuelType && v.fuelType !== query.fuelType) return false;
+      if (query.transmission && v.transmission !== query.transmission) return false;
+      if (query.maxPrice && v.price > query.maxPrice) return false;
+      if (q) {
+        const haystack = `${v.make} ${v.model} ${v.trim} ${v.color} ${v.year}`.toLowerCase();
+        return q.split(/\s+/).every((token) => haystack.includes(token));
+      }
+      return true;
+    });
   }
   const [res, branches] = await Promise.all([
     listPublicVehicles({ limit: 50, ...query }),

@@ -1,13 +1,14 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
   Dimensions,
   NativeScrollEvent,
   NativeSyntheticEvent,
   Pressable,
   ScrollView,
+  Share,
   StyleSheet,
   View,
 } from 'react-native';
@@ -18,7 +19,7 @@ import { PrimaryButton } from '../../src/components/PrimaryButton';
 import { Skeleton } from '../../src/components/Skeleton';
 import { Txt } from '../../src/components/Txt';
 import { ON_DARK_INK, OVERLAY_CHIP, OVERLAY_CHIP_INK, solid, tint } from '../../src/theme/colors';
-import { vehicleSubtitle, vehicleTitle } from '../../src/domain/types';
+import { vehicleSubtitle, vehicleTitle, Vehicle } from '../../src/domain/types';
 import { useVehicle } from '../../src/hooks/useVehicles';
 import { useWatchlistStore } from '../../src/store/useWatchlistStore';
 import { radius, spacing } from '../../src/theme/spacing';
@@ -43,6 +44,25 @@ export default function CarDetails() {
   const [sale, setSale] = useState<SalesMode | null>(null);
   const [financeOpen, setFinanceOpen] = useState(false);
   const [quoteOpen, setQuoteOpen] = useState(false);
+
+  const shareVehicle = useCallback(async (vehicle: Vehicle) => {
+    const title = vehicleTitle(vehicle);
+    const lines = [
+      `Check out the ${title} at Elizade Connect.`,
+      vehicle.year ? `Year: ${vehicle.year}` : null,
+      vehicle.trim ? `Trim: ${vehicle.trim}` : null,
+      typeof vehicle.price === 'number' && vehicle.price > 0 ? `Price: ${priceCompact(vehicle.price)}` : null,
+      vehicle.location ? `Available at ${vehicle.location}` : null,
+      '',
+      'Contact Elizade to learn more or book a test drive.',
+    ].filter((line): line is string => Boolean(line));
+
+    try {
+      await Share.share({ message: lines.join('\n'), title });
+    } catch {
+      // User dismissed the sheet — not an error.
+    }
+  }, []);
 
   const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) =>
     setImgIndex(Math.round(e.nativeEvent.contentOffset.x / width));
@@ -86,7 +106,7 @@ export default function CarDetails() {
             <CircleBtn icon="arrow-back" onPress={() => router.back()} />
             <View style={{ flexDirection: 'row', gap: 8 }}>
               <CompareButton vehicle={v} size={40} />
-              <CircleBtn icon="share-social-outline" onPress={() => {}} />
+              <CircleBtn icon="share-social-outline" onPress={() => shareVehicle(v)} />
               <CircleBtn
                 icon={isFav ? 'heart' : 'heart-outline'}
                 // Their handler (heart = server watchlist), our `solid()` —
