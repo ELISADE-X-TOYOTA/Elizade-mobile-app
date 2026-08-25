@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useCallback, useRef, useState } from 'react';
 import {
@@ -53,6 +54,7 @@ const SLIDES: Slide[] = [
  */
 export function IntroGuide({ visible, onDone }: { visible: boolean; onDone: () => void }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const { width: screenW } = useWindowDimensions();
   const scrollRef = useRef<ScrollView>(null);
   const [index, setIndex] = useState(0);
@@ -95,10 +97,8 @@ export function IntroGuide({ visible, onDone }: { visible: boolean; onDone: () =
             <Txt variant="labelSmall" tone="tertiary">
               {index + 1} OF {SLIDES.length}
             </Txt>
-            <Pressable onPress={finish} hitSlop={10} accessibilityLabel="Skip intro">
-              <Txt variant="titleSmall" tone="secondary">
-                Skip
-              </Txt>
+            <Pressable onPress={finish} hitSlop={10} accessibilityLabel={tr('onboarding.skipIntro')}>
+              <Txt variant="titleSmall" tone="secondary">{tr('common.skip')}</Txt>
             </Pressable>
           </View>
 

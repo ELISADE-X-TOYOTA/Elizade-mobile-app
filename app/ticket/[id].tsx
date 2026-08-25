@@ -3,6 +3,7 @@ import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MAX_TICKET_ATTACHMENTS } from '../../src/api/support';
 import { AttachmentDrafts } from '../../src/components/AttachmentDrafts';
@@ -29,6 +30,7 @@ import { tint } from '../../src/theme/colors';
 
 export default function TicketDetail() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { ticket, messages, loading, setMessages, setTicket } = useTicket(id ?? '');
@@ -165,7 +167,7 @@ export default function TicketDetail() {
                 disabled={attaching || drafts.length >= MAX_TICKET_ATTACHMENTS}
                 hitSlop={8}
                 accessibilityRole="button"
-                accessibilityLabel="Attach a photo"
+                accessibilityLabel={tr('support.attachPhoto')}
                 style={[
                   styles.attachBtn,
                   {
@@ -198,7 +200,7 @@ export default function TicketDetail() {
                 onPress={send}
                 disabled={!canSend}
                 accessibilityRole="button"
-                accessibilityLabel="Send reply"
+                accessibilityLabel={tr('support.sendReply')}
                 accessibilityState={{ disabled: !canSend }}
                 style={[styles.sendBtn, { backgroundColor: canSend ? t.colors.primary : t.colors.border }]}
               >
@@ -224,6 +226,7 @@ function toneColor(t: ReturnType<typeof useTheme>, tone: Tone) {
 
 function Bubble({ message }: { message: TicketMessage }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const mine = message.author === 'customer';
   return (
     <View style={{ alignSelf: mine ? 'flex-end' : 'flex-start', maxWidth: '82%' }}>
@@ -262,9 +265,7 @@ function Bubble({ message }: { message: TicketMessage }) {
                     variant="bodySmall"
                     color={mine ? t.colors.onPrimary : t.colors.textSecondary}
                     style={{ marginLeft: 6 }}
-                  >
-                    Document
-                  </Txt>
+                  >{tr('support.document')}</Txt>
                 </View>
               ) : (
                 <Image
@@ -289,6 +290,7 @@ function Bubble({ message }: { message: TicketMessage }) {
 
 function RatingCard({ rating, onRate }: { rating?: number; onRate: (n: number) => void }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <View style={[styles.ratingCard, { backgroundColor: t.colors.surface, borderColor: t.colors.border }]}>
       <Ionicons name="checkmark-circle" size={28} color={t.colors.successText} />

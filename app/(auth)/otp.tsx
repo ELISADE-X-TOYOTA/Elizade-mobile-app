@@ -1,6 +1,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { NativeSyntheticEvent, Pressable, TextInput, TextInputKeyPressEventData, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import Animated, { useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
 import { AuthScaffold } from '../../src/components/AuthScaffold';
 import { PrimaryButton } from '../../src/components/PrimaryButton';
@@ -19,6 +20,7 @@ const RESEND_SECONDS = 60;
 
 export default function Otp() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const { email, purpose } = useLocalSearchParams<{ email?: string; purpose?: string }>();
   const setCurrentUser = useStore((s) => s.setCurrentUser);
   const completeOnboarding = useStore((s) => s.completeOnboarding);
@@ -151,8 +153,8 @@ export default function Otp() {
 
   return (
     <AuthScaffold
-      title="Verify Code"
-      subtitle={`Enter the 6-digit code sent to ${email ?? 'your email'}`}
+      title={tr('auth.verifyCode')}
+      subtitle={tr('auth.otpSubtitleShort', { email: email ?? tr('auth.yourEmail') })}
       compactSubtitle
     >
       <Animated.View style={[{ flexDirection: 'row', justifyContent: 'space-between' }, shakeStyle]}>

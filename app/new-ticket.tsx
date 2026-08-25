@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppTextField } from '../src/components/AppTextField';
 import { AttachmentDrafts } from '../src/components/AttachmentDrafts';
@@ -23,6 +24,7 @@ const CATEGORIES = Object.keys(TICKET_CATEGORY_META) as TicketCategory[];
 
 export default function NewTicket() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const [category, setCategory] = useState<TicketCategory>('general');
   const [subject, setSubject] = useState('');
@@ -71,15 +73,11 @@ export default function NewTicket() {
         <Pressable onPress={() => router.back()} style={[styles.backBtn, { backgroundColor: t.colors.surfaceAlt, borderColor: t.colors.border }]}>
           <Ionicons name="arrow-back" size={22} color={t.colors.textPrimary} />
         </Pressable>
-        <Txt variant="headlineMedium" style={{ marginTop: spacing.md }}>
-          New Ticket
-        </Txt>
+        <Txt variant="headlineMedium" style={{ marginTop: spacing.md }}>{tr('support.newTicket')}</Txt>
       </View>
 
       <ScrollView contentContainerStyle={{ padding: spacing.screenH, paddingBottom: 40 }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-        <Txt variant="titleMedium" style={{ marginBottom: spacing.sm }}>
-          Category
-        </Txt>
+        <Txt variant="titleMedium" style={{ marginBottom: spacing.sm }}>{tr('common.category')}</Txt>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
           {CATEGORIES.map((c) => {
             const meta = TICKET_CATEGORY_META[c];
@@ -107,18 +105,16 @@ export default function NewTicket() {
         </View>
 
         <View style={{ height: spacing.lg }} />
-        <AppTextField label="Subject" placeholder="Briefly, what's this about?" value={subject} onChangeText={setSubject} icon="chatbox-ellipses-outline" />
+        <AppTextField label={tr('support.subject')} placeholder={tr('support.subjectPlaceholder')} value={subject} onChangeText={setSubject} icon="chatbox-ellipses-outline" />
 
-        <Txt variant="titleSmall" style={{ marginTop: spacing.lg, marginBottom: spacing.xs }}>
-          Message
-        </Txt>
+        <Txt variant="titleSmall" style={{ marginTop: spacing.lg, marginBottom: spacing.xs }}>{tr('support.message')}</Txt>
         <TextInput
           // iOS renders a LIGHT keyboard in dark mode without this.
           keyboardAppearance={t.isDark ? 'dark' : 'light'}
           value={message}
           onChangeText={setMessage}
           maxLength={1000}
-          placeholder="Tell us how we can help…"
+          placeholder={tr('support.messagePlaceholder')}
           placeholderTextColor={t.colors.textTertiary}
           multiline
           style={[t.type.bodyLarge, { minHeight: 120, textAlignVertical: 'top', color: t.colors.textPrimary, backgroundColor: t.colors.surfaceAlt, borderRadius: radius.md, borderWidth: 1, borderColor: t.colors.border, padding: 14 }]}
@@ -130,7 +126,7 @@ export default function NewTicket() {
           onPress={attach}
           disabled={attaching || attachmentsFull}
           accessibilityRole="button"
-          accessibilityLabel="Attach a photo"
+          accessibilityLabel={tr('support.attachPhoto')}
           accessibilityState={{ disabled: attaching || attachmentsFull }}
           style={[
             styles.attach,
@@ -158,7 +154,7 @@ export default function NewTicket() {
         ) : null}
 
         <View style={{ height: spacing.xl }} />
-        <PrimaryButton label="Submit Ticket" icon="send" loading={loading} disabled={!valid} onPress={submit} />
+        <PrimaryButton label={tr('support.submitTicket')} icon="send" loading={loading} disabled={!valid} onPress={submit} />
       </ScrollView>
     </View>
   );

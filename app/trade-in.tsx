@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MAX_TICKET_ATTACHMENTS } from '../src/api/support';
@@ -42,6 +43,7 @@ const CONDITIONS = [
 
 export default function TradeIn() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const [make, setMake] = useState('');
   const [model, setModel] = useState('');
@@ -108,9 +110,7 @@ export default function TradeIn() {
           <Animated.View entering={ZoomIn.duration(500)} style={[styles.successIcon, { backgroundColor: tint(t.colors.success, 0.12) }]}>
             <Ionicons name="cash" size={64} color={t.colors.successText} />
           </Animated.View>
-          <Txt variant="headlineLarge" center style={{ marginTop: spacing.xl }}>
-            Valuation Requested
-          </Txt>
+          <Txt variant="headlineLarge" center style={{ marginTop: spacing.xl }}>{tr('tradeIn.valuationRequested')}</Txt>
           <Txt variant="bodyLarge" tone="secondary" center style={{ marginTop: spacing.sm }}>
             An Elizade specialist will confirm your {make} {model} trade-in value after a quick physical inspection.
           </Txt>
@@ -121,7 +121,7 @@ export default function TradeIn() {
           )}
         </View>
         <View style={{ paddingBottom: insets.bottom + spacing.md }}>
-          <PrimaryButton label="Done" icon="arrow-forward" onPress={() => router.back()} />
+          <PrimaryButton label={tr('common.done')} icon="arrow-forward" onPress={() => router.back()} />
         </View>
       </View>
     );
@@ -133,23 +133,19 @@ export default function TradeIn() {
         <Pressable onPress={() => router.back()} style={[styles.backBtn, { backgroundColor: t.colors.surfaceAlt, borderColor: t.colors.border }]}>
           <Ionicons name="arrow-back" size={22} color={t.colors.textPrimary} />
         </Pressable>
-        <Txt variant="headlineMedium" style={{ marginTop: spacing.md }}>
-          Trade-in Valuation
-        </Txt>
-        <Txt tone="secondary">Tell us about your current vehicle for an instant estimate.</Txt>
+        <Txt variant="headlineMedium" style={{ marginTop: spacing.md }}>{tr('tradeIn.title')}</Txt>
+        <Txt tone="secondary">{tr('tradeIn.subtitle')}</Txt>
       </View>
 
       <ScrollView contentContainerStyle={{ padding: spacing.screenH, paddingBottom: 40 }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
         <View style={{ gap: spacing.lg }}>
-          <AppTextField label="Make" placeholder="e.g. Toyota" icon="car-outline" value={make} onChangeText={setMake} sanitize={cleanName} maxLength={40} autoCapitalize="words" />
-          <AppTextField label="Model" placeholder="e.g. Corolla" icon="car-sport-outline" value={model} onChangeText={setModel} sanitize={cleanName} maxLength={40} autoCapitalize="words" />
-          <AppTextField label="Year" placeholder="e.g. 2018" icon="calendar-outline" keyboardType="number-pad" value={year} onChangeText={setYear} sanitize={(v) => cleanDigits(v, 4)} maxLength={4} />
-          <AppTextField label="Mileage (km)" placeholder="e.g. 85000" icon="speedometer-outline" keyboardType="number-pad" value={mileage} onChangeText={setMileage} sanitize={(v) => cleanDigits(v, 7)} maxLength={7} />
+          <AppTextField label={tr('shop.make')} placeholder={tr('tradeIn.makePlaceholder')} icon="car-outline" value={make} onChangeText={setMake} sanitize={cleanName} maxLength={40} autoCapitalize="words" />
+          <AppTextField label={tr('shop.model')} placeholder={tr('tradeIn.modelPlaceholder')} icon="car-sport-outline" value={model} onChangeText={setModel} sanitize={cleanName} maxLength={40} autoCapitalize="words" />
+          <AppTextField label={tr('tradeIn.year')} placeholder={tr('tradeIn.yearPlaceholder')} icon="calendar-outline" keyboardType="number-pad" value={year} onChangeText={setYear} sanitize={(v) => cleanDigits(v, 4)} maxLength={4} />
+          <AppTextField label={tr('shop.mileage')} placeholder={tr('tradeIn.mileagePlaceholder')} icon="speedometer-outline" keyboardType="number-pad" value={mileage} onChangeText={setMileage} sanitize={(v) => cleanDigits(v, 7)} maxLength={7} />
         </View>
 
-        <Txt variant="titleSmall" style={{ marginTop: spacing.lg, marginBottom: spacing.sm }}>
-          Condition
-        </Txt>
+        <Txt variant="titleSmall" style={{ marginTop: spacing.lg, marginBottom: spacing.sm }}>{tr('tradeIn.condition')}</Txt>
         <View style={{ flexDirection: 'row', gap: 10 }}>
           {CONDITIONS.map((c, i) => {
             const active = condition === i;
@@ -170,15 +166,11 @@ export default function TradeIn() {
         {/* Estimate */}
         {estimate && (
           <View style={[styles.estimate, { backgroundColor: t.colors.primary }]}>
-            <Txt variant="labelSmall" color={t.colors.onPrimary} style={{ opacity: 0.7 }}>
-              ESTIMATED TRADE-IN VALUE
-            </Txt>
+            <Txt variant="labelSmall" color={t.colors.onPrimary} style={{ opacity: 0.7 }}>{tr('tradeIn.estimatedValue')}</Txt>
             <Txt variant="headlineMedium" color={t.colors.onPrimary} style={{ marginTop: 2 }}>
               {price(estimate.low)} – {price(estimate.high)}
             </Txt>
-            <Txt variant="bodySmall" color={t.colors.onPrimary} style={{ opacity: 0.75, marginTop: 4 }}>
-              Final value confirmed after inspection
-            </Txt>
+            <Txt variant="bodySmall" color={t.colors.onPrimary} style={{ opacity: 0.75, marginTop: 4 }}>{tr('tradeIn.finalValueNote')}</Txt>
           </View>
         )}
 
@@ -188,9 +180,7 @@ export default function TradeIn() {
           style={[styles.attach, { borderColor: t.colors.border, opacity: photos.length >= MAX_TICKET_ATTACHMENTS ? 0.5 : 1 }]}
         >
           <Ionicons name="camera-outline" size={20} color={t.colors.primary} />
-          <Txt variant="titleSmall" color={t.colors.primary} style={{ marginLeft: 8 }}>
-            Add photos of your vehicle
-          </Txt>
+          <Txt variant="titleSmall" color={t.colors.primary} style={{ marginLeft: 8 }}>{tr('tradeIn.addPhotos')}</Txt>
         </Pressable>
         <AttachmentDrafts items={photos} onRemove={(url) => setPhotos((p) => p.filter((a) => a.url !== url))} />
         {attachError ? (
@@ -206,7 +196,7 @@ export default function TradeIn() {
         ) : null}
 
         <View style={{ height: spacing.xl }} />
-        <PrimaryButton label="Submit for Assessment" icon="cash-outline" loading={loading} disabled={!valid} onPress={submit} />
+        <PrimaryButton label={tr('service.submitForAssessment')} icon="cash-outline" loading={loading} disabled={!valid} onPress={submit} />
       </ScrollView>
     </View>
   );

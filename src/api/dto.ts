@@ -202,6 +202,10 @@ export interface TicketMessageCreateDto {
  * `GET /warranty/eligibility?ownedVehicleId=` — whether the vehicle is still
  * inside basic cover, and the numbers behind that answer.
  */
+/** Battery cover tiers from `warranty/policy.py`.
+ *  `unknown` means no in-service date is recorded — NOT that cover lapsed. */
+export type BatteryWarrantyStatus = 'unknown' | 'free' | 'partial' | 'expired';
+
 export interface WarrantyEligibilityDto {
   eligible: boolean;
   reason: string | null;
@@ -211,6 +215,16 @@ export interface WarrantyEligibilityDto {
   warrantyMonths: number;
   currentMileage: number;
   certificateNumber: string | null;
+  // Battery runs on its own two-tier clock, shorter than basic cover:
+  // free replacement to 24 months, pro-rata to 36. `eligible` above does
+  // NOT answer for the battery — a vehicle inside basic cover can still be
+  // past free battery replacement.
+  batteryFreeMonths: number;
+  batteryPartialMonths: number;
+  batteryFreeCoverageEnd: string | null;
+  batteryPartialCoverageEnd: string | null;
+  batteryStatus: BatteryWarrantyStatus;
+  batteryEligible: boolean;
 }
 
 // ── Watchlist ────────────────────────────────────────────────────────

@@ -2,6 +2,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import Animated, {
   FadeIn,
   FadeInUp,
@@ -23,6 +24,7 @@ import { brand, solid } from '../src/theme/colors';
  * the app boots, then it routes to onboarding.
  */
 export default function Splash() {
+  const { t: tr } = useTranslation();
   const scale = useSharedValue(0.7);
   const road = useSharedValue(0);
   const carX = useSharedValue(-120);
@@ -54,9 +56,7 @@ export default function Splash() {
 
       {/* The three pillars of the platform */}
       <Animated.View entering={FadeInUp.delay(700).duration(600)}>
-        <Txt variant="bodyLarge" color="rgba(255,255,255,0.85)" style={styles.tagline}>
-          Buy · Own · Service
-        </Txt>
+        <Txt variant="bodyLarge" color="rgba(255,255,255,0.85)" style={styles.tagline}>{tr('brand.tagline')}</Txt>
       </Animated.View>
 
       <View style={styles.silhouette}>
@@ -70,11 +70,9 @@ export default function Splash() {
 
       {/* Authorised marques — grounds the app in the real dealership */}
       <Animated.View entering={FadeIn.delay(1300).duration(700)} style={styles.footer}>
-        <Txt variant="labelSmall" color="rgba(255,255,255,0.5)" style={styles.marques}>
-          TOYOTA · JETOUR · JAC
-        </Txt>
+        <Txt variant="labelSmall" color="rgba(255,255,255,0.5)" style={styles.marques}>{tr('brand.brands')}</Txt>
         <Txt variant="labelSmall" color="rgba(255,255,255,0.32)" style={styles.authorised}>
-          Authorised Distributor · Elizade Nigeria Limited
+          {tr('brand.distributor')}
         </Txt>
       </Animated.View>
     </View>

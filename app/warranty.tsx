@@ -3,6 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Skeleton } from '../src/components/Skeleton';
 import { Txt } from '../src/components/Txt';
@@ -24,6 +25,7 @@ import { ON_DARK_INK, solid } from '../src/theme/colors';
 
 export default function Warranty() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const { certificates, recalls, claims, loading, error, reload } = useWarranty();
   const [claimOpen, setClaimOpen] = useState(false);
@@ -36,9 +38,7 @@ export default function Warranty() {
         <Pressable onPress={() => router.back()} style={[styles.backBtn, { backgroundColor: t.colors.surface, borderColor: t.colors.border }]}>
           <Ionicons name="arrow-back" size={22} color={t.colors.textPrimary} />
         </Pressable>
-        <Txt variant="headlineMedium" style={{ marginTop: spacing.md }}>
-          Warranty & Recalls
-        </Txt>
+        <Txt variant="headlineMedium" style={{ marginTop: spacing.md }}>{tr('warranty.title')}</Txt>
       </View>
 
       <ScrollView contentContainerStyle={{ padding: spacing.screenH, paddingTop: spacing.sm, paddingBottom: 60, gap: 14 }} showsVerticalScrollIndicator={false}>
@@ -63,28 +63,22 @@ export default function Warranty() {
 
             {/* Claims */}
             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: spacing.sm }}>
-              <Txt variant="titleLarge" style={{ flex: 1 }}>
-                Warranty Claims
-              </Txt>
+              <Txt variant="titleLarge" style={{ flex: 1 }}>{tr('warranty.claims')}</Txt>
               <Pressable onPress={() => setClaimOpen(true)} style={[styles.fileBtn, { backgroundColor: solid(t.colors.accent) }]}>
                 <Ionicons name="add" size={18} color={t.colors.onAccent} />
-                <Txt variant="titleSmall" color={t.colors.onAccent} style={{ marginLeft: 4 }}>
-                  File
-                </Txt>
+                <Txt variant="titleSmall" color={t.colors.onAccent} style={{ marginLeft: 4 }}>{tr('warranty.file')}</Txt>
               </Pressable>
             </View>
             {claims.length ? (
               claims.map((c) => <ClaimCard key={c.id} claim={c} />)
             ) : (
-              <Txt tone="secondary">No claims filed.</Txt>
+              <Txt tone="secondary">{tr('warranty.noClaims')}</Txt>
             )}
 
             {/* Resolved recalls history */}
             {recalls.some((r) => r.status === 'resolved') && (
               <>
-                <Txt variant="titleLarge" style={{ marginTop: spacing.sm }}>
-                  Past Recalls
-                </Txt>
+                <Txt variant="titleLarge" style={{ marginTop: spacing.sm }}>{tr('warranty.pastRecalls')}</Txt>
                 {recalls.filter((r) => r.status === 'resolved').map((r) => (
                   <RecallCard key={r.id} recall={r} />
                 ))}
@@ -106,6 +100,7 @@ export default function Warranty() {
 
 function useToneColor() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (tone: Tone) =>
     // *Text variants — rendered as type on a tinted chip.
     tone === 'success' ? t.colors.successText : tone === 'warning' ? t.colors.warningText : tone === 'error' ? t.colors.errorText : tone === 'info' ? t.colors.infoText : t.colors.textSecondary;
@@ -113,6 +108,7 @@ function useToneColor() {
 
 function CertificateCard({ cert }: { cert: WarrantyCertificate }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const color = useToneColor();
   const meta = WARRANTY_STATUS_META[cert.status];
   const end = new Date(cert.endDate);
@@ -132,17 +128,13 @@ function CertificateCard({ cert }: { cert: WarrantyCertificate }) {
 
       <View style={{ flexDirection: 'row', marginTop: spacing.lg }}>
         <View style={{ flex: 1 }}>
-          <Txt variant="labelSmall" color="rgba(255,255,255,0.6)">
-            VALID UNTIL
-          </Txt>
+          <Txt variant="labelSmall" color="rgba(255,255,255,0.6)">{tr('warranty.validUntil')}</Txt>
           <Txt variant="titleMedium" color={ON_DARK_INK}>
             {end.toLocaleDateString('en', { day: 'numeric', month: 'short', year: 'numeric' })}
           </Txt>
         </View>
         <View style={{ flex: 1 }}>
-          <Txt variant="labelSmall" color="rgba(255,255,255,0.6)">
-            MILEAGE LIMIT
-          </Txt>
+          <Txt variant="labelSmall" color="rgba(255,255,255,0.6)">{tr('warranty.mileageLimit')}</Txt>
           <Txt variant="titleMedium" color={ON_DARK_INK}>
             {cert.mileageLimit.toLocaleString()} km
           </Txt>
@@ -169,6 +161,7 @@ function CertificateCard({ cert }: { cert: WarrantyCertificate }) {
 
 function RecallAlert({ recall }: { recall: RecallNotice }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const color = useToneColor();
   const meta = RECALL_SEVERITY_META[recall.severity];
   const c = color(meta.tone);
@@ -196,9 +189,7 @@ function RecallAlert({ recall }: { recall: RecallNotice }) {
         style={[styles.recallBtn, { backgroundColor: t.colors.primary }]}
       >
         <Ionicons name="construct" size={16} color={t.colors.onPrimary} />
-        <Txt variant="titleSmall" color={t.colors.onPrimary} style={{ marginLeft: 8 }}>
-          Book recall service — free
-        </Txt>
+        <Txt variant="titleSmall" color={t.colors.onPrimary} style={{ marginLeft: 8 }}>{tr('warranty.bookRecall')}</Txt>
       </Pressable>
     </View>
   );
@@ -206,6 +197,7 @@ function RecallAlert({ recall }: { recall: RecallNotice }) {
 
 function RecallCard({ recall }: { recall: RecallNotice }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <View style={[styles.card, { backgroundColor: t.colors.surface, borderColor: t.colors.border }]}>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -213,9 +205,7 @@ function RecallCard({ recall }: { recall: RecallNotice }) {
         <Txt variant="titleSmall" style={{ flex: 1, marginLeft: 8 }}>
           {recall.title}
         </Txt>
-        <Txt variant="bodySmall" tone="secondary">
-          Resolved
-        </Txt>
+        <Txt variant="bodySmall" tone="secondary">{tr('warranty.resolved')}</Txt>
       </View>
     </View>
   );
@@ -223,6 +213,7 @@ function RecallCard({ recall }: { recall: RecallNotice }) {
 
 function ClaimCard({ claim }: { claim: WarrantyClaim }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const color = useToneColor();
   const meta = CLAIM_STATUS_META[claim.status];
   const c = color(meta.tone);

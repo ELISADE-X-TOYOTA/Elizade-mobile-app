@@ -2,6 +2,7 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PrimaryButton } from '../src/components/PrimaryButton';
@@ -22,6 +23,7 @@ const SLOT_HOURS = [9, 10, 12, 14, 16];
 
 export default function BookService() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
 
   const { type: typeParam } = useLocalSearchParams<{ type?: ServiceType }>();
@@ -78,15 +80,13 @@ export default function BookService() {
           <Animated.View entering={ZoomIn.duration(500)} style={[styles.successIcon, { backgroundColor: tint(t.colors.success, 0.12) }]}>
             <Ionicons name="checkmark-circle" size={72} color={t.colors.successText} />
           </Animated.View>
-          <Txt variant="headlineLarge" center style={{ marginTop: spacing.xl }}>
-            Service Requested!
-          </Txt>
+          <Txt variant="headlineLarge" center style={{ marginTop: spacing.xl }}>{tr('service.serviceRequested')}</Txt>
           <Txt variant="bodyLarge" tone="secondary" center style={{ marginTop: spacing.sm }}>
             Your {SERVICE_TYPE_META[type].label.toLowerCase()} at {branches[branch]?.name ?? 'Elizade'} has been requested. We'll confirm shortly.
           </Txt>
         </View>
         <View style={{ paddingBottom: insets.bottom + spacing.md }}>
-          <PrimaryButton label="Done" icon="arrow-forward" onPress={() => router.back()} />
+          <PrimaryButton label={tr('common.done')} icon="arrow-forward" onPress={() => router.back()} />
         </View>
       </View>
     );
@@ -98,9 +98,7 @@ export default function BookService() {
         <Pressable onPress={() => router.back()} style={[styles.backBtn, { backgroundColor: t.colors.surfaceAlt, borderColor: t.colors.border }]}>
           <Ionicons name="arrow-back" size={22} color={t.colors.textPrimary} />
         </Pressable>
-        <Txt variant="headlineMedium" style={{ marginTop: spacing.md }}>
-          Book a Service
-        </Txt>
+        <Txt variant="headlineMedium" style={{ marginTop: spacing.md }}>{tr('service.bookAService')}</Txt>
       </View>
 
       <ScrollView contentContainerStyle={{ padding: spacing.screenH, paddingBottom: 40 }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
@@ -197,7 +195,7 @@ export default function BookService() {
           value={issue}
           onChangeText={setIssue}
           maxLength={1000}
-          placeholder="e.g. Strange noise from front brakes, AC not cooling…"
+          placeholder={tr('service.issuePlaceholder')}
           placeholderTextColor={t.colors.textTertiary}
           multiline
           style={[
@@ -214,7 +212,7 @@ export default function BookService() {
 
         <View style={{ height: spacing.xl }} />
         <PrimaryButton
-          label="Request Service"
+          label={tr('service.requestService')}
           icon="construct"
           loading={loading}
           disabled={ownedVehicles.length === 0 || branches.length === 0}
@@ -247,6 +245,7 @@ function SelectRow({
   onPress: () => void;
 }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <Pressable
       onPress={onPress}

@@ -3,7 +3,6 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { UserProfile, Vehicle, VehicleCategory, vehicleTitle } from '../domain/types';
 
-export type ThemeMode = 'light' | 'dark' | 'system';
 
 /** Side-by-side comparison holds exactly two vehicles. */
 export const COMPARE_LIMIT = 2;
@@ -35,8 +34,6 @@ const entryOf = (v: Vehicle): CompareEntry => ({
 });
 
 interface AppState {
-  themeMode: ThemeMode;
-  setThemeMode: (mode: ThemeMode) => void;
 
   /**
    * True once the Outfit family is available. Never persisted — fonts must be
@@ -107,8 +104,6 @@ interface AppState {
 export const useStore = create<AppState>()(
   persist(
     (set, get) => ({
-      themeMode: 'light',
-      setThemeMode: (themeMode) => set({ themeMode }),
 
       readLocalNotificationIds: [],
       markLocalNotificationRead: (id) =>
@@ -179,16 +174,16 @@ export const useStore = create<AppState>()(
       setMarketTab: (marketTab) => set({ marketTab }),
     }),
     {
-      // Bumped to -v2 so devices that already persisted the old dark/system
-      // default reset to the new light theme.
-      name: 'elizade-store-v2',
+      // Bumped to -v3: the persisted `themeMode` was dropped when the app
+      // moved to following the OS appearance setting. Devices carrying a v2
+      // payload would otherwise keep a stale key that nothing reads.
+      name: 'elizade-store-v3',
       storage: createJSONStorage(() => AsyncStorage),
       // SECURITY: only non-sensitive preferences are persisted. `currentUser`
       // holds PII (email, phone) and is deliberately excluded — AsyncStorage is
       // unencrypted. The profile is re-fetched from /auth/me using the token in
       // SecureStore, so nothing is lost across restarts.
       partialize: (s) => ({
-        themeMode: s.themeMode,
         favorites: s.favorites,
         onboardedUserIds: s.onboardedUserIds,
         readLocalNotificationIds: s.readLocalNotificationIds,

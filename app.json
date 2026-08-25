@@ -47,7 +47,15 @@
           }
         }
       ],
-      "expo-secure-store"
-    ]
+      "expo-secure-store",
+      "expo-notifications"
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "59cc49df-60a6-4574-b09d-1fc76222a576"
+      }
+    },
+    "owner": "b1gj0hn"
   }
 }

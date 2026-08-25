@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { router } from 'expo-router';
 import { ReactNode } from 'react';
 import {
@@ -45,6 +46,7 @@ export function AuthScaffold({
   footer,
 }: Props) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
 
   return (
@@ -60,7 +62,7 @@ export function AuthScaffold({
             <Pressable
               onPress={() => (router.canGoBack() ? router.back() : router.replace('/(auth)/login'))}
               accessibilityRole="button"
-              accessibilityLabel="Go back"
+              accessibilityLabel={tr('common.goBack')}
               style={[
                 styles.backBtn,
                 { backgroundColor: t.colors.surfaceAlt, borderColor: t.colors.border },

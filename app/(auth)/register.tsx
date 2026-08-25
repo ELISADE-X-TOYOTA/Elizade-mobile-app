@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useCallback, useEffect, useImperativeHandle, useRef, useState, forwardRef } from 'react';
@@ -62,6 +63,7 @@ const RESEND_SECONDS = 60;
 /** Multi-step registration wizard with a progress bar. */
 export default function Register() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const setCurrentUser = useStore((s) => s.setCurrentUser);
   const loadWatchlist = useWatchlistStore((s) => s.load);
@@ -301,13 +303,13 @@ export default function Register() {
           <Animated.View key={step} entering={FadeInRight.duration(280)}>
             {step === 'name' && (
               <StepBody
-                title="What's your name?"
-                subtitle="Tell us who you are so we can personalise your Elizade experience."
+                title={tr('auth.nameTitle')}
+                subtitle={tr('auth.nameSubtitle')}
               >
                 <View style={{ gap: spacing.lg }}>
                   <AppTextField
-                    label="First Name"
-                    placeholder="John"
+                    label={tr('auth.firstName')}
+                    placeholder={tr('auth.firstNamePlaceholder')}
                     icon="person-outline"
                     value={firstName}
                     onChangeText={setFirstName}
@@ -316,8 +318,8 @@ export default function Register() {
                     autoCapitalize="words"
                   />
                   <AppTextField
-                    label="Last Name"
-                    placeholder="Adewale"
+                    label={tr('auth.lastName')}
+                    placeholder={tr('auth.lastNamePlaceholder')}
                     icon="person-outline"
                     value={lastName}
                     onChangeText={setLastName}
@@ -327,8 +329,8 @@ export default function Register() {
                     error={error}
                   />
                   <AppTextField
-                    label="Other Name (optional)"
-                    placeholder="Middle name"
+                    label={tr('auth.otherName')}
+                    placeholder={tr('auth.middleName')}
                     icon="person-outline"
                     value={otherName}
                     onChangeText={setOtherName}
@@ -341,17 +343,17 @@ export default function Register() {
             )}
 
             {step === 'email' && (
-              <StepBody title="Your email address" subtitle="We'll send a one-time code here to verify it's you.">
+              <StepBody title={tr('auth.emailTitle')} subtitle={tr('auth.emailSubtitle')}>
                 <AppTextField
-                  label="Email"
-                  placeholder="you@example.com"
+                  label={tr('auth.email')}
+                  placeholder={tr('auth.emailPlaceholder')}
                   icon="mail-outline"
                   keyboardType="email-address"
                   value={email}
                   onChangeText={setEmail}
                   sanitize={cleanEmail}
                   maxLength={254}
-                  error={emailCheck.status === 'taken' ? emailCheck.reason ?? 'Already registered' : error}
+                  error={emailCheck.status === 'taken' ? emailCheck.reason ?? tr('auth.alreadyRegistered') : error}
                 />
                 <EmailStatusHint check={emailCheck} />
               </StepBody>
@@ -359,12 +361,12 @@ export default function Register() {
 
             {step === 'phone' && (
               <StepBody
-                title="Phone number"
-                subtitle="Optional — we'll use it for booking updates and pickup coordination."
+                title={tr('auth.phoneTitle')}
+                subtitle={tr('auth.phoneSubtitle')}
               >
                 <AppTextField
-                  label="Phone (optional)"
-                  placeholder="+234 800 000 0000"
+                  label={tr('auth.phoneOptional')}
+                  placeholder={tr('auth.phonePlaceholder')}
                   icon="call-outline"
                   keyboardType="phone-pad"
                   value={phone}
@@ -373,15 +375,13 @@ export default function Register() {
                   maxLength={16}
                 />
                 <Pressable onPress={next} style={{ alignSelf: 'flex-start', marginTop: spacing.md }}>
-                  <Txt variant="titleSmall" color={t.colors.primary}>
-                    Skip for now
-                  </Txt>
+                  <Txt variant="titleSmall" color={t.colors.primary}>{tr('auth.skipForNow')}</Txt>
                 </Pressable>
               </StepBody>
             )}
 
             {step === 'otp' && (
-              <StepBody title="Verify your email" subtitle={`Enter the 6-digit code we sent to ${email}.`}>
+              <StepBody title={tr('auth.verifyEmailTitle')} subtitle={tr('auth.verifyEmailSubtitle', { email })}>
                 <Animated.View style={shakeStyle}>
                   <OtpBoxes
                     ref={otpBoxesRef}
@@ -395,9 +395,7 @@ export default function Register() {
                   />
                 </Animated.View>
                 {otpError ? (
-                  <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: 10 }}>
-                    That code isn't right. Please try again.
-                  </Txt>
+                  <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: 10 }}>{tr('auth.codeWrong')}</Txt>
                 ) : resendError ? (
                   <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: 10 }}>
                     {resendError}
@@ -442,9 +440,7 @@ export default function Register() {
             <Pressable onPress={() => router.replace('/(auth)/login')} style={{ marginTop: spacing.md, alignItems: 'center' }}>
               <Txt tone="secondary">
                 Already have an account?{'  '}
-                <Txt variant="titleSmall" color={t.colors.accentText}>
-                  Login
-                </Txt>
+                <Txt variant="titleSmall" color={t.colors.accentText}>{tr('auth.login')}</Txt>
               </Txt>
             </Pressable>
           )}
@@ -466,15 +462,14 @@ export default function Register() {
 /** Live feedback under the email field: checking / available / taken. */
 function EmailStatusHint({ check }: { check: EmailAvailabilityResult }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   // 'taken' is already surfaced as the field's error, and 'invalid' is left
   // silent so it doesn't nag mid-typing.
   if (check.status === 'checking') {
     return (
       <View style={styles.hintRow}>
         <ActivityIndicator size="small" color={t.colors.textSecondary} />
-        <Txt variant="bodySmall" tone="secondary" style={{ marginLeft: 8 }}>
-          Checking availability…
-        </Txt>
+        <Txt variant="bodySmall" tone="secondary" style={{ marginLeft: 8 }}>{tr('auth.checkingAvailability')}</Txt>
       </View>
     );
   }
@@ -482,9 +477,7 @@ function EmailStatusHint({ check }: { check: EmailAvailabilityResult }) {
     return (
       <View style={styles.hintRow}>
         <Ionicons name="checkmark-circle" size={16} color={t.colors.successText} />
-        <Txt variant="bodySmall" color={t.colors.successText} style={{ marginLeft: 6 }}>
-          Email is available
-        </Txt>
+        <Txt variant="bodySmall" color={t.colors.successText} style={{ marginLeft: 6 }}>{tr('auth.emailAvailable')}</Txt>
       </View>
     );
   }
@@ -515,6 +508,7 @@ const OtpBoxes = forwardRef<
   }
 >(function OtpBoxes({ value, onChange, error, disabled }, ref) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const refs = useRef<(TextInput | null)[]>([]);
 
   useImperativeHandle(ref, () => ({
@@ -594,6 +588,7 @@ const OtpBoxes = forwardRef<
 
 function Success({ firstName, onDone }: { firstName: string; onDone: () => void }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   return (
     <View style={{ flex: 1, backgroundColor: 'transparent', paddingHorizontal: spacing.screenH }}>
@@ -607,12 +602,10 @@ function Success({ firstName, onDone }: { firstName: string; onDone: () => void 
         <Txt variant="headlineLarge" center style={{ marginTop: spacing.xl }}>
           You're all set, {firstName}!
         </Txt>
-        <Txt variant="bodyLarge" tone="secondary" center style={{ marginTop: spacing.sm }}>
-          Your Elizade account is verified and ready. Time to find your next ride.
-        </Txt>
+        <Txt variant="bodyLarge" tone="secondary" center style={{ marginTop: spacing.sm }}>{tr('auth.accountReady')}</Txt>
       </View>
       <View style={{ paddingBottom: insets.bottom + spacing.md }}>
-        <PrimaryButton label="Get Started" icon="arrow-forward" onPress={onDone} />
+        <PrimaryButton label={tr('auth.getStarted')} icon="arrow-forward" onPress={onDone} />
       </View>
     </View>
   );

@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { radius, spacing } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
@@ -19,6 +20,7 @@ interface Props {
 /** Polished placeholder for Elizade Connect modules landing in later phases. */
 export function ComingSoon({ title, icon, headline, description, phase, features }: Props) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   return (
     <View style={{ flex: 1, backgroundColor: t.colors.surfaceAlt, paddingTop: insets.top }}>
@@ -43,9 +45,7 @@ export function ComingSoon({ title, icon, headline, description, phase, features
           </Txt>
         </LinearGradient>
 
-        <Txt variant="labelMedium" tone="secondary" style={{ marginTop: spacing.xl, marginBottom: spacing.xs }}>
-          WHAT'S COMING
-        </Txt>
+        <Txt variant="labelMedium" tone="secondary" style={{ marginTop: spacing.xl, marginBottom: spacing.xs }}>{tr('comingSoon.whatsComing')}</Txt>
         <View style={[styles.card, { backgroundColor: t.colors.surface, borderColor: t.colors.border }]}>
           {features.map((f, i) => (
             <View key={f.label}>

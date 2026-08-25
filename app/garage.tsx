@@ -2,6 +2,7 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NetworkCarImage } from '../src/components/NetworkCarImage';
 import { PrimaryButton } from '../src/components/PrimaryButton';
@@ -17,6 +18,7 @@ import { ON_DARK_INK } from '../src/theme/colors';
 
 export default function Garage() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const { vehicles, loading, reload } = useOwnedVehicles();
   const [addOpen, setAddOpen] = useState(false);
@@ -27,9 +29,7 @@ export default function Garage() {
         <Pressable onPress={() => router.back()} style={[styles.backBtn, { backgroundColor: t.colors.surface, borderColor: t.colors.border }]}>
           <Ionicons name="arrow-back" size={22} color={t.colors.textPrimary} />
         </Pressable>
-        <Txt variant="headlineMedium" style={{ marginTop: spacing.md }}>
-          My Vehicles
-        </Txt>
+        <Txt variant="headlineMedium" style={{ marginTop: spacing.md }}>{tr('garage.title')}</Txt>
       </View>
 
       <ScrollView contentContainerStyle={{ padding: spacing.screenH, paddingTop: spacing.sm, paddingBottom: 40, gap: 14 }} showsVerticalScrollIndicator={false}>
@@ -44,10 +44,8 @@ export default function Garage() {
             <Ionicons name="add" size={24} color={t.colors.primary} />
           </View>
           <View style={{ marginLeft: 12 }}>
-            <Txt variant="titleMedium">Add a vehicle</Txt>
-            <Txt variant="bodySmall" tone="secondary">
-              Claim your Toyota by chassis / VIN
-            </Txt>
+            <Txt variant="titleMedium">{tr('garage.addVehicle')}</Txt>
+            <Txt variant="bodySmall" tone="secondary">{tr('garage.claimSubtitle')}</Txt>
           </View>
         </Pressable>
       </ScrollView>
@@ -59,6 +57,7 @@ export default function Garage() {
 
 function VehicleCard({ vehicle }: { vehicle: OwnedVehicle }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const dueInDays = Math.round((new Date(vehicle.nextServiceDue).getTime() - Date.now()) / 86_400_000);
   return (
     <Pressable onPress={() => router.push(`/garage-vehicle/${vehicle.id}`)} style={[styles.card, { backgroundColor: t.colors.surface, borderColor: t.colors.border }, t.shadows.card]}>
@@ -88,6 +87,7 @@ function VehicleCard({ vehicle }: { vehicle: OwnedVehicle }) {
 
 function Stat({ icon, label, highlight }: { icon: string; label: string; highlight?: boolean }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const color = highlight ? t.colors.warningText : t.colors.textSecondary;
   return (
     <View style={[styles.stat, { backgroundColor: (highlight ? t.colors.warning : t.colors.primary) + '14' }]}>
@@ -101,6 +101,7 @@ function Stat({ icon, label, highlight }: { icon: string; label: string; highlig
 
 function AddVehicleModal({ visible, onClose, onAdded }: { visible: boolean; onClose: () => void; onAdded: () => void }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const [vin, setVin] = useState('');
   const [loading, setLoading] = useState(false);
@@ -133,7 +134,7 @@ function AddVehicleModal({ visible, onClose, onAdded }: { visible: boolean; onCl
         <View style={[styles.sheet, { backgroundColor: t.colors.surface, paddingBottom: insets.bottom + spacing.md }]}>
           <View style={[styles.handle, { backgroundColor: t.colors.border }]} />
           <View style={{ padding: spacing.lg }}>
-            <Txt variant="titleLarge">Add a vehicle</Txt>
+            <Txt variant="titleLarge">{tr('garage.addVehicle')}</Txt>
             <Txt tone="secondary" style={{ marginTop: 4 }}>
               Enter your 17-character VIN / chassis number to claim your vehicle and its history.
             </Txt>
@@ -144,7 +145,7 @@ function AddVehicleModal({ visible, onClose, onAdded }: { visible: boolean; onCl
               onChangeText={(v) => setVin(cleanVin(v))}
               maxLength={17}
               autoCapitalize="characters"
-              placeholder="e.g. JTMBBREV50D123456"
+              placeholder={tr('garage.vinPlaceholder')}
               placeholderTextColor={t.colors.textTertiary}
               style={[t.type.bodyLarge, { marginTop: spacing.lg, color: t.colors.textPrimary, backgroundColor: t.colors.surfaceAlt, borderRadius: radius.md, borderWidth: 1, borderColor: t.colors.border, padding: 14, letterSpacing: 1 }]}
             />
@@ -158,7 +159,7 @@ function AddVehicleModal({ visible, onClose, onAdded }: { visible: boolean; onCl
               </Txt>
             ) : null}
             <View style={{ height: spacing.lg }} />
-            <PrimaryButton label="Claim Vehicle" icon="car-sport" loading={loading} disabled={vin.trim().length < 6} onPress={submit} />
+            <PrimaryButton label={tr('service.claimVehicle')} icon="car-sport" loading={loading} disabled={vin.trim().length < 6} onPress={submit} />
           </View>
         </View>
       </View>

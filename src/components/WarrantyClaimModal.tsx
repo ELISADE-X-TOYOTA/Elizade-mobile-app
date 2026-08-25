@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -25,6 +26,7 @@ interface Props {
 /** File a warranty claim: pick a category, describe the issue, attach media. */
 export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }: Props) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const [category, setCategory] = useState(WARRANTY_CLAIM_CATEGORIES[0]);
   const [description, setDescription] = useState('');
@@ -118,27 +120,21 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
               <Animated.View entering={ZoomIn.duration(500)} style={[styles.successIcon, { backgroundColor: tint(t.colors.success, 0.12) }]}>
                 <Ionicons name="shield-checkmark" size={60} color={t.colors.successText} />
               </Animated.View>
-              <Txt variant="headlineMedium" style={{ marginTop: 20 }}>
-                Claim Submitted
-              </Txt>
+              <Txt variant="headlineMedium" style={{ marginTop: 20 }}>{tr('warranty.claimSubmitted')}</Txt>
               <Txt tone="secondary" center style={{ marginTop: 8 }}>
                 Our warranty team will review your {category.toLowerCase()} claim and get back to you within 48 hours.
               </Txt>
               <View style={{ height: 20 }} />
-              <PrimaryButton label="Done" onPress={close} style={{ width: '100%' }} />
+              <PrimaryButton label={tr('common.done')} onPress={close} style={{ width: '100%' }} />
             </View>
           ) : (
             <>
-              <Txt variant="titleLarge" style={{ paddingHorizontal: spacing.lg, paddingTop: 8 }}>
-                File a Warranty Claim
-              </Txt>
+              <Txt variant="titleLarge" style={{ paddingHorizontal: spacing.lg, paddingTop: 8 }}>{tr('warranty.fileClaim')}</Txt>
               <ScrollView style={{ maxHeight: 400 }} contentContainerStyle={{ padding: spacing.lg }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
                 {checking ? (
                   <View style={[styles.cover, { backgroundColor: t.colors.surfaceAlt }]}>
                     <ActivityIndicator size="small" color={t.colors.textSecondary} />
-                    <Txt variant="bodySmall" tone="secondary" style={{ marginLeft: 8 }}>
-                      Checking your cover…
-                    </Txt>
+                    <Txt variant="bodySmall" tone="secondary" style={{ marginLeft: 8 }}>{tr('warranty.checkingCover')}</Txt>
                   </View>
                 ) : eligibility ? (
                   <View
@@ -169,19 +165,17 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
                           : (eligibility.reason ??
                             'This vehicle is outside its basic warranty period.')}
                       </Txt>
-                      {eligibility.eligible ? (
-                        <Txt variant="bodySmall" tone="secondary" style={{ marginTop: 6 }}>
-                          Paint, battery and wear items carry shorter terms. Your
-                          service adviser confirms the final outcome.
-                        </Txt>
-                      ) : null}
+                      {/* Battery runs on its own clock. Saying only "shorter
+                          terms" was all the app could manage before the API
+                          returned these fields; now the real tier is shown,
+                          because a battery claim is exactly where a customer
+                          is misled by the basic-cover verdict above. */}
+                      <BatteryCover eligibility={eligibility} />
                     </View>
                   </View>
                 ) : null}
 
-                <Txt variant="titleMedium" style={{ marginBottom: spacing.sm }}>
-                  Category
-                </Txt>
+                <Txt variant="titleMedium" style={{ marginBottom: spacing.sm }}>{tr('common.category')}</Txt>
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
                   {WARRANTY_CLAIM_CATEGORIES.map((c) => {
                     const active = category === c;
@@ -199,16 +193,14 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
                   })}
                 </View>
 
-                <Txt variant="titleMedium" style={{ marginTop: spacing.lg, marginBottom: spacing.sm }}>
-                  Describe the issue
-                </Txt>
+                <Txt variant="titleMedium" style={{ marginTop: spacing.lg, marginBottom: spacing.sm }}>{tr('warranty.describeIssue')}</Txt>
                 <TextInput
           // iOS renders a LIGHT keyboard in dark mode without this.
           keyboardAppearance={t.isDark ? 'dark' : 'light'}
                   value={description}
                   onChangeText={setDescription}
                   maxLength={1000}
-                  placeholder="Tell us what's wrong and when it started…"
+                  placeholder={tr('warranty.describeIssue')}
                   placeholderTextColor={t.colors.textTertiary}
                   multiline
                   style={[t.type.bodyLarge, { minHeight: 100, textAlignVertical: 'top', color: t.colors.textPrimary, backgroundColor: t.colors.surfaceAlt, borderRadius: radius.md, borderWidth: 1, borderColor: t.colors.border, padding: 14 }]}
@@ -226,9 +218,7 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
                   ]}
                 >
                   <Ionicons name="camera-outline" size={20} color={t.colors.primary} />
-                  <Txt variant="titleSmall" color={t.colors.primary} style={{ marginLeft: 8 }}>
-                    Add photos or documents
-                  </Txt>
+                  <Txt variant="titleSmall" color={t.colors.primary} style={{ marginLeft: 8 }}>{tr('warranty.addPhotos')}</Txt>
                 </Pressable>
                 <AttachmentDrafts
                   items={attachments}
@@ -260,6 +250,53 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
         </View>
       </View>
     </Modal>
+  );
+}
+
+/**
+ * Battery cover, stated separately from basic cover.
+ *
+ * A vehicle can sit inside its 36-month basic warranty and still be past free
+ * battery replacement at 24 months — so reporting only the basic verdict
+ * tells a customer filing a battery claim the opposite of what they need.
+ */
+function BatteryCover({ eligibility }: { eligibility: WarrantyEligibility }) {
+  const t = useTheme();
+  const { t: tr } = useTranslation();
+
+  // No in-service date recorded: cover is unknown, not lapsed. Claiming it
+  // expired would be a guess against the customer.
+  if (eligibility.batteryStatus === 'unknown') return null;
+
+  const date = (iso?: string | null) =>
+    iso
+      ? new Date(iso).toLocaleDateString(undefined, {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+        })
+      : null;
+
+  const copy: Record<string, string> = {
+    free: tr('warranty.batteryFree', {
+      months: eligibility.batteryFreeMonths,
+      date: date(eligibility.batteryFreeCoverageEnd) ?? '',
+    }),
+    partial: tr('warranty.batteryPartial', {
+      months: eligibility.batteryPartialMonths,
+      date: date(eligibility.batteryPartialCoverageEnd) ?? '',
+    }),
+    expired: tr('warranty.batteryExpired', { months: eligibility.batteryPartialMonths }),
+  };
+
+  return (
+    <Txt
+      variant="bodySmall"
+      tone={eligibility.batteryEligible ? 'secondary' : 'tertiary'}
+      style={{ marginTop: 6 }}
+    >
+      {copy[eligibility.batteryStatus]} {tr('warranty.adviserConfirms')}
+    </Txt>
   );
 }
 

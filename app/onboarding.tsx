@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useRef, useState } from 'react';
@@ -43,6 +44,7 @@ const SLIDES = [
 
 export default function Onboarding() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const ref = useRef<ScrollView>(null);
   const [page, setPage] = useState(0);
@@ -62,9 +64,7 @@ export default function Onboarding() {
         onPress={() => router.replace('/(auth)/login')}
         style={{ alignSelf: 'flex-end', padding: spacing.md }}
       >
-        <Txt variant="titleSmall" tone="secondary">
-          Skip
-        </Txt>
+        <Txt variant="titleSmall" tone="secondary">{tr('common.skip')}</Txt>
       </Pressable>
 
       <ScrollView
@@ -117,9 +117,7 @@ export default function Onboarding() {
           <Pressable onPress={() => router.replace('/(auth)/login')} style={{ marginTop: spacing.sm, alignItems: 'center' }}>
             <Txt tone="secondary">
               Already have an account?{'  '}
-              <Txt variant="titleSmall" color={t.colors.primary}>
-                Login
-              </Txt>
+              <Txt variant="titleSmall" color={t.colors.primary}>{tr('auth.login')}</Txt>
             </Txt>
           </Pressable>
         ) : (

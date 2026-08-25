@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PrimaryButton } from '../src/components/PrimaryButton';
@@ -22,6 +23,7 @@ import { tint } from '../src/theme/colors';
  */
 export default function BookTestDrive() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const { vehicleId } = useLocalSearchParams<{ vehicleId?: string }>();
   const { vehicle, loading: vehicleLoading, error: vehicleError } = useVehicle(vehicleId ?? '');
@@ -80,25 +82,21 @@ export default function BookTestDrive() {
           <Animated.View entering={ZoomIn.duration(500)} style={[styles.successIcon, { backgroundColor: tint(t.colors.success, 0.12) }]}>
             <Ionicons name="checkmark-circle" size={72} color={t.colors.successText} />
           </Animated.View>
-          <Txt variant="headlineLarge" center style={{ marginTop: spacing.xl }}>
-            Test Drive Booked!
-          </Txt>
+          <Txt variant="headlineLarge" center style={{ marginTop: spacing.xl }}>{tr('testDrive.booked')}</Txt>
           <Txt variant="bodyLarge" tone="secondary" center style={{ marginTop: spacing.sm }}>
             Your test drive of the {vehicleTitle(vehicle)} at {branches[showroom]?.name ?? 'Elizade'} is requested.
             Our team will confirm shortly.
           </Txt>
           {reference ? (
             <View style={[styles.receipt, { backgroundColor: t.colors.surfaceAlt, borderColor: t.colors.border }]}>
-              <Txt variant="bodySmall" tone="secondary">
-                Reference
-              </Txt>
+              <Txt variant="bodySmall" tone="secondary">{tr('common.reference')}</Txt>
               <Txt variant="titleMedium">{reference}</Txt>
             </View>
           ) : null}
         </View>
         <View style={{ paddingBottom: insets.bottom + spacing.md, gap: 10 }}>
-          <PrimaryButton label="View my bookings" icon="calendar" onPress={() => router.replace('/(tabs)/bookings')} />
-          <PrimaryButton label="Done" variant="outline" onPress={() => router.back()} />
+          <PrimaryButton label={tr('testDrive.viewBookings')} icon="calendar" onPress={() => router.replace('/(tabs)/bookings')} />
+          <PrimaryButton label={tr('common.done')} variant="outline" onPress={() => router.back()} />
         </View>
       </View>
     );
@@ -113,9 +111,7 @@ export default function BookTestDrive() {
         >
           <Ionicons name="arrow-back" size={22} color={t.colors.textPrimary} />
         </Pressable>
-        <Txt variant="headlineMedium" style={{ marginTop: spacing.md }}>
-          Book a Test Drive
-        </Txt>
+        <Txt variant="headlineMedium" style={{ marginTop: spacing.md }}>{tr('testDrive.title')}</Txt>
         {vehicle ? (
           <Txt tone="secondary" style={{ marginTop: 4 }}>
             {vehicleTitle(vehicle)} · {vehicle.trim}
@@ -138,7 +134,7 @@ export default function BookTestDrive() {
             {branchesLoading && branches.length === 0 ? (
               <Skeleton height={64} radius={radius.md} />
             ) : branches.length === 0 ? (
-              <Txt tone="secondary">No showrooms available right now. Please try again later.</Txt>
+              <Txt tone="secondary">{tr('testDrive.noShowrooms')}</Txt>
             ) : (
               branches.map((s, i) => (
                 <SelectRow
@@ -247,7 +243,7 @@ export default function BookTestDrive() {
 
             <View style={{ height: spacing.xl }} />
             <PrimaryButton
-              label="Confirm Test Drive"
+              label={tr('service.confirmTestDrive')}
               icon="car-sport"
               loading={loading}
               disabled={!vehicle || branches.length === 0}
@@ -282,6 +278,7 @@ function SelectRow({
   onPress: () => void;
 }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <Pressable
       onPress={onPress}

@@ -2,19 +2,23 @@ import { Ionicons } from '@expo/vector-icons';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Tabs } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Txt } from '../../src/components/Txt';
 import { radius } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
 
-const TABS: Record<string, { label: string; icon: keyof typeof Ionicons.glyphMap; active: keyof typeof Ionicons.glyphMap }> = {
-  home: { label: 'Home', icon: 'home-outline', active: 'home' },
-  shop: { label: 'Shop', icon: 'storefront-outline', active: 'storefront' },
-  bookings: { label: 'Bookings', icon: 'calendar-outline', active: 'calendar' },
-  service: { label: 'Service', icon: 'construct-outline', active: 'construct' },
-  support: { label: 'Support', icon: 'headset-outline', active: 'headset' },
-  profile: { label: 'Profile', icon: 'person-outline', active: 'person' },
+const TABS: Record<
+  string,
+  { labelKey: string; icon: keyof typeof Ionicons.glyphMap; active: keyof typeof Ionicons.glyphMap }
+> = {
+  home: { labelKey: 'nav.home', icon: 'home-outline', active: 'home' },
+  shop: { labelKey: 'nav.shop', icon: 'storefront-outline', active: 'storefront' },
+  bookings: { labelKey: 'nav.bookings', icon: 'calendar-outline', active: 'calendar' },
+  service: { labelKey: 'nav.service', icon: 'construct-outline', active: 'construct' },
+  support: { labelKey: 'nav.support', icon: 'headset-outline', active: 'headset' },
+  profile: { labelKey: 'nav.profile', icon: 'person-outline', active: 'person' },
 };
 
 export default function TabsLayout() {
@@ -32,6 +36,8 @@ export default function TabsLayout() {
 
 function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
   const t = useTheme();
+  // Subscribing here re-renders the whole bar on a language switch.
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
 
   return (
@@ -61,8 +67,14 @@ function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
                 color={focused ? t.colors.onAccent : t.colors.textSecondary}
               />
               {focused && (
-                <Txt variant="labelSmall" color={t.colors.onAccent} style={{ marginLeft: 8 }} numberOfLines={1}>
-                  {meta.label}
+                <Txt
+                  variant="labelSmall"
+                  color={t.colors.onAccent}
+                  // Logical margin so the label sits after the icon in RTL too.
+                  style={{ marginStart: 8 }}
+                  numberOfLines={1}
+                >
+                  {tr(meta.labelKey)}
                 </Txt>
               )}
             </>

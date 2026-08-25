@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { requestQuote } from '../data/salesRepository';
@@ -24,6 +25,7 @@ const ADDONS = ['Extended Warranty', 'Tinted Windows', 'Floor Mats & Boot Liner'
 /** Request a formal quotation — colour, showroom, optional add-ons. */
 export function QuoteModal({ visible, vehicle, onClose }: Props) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const [showroom, setShowroom] = useState(0);
   const [addons, setAddons] = useState<string[]>([]);
@@ -75,28 +77,22 @@ export function QuoteModal({ visible, vehicle, onClose }: Props) {
               <Animated.View entering={ZoomIn.duration(500)} style={[styles.successIcon, { backgroundColor: tint(t.colors.success, 0.12) }]}>
                 <Ionicons name="document-text" size={56} color={t.colors.successText} />
               </Animated.View>
-              <Txt variant="headlineMedium" style={{ marginTop: 20 }}>
-                Quote Requested
-              </Txt>
+              <Txt variant="headlineMedium" style={{ marginTop: 20 }}>{tr('quote.requested')}</Txt>
               <Txt tone="secondary" center style={{ marginTop: 8 }}>
                 A formal quotation for your {vehicleTitle(vehicle)} will be sent to your email and appear in Support shortly.
               </Txt>
               <View style={{ height: 20 }} />
-              <PrimaryButton label="Done" onPress={close} style={{ width: '100%' }} />
+              <PrimaryButton label={tr('common.done')} onPress={close} style={{ width: '100%' }} />
             </View>
           ) : (
             <>
-              <Txt variant="titleLarge" style={{ paddingHorizontal: spacing.lg, paddingTop: 8 }}>
-                Request a Quote
-              </Txt>
+              <Txt variant="titleLarge" style={{ paddingHorizontal: spacing.lg, paddingTop: 8 }}>{tr('quote.title')}</Txt>
               <Txt tone="secondary" style={{ paddingHorizontal: spacing.lg, marginTop: 2 }}>
                 {vehicleTitle(vehicle)} · {price(vehicle.price)}
               </Txt>
 
               <ScrollView style={{ maxHeight: 380 }} contentContainerStyle={{ padding: spacing.lg }} showsVerticalScrollIndicator={false}>
-                <Txt variant="titleMedium" style={{ marginBottom: spacing.sm }}>
-                  Pickup showroom
-                </Txt>
+                <Txt variant="titleMedium" style={{ marginBottom: spacing.sm }}>{tr('quote.pickupShowroom')}</Txt>
                 {branches.slice(0, 4).map((s, i) => (
                   <Pressable
                     key={s.id}
@@ -111,9 +107,7 @@ export function QuoteModal({ visible, vehicle, onClose }: Props) {
                   </Pressable>
                 ))}
 
-                <Txt variant="titleMedium" style={{ marginTop: spacing.lg, marginBottom: spacing.sm }}>
-                  Optional add-ons
-                </Txt>
+                <Txt variant="titleMedium" style={{ marginTop: spacing.lg, marginBottom: spacing.sm }}>{tr('quote.addOns')}</Txt>
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
                   {ADDONS.map((a) => {
                     const on = addons.includes(a);
@@ -139,7 +133,7 @@ export function QuoteModal({ visible, vehicle, onClose }: Props) {
                     {error}
                   </Txt>
                 ) : null}
-                <PrimaryButton label="Request Quote" icon="document-text" loading={loading} onPress={submit} />
+                <PrimaryButton label={tr('shop.requestQuote')} icon="document-text" loading={loading} onPress={submit} />
               </View>
             </>
           )}

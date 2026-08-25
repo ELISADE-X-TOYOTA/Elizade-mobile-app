@@ -16,6 +16,8 @@ import { Platform, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { migrateLegacyToken } from '../src/api/session';
+// Side-effect import: configures i18next before any screen renders.
+import { restoreLanguage } from '../src/i18n';
 import { ErrorBoundary } from '../src/components/ErrorBoundary';
 import { CompareTray } from '../src/components/CompareTray';
 import { PatternBackground } from '../src/components/PatternBackground';
@@ -43,6 +45,13 @@ export default function RootLayout() {
   useEffect(() => {
     if (loaded) setFontsReady(true);
   }, [loaded, setFontsReady]);
+
+  // The saved language lives in AsyncStorage, which cannot be read
+  // synchronously. i18next has already initialised with the device locale, so
+  // this only corrects the minority case where the two differ.
+  useEffect(() => {
+    restoreLanguage();
+  }, []);
 
   // One-off: move any token written by a pre-SecureStore build out of
   // plaintext AsyncStorage into the Keychain / KeyStore.

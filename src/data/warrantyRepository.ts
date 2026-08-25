@@ -48,15 +48,33 @@ export async function fetchClaims(): Promise<WarrantyClaim[]> {
 export async function fetchEligibility(vehicleId: string): Promise<WarrantyEligibility> {
   if (APP.useMock) {
     await delay(250);
+    // Derived from one in-service date rather than hand-picked, so the mock
+    // stays self-consistent: the old fixture had a null in-service date but a
+    // live coverage end, which the backend can never produce.
+    const inService = new Date();
+    inService.setMonth(inService.getMonth() - 26);
+    const plusMonths = (m: number) => {
+      const d = new Date(inService);
+      d.setMonth(d.getMonth() + m);
+      return d.toISOString();
+    };
     return {
       eligible: true,
       reason: null,
-      inServiceDate: null,
-      coverageEnd: new Date(Date.now() + 400 * 86_400_000).toISOString(),
+      inServiceDate: inService.toISOString(),
+      coverageEnd: plusMonths(36),
       mileageLimitKm: 100_000,
       warrantyMonths: 36,
       currentMileage: 24_500,
       certificateNumber: 'ELZ-WC-0001',
+      // 26 months in: past free replacement (24), inside pro-rata (36).
+      // Deliberately the interesting case — basic cover live, battery partial.
+      batteryFreeMonths: 24,
+      batteryPartialMonths: 36,
+      batteryFreeCoverageEnd: plusMonths(24),
+      batteryPartialCoverageEnd: plusMonths(36),
+      batteryStatus: 'partial',
+      batteryEligible: true,
     };
   }
   const d = await warrantyApi.eligibility(vehicleId);

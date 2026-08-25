@@ -3,6 +3,7 @@ import { Image } from 'expo-image';
 import { router, usePathname } from 'expo-router';
 import { useEffect } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import Animated, {
   FadeIn,
   FadeOut,
@@ -36,6 +37,7 @@ const TAB_BAR_H = 66;
 
 export function CompareTray() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const pathname = usePathname();
   const compare = useStore((s) => s.compare);
@@ -91,7 +93,7 @@ export function CompareTray() {
             onPress={clearCompare}
             hitSlop={10}
             accessibilityRole="button"
-            accessibilityLabel="Clear comparison"
+            accessibilityLabel={tr('compare.clearComparison')}
           >
             <Txt variant="labelSmall" tone="secondary">
               CLEAR
@@ -114,7 +116,7 @@ export function CompareTray() {
           disabled={!ready}
           accessibilityRole="button"
           accessibilityState={{ disabled: !ready }}
-          accessibilityLabel="Open side-by-side comparison"
+          accessibilityLabel={tr('compare.openComparison')}
           style={[
             styles.cta,
             { backgroundColor: ready ? solid(t.colors.accent) : t.colors.surfaceAlt },
@@ -129,9 +131,7 @@ export function CompareTray() {
             variant="titleSmall"
             color={ready ? t.colors.onAccent : t.colors.textTertiary}
             style={{ marginLeft: 7 }}
-          >
-            Compare
-          </Txt>
+          >{tr('compare.title')}</Txt>
         </Pressable>
       </View>
     </Animated.View>
@@ -140,6 +140,7 @@ export function CompareTray() {
 
 function Slot({ entry, onRemove }: { entry: CompareEntry; onRemove: () => void }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <Animated.View
       entering={FadeIn.duration(200)}
@@ -177,12 +178,11 @@ function Slot({ entry, onRemove }: { entry: CompareEntry; onRemove: () => void }
 
 function EmptySlot() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <View style={[styles.slot, styles.empty, { borderColor: t.colors.border }]}>
       <Ionicons name="add" size={17} color={t.colors.textTertiary} />
-      <Txt variant="bodySmall" tone="tertiary" numberOfLines={1} style={{ marginLeft: 6, flex: 1 }}>
-        Pick a second car
-      </Txt>
+      <Txt variant="bodySmall" tone="tertiary" numberOfLines={1} style={{ marginLeft: 6, flex: 1 }}>{tr('compare.pickSecond')}</Txt>
     </View>
   );
 }

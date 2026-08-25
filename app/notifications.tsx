@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Skeleton } from '../src/components/Skeleton';
 import { Txt } from '../src/components/Txt';
@@ -12,6 +13,7 @@ import { solid } from '../src/theme/colors';
 
 export default function Notifications() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const { items, unread, loading, markRead, markAllRead } = useNotifications();
 
@@ -26,14 +28,10 @@ export default function Notifications() {
         <Pressable onPress={() => router.back()} style={[styles.backBtn, { backgroundColor: t.colors.surface, borderColor: t.colors.border }]}>
           <Ionicons name="arrow-back" size={22} color={t.colors.textPrimary} />
         </Pressable>
-        <Txt variant="headlineSmall" style={{ flex: 1, marginLeft: 12 }}>
-          Notifications
-        </Txt>
+        <Txt variant="headlineSmall" style={{ flex: 1, marginLeft: 12 }}>{tr('notifications.title')}</Txt>
         {unread > 0 && (
           <Pressable onPress={markAllRead}>
-            <Txt variant="titleSmall" color={t.colors.primary}>
-              Mark all read
-            </Txt>
+            <Txt variant="titleSmall" color={t.colors.primary}>{tr('notifications.markAllRead')}</Txt>
           </Pressable>
         )}
       </View>
@@ -47,7 +45,7 @@ export default function Notifications() {
           <View style={{ alignItems: 'center', paddingTop: 60 }}>
             <Ionicons name="notifications-off-outline" size={44} color={t.colors.textTertiary} />
             <Txt tone="secondary" style={{ marginTop: 12 }}>
-              You're all caught up.
+              {tr('notifications.empty')}
             </Txt>
           </View>
         )}
@@ -63,6 +61,7 @@ function tone(t: ReturnType<typeof useTheme>, tn: Tone) {
 
 function NotificationRow({ notification, onPress }: { notification: AppNotification; onPress: () => void }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const meta = NOTIFICATION_META[notification.type];
   const c = tone(t, meta.tone);
   return (

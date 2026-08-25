@@ -10,14 +10,17 @@ import { logout } from '../../src/data/authRepository';
 import { pickAndUploadAvatar, removeAvatar } from '../../src/data/profileRepository';
 import { MOCK_USER } from '../../src/data/mock';
 import { fullName } from '../../src/domain/types';
-import { ThemeMode, useStore } from '../../src/store/useStore';
+import { useStore } from '../../src/store/useStore';
 import { useWatchlistStore } from '../../src/store/useWatchlistStore';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
+import { useTranslation } from 'react-i18next';
+import i18n, { findLanguage } from '../../src/i18n';
 import { solid, tint } from '../../src/theme/colors';
 
 export default function Profile() {
-  const t = useTheme();
+  const theme = useTheme();
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const savedCount = useWatchlistStore((s) => s.items.length);
   const clearWatchlist = useWatchlistStore((s) => s.clear);
@@ -62,30 +65,30 @@ export default function Profile() {
     }
   };
 
-  const stats: { label: string; value: string; icon: keyof typeof Ionicons.glyphMap }[] = [
-    { label: 'Vehicles', value: '1', icon: 'car-sport' },
-    { label: 'Saved', value: `${savedCount}`, icon: 'heart' },
-    { label: 'Services', value: '0', icon: 'construct' },
+  const stats: { id: string; label: string; value: string; icon: keyof typeof Ionicons.glyphMap }[] = [
+    { id: 'vehicles', label: t('profile.statVehicles'), value: '1', icon: 'car-sport' },
+    { id: 'saved', label: t('profile.statSaved'), value: `${savedCount}`, icon: 'heart' },
+    { id: 'services', label: t('profile.statServices'), value: '0', icon: 'construct' },
   ];
 
   return (
     <View style={{ flex: 1, backgroundColor: 'transparent' }}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
         {/* Header */}
-        <LinearGradient colors={t.gradients.hero} style={[styles.header, { paddingTop: insets.top + spacing.md }]}>
+        <LinearGradient colors={theme.gradients.hero} style={[styles.header, { paddingTop: insets.top + spacing.md }]}>
           <View style={styles.row}>
             <Pressable
               onPress={() => setPhotoOpen(true)}
               accessibilityRole="button"
-              accessibilityLabel="Change profile photo"
-              style={[styles.avatarRing, { borderColor: solid(t.colors.accent) }]}
+              accessibilityLabel={t('profile.changePhoto')}
+              style={[styles.avatarRing, { borderColor: solid(theme.colors.accent) }]}
             >
               <Avatar user={user} size={68} variant="headlineSmall" />
-              <View style={[styles.cameraBadge, { backgroundColor: solid(t.colors.accent), borderColor: t.colors.background }]}>
+              <View style={[styles.cameraBadge, { backgroundColor: solid(theme.colors.accent), borderColor: theme.colors.background }]}>
                 {avatarBusy ? (
-                  <ActivityIndicator size="small" color={t.colors.onAccent} />
+                  <ActivityIndicator size="small" color={theme.colors.onAccent} />
                 ) : (
-                  <Ionicons name="camera" size={13} color={t.colors.onAccent} />
+                  <Ionicons name="camera" size={13} color={theme.colors.onAccent} />
                 )}
               </View>
             </Pressable>
@@ -94,17 +97,17 @@ export default function Profile() {
               <Txt variant="bodySmall" tone="secondary">
                 {user.email}
               </Txt>
-              <View style={[styles.verified, { backgroundColor: tint(t.colors.accent, 0.133) }]}>
-                <Ionicons name="checkmark-circle" size={14} color={t.colors.accentDark} />
-                <Txt variant="labelSmall" color={t.colors.textPrimary} style={{ marginLeft: 4 }}>
-                  Verified Member
+              <View style={[styles.verified, { backgroundColor: tint(theme.colors.accent, 0.133) }]}>
+                <Ionicons name="checkmark-circle" size={14} color={theme.colors.accentDark} />
+                <Txt variant="labelSmall" color={theme.colors.textPrimary} style={{ marginLeft: 4 }}>
+                  {t('profile.verifiedMember')}
                 </Txt>
               </View>
             </View>
-            <Ionicons name="settings-outline" size={22} color={t.colors.textSecondary} />
+            <Ionicons name="settings-outline" size={22} color={theme.colors.textSecondary} />
           </View>
           {avatarError ? (
-            <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: spacing.sm }}>
+            <Txt variant="bodySmall" color={theme.colors.errorText} style={{ marginTop: spacing.sm }}>
               {avatarError}
             </Txt>
           ) : null}
@@ -113,15 +116,15 @@ export default function Profile() {
         {/* Stats */}
         <View style={[styles.row, { paddingHorizontal: spacing.screenH, marginTop: spacing.md, gap: 8 }]}>
           {stats.map((s) => {
-            const onPress = s.label === 'Saved' ? () => router.push('/watchlist') : undefined;
+            const onPress = s.id === 'saved' ? () => router.push('/watchlist') : undefined;
             const Wrapper = onPress ? Pressable : View;
             return (
               <Wrapper
-                key={s.label}
+                key={s.id}
                 onPress={onPress}
-                style={[styles.stat, { backgroundColor: t.colors.surface, borderColor: t.colors.border }, t.shadows.soft]}
+                style={[styles.stat, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }, theme.shadows.soft]}
               >
-                <Ionicons name={s.icon} size={22} color={t.colors.primary} />
+                <Ionicons name={s.icon} size={22} color={theme.colors.primary} />
                 <Txt variant="titleLarge" style={{ marginTop: 6 }}>
                   {s.value}
                 </Txt>
@@ -133,34 +136,35 @@ export default function Profile() {
           })}
         </View>
 
-        <Group title="My Garage">
-          <Row icon="car-sport-outline" label="My Vehicles" onPress={() => router.push('/garage')} />
-          <Row icon="heart-outline" label="Watchlist" onPress={() => router.push('/watchlist')} />
-          <Row icon="notifications-outline" label="Notifications" onPress={() => router.push('/notification-settings')} />
-          <Row icon="shield-checkmark-outline" label="Warranty & Recalls" onPress={() => router.push('/warranty')} />
-          <Row icon="time-outline" label="Service History" onPress={() => router.push('/(tabs)/service')} last />
+        <Group title={t('profile.groupGarage')}>
+          <Row icon="car-sport-outline" label={t('profile.myVehicles')} onPress={() => router.push('/garage')} />
+          <Row icon="heart-outline" label={t('profile.watchlist')} onPress={() => router.push('/watchlist')} />
+          <Row icon="trending-up-outline" label={t('profile.myLeads')} onPress={() => router.push('/leads')} />
+          <Row icon="notifications-outline" label={t('profile.notifications')} onPress={() => router.push('/notification-settings')} />
+          <Row icon="shield-checkmark-outline" label={t('profile.warrantyRecalls')} onPress={() => router.push('/warranty')} />
+          <Row icon="time-outline" label={t('profile.serviceHistory')} onPress={() => router.push('/(tabs)/service')} last />
         </Group>
 
-        <Group title="Account">
-          <Row icon="person-outline" label="Personal Details" />
-          <Row icon="card-outline" label="Driving License" />
-          <Row icon="wallet-outline" label="Payment Methods" last />
+        <Group title={t('profile.groupAccount')}>
+          <Row icon="person-outline" label={t('profile.personalDetails')} />
+          <Row icon="wallet-outline" label={t('profile.paymentMethods')} last />
         </Group>
 
-        <Group title="Preferences">
-          <ThemeSelector />
-          <Divider />
-          <Row icon="notifications-outline" label="Notifications" />
-          <Divider />
-          <Row icon="language-outline" label="Language" trailing="English" />
-          <Divider />
-          <Row icon="cash-outline" label="Currency" trailing="₦ NGN" last />
+        <Group title={t('profile.groupPreferences')}>
+          <Row icon="notifications-outline" label={t('profile.notifications')} onPress={() => router.push('/notification-settings')} />
+          <Row
+            icon="language-outline"
+            label={t('profile.language')}
+            trailing={findLanguage(i18n.language).endonym}
+            onPress={() => router.push('/language')}
+            last
+          />
         </Group>
 
-        <Group title="Support">
-          <Row icon="shield-checkmark-outline" label="Privacy & Security" />
-          <Row icon="help-circle-outline" label="Help Center" />
-          <Row icon="log-out-outline" label="Logout" danger last onPress={signOut} />
+        <Group title={t('profile.groupSupport')}>
+          <Row icon="shield-checkmark-outline" label={t('profile.privacySecurity')} />
+          <Row icon="help-circle-outline" label={t('profile.helpCenter')} />
+          <Row icon="log-out-outline" label={t('auth.signOut')} danger last onPress={signOut} />
         </Group>
       </ScrollView>
 
@@ -168,16 +172,16 @@ export default function Profile() {
       <Modal visible={photoOpen} transparent animationType="slide" onRequestClose={() => setPhotoOpen(false)} statusBarTranslucent>
         <View style={styles.backdrop}>
           <Pressable style={{ flex: 1 }} onPress={() => setPhotoOpen(false)} />
-          <View style={[styles.sheet, { backgroundColor: t.colors.surface, paddingBottom: insets.bottom + spacing.lg }]}>
-            <View style={[styles.handle, { backgroundColor: t.colors.border }]} />
+          <View style={[styles.sheet, { backgroundColor: theme.colors.surface, paddingBottom: insets.bottom + spacing.lg }]}>
+            <View style={[styles.handle, { backgroundColor: theme.colors.border }]} />
             <Txt variant="titleLarge" style={{ paddingHorizontal: spacing.lg, paddingTop: 8 }}>
-              Profile photo
+              {t('profile.profilePhoto')}
             </Txt>
             <View style={{ padding: spacing.lg, gap: 10 }}>
-              <PhotoOption icon="images-outline" label="Choose from library" onPress={() => changePhoto('library')} />
-              <PhotoOption icon="camera-outline" label="Take a photo" onPress={() => changePhoto('camera')} />
+              <PhotoOption icon="images-outline" label={t('profile.chooseFromLibrary')} onPress={() => changePhoto('library')} />
+              <PhotoOption icon="camera-outline" label={t('profile.takePhoto')} onPress={() => changePhoto('camera')} />
               {user.avatar ? (
-                <PhotoOption icon="trash-outline" label="Remove photo" danger onPress={clearPhoto} />
+                <PhotoOption icon="trash-outline" label={t('profile.removePhoto')} danger onPress={clearPhoto} />
               ) : null}
             </View>
           </View>
@@ -279,47 +283,6 @@ function Divider() {
   return <View style={{ height: 1, marginLeft: 58, backgroundColor: t.colors.border }} />;
 }
 
-/** Light / Dark / System appearance selector. */
-function ThemeSelector() {
-  const t = useTheme();
-  const mode = useStore((s) => s.themeMode);
-  const setMode = useStore((s) => s.setThemeMode);
-  const options: { key: ThemeMode; label: string; icon: keyof typeof Ionicons.glyphMap }[] = [
-    { key: 'light', label: 'Light', icon: 'sunny-outline' },
-    { key: 'dark', label: 'Dark', icon: 'moon-outline' },
-    { key: 'system', label: 'System', icon: 'phone-portrait-outline' },
-  ];
-  return (
-    <View style={{ padding: spacing.md, gap: 12 }}>
-      <View style={styles.row}>
-        <IconBox icon="contrast-outline" />
-        <Txt variant="titleSmall" style={{ flex: 1 }}>
-          Appearance
-        </Txt>
-      </View>
-      <View style={[styles.themeSeg, { backgroundColor: t.colors.surfaceAlt, borderColor: t.colors.border }]}>
-        {options.map((o) => {
-          const active = mode === o.key;
-          return (
-            <Pressable key={o.key} style={{ flex: 1 }} onPress={() => setMode(o.key)}>
-              <View style={[styles.themeSegItem, active && { backgroundColor: solid(t.colors.accent) }]}>
-                <Ionicons name={o.icon} size={16} color={active ? t.colors.onAccent : t.colors.textSecondary} />
-                <Txt
-                  variant="labelMedium"
-                  color={active ? t.colors.onAccent : t.colors.textSecondary}
-                  style={{ marginLeft: 6 }}
-                >
-                  {o.label}
-                </Txt>
-              </View>
-            </Pressable>
-          );
-        })}
-      </View>
-    </View>
-  );
-}
-
 const styles = StyleSheet.create({
   header: { paddingHorizontal: spacing.screenH, paddingBottom: spacing.xl, borderBottomLeftRadius: 32, borderBottomRightRadius: 32 },
   row: { flexDirection: 'row', alignItems: 'center' },
@@ -335,12 +298,4 @@ const styles = StyleSheet.create({
   group: { marginHorizontal: spacing.screenH, borderRadius: radius.lg, borderWidth: 1, overflow: 'hidden' },
   rowItem: { flexDirection: 'row', alignItems: 'center', padding: spacing.md, gap: 0 },
   iconBox: { width: 38, height: 38, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
-  themeSeg: { flexDirection: 'row', padding: 4, borderRadius: radius.pill, borderWidth: 1, gap: 4 },
-  themeSegItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 38,
-    borderRadius: radius.pill,
-  },
 });

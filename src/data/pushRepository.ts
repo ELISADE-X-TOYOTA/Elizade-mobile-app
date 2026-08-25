@@ -1,5 +1,5 @@
+import Constants, { ExecutionEnvironment } from 'expo-constants';
 import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import { notificationsApi } from '../api/notifications';
 import { APP } from '../constants/app';
@@ -7,28 +7,76 @@ import { APP } from '../constants/app';
 /**
  * Push registration.
  *
- * PERMISSION TIMING: `register()` is called after sign-in, not on first launch.
- * A permission prompt shown before the customer knows what the app does is the
- * one most people decline, and iOS only asks once — a rejection is effectively
- * permanent.
+ * ── WHY expo-notifications IS NEVER IMPORTED AT THE TOP OF THIS FILE ──
  *
- * Nothing here throws. Push is an enhancement: a customer who declines, or an
- * emulator with no push support, must still get a working app.
+ * SDK 53 removed Android remote-push support from Expo Go, and the module
+ * throws on IMPORT, not on use: `DevicePushTokenAutoRegistration.fx.js` runs as
+ * a side effect of loading `expo-notifications` and calls `addPushTokenListener`
+ * immediately. A static import therefore crashes the app at startup in Expo Go —
+ * and because this module is reached from `authRepository` → `login.tsx`, that
+ * meant the very first screen.
+ *
+ * So the module is loaded with a dynamic `import()` inside the functions that
+ * need it, behind an Expo Go check. In Expo Go nothing is loaded and every
+ * function no-ops; in a development or production build it behaves normally.
+ *
+ * PERMISSION TIMING: `registerForPush()` is called after sign-in, not on first
+ * launch. A prompt shown before the customer knows what the app does is the one
+ * most people decline, and iOS only asks once — a rejection is permanent.
+ *
+ * Nothing here throws. Push is an enhancement: a customer who declines, an
+ * emulator with no push service, or Expo Go must all still get a working app.
  */
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowBanner: true,
-    shouldShowList: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
+/**
+ * Expo Go identifies itself as `storeClient` — it IS the store-installed Expo
+ * client. Development and production builds report `standalone`/`bare`.
+ */
+export const IS_EXPO_GO =
+  Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
+
+/** True when push can actually work here. */
+export const pushSupported = !IS_EXPO_GO && !APP.useMock;
 
 /** The token last sent to the server, so we don't re-POST on every launch. */
 let lastRegistered: string | null = null;
+/** Set once, the first time the module is genuinely loaded. */
+let handlerConfigured = false;
+
+type NotificationsModule = typeof import('expo-notifications');
+
+/**
+ * Loads expo-notifications, or `null` where it cannot run.
+ *
+ * The `import()` is deliberately inside the guard: reaching it at all in Expo Go
+ * is what crashes, so the check has to happen first.
+ */
+async function loadNotifications(): Promise<NotificationsModule | null> {
+  if (!pushSupported) return null;
+  try {
+    const Notifications = await import('expo-notifications');
+    if (!handlerConfigured) {
+      Notifications.setNotificationHandler({
+        handleNotification: async () => ({
+          shouldShowBanner: true,
+          shouldShowList: true,
+          shouldPlaySound: true,
+          shouldSetBadge: true,
+        }),
+      });
+      handlerConfigured = true;
+    }
+    return Notifications;
+  } catch {
+    // A build without the native module compiled in.
+    return null;
+  }
+}
 
 async function getToken(): Promise<string | null> {
+  const Notifications = await loadNotifications();
+  if (!Notifications) return null;
+
   // A simulator has no push service to issue a token against.
   if (!Device.isDevice) return null;
 
@@ -51,10 +99,10 @@ async function getToken(): Promise<string | null> {
     });
   }
 
+  // Expo injects the project id into a build; `easConfig` is the runtime copy.
   const projectId =
-    (APP as { easProjectId?: string }).easProjectId ??
-    // Expo injects this in a build; absent in bare dev.
-    (Notifications as unknown as { easConfig?: { projectId?: string } }).easConfig?.projectId;
+    Constants.expoConfig?.extra?.eas?.projectId ??
+    Constants.easConfig?.projectId;
 
   const token = await Notifications.getExpoPushTokenAsync(
     projectId ? { projectId } : undefined,
@@ -64,7 +112,7 @@ async function getToken(): Promise<string | null> {
 
 /** Registers this device for push. Safe to call on every sign-in. */
 export async function registerForPush(): Promise<boolean> {
-  if (APP.useMock) return false;
+  if (!pushSupported) return false;
   try {
     const token = await getToken();
     if (!token || token === lastRegistered) return !!token;
@@ -75,7 +123,7 @@ export async function registerForPush(): Promise<boolean> {
     lastRegistered = token;
     return true;
   } catch {
-    // Declined, unsupported, or offline — none of which should surface to the user.
+    // Declined, unsupported, or offline — none of which should surface.
     return false;
   }
 }
@@ -87,7 +135,7 @@ export async function registerForPush(): Promise<boolean> {
  * service updates to whoever signs in next.
  */
 export async function unregisterFromPush(): Promise<void> {
-  if (APP.useMock || !lastRegistered) return;
+  if (!lastRegistered) return;
   try {
     await notificationsApi.unregisterDevice(lastRegistered);
   } catch {

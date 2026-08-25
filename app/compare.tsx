@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NetworkCarImage } from '../src/components/NetworkCarImage';
@@ -26,6 +27,7 @@ import { solid, tint } from '../src/theme/colors';
  */
 export default function Compare() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const compare = useStore((s) => s.compare);
   const clearCompare = useStore((s) => s.clearCompare);
@@ -58,7 +60,7 @@ export default function Compare() {
           <Pressable
             onPress={() => router.back()}
             accessibilityRole="button"
-            accessibilityLabel="Go back"
+            accessibilityLabel={tr('common.goBack')}
             style={[styles.backBtn, { backgroundColor: t.colors.surfaceAlt, borderColor: t.colors.border }]}
           >
             <Ionicons name="arrow-back" size={22} color={t.colors.textPrimary} />
@@ -70,23 +72,19 @@ export default function Compare() {
             }}
             hitSlop={10}
             accessibilityRole="button"
-            accessibilityLabel="Clear comparison"
+            accessibilityLabel={tr('compare.clearComparison')}
           >
-            <Txt variant="titleSmall" tone="secondary">
-              Clear
-            </Txt>
+            <Txt variant="titleSmall" tone="secondary">{tr('common.clear')}</Txt>
           </Pressable>
         </View>
-        <Txt variant="headlineMedium" style={{ marginTop: spacing.sm }}>
-          Compare
-        </Txt>
+        <Txt variant="headlineMedium" style={{ marginTop: spacing.sm }}>{tr('compare.title')}</Txt>
         {comparison ? (
           <Txt tone="secondary">
             {comparison.differenceCount} of {comparison.totalRows} specs differ
             {comparison.unknownCount > 0 ? ` · ${comparison.unknownCount} not published` : ''}
           </Txt>
         ) : (
-          <Txt tone="secondary">Side by side, spec for spec.</Txt>
+          <Txt tone="secondary">{tr('compare.subtitle')}</Txt>
         )}
       </View>
 
@@ -122,13 +120,11 @@ export default function Compare() {
             onPress={() => setDiffOnly((v) => !v)}
             accessibilityRole="switch"
             accessibilityState={{ checked: diffOnly }}
-            accessibilityLabel="Highlight differences only"
+            accessibilityLabel={tr('compare.highlightDifferences')}
             style={[styles.toggleRow, { borderBottomColor: t.colors.border }]}
           >
             <Ionicons name="funnel-outline" size={16} color={t.colors.textSecondary} />
-            <Txt variant="titleSmall" style={{ flex: 1, marginLeft: 8 }}>
-              Highlight differences only
-            </Txt>
+            <Txt variant="titleSmall" style={{ flex: 1, marginLeft: 8 }}>{tr('compare.highlightDifferences')}</Txt>
             <Switch on={diffOnly} />
           </Pressable>
 
@@ -176,6 +172,7 @@ function VehicleColumn({
   price: number;
 }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <View style={styles.col}>
       <View style={[styles.colImage, { backgroundColor: t.colors.surfaceAlt }]}>
@@ -196,6 +193,7 @@ function VehicleColumn({
 
 function Group({ group }: { group: CompareGroup }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <View style={{ marginBottom: spacing.lg }}>
       <View style={styles.groupHead}>
@@ -215,6 +213,7 @@ function Group({ group }: { group: CompareGroup }) {
 
 function Row({ row, last }: { row: CompareRow; last: boolean }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <View
       style={[
@@ -249,11 +248,10 @@ function Row({ row, last }: { row: CompareRow; last: boolean }) {
  */
 function Cell({ value, emphasise }: { value: string | null; emphasise: boolean }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   if (value === null) {
     return (
-      <Txt variant="bodySmall" tone="tertiary" style={{ flex: 1, fontStyle: 'italic' }}>
-        Not specified
-      </Txt>
+      <Txt variant="bodySmall" tone="tertiary" style={{ flex: 1, fontStyle: 'italic' }}>{tr('common.notSpecified')}</Txt>
     );
   }
   return (
@@ -270,6 +268,7 @@ function Cell({ value, emphasise }: { value: string | null; emphasise: boolean }
 /** Compact themed switch — RN's Switch can't be styled consistently on Android. */
 function Switch({ on }: { on: boolean }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const track = useAnimatedStyle(() => ({
     backgroundColor: withTiming(on ? solid(t.colors.accent) : t.colors.border, { duration: 160 }),
   }));
@@ -285,6 +284,7 @@ function Switch({ on }: { on: boolean }) {
 
 function LoadingState() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <View style={{ padding: spacing.screenH, gap: 12 }}>
       <View style={{ flexDirection: 'row', gap: 12 }}>
@@ -307,19 +307,16 @@ function LoadingState() {
 
 function ErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <View style={{ padding: spacing.screenH, alignItems: 'center', marginTop: spacing.xxl }}>
       <Ionicons name="cloud-offline-outline" size={44} color={t.colors.textTertiary} />
-      <Txt variant="titleMedium" center style={{ marginTop: spacing.md }}>
-        Couldn't load the comparison
-      </Txt>
+      <Txt variant="titleMedium" center style={{ marginTop: spacing.md }}>{tr('compare.loadError')}</Txt>
       <Txt tone="secondary" center style={{ marginTop: 4 }}>
         {message}
       </Txt>
       <Pressable onPress={onRetry} style={{ marginTop: spacing.lg }}>
-        <Txt variant="titleSmall" color={t.colors.primary}>
-          Tap to retry
-        </Txt>
+        <Txt variant="titleSmall" color={t.colors.primary}>{tr('common.tapToRetry')}</Txt>
       </Pressable>
     </View>
   );

@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { notificationsApi, type PreferenceItemDto } from '../src/api/notifications';
@@ -39,6 +40,7 @@ const ORDER = ['service', 'sales', 'warranty', 'support', 'promo', 'system'];
 
 export default function NotificationSettings() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const [items, setItems] = useState<PreferenceItemDto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -90,15 +92,13 @@ export default function NotificationSettings() {
         <Pressable
           onPress={() => router.back()}
           accessibilityRole="button"
-          accessibilityLabel="Go back"
+          accessibilityLabel={tr('common.goBack')}
           style={[styles.backBtn, { backgroundColor: t.colors.surfaceAlt, borderColor: t.colors.border }]}
         >
           <Ionicons name="arrow-back" size={22} color={t.colors.textPrimary} />
         </Pressable>
-        <Txt variant="headlineMedium" style={{ marginTop: spacing.md }}>
-          Notifications
-        </Txt>
-        <Txt tone="secondary">Choose how we reach you about each kind of update.</Txt>
+        <Txt variant="headlineMedium" style={{ marginTop: spacing.md }}>{tr('notifications.title')}</Txt>
+        <Txt tone="secondary">{tr('notifications.chooseHow')}</Txt>
       </View>
 
       <ScrollView
@@ -181,6 +181,7 @@ export default function NotificationSettings() {
 /** Matches the compare screen's switch — RN's own can't be styled on Android. */
 function Switch({ on }: { on: boolean }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const track = useAnimatedStyle(() => ({
     backgroundColor: withTiming(on ? t.colors.accentText : t.colors.border, { duration: 160 }),
   }));

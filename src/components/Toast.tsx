@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import Animated, { SlideInUp, SlideOutUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { radius, spacing } from '../theme/spacing';
@@ -51,6 +52,7 @@ export function Toast({
   duration = DEFAULT_DURATION,
 }: Props) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
@@ -96,7 +98,7 @@ export function Toast({
           ) : null}
         </View>
 
-        <Pressable onPress={onDismiss} hitSlop={10} accessibilityLabel="Dismiss">
+        <Pressable onPress={onDismiss} hitSlop={10} accessibilityLabel={tr('common.dismiss')}>
           <Ionicons name="close" size={18} color={t.colors.textTertiary} />
         </Pressable>
       </View>

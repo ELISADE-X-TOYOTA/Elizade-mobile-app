@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback } from 'react';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Skeleton } from '../../src/components/Skeleton';
 import { Txt } from '../../src/components/Txt';
@@ -18,6 +19,7 @@ import { solid } from '../../src/theme/colors';
 
 export default function Support() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const { tickets, loading, error, reload } = useTickets();
 
@@ -26,14 +28,10 @@ export default function Support() {
   return (
     <View style={{ flex: 1, backgroundColor: 'transparent', paddingTop: insets.top }}>
       <View style={[styles.headerRow, { paddingHorizontal: spacing.screenH }]}>
-        <Txt variant="headlineMedium" style={{ flex: 1 }}>
-          Support
-        </Txt>
+        <Txt variant="headlineMedium" style={{ flex: 1 }}>{tr('support.title')}</Txt>
         <Pressable onPress={() => router.push('/new-ticket')} style={[styles.newBtn, { backgroundColor: solid(t.colors.accent) }]}>
           <Ionicons name="add" size={20} color={t.colors.onAccent} />
-          <Txt variant="titleSmall" color={t.colors.onAccent} style={{ marginLeft: 4 }}>
-            New
-          </Txt>
+          <Txt variant="titleSmall" color={t.colors.onAccent} style={{ marginLeft: 4 }}>{tr('common.new')}</Txt>
         </Pressable>
       </View>
 
@@ -46,13 +44,11 @@ export default function Support() {
       >
         {/* Quick contact */}
         <View style={{ flexDirection: 'row', gap: 12 }}>
-          <QuickAction icon="call" label="Call Elizade" />
-          <QuickAction icon="logo-whatsapp" label="WhatsApp" />
+          <QuickAction icon="call" label={tr('support.callElizade')} />
+          <QuickAction icon="logo-whatsapp" label={tr('support.whatsapp')} />
         </View>
 
-        <Txt variant="titleLarge" style={{ marginTop: spacing.md }}>
-          Your Tickets
-        </Txt>
+        <Txt variant="titleLarge" style={{ marginTop: spacing.md }}>{tr('support.yourTickets')}</Txt>
 
         {loading ? (
           [0, 1, 2].map((i) => <Skeleton key={i} height={92} radius={radius.lg} />)
@@ -75,6 +71,7 @@ function toneColorOf(t: ReturnType<typeof useTheme>, tone: Tone) {
 
 function QuickAction({ icon, label }: { icon: keyof typeof Ionicons.glyphMap; label: string }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <View style={[styles.quick, { backgroundColor: t.colors.surface, borderColor: t.colors.border }, t.shadows.soft]}>
       <View style={[styles.quickIcon, { backgroundColor: t.colors.primary + '14' }]}>
@@ -87,6 +84,7 @@ function QuickAction({ icon, label }: { icon: keyof typeof Ionicons.glyphMap; la
 
 function TicketCard({ ticket }: { ticket: SupportTicket }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const cat = TICKET_CATEGORY_META[ticket.category];
   const status = TICKET_STATUS_META[ticket.status];
   const c = toneColorOf(t, status.tone);
@@ -122,13 +120,14 @@ function TicketCard({ ticket }: { ticket: SupportTicket }) {
 
 function Empty() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <View style={{ alignItems: 'center', paddingTop: 40 }}>
       <View style={[styles.emptyIcon, { backgroundColor: t.colors.primary + '14' }]}>
         <Ionicons name="chatbubbles-outline" size={40} color={t.colors.primary} />
       </View>
       <Txt tone="secondary" style={{ marginTop: 14 }}>
-        No tickets yet. Tap "New" to get help.
+        {tr('support.noTicketsHint')}
       </Txt>
     </View>
   );

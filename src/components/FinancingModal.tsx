@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useMemo, useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { radius, spacing } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
@@ -20,6 +21,7 @@ const TENORS = [12, 24, 36, 48, 60];
 /** Vehicle financing calculator — monthly repayment from deposit, tenor & rate. */
 export function FinancingModal({ visible, vehiclePrice, vehicleTitle, onClose }: Props) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const [downPct, setDownPct] = useState(20);
   const [tenor, setTenor] = useState(36);
@@ -41,9 +43,7 @@ export function FinancingModal({ visible, vehiclePrice, vehicleTitle, onClose }:
         <Pressable style={{ flex: 1 }} onPress={onClose} />
         <View style={[styles.sheet, { backgroundColor: t.colors.surface, paddingBottom: insets.bottom + spacing.md }]}>
           <View style={[styles.handle, { backgroundColor: t.colors.border }]} />
-          <Txt variant="titleLarge" style={{ paddingHorizontal: spacing.lg, paddingTop: 8 }}>
-            Financing Calculator
-          </Txt>
+          <Txt variant="titleLarge" style={{ paddingHorizontal: spacing.lg, paddingTop: 8 }}>{tr('financing.title')}</Txt>
           <Txt tone="secondary" style={{ paddingHorizontal: spacing.lg, marginTop: 2 }}>
             {vehicleTitle} · {price(vehiclePrice)}
           </Txt>
@@ -51,9 +51,7 @@ export function FinancingModal({ visible, vehiclePrice, vehicleTitle, onClose }:
           <ScrollView style={{ maxHeight: 460 }} contentContainerStyle={{ padding: spacing.lg }} showsVerticalScrollIndicator={false}>
             {/* Result */}
             <View style={[styles.result, { backgroundColor: t.colors.primary }]}>
-              <Txt variant="labelSmall" color={t.colors.onPrimary} style={{ opacity: 0.7 }}>
-                ESTIMATED MONTHLY REPAYMENT
-              </Txt>
+              <Txt variant="labelSmall" color={t.colors.onPrimary} style={{ opacity: 0.7 }}>{tr('financing.estimatedMonthly')}</Txt>
               <Txt variant="displayMedium" color={t.colors.onPrimary} style={{ marginTop: 2 }}>
                 {price(calc.monthly)}
               </Txt>
@@ -79,17 +77,15 @@ export function FinancingModal({ visible, vehiclePrice, vehicleTitle, onClose }:
 
             {/* Breakdown */}
             <View style={[styles.breakdown, { backgroundColor: t.colors.surfaceAlt }]}>
-              <Row label="Vehicle price" value={price(vehiclePrice)} />
-              <Row label="Down payment" value={`- ${price(calc.down)}`} />
-              <Row label="Loan principal" value={price(calc.principal)} />
-              <Row label="Total interest" value={price(calc.totalInterest)} />
+              <Row label={tr('financing.vehiclePrice')} value={price(vehiclePrice)} />
+              <Row label={tr('shop.downPayment')} value={`- ${price(calc.down)}`} />
+              <Row label={tr('shop.loanPrincipal')} value={price(calc.principal)} />
+              <Row label={tr('financing.totalInterest')} value={price(calc.totalInterest)} />
               <View style={[styles.divider, { backgroundColor: t.colors.border }]} />
-              <Row label="Total payable" value={price(calc.totalPayable)} bold />
+              <Row label={tr('financing.totalPayable')} value={price(calc.totalPayable)} bold />
             </View>
 
-            <Txt variant="labelSmall" tone="tertiary" style={{ marginTop: spacing.md }}>
-              Estimate only. Final terms are subject to Elizade Finance approval.
-            </Txt>
+            <Txt variant="labelSmall" tone="tertiary" style={{ marginTop: spacing.md }}>{tr('financing.disclaimer')}</Txt>
           </ScrollView>
         </View>
       </View>
@@ -99,6 +95,7 @@ export function FinancingModal({ visible, vehiclePrice, vehicleTitle, onClose }:
 
 function Label({ text, trailing }: { text: string; trailing?: string }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: spacing.lg, marginBottom: spacing.sm }}>
       <Txt variant="titleMedium" style={{ flex: 1 }}>
@@ -115,6 +112,7 @@ function Label({ text, trailing }: { text: string; trailing?: string }) {
 
 function Chips({ options, value, onChange }: { options: { value: number; label: string }[]; value: number; onChange: (v: number) => void }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
       {options.map((o) => {
@@ -137,6 +135,7 @@ function Chips({ options, value, onChange }: { options: { value: number; label: 
 
 function Stepper({ icon, onPress }: { icon: keyof typeof Ionicons.glyphMap; onPress: () => void }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <Pressable onPress={onPress} style={[styles.stepper, { backgroundColor: t.colors.surfaceAlt, borderColor: t.colors.border }]}>
       <Ionicons name={icon} size={22} color={t.colors.primary} />
@@ -146,6 +145,7 @@ function Stepper({ icon, onPress }: { icon: keyof typeof Ionicons.glyphMap; onPr
 
 function Row({ label, value, bold }: { label: string; value: string; bold?: boolean }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 5 }}>
       <Txt variant={bold ? 'titleMedium' : 'bodyMedium'} tone={bold ? 'primary' : 'secondary'}>
