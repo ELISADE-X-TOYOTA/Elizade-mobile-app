@@ -136,6 +136,7 @@ export default function Profile() {
         <Group title="My Garage">
           <Row icon="car-sport-outline" label="My Vehicles" onPress={() => router.push('/garage')} />
           <Row icon="heart-outline" label="Watchlist" onPress={() => router.push('/watchlist')} />
+          <Row icon="notifications-outline" label="Notifications" onPress={() => router.push('/notification-settings')} />
           <Row icon="shield-checkmark-outline" label="Warranty & Recalls" onPress={() => router.push('/warranty')} />
           <Row icon="time-outline" label="Service History" onPress={() => router.push('/(tabs)/service')} last />
         </Group>

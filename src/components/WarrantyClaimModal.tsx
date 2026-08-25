@@ -161,14 +161,20 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
                         variant="titleSmall"
                         color={eligibility.eligible ? t.colors.successText : t.colors.warningText}
                       >
-                        {eligibility.eligible ? 'Covered' : 'Not covered'}
+                        {eligibility.eligible ? 'Within basic cover' : 'Outside basic cover'}
                       </Txt>
                       <Txt variant="bodySmall" tone="secondary">
                         {eligibility.eligible
-                          ? `${eligibility.warrantyMonths} months / ${eligibility.mileageLimitKm.toLocaleString()} km${eligibility.coverageEnd ? ` · until ${new Date(eligibility.coverageEnd).toLocaleDateString('en', { day: 'numeric', month: 'short', year: 'numeric' })}` : ''}`
+                          ? `Basic cover runs ${eligibility.warrantyMonths} months / ${eligibility.mileageLimitKm.toLocaleString()} km${eligibility.coverageEnd ? `, until ${new Date(eligibility.coverageEnd).toLocaleDateString('en', { day: 'numeric', month: 'short', year: 'numeric' })}` : ''}.`
                           : (eligibility.reason ??
                             'This vehicle is outside its basic warranty period.')}
                       </Txt>
+                      {eligibility.eligible ? (
+                        <Txt variant="bodySmall" tone="secondary" style={{ marginTop: 6 }}>
+                          Paint, battery and wear items carry shorter terms. Your
+                          service adviser confirms the final outcome.
+                        </Txt>
+                      ) : null}
                     </View>
                   </View>
                 ) : null}

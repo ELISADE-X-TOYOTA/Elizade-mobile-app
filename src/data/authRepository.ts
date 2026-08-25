@@ -1,3 +1,4 @@
+import { unregisterFromPush } from './pushRepository';
 import * as authApi from '../api/auth';
 import { setToken } from '../api/session';
 import { APP } from '../constants/app';
@@ -63,6 +64,10 @@ export async function checkEmailAvailable(email: string): Promise<EmailCheck> {
   }
 }
 
+// Drops this device's push token so a shared handset stops delivering the
+// previous customer's updates to whoever signs in next.
 export async function logout(): Promise<void> {
+  // Before dropping the token — the unregister call needs to be authenticated.
+  await unregisterFromPush();
   await setToken(null);
 }

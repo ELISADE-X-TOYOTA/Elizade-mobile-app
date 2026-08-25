@@ -6,6 +6,7 @@ import { AuthScaffold } from '../../src/components/AuthScaffold';
 import { PrimaryButton } from '../../src/components/PrimaryButton';
 import { Txt } from '../../src/components/Txt';
 import { requestOtp, verifyOtp } from '../../src/data/authRepository';
+import { registerForPush } from '../../src/data/pushRepository';
 import { useStore } from '../../src/store/useStore';
 import { useWatchlistStore } from '../../src/store/useWatchlistStore';
 import { radius, spacing } from '../../src/theme/spacing';
@@ -70,6 +71,12 @@ export default function Otp() {
         // intro as seen. The guide is only for users who just registered.
         completeOnboarding(user.id);
         loadWatchlist().catch(() => {});
+        // Ask for push only now — a prompt before sign-in is the one people decline,
+
+        // and iOS never asks twice.
+
+        registerForPush();
+
         router.replace('/(tabs)/home');
       } catch (e) {
         setError(e instanceof Error ? e.message : 'Invalid or expired code');
