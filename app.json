@@ -28,7 +28,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/elizade-logo.png",
         "backgroundColor": "#000000"
-      }
+      },
+      "softwareKeyboardLayoutMode": "resize"
     },
     "plugins": [
       "expo-router",

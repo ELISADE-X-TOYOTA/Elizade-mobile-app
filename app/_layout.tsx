@@ -7,14 +7,16 @@ import { Outfit_600SemiBold } from '@expo-google-fonts/outfit/600SemiBold';
 import { Outfit_700Bold } from '@expo-google-fonts/outfit/700Bold';
 import { useFonts } from 'expo-font';
 import * as NavigationBar from 'expo-navigation-bar';
-import { Stack } from 'expo-router';
+import { ThemeProvider } from '@react-navigation/native';
+import { router, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import * as SystemUI from 'expo-system-ui';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { onSessionEnded } from '../src/api/client';
 import { migrateLegacyToken } from '../src/api/session';
 // Side-effect import: configures i18next before any screen renders.
 import { restoreLanguage } from '../src/i18n';
@@ -22,6 +24,7 @@ import { ErrorBoundary } from '../src/components/ErrorBoundary';
 import { CompareTray } from '../src/components/CompareTray';
 import { PatternBackground } from '../src/components/PatternBackground';
 import { useStore } from '../src/store/useStore';
+import { buildNavigationTheme } from '../src/theme/navigationTheme';
 import { useTheme } from '../src/theme/useTheme';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -32,6 +35,9 @@ SystemUI.setBackgroundColorAsync('#000000').catch(() => {});
 
 export default function RootLayout() {
   const t = useTheme();
+  // Supplies the default background for EVERY navigator, so a navigator that
+  // does not set its own container style cannot fall back to light grey.
+  const navTheme = useMemo(() => buildNavigationTheme(t.colors, t.isDark), [t.colors, t.isDark]);
   const setFontsReady = useStore((s) => s.setFontsReady);
   const [loaded, fontError] = useFonts({
     Outfit_400Regular,
@@ -57,6 +63,22 @@ export default function RootLayout() {
   // plaintext AsyncStorage into the Keychain / KeyStore.
   useEffect(() => {
     migrateLegacyToken();
+  }, []);
+
+  /*
+    The single place the app reacts to a session genuinely ending.
+
+    "Genuinely" is the point: this fires only when the REFRESH token was
+    rejected, not on every 401. A one-off 401 is handled silently by
+    `apiFetch`, which renews and replays the request — the customer never
+    sees it. Previously any 401 anywhere cleared the token, which is what
+    made sessions feel like they collapsed at random.
+  */
+  useEffect(() => {
+    return onSessionEnded(() => {
+      useStore.getState().setCurrentUser(null);
+      router.replace('/(auth)/login');
+    });
   }, []);
 
   /*
@@ -93,6 +115,7 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ErrorBoundary>
+        <ThemeProvider value={navTheme}>
         <SafeAreaProvider>
           <StatusBar style={t.isDark ? 'light' : 'dark'} />
         {/*
@@ -162,6 +185,7 @@ export default function RootLayout() {
           */}
           <CompareTray />
         </SafeAreaProvider>
+        </ThemeProvider>
       </ErrorBoundary>
     </GestureHandlerRootView>
   );

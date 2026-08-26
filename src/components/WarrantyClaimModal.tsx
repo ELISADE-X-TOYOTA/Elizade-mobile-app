@@ -10,6 +10,7 @@ import { pickTicketAttachment, PickedAttachment } from '../data/supportRepositor
 import { WARRANTY_CLAIM_CATEGORIES, WarrantyEligibility } from '../domain/types';
 import { radius, spacing } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
+import { useKeyboardHeight } from './KeyboardAware';
 import { PrimaryButton } from './PrimaryButton';
 import { AttachmentDrafts } from './AttachmentDrafts';
 import { Txt } from './Txt';
@@ -28,6 +29,7 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
   const t = useTheme();
   const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
+  const keyboardHeight = useKeyboardHeight();
   const [category, setCategory] = useState(WARRANTY_CLAIM_CATEGORIES[0]);
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
@@ -112,7 +114,14 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
     <Modal visible={visible} transparent animationType="slide" onRequestClose={close} statusBarTranslucent>
       <View style={styles.backdrop}>
         <Pressable style={{ flex: 1 }} onPress={close} />
-        <View style={[styles.sheet, { backgroundColor: t.colors.surface, paddingBottom: insets.bottom + spacing.md }]}>
+        {/*
+          A bottom sheet is pinned to the bottom of the screen, so the keyboard
+          covers it FIRST — and a KeyboardAvoidingView inside a Modal measures
+          against the screen rather than the sheet, so it does not help here.
+          Padding by the live keyboard height lifts the sheet instead, which
+          keeps its own inputs and its submit button reachable.
+        */}
+        <View style={[styles.sheet, { backgroundColor: t.colors.surface, paddingBottom: insets.bottom + spacing.md + keyboardHeight }]}>
           <View style={[styles.handle, { backgroundColor: t.colors.border }]} />
 
           {done ? (

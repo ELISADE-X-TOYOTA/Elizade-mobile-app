@@ -248,7 +248,8 @@
     "messagePlaceholder": "Sọ fún wa bí a ṣe lè ràn ọ́ lọ́wọ́…",
     "attachPhoto": "So àwòrán mọ́",
     "sendReply": "Fi ìdáhùn ránṣẹ́",
-    "document": "Ìwé"
+    "document": "Ìwé",
+    "agentTyping": "Ìrànlọ́wọ́ ń kọ̀wé…"
   },
   "notifications": {
     "title": "Ìfitónilétí",
@@ -390,5 +391,23 @@
   },
   "comingSoon": {
     "whatsComing": "OHUN TÍ Ń BỌ̀"
+  },
+  "documents": {
+    "title": "Gbé àwọn ìwé sókè",
+    "needed": "A nílò àwọn ìwé",
+    "underReview": "A ti fi ránṣẹ́ — à ń ṣàyẹ̀wò",
+    "statusOther": "Ipò ìbéèrè",
+    "chassis": "Nọ́mbà ara ọkọ̀ {{vin}}",
+    "alreadySent": "Ìwé {{count}} ti wà nínú fáìlì",
+    "alreadySentHint": "Ohun tí a béèrè lókè nìkan ni o nílò láti fi ránṣẹ́.",
+    "add": "Fi ìwé kún un",
+    "formats": "PDF, JPG tàbí PNG · tó {{mb}} MB kọ̀ọ̀kan",
+    "maxReached": "Ìwé {{max}} ni ó pọ̀ jù",
+    "submit": "Fi àwọn ìwé ránṣẹ́",
+    "submitted": "A ti fi àwọn ìwé ránṣẹ́. Ìbéèrè rẹ ti padà sí ọwọ́ ẹgbẹ́ wa.",
+    "submitFailed": "A kò lè fi àwọn ìwé wọ̀nyí ránṣẹ́.",
+    "uploadFailed": "A kò lè gbé ìwé yẹn sókè.",
+    "notFound": "A kò rí ìbéèrè náà.",
+    "loadError": "A kò lè gbé ìbéèrè náà wọlé."
   }
 }

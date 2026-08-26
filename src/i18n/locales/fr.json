@@ -248,7 +248,8 @@
     "messagePlaceholder": "Dites-nous comment nous pouvons aider…",
     "attachPhoto": "Joindre une photo",
     "sendReply": "Envoyer la réponse",
-    "document": "Document"
+    "document": "Document",
+    "agentTyping": "Le support écrit…"
   },
   "notifications": {
     "title": "Notifications",
@@ -390,5 +391,23 @@
   },
   "comingSoon": {
     "whatsComing": "À VENIR"
+  },
+  "documents": {
+    "title": "Envoyer des documents",
+    "needed": "Documents requis",
+    "underReview": "Envoyé — en cours d'examen",
+    "statusOther": "Statut de la demande",
+    "chassis": "Châssis {{vin}}",
+    "alreadySent": "{{count}} document(s) déjà au dossier",
+    "alreadySentHint": "Vous n'avez à envoyer que ce qui est demandé ci-dessus.",
+    "add": "Ajouter un document",
+    "formats": "PDF, JPG ou PNG · jusqu'à {{mb}} Mo chacun",
+    "maxReached": "Maximum {{max}} documents",
+    "submit": "Envoyer les documents",
+    "submitted": "Documents envoyés. Votre demande est de retour chez notre équipe.",
+    "submitFailed": "Impossible d'envoyer ces documents.",
+    "uploadFailed": "Impossible de téléverser ce document.",
+    "notFound": "Demande introuvable.",
+    "loadError": "Impossible de charger cette demande."
   }
 }

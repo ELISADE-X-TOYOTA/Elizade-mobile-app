@@ -6,11 +6,13 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppTextField } from '../src/components/AppTextField';
 import { AttachmentDrafts } from '../src/components/AttachmentDrafts';
+import { KeyboardAwareScrollView } from '../src/components/KeyboardAware';
 import { PrimaryButton } from '../src/components/PrimaryButton';
 import { Txt } from '../src/components/Txt';
 import { MAX_TICKET_ATTACHMENTS } from '../src/api/support';
 import {
   createTicket,
+  isUploadedAttachment,
   pickTicketAttachment,
   type PickedAttachment,
 } from '../src/data/supportRepository';
@@ -32,7 +34,8 @@ export default function NewTicket() {
   const [loading, setLoading] = useState(false);
   const [attachments, setAttachments] = useState<PickedAttachment[]>([]);
   const [attaching, setAttaching] = useState(false);
-  const [attachError, setAttachError] = useState<string>();
+  /** Shown above the submit button: attachment failures and submit failures alike. */
+  const [formError, setFormError] = useState<string>();
 
   const sla = TICKET_CATEGORY_META[category].slaHours;
   const valid = subject.trim().length > 2 && message.trim().length > 2;
@@ -41,12 +44,12 @@ export default function NewTicket() {
   const attach = async () => {
     if (attaching || attachmentsFull) return;
     setAttaching(true);
-    setAttachError(undefined);
+    setFormError(undefined);
     // Uploads immediately rather than at submit: the file is then already on
     // the server when the ticket is created, so a slow photo can't stall — or
     // silently fail — the thing the user actually pressed "Submit" for.
     const res = await pickTicketAttachment('library');
-    if (res && !res.ok) setAttachError(res.message);
+    if (res && !res.ok) setFormError(res.message);
     if (res && res.ok) setAttachments((prev) => [...prev, res.attachment]);
     setAttaching(false);
   };
@@ -54,14 +57,23 @@ export default function NewTicket() {
   const submit = async () => {
     if (!valid) return;
     setLoading(true);
+    setFormError(undefined);
     try {
       const ticket = await createTicket({
         subject: clean(subject, 140),
         category,
         body: cleanText(message),
-        attachments: attachments.map((a) => a.url),
+        // Only URLs the upload endpoint issued. A local URI here is rejected
+        // by the API with an opaque message, so it is caught before sending.
+        attachments: attachments.map((a) => a.url).filter(isUploadedAttachment),
       });
       router.replace(`/ticket/${ticket.id}`);
+    } catch (e) {
+      // There was no catch here at all, only `finally`. Any failure — a
+      // rejected attachment, no signal — escaped as an unhandled rejection:
+      // the spinner stopped and the customer was told nothing, with their
+      // typed-out ticket still on screen and no idea it had not sent.
+      setFormError(e instanceof Error ? e.message : 'Could not submit that ticket.');
     } finally {
       setLoading(false);
     }
@@ -76,7 +88,7 @@ export default function NewTicket() {
         <Txt variant="headlineMedium" style={{ marginTop: spacing.md }}>{tr('support.newTicket')}</Txt>
       </View>
 
-      <ScrollView contentContainerStyle={{ padding: spacing.screenH, paddingBottom: 40 }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+      <KeyboardAwareScrollView contentContainerStyle={{ padding: spacing.screenH, paddingBottom: 40 }}>
         <Txt variant="titleMedium" style={{ marginBottom: spacing.sm }}>{tr('common.category')}</Txt>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
           {CATEGORIES.map((c) => {
@@ -147,15 +159,15 @@ export default function NewTicket() {
           </Txt>
         </Pressable>
 
-        {attachError ? (
+        {formError ? (
           <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: 8 }}>
-            {attachError}
+            {formError}
           </Txt>
         ) : null}
 
         <View style={{ height: spacing.xl }} />
         <PrimaryButton label={tr('support.submitTicket')} icon="send" loading={loading} disabled={!valid} onPress={submit} />
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </View>
   );
 }

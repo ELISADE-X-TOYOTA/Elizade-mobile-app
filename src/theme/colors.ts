@@ -164,7 +164,7 @@ const dark: typeof light = {
   primary: '#F4F6F8', // light structural color on black
   primaryDark: '#000000',
   primaryLight: '#C9CFD6',
-  background: '#0A0A0B',
+  background: '#0D0D0D',
   surface: '#141416',
   surfaceAlt: '#1C1C20',
   /**
@@ -176,7 +176,12 @@ const dark: typeof light = {
    * lighter than surface (#141416), so using it as the page backdrop inverted
    * the hierarchy and made every card look sunken rather than raised.
    */
-  canvas: '#0A0A0B',
+  //
+  // #0D0D0D, not #121212. Both were proposed as the dark canvas, but #121212
+  // sits 1.018:1 from `surface` (#141416) — close enough that cards stop
+  // reading as raised at all, and dark mode has no shadows to fall back on.
+  // #0D0D0D keeps a usable 1.056:1 step while still hitting the intended tone.
+  canvas: '#0D0D0D',
   // On dark the brand gold is already 10.7:1 — no adjustment needed.
   accentText: '#F5B301',
   // Success and warning already clear the bar on a dark card; red and blue do
@@ -193,7 +198,7 @@ const dark: typeof light = {
   textSecondary: '#A3AAB5',
   // Was #6B7280 → 3.51:1 on surfaceAlt, under the 4.5:1 body-text bar.
   textTertiary: '#7C8695',
-  onPrimary: '#0A0A0B',
+  onPrimary: '#0D0D0D',
   overlay: 'rgba(255,255,255,0.07)',
 };
 

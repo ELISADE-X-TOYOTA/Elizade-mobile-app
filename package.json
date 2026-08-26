@@ -9,9 +9,14 @@
     "web": "expo start --web",
     "check:theme": "node scripts/check-theme.js",
     "typecheck": "tsc --noEmit",
-    "verify": "npm run typecheck && npm run check:theme && npm run check:i18n && npm run check:untranslated",
+    "verify": "npm run typecheck && npm run check:theme && npm run check:i18n && npm run check:untranslated && npm run test:singleflight && npm run test:sse && npm run test:socket && npm run test:booking",
     "check:i18n": "node scripts/check-i18n.js",
-    "check:untranslated": "node scripts/find-untranslated.js"
+    "check:untranslated": "node scripts/find-untranslated.js",
+    "test:singleflight": "node scripts/test-singleflight.js",
+    "test:sse": "node scripts/test-sse-parser.js",
+    "check:worklets": "node scripts/check-worklets.js",
+    "test:socket": "node scripts/test-socket-backoff.js",
+    "test:booking": "node scripts/test-booking-slots.js"
   },
   "dependencies": {
     "@expo-google-fonts/outfit": "^0.4.3",
@@ -23,6 +28,7 @@
     "expo-blur": "~15.0.8",
     "expo-constants": "~18.0.13",
     "expo-device": "~8.0.10",
+    "expo-document-picker": "~14.0.8",
     "expo-font": "~14.0.12",
     "expo-image": "~3.0.11",
     "expo-image-picker": "~17.0.11",

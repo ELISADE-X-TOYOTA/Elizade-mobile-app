@@ -48,6 +48,11 @@ export default function Profile() {
       if (!res) return; // cancelled
       if (res.ok && res.user) setCurrentUser(res.user);
       else setAvatarError(res.message);
+    } catch (e) {
+      // The upload itself returns a result object, but the permission prompt
+      // and the picker launch can still reject — an unavailable camera, or a
+      // picker already open. Without this those escaped unhandled.
+      setAvatarError(e instanceof Error ? e.message : 'Could not update your photo.');
     } finally {
       setAvatarBusy(false);
     }
@@ -60,6 +65,8 @@ export default function Profile() {
       const res = await removeAvatar(user);
       if (res.ok && res.user) setCurrentUser(res.user);
       else setAvatarError(res.message);
+    } catch (e) {
+      setAvatarError(e instanceof Error ? e.message : 'Could not remove your photo.');
     } finally {
       setAvatarBusy(false);
     }

@@ -248,7 +248,8 @@
     "messagePlaceholder": "Tell us how we can help…",
     "attachPhoto": "Attach a photo",
     "sendReply": "Send reply",
-    "document": "Document"
+    "document": "Document",
+    "agentTyping": "Support is typing…"
   },
   "notifications": {
     "title": "Notifications",
@@ -390,5 +391,23 @@
   },
   "comingSoon": {
     "whatsComing": "WHAT'S COMING"
+  },
+  "documents": {
+    "title": "Upload documents",
+    "needed": "Documents needed",
+    "underReview": "Submitted — under review",
+    "statusOther": "Claim status",
+    "chassis": "Chassis {{vin}}",
+    "alreadySent": "{{count}} document(s) already on file",
+    "alreadySentHint": "You only need to send what was asked for above.",
+    "add": "Add a document",
+    "formats": "PDF, JPG or PNG · up to {{mb}} MB each",
+    "maxReached": "Maximum {{max}} documents",
+    "submit": "Submit documents",
+    "submitted": "Documents sent. Your claim is back with our team.",
+    "submitFailed": "Could not submit those documents.",
+    "uploadFailed": "Could not upload that document.",
+    "notFound": "We couldn't find that request.",
+    "loadError": "Could not load that request."
   }
 }

@@ -248,7 +248,8 @@
     "messagePlaceholder": "Gaya mana yadda za mu taimaka…",
     "attachPhoto": "Haɗa hoto",
     "sendReply": "Aika amsa",
-    "document": "Takarda"
+    "document": "Takarda",
+    "agentTyping": "Tallafi yana rubutu…"
   },
   "notifications": {
     "title": "Sanarwa",
@@ -390,5 +391,23 @@
   },
   "comingSoon": {
     "whatsComing": "ABIN DA KE ZUWA"
+  },
+  "documents": {
+    "title": "Loda takardu",
+    "needed": "Ana buƙatar takardu",
+    "underReview": "An aika — ana dubawa",
+    "statusOther": "Matsayin buƙata",
+    "chassis": "Lambar jiki {{vin}}",
+    "alreadySent": "Takardu {{count}} sun riga sun kasance",
+    "alreadySentHint": "Sai kawai ka aika abin da aka nema a sama.",
+    "add": "Ƙara takarda",
+    "formats": "PDF, JPG ko PNG · har {{mb}} MB kowanne",
+    "maxReached": "Iyaka takardu {{max}}",
+    "submit": "Aika takardu",
+    "submitted": "An aika takardun. Buƙatarka ta koma ga ƙungiyarmu.",
+    "submitFailed": "An kasa aika waɗannan takardun.",
+    "uploadFailed": "An kasa loda wannan takarda.",
+    "notFound": "Ba mu sami wannan buƙata ba.",
+    "loadError": "An kasa loda wannan buƙata."
   }
 }

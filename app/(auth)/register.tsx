@@ -6,7 +6,6 @@ import { useCallback, useEffect, useImperativeHandle, useRef, useState, forwardR
 import {
   ActivityIndicator,
   BackHandler,
-  KeyboardAvoidingView,
   NativeSyntheticEvent,
   Platform,
   Pressable,
@@ -26,6 +25,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppTextField } from '../../src/components/AppTextField';
+import { KeyboardAwareView } from '../../src/components/KeyboardAware';
 import { PrimaryButton } from '../../src/components/PrimaryButton';
 import { SendingOverlay } from '../../src/components/SendingOverlay';
 import { Toast, ToastState } from '../../src/components/Toast';
@@ -268,7 +268,7 @@ export default function Register() {
 
   return (
     <View style={{ flex: 1, backgroundColor: 'transparent' }}>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAwareView>
         {/* Header: back + progress */}
         <View style={{ paddingTop: insets.top + spacing.xs, paddingHorizontal: spacing.screenH }}>
           <Pressable
@@ -445,7 +445,7 @@ export default function Register() {
             </Pressable>
           )}
         </View>
-      </KeyboardAvoidingView>
+      </KeyboardAwareView>
 
       <SendingOverlay visible={sending} email={email} />
       <Toast

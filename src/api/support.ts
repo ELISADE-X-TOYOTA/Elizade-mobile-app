@@ -5,6 +5,7 @@ import type {
   TicketDetailDto,
   TicketListDto,
   TicketMessageCreateDto,
+  TicketMessageDto,
 } from './dto';
 import { getToken } from './session';
 
@@ -66,6 +67,18 @@ export const supportApi = {
   get: (id: string) => apiFetch<TicketDetailDto>(`/support/tickets/${id}`),
   create: (body: CreateTicketBody) =>
     apiFetch<TicketDetailDto>('/support/tickets', { method: 'POST', body }),
+  /**
+   * Messages created strictly after `since` — the reconnect catch-up.
+   *
+   * The socket is best effort; this is the guarantee. Omitting `since` asks
+   * for the whole thread, which is the right answer for a client that holds
+   * nothing yet.
+   */
+  messagesSince: (id: string, since?: string) =>
+    apiFetch<TicketMessageDto[]>(`/support/tickets/${id}/messages`, {
+      query: since ? { since } : undefined,
+    }),
+
   reply: (id: string, body: string, attachments: string[] = []) =>
     apiFetch<TicketMessageCreateDto>(`/support/tickets/${id}/messages`, {
       method: 'POST',

@@ -269,8 +269,19 @@ function Cell({ value, emphasise }: { value: string | null; emphasise: boolean }
 function Switch({ on }: { on: boolean }) {
   const t = useTheme();
   const { t: tr } = useTranslation();
+  /*
+    Resolved HERE, on the JS thread, not inside the worklet below.
+
+    A worklet runs on the UI thread and can only capture serialisable values.
+    `solid` is an ordinary JS function, so calling it inside the worklet got it
+    captured as a plain object — hence "solid is not a function (it is Object)"
+    at runtime. Only the resulting string crosses the bridge.
+  */
+  const trackOn = solid(t.colors.accent);
+  const trackOff = t.colors.border;
+
   const track = useAnimatedStyle(() => ({
-    backgroundColor: withTiming(on ? solid(t.colors.accent) : t.colors.border, { duration: 160 }),
+    backgroundColor: withTiming(on ? trackOn : trackOff, { duration: 160 }),
   }));
   const thumb = useAnimatedStyle(() => ({
     transform: [{ translateX: withTiming(on ? 18 : 0, { duration: 160 }) }],

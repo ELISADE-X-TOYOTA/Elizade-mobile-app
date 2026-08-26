@@ -1,0 +1,41 @@
+{
+  "cli": {
+    "version": ">= 5.0.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://elizade-backend-api-production.up.railway.app/api/v1",
+        "EXPO_PUBLIC_USE_MOCK": "false"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://elizade-backend-api-production.up.railway.app/api/v1",
+        "EXPO_PUBLIC_USE_MOCK": "false"
+      }
+    },
+    "production": {
+      "android": {
+        "buildType": "app-bundle"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://elizade-backend-api-production.up.railway.app/api/v1",
+        "EXPO_PUBLIC_USE_MOCK": "false"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

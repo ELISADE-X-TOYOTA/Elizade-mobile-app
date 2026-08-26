@@ -5,6 +5,7 @@ import { Modal, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NetworkCarImage } from '../src/components/NetworkCarImage';
+import { useKeyboardHeight } from '../src/components/KeyboardAware';
 import { PrimaryButton } from '../src/components/PrimaryButton';
 import { Skeleton } from '../src/components/Skeleton';
 import { Txt } from '../src/components/Txt';
@@ -103,6 +104,7 @@ function AddVehicleModal({ visible, onClose, onAdded }: { visible: boolean; onCl
   const t = useTheme();
   const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
+  const keyboardHeight = useKeyboardHeight();
   const [vin, setVin] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ClaimResult>();
@@ -131,7 +133,14 @@ function AddVehicleModal({ visible, onClose, onAdded }: { visible: boolean; onCl
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose} statusBarTranslucent>
       <View style={styles.backdrop}>
         <Pressable style={{ flex: 1 }} onPress={onClose} />
-        <View style={[styles.sheet, { backgroundColor: t.colors.surface, paddingBottom: insets.bottom + spacing.md }]}>
+        {/*
+          A bottom sheet is pinned to the bottom of the screen, so the keyboard
+          covers it FIRST — and a KeyboardAvoidingView inside a Modal measures
+          against the screen rather than the sheet, so it does not help here.
+          Padding by the live keyboard height lifts the sheet instead, which
+          keeps its own inputs and its submit button reachable.
+        */}
+        <View style={[styles.sheet, { backgroundColor: t.colors.surface, paddingBottom: insets.bottom + spacing.md + keyboardHeight }]}>
           <View style={[styles.handle, { backgroundColor: t.colors.border }]} />
           <View style={{ padding: spacing.lg }}>
             <Txt variant="titleLarge">{tr('garage.addVehicle')}</Txt>

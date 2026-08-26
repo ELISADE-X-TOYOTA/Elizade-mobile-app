@@ -248,7 +248,8 @@
     "messagePlaceholder": "Cuéntanos cómo podemos ayudar…",
     "attachPhoto": "Adjuntar una foto",
     "sendReply": "Enviar respuesta",
-    "document": "Documento"
+    "document": "Documento",
+    "agentTyping": "Soporte está escribiendo…"
   },
   "notifications": {
     "title": "Notificaciones",
@@ -390,5 +391,23 @@
   },
   "comingSoon": {
     "whatsComing": "PRÓXIMAMENTE"
+  },
+  "documents": {
+    "title": "Subir documentos",
+    "needed": "Documentos necesarios",
+    "underReview": "Enviado — en revisión",
+    "statusOther": "Estado de la solicitud",
+    "chassis": "Chasis {{vin}}",
+    "alreadySent": "{{count}} documento(s) ya en el expediente",
+    "alreadySentHint": "Solo necesitas enviar lo que se pide arriba.",
+    "add": "Añadir un documento",
+    "formats": "PDF, JPG o PNG · hasta {{mb}} MB cada uno",
+    "maxReached": "Máximo {{max}} documentos",
+    "submit": "Enviar documentos",
+    "submitted": "Documentos enviados. Tu solicitud vuelve a nuestro equipo.",
+    "submitFailed": "No se pudieron enviar esos documentos.",
+    "uploadFailed": "No se pudo subir ese documento.",
+    "notFound": "No encontramos esa solicitud.",
+    "loadError": "No se pudo cargar esa solicitud."
   }
 }

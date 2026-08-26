@@ -34,6 +34,13 @@ export interface OwnershipRequestDto {
   vin: string;
   status: string;
   createdAt: string;
+  registrationNumber?: string | null;
+  documentUrls?: string[];
+  customerNotes?: string | null;
+  /** What the reviewer asked for. Shown verbatim on the upload screen — it is
+   *  the only thing telling the customer WHICH documents are missing. */
+  adminNotes?: string | null;
+  updatedAt?: string;
 }
 
 // ── Service ──────────────────────────────────────────────────────────

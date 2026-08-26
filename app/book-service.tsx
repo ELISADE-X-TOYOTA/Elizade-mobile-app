@@ -5,6 +5,7 @@ import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native
 import { useTranslation } from 'react-i18next';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { KeyboardAwareScrollView } from '../src/components/KeyboardAware';
 import { PrimaryButton } from '../src/components/PrimaryButton';
 import { Txt } from '../src/components/Txt';
 import { createAppointment } from '../src/data/serviceRepository';
@@ -15,11 +16,11 @@ import { radius, spacing } from '../src/theme/spacing';
 import { useTheme } from '../src/theme/useTheme';
 import { cleanText } from '../src/utils/sanitize';
 import { tint } from '../src/theme/colors';
+import { bookableDays, bookableSlots, slotDateTime, validateBooking } from '../src/domain/booking';
 
 const TYPES = Object.keys(SERVICE_TYPE_META) as ServiceType[];
-const TIME_SLOTS = ['9:00 AM', '10:30 AM', '12:00 PM', '2:00 PM', '4:00 PM'];
-/** Hour-of-day for each slot above, applied to the selected date. */
-const SLOT_HOURS = [9, 10, 12, 14, 16];
+/** Re-evaluated on every render so the list cannot go stale on a screen that
+ *  has been open a while. */
 
 export default function BookService() {
   const t = useTheme();
@@ -35,14 +36,22 @@ export default function BookService() {
     typeParam && (['periodic', 'repair', 'inspection', 'recall'] as ServiceType[]).includes(typeParam) ? typeParam : 'periodic',
   );
   const [branch, setBranch] = useState(0);
-  const [dateIdx, setDateIdx] = useState(1);
+  const [dateIdx, setDateIdx] = useState(0);
   const [slot, setSlot] = useState(0);
   const [issue, setIssue] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
   const [done, setDone] = useState(false);
 
-  const dates = useMemo(() => Array.from({ length: 7 }, (_, i) => new Date(Date.now() + i * 86_400_000)), []);
+  // Only days with something left on them. A day rendered greyed-out and
+  // unselectable is worse than an absent one: the customer taps it, nothing
+  // happens, and nothing explains why.
+  const dates = useMemo(() => bookableDays(7), []);
+  const selectedDay = dates[dateIdx] ?? dates[0];
+  // Same-day slots that have already passed (or fall inside the lead time)
+  // are not offered at all, rather than offered and rejected by the API.
+  const slots = useMemo(() => (selectedDay ? bookableSlots(selectedDay) : []), [selectedDay]);
+  const selectedSlot = slots[slot] ?? slots[0];
 
   const submit = async () => {
     const owned = ownedVehicles[vehicle];
@@ -53,9 +62,21 @@ export default function BookService() {
     }
     setLoading(true);
     setError(undefined);
-    // Apply the chosen time slot to the chosen day.
-    const at = new Date(dates[dateIdx]);
-    at.setHours(SLOT_HOURS[slot] ?? 9, 0, 0, 0);
+    if (!selectedDay || !selectedSlot) {
+      setError('Choose a date and time for this service.');
+      setLoading(false);
+      return;
+    }
+    const at = slotDateTime(selectedDay, selectedSlot);
+
+    // Re-checked HERE, not only when the list was built. A form open since
+    // 13:59 still shows a 2:00 PM slot at 14:05; only this catches that.
+    const invalid = validateBooking(at);
+    if (invalid) {
+      setError(invalid);
+      setLoading(false);
+      return;
+    }
     try {
       await createAppointment({
         ownedVehicleId: owned.id,
@@ -101,7 +122,7 @@ export default function BookService() {
         <Txt variant="headlineMedium" style={{ marginTop: spacing.md }}>{tr('service.bookAService')}</Txt>
       </View>
 
-      <ScrollView contentContainerStyle={{ padding: spacing.screenH, paddingBottom: 40 }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+      <KeyboardAwareScrollView contentContainerStyle={{ padding: spacing.screenH, paddingBottom: 40 }}>
         <Label text="Vehicle" />
         {ownedVehicles.length === 0 ? (
           <Txt tone="secondary">
@@ -175,14 +196,14 @@ export default function BookService() {
 
         <Label text="Time" />
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-          {TIME_SLOTS.map((time, i) => (
+          {slots.map((s, i) => (
             <Pressable
-              key={time}
+              key={s.label}
               onPress={() => setSlot(i)}
               style={[styles.slot, { backgroundColor: slot === i ? t.colors.primary : t.colors.surfaceAlt, borderColor: slot === i ? t.colors.primary : t.colors.border }]}
             >
               <Txt variant="titleSmall" color={slot === i ? t.colors.onPrimary : t.colors.textPrimary}>
-                {time}
+                {s.label}
               </Txt>
             </Pressable>
           ))}
@@ -218,7 +239,7 @@ export default function BookService() {
           disabled={ownedVehicles.length === 0 || branches.length === 0}
           onPress={submit}
         />
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </View>
   );
 }

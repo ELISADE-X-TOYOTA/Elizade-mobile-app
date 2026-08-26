@@ -248,7 +248,8 @@
     "messagePlaceholder": "Gwa anyị otu anyị ga-esi nyere aka…",
     "attachPhoto": "Jikọta foto",
     "sendReply": "Zipu nzaghachi",
-    "document": "Akwụkwọ"
+    "document": "Akwụkwọ",
+    "agentTyping": "Nkwado na-ede ihe…"
   },
   "notifications": {
     "title": "Ọkwa",
@@ -390,5 +391,23 @@
   },
   "comingSoon": {
     "whatsComing": "IHE NA-ABỊA"
+  },
+  "documents": {
+    "title": "Bulite akwụkwọ",
+    "needed": "Achọrọ akwụkwọ",
+    "underReview": "Ezigala — a na-enyocha ya",
+    "statusOther": "Ọnọdụ arịrịọ",
+    "chassis": "Nọmba ahụ {{vin}}",
+    "alreadySent": "Akwụkwọ {{count}} dịlarị na faịlụ",
+    "alreadySentHint": "Naanị ihe a rịọrọ n'elu ka ị ga-eziga.",
+    "add": "Tinye akwụkwọ",
+    "formats": "PDF, JPG ma ọ bụ PNG · ruo {{mb}} MB nke ọ bụla",
+    "maxReached": "Kachasị akwụkwọ {{max}}",
+    "submit": "Zipu akwụkwọ",
+    "submitted": "Ezigala akwụkwọ. Arịrịọ gị alaghachikwuru ndị otu anyị.",
+    "submitFailed": "Enweghị ike izipu akwụkwọ ndị ahụ.",
+    "uploadFailed": "Enweghị ike ibulite akwụkwọ ahụ.",
+    "notFound": "Anyị achọtaghị arịrịọ ahụ.",
+    "loadError": "Enweghị ike ibubata arịrịọ ahụ."
   }
 }

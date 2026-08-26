@@ -58,12 +58,32 @@ export async function pickTicketAttachment(
     return { ok: true, attachment: { url: asset.uri, previewUri: asset.uri, name } };
   }
 
+  // A local `file://` URI is not an attachment the API will accept — it only
+  // stores URLs its own upload endpoint issued. Sending one produced the
+  // opaque "Attachments must be uploaded via /support/attachments/upload"
+  // from the server AFTER the customer had written the whole ticket. The
+  // guard below (`isUploadedAttachment`) stops that reaching the wire.
+
   try {
     const url = await uploadTicketAttachment(asset.uri, name, asset.mimeType ?? 'image/jpeg');
     return { ok: true, attachment: { url, previewUri: asset.uri, name } };
   } catch (e) {
     return { ok: false, message: e instanceof Error ? e.message : 'Could not upload that file.' };
   }
+}
+
+
+/**
+ * Is this URL one the upload endpoint actually issued?
+ *
+ * The API stores only URLs it minted itself — an arbitrary-URL field would be
+ * an injection sink in the staff console. A local `file://` or `content://`
+ * URI therefore fails server-side validation, but only after the customer has
+ * written the whole ticket and pressed send. Checking here turns that into a
+ * message they can act on, before anything is lost.
+ */
+export function isUploadedAttachment(url: string): boolean {
+  return /^https?:\/\//i.test(url.trim());
 }
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));

@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MAX_TICKET_ATTACHMENTS } from '../src/api/support';
 import { AppTextField } from '../src/components/AppTextField';
 import { AttachmentDrafts } from '../src/components/AttachmentDrafts';
+import { KeyboardAwareScrollView } from '../src/components/KeyboardAware';
 import { PrimaryButton } from '../src/components/PrimaryButton';
 import { Txt } from '../src/components/Txt';
 import { radius, spacing } from '../src/theme/spacing';
@@ -137,7 +138,7 @@ export default function TradeIn() {
         <Txt tone="secondary">{tr('tradeIn.subtitle')}</Txt>
       </View>
 
-      <ScrollView contentContainerStyle={{ padding: spacing.screenH, paddingBottom: 40 }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+      <KeyboardAwareScrollView contentContainerStyle={{ padding: spacing.screenH, paddingBottom: 40 }}>
         <View style={{ gap: spacing.lg }}>
           <AppTextField label={tr('shop.make')} placeholder={tr('tradeIn.makePlaceholder')} icon="car-outline" value={make} onChangeText={setMake} sanitize={cleanName} maxLength={40} autoCapitalize="words" />
           <AppTextField label={tr('shop.model')} placeholder={tr('tradeIn.modelPlaceholder')} icon="car-sport-outline" value={model} onChangeText={setModel} sanitize={cleanName} maxLength={40} autoCapitalize="words" />
@@ -197,7 +198,7 @@ export default function TradeIn() {
 
         <View style={{ height: spacing.xl }} />
         <PrimaryButton label={tr('service.submitForAssessment')} icon="cash-outline" loading={loading} disabled={!valid} onPress={submit} />
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </View>
   );
 }

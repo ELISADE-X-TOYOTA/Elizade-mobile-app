@@ -248,7 +248,8 @@
     "messagePlaceholder": "أخبرنا كيف يمكننا المساعدة…",
     "attachPhoto": "إرفاق صورة",
     "sendReply": "إرسال الرد",
-    "document": "مستند"
+    "document": "مستند",
+    "agentTyping": "الدعم يكتب…"
   },
   "notifications": {
     "title": "الإشعارات",
@@ -390,5 +391,23 @@
   },
   "comingSoon": {
     "whatsComing": "ما هو قادم"
+  },
+  "documents": {
+    "title": "رفع المستندات",
+    "needed": "مستندات مطلوبة",
+    "underReview": "تم الإرسال — قيد المراجعة",
+    "statusOther": "حالة الطلب",
+    "chassis": "رقم الهيكل {{vin}}",
+    "alreadySent": "{{count}} مستند مُسجَّل بالفعل",
+    "alreadySentHint": "يكفي إرسال ما هو مطلوب أعلاه فقط.",
+    "add": "إضافة مستند",
+    "formats": "PDF أو JPG أو PNG · حتى {{mb}} ميغابايت لكل ملف",
+    "maxReached": "الحد الأقصى {{max}} مستندات",
+    "submit": "إرسال المستندات",
+    "submitted": "تم إرسال المستندات. طلبك الآن لدى فريقنا.",
+    "submitFailed": "تعذّر إرسال هذه المستندات.",
+    "uploadFailed": "تعذّر رفع هذا المستند.",
+    "notFound": "لم نعثر على هذا الطلب.",
+    "loadError": "تعذّر تحميل هذا الطلب."
   }
 }

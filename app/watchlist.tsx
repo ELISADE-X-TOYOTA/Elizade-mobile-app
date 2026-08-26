@@ -13,6 +13,7 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useKeyboardHeight } from '../src/components/KeyboardAware';
 import { PrimaryButton } from '../src/components/PrimaryButton';
 import { Skeleton } from '../src/components/Skeleton';
 import { Txt } from '../src/components/Txt';
@@ -29,6 +30,7 @@ export default function WatchlistScreen() {
   const t = useTheme();
   const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
+  const keyboardHeight = useKeyboardHeight();
   const items = useWatchlistStore((s) => s.items);
   const loading = useWatchlistStore((s) => s.loading);
   const error = useWatchlistStore((s) => s.error);
@@ -173,7 +175,14 @@ export default function WatchlistScreen() {
       <Modal visible={!!editing} transparent animationType="slide" onRequestClose={() => setEditing(null)} statusBarTranslucent>
         <View style={styles.backdrop}>
           <Pressable style={{ flex: 1 }} onPress={() => setEditing(null)} />
-          <View style={[styles.sheet, { backgroundColor: t.colors.surface, paddingBottom: insets.bottom + spacing.lg }]}>
+          {/*
+          A bottom sheet is pinned to the bottom of the screen, so the keyboard
+          covers it FIRST — and a KeyboardAvoidingView inside a Modal measures
+          against the screen rather than the sheet, so it does not help here.
+          Padding by the live keyboard height lifts the sheet instead, which
+          keeps its own inputs and its submit button reachable.
+        */}
+        <View style={[styles.sheet, { backgroundColor: t.colors.surface, paddingBottom: insets.bottom + spacing.lg + keyboardHeight }]}>
             <View style={[styles.handle, { backgroundColor: t.colors.border }]} />
             <Txt variant="titleLarge" style={{ paddingHorizontal: spacing.lg }}>{tr('watchlist.editPreferences')}</Txt>
             <Txt tone="secondary" style={{ paddingHorizontal: spacing.lg, marginTop: 4 }}>

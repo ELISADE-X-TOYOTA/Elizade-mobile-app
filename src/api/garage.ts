@@ -15,6 +15,19 @@ export const garageApi = {
 
   requests: () => apiFetch<OwnershipRequestDto[]>('/ownership/requests'),
 
+  /**
+   * Attaches uploaded documents to a claim.
+   *
+   * The server flips a `pending_documents` claim back to `pending` on append,
+   * so the customer sees "Under review" the moment they submit rather than
+   * being left on a screen still asking for what they just sent.
+   */
+  addDocuments: (requestId: string, documentUrls: string[]) =>
+    apiFetch<OwnershipRequestDto>(`/ownership/requests/${requestId}/documents`, {
+      method: 'POST',
+      body: { documentUrls },
+    }),
+
   claim: (vin: string, registrationNumber?: string) =>
     apiFetch<OwnershipRequestDto>('/ownership/requests', {
       method: 'POST',
