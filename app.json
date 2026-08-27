@@ -18,7 +18,10 @@
       "infoPlist": {
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": false
-        }
+        },
+        "NSCameraUsageDescription": "Elizade Connect uses the camera so you can photograph your vehicle for a trade-in valuation, a warranty claim, or a support ticket.",
+        "NSPhotoLibraryUsageDescription": "Elizade Connect needs access to your photos so you can attach images to warranty claims, support tickets, and vehicle ownership documents.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -29,7 +32,10 @@
         "foregroundImage": "./assets/elizade-logo.png",
         "backgroundColor": "#000000"
       },
-      "softwareKeyboardLayoutMode": "resize"
+      "softwareKeyboardLayoutMode": "resize",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "plugins": [
       "expo-router",
@@ -49,7 +55,14 @@
         }
       ],
       "expo-secure-store",
-      "expo-notifications"
+      "expo-notifications",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Elizade Connect needs access to your photos so you can attach images to warranty claims, support tickets, and vehicle ownership documents.",
+          "cameraPermission": "Elizade Connect uses the camera so you can photograph your vehicle for a trade-in valuation, a warranty claim, or a support ticket."
+        }
+      ]
     ],
     "extra": {
       "router": {},

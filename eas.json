@@ -13,6 +13,9 @@
       "env": {
         "EXPO_PUBLIC_API_URL": "https://elizade-backend-api-production.up.railway.app/api/v1",
         "EXPO_PUBLIC_USE_MOCK": "false"
+      },
+      "ios": {
+        "simulator": true
       }
     },
     "preview": {
@@ -23,11 +26,27 @@
       "env": {
         "EXPO_PUBLIC_API_URL": "https://elizade-backend-api-production.up.railway.app/api/v1",
         "EXPO_PUBLIC_USE_MOCK": "false"
+      },
+      "ios": {
+        "resourceClass": "m-medium"
       }
     },
     "production": {
       "android": {
         "buildType": "app-bundle"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://elizade-backend-api-production.up.railway.app/api/v1",
+        "EXPO_PUBLIC_USE_MOCK": "false"
+      },
+      "ios": {
+        "resourceClass": "m-medium"
+      }
+    },
+    "preview-simulator": {
+      "extends": "preview",
+      "ios": {
+        "simulator": true
       },
       "env": {
         "EXPO_PUBLIC_API_URL": "https://elizade-backend-api-production.up.railway.app/api/v1",
