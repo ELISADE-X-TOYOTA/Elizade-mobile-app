@@ -116,7 +116,7 @@ export default function Onboarding() {
         {isLast ? (
           <Pressable onPress={() => router.replace('/(auth)/login')} style={{ marginTop: spacing.sm, alignItems: 'center' }}>
             <Txt tone="secondary">
-              Already have an account?{'  '}
+              {tr('auth.haveAccount')}{'  '}
               <Txt variant="titleSmall" color={t.colors.primary}>{tr('auth.login')}</Txt>
             </Txt>
           </Pressable>

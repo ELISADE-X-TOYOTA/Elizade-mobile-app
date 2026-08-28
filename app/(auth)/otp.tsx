@@ -218,15 +218,15 @@ export default function Otp() {
       <View style={{ marginTop: spacing.lg, alignItems: 'center' }}>
         {secondsLeft > 0 ? (
           <Txt tone="secondary">
-            Didn't receive it?{'  '}
+            {tr('auth.didntReceiveIt')}{'  '}
             <Txt variant="titleSmall" tone="tertiary">
-              Resend in {mmss}
+              {tr('auth.resendIn', { time: mmss })}
             </Txt>
           </Txt>
         ) : (
           <Pressable onPress={resend} disabled={resending} hitSlop={8}>
             <Txt tone="secondary">
-              Didn't receive it?{'  '}
+              {tr('auth.didntReceiveIt')}{'  '}
               <Txt variant="titleSmall" color={t.colors.accentText}>
                 {resending ? 'Sending…' : 'Resend code'}
               </Txt>

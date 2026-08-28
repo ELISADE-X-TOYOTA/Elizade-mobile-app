@@ -125,7 +125,7 @@ export default function Shop() {
 
       {error ? (
         <View style={{ padding: spacing.screenH }}>
-          <Txt tone="secondary">Couldn't load vehicles. {error}</Txt>
+          <Txt tone="secondary">{tr('shop.loadVehiclesError', { message: error })}</Txt>
           <Pressable onPress={reload} style={{ marginTop: 10 }}>
             <Txt variant="titleSmall" color={t.colors.primary}>{tr('common.tapToRetry')}</Txt>
           </Pressable>

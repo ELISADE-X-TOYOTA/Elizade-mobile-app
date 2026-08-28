@@ -103,7 +103,7 @@ export default function BookService() {
           </Animated.View>
           <Txt variant="headlineLarge" center style={{ marginTop: spacing.xl }}>{tr('service.serviceRequested')}</Txt>
           <Txt variant="bodyLarge" tone="secondary" center style={{ marginTop: spacing.sm }}>
-            Your {SERVICE_TYPE_META[type].label.toLowerCase()} at {branches[branch]?.name ?? 'Elizade'} has been requested. We'll confirm shortly.
+            {tr('service.requestedDetail', { service: SERVICE_TYPE_META[type].label.toLowerCase(), branch: branches[branch]?.name ?? 'Elizade' })}
           </Txt>
         </View>
         <View style={{ paddingBottom: insets.bottom + spacing.md }}>

@@ -56,7 +56,7 @@ export function FinancingModal({ visible, vehiclePrice, vehicleTitle, onClose }:
                 {price(calc.monthly)}
               </Txt>
               <Txt variant="bodySmall" color={t.colors.onPrimary} style={{ opacity: 0.75, marginTop: 4 }}>
-                for {tenor} months · {price(calc.down)} down
+                {tr('financing.tenorAndDown', { months: tenor, down: price(calc.down) })}
               </Txt>
             </View>
 

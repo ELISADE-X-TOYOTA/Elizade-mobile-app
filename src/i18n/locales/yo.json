@@ -67,7 +67,7 @@
     "otpTitle": "Tẹ kóòdù rẹ sí i",
     "otpSubtitle": "A ti fi kóòdù oní nọ́mbà mẹ́fà ránṣẹ́ sí {{target}}",
     "resendCode": "Tún kóòdù ránṣẹ́",
-    "resendIn": "Tún ránṣẹ́ ní ìṣẹ́jú-àáyá {{seconds}}",
+    "resendIn": "Fi ránṣẹ́ lẹ́ẹ̀kansí ní {{time}}",
     "verify": "Ṣàyẹ̀wò",
     "alreadyHaveAccount": "Ṣé o ti ní àkàǹtì?",
     "noAccount": "Ṣé o kò ní àkàǹtì?",
@@ -97,7 +97,12 @@
     "lastNamePlaceholder": "Adewale",
     "phonePlaceholder": "+234 800 000 0000",
     "otpSubtitleShort": "Tẹ kóòdù oní nọ́mbà mẹ́fà tí a fi ránṣẹ́ sí {{email}}",
-    "yourEmail": "ímeèlì rẹ"
+    "yourEmail": "ímeèlì rẹ",
+    "stepOf": "Ìgbésẹ̀ {{current}} nínú {{total}}",
+    "didntGetIt": "O kò rí i?",
+    "didntReceiveIt": "O kò rí i?",
+    "haveAccount": "Ṣé o ti ní àkàǹtì tẹ́lẹ̀?",
+    "allSet": "Ó ti ṣetán, {{name}}!"
   },
   "profile": {
     "title": "Àkọọ́lẹ̀ rẹ",
@@ -202,7 +207,10 @@
     "available": "Ó wà",
     "testDrive": "Ìdánwò ìwakọ̀",
     "tradeIn": "Ìpààrọ̀",
-    "loadError": "A kò lè gbé ọkọ̀ yìí wọlé"
+    "loadError": "A kò lè gbé ọkọ̀ yìí wọlé",
+    "loadCarsError": "A kò lè gbé àwọn ọkọ̀ wọlé. {{message}}",
+    "loadVehiclesError": "A kò lè gbé àwọn ọkọ̀ wọlé. {{message}}",
+    "verifiedDealerOwners": "Olùtajà tí a jẹ́rìí sí · onílé {{count}}"
   },
   "service": {
     "title": "Àtúnṣe",
@@ -230,7 +238,10 @@
     "issuePlaceholder": "àpẹẹrẹ ariwo àjèjì láti inú bíréèkì iwájú, AC kò tutù…",
     "noUpcoming": "Kò sí ìpàdé tí ó ń bọ̀.",
     "noActiveJobs": "Kò sí iṣẹ́ àtúnṣe tí ó ń lọ.",
-    "loadError": "A kò lè gbé àtúnṣe wọlé."
+    "loadError": "A kò lè gbé àtúnṣe wọlé.",
+    "dueInDays": "{{vehicle}} · ní ọjọ́ {{days}}",
+    "atMileageTapToBook": "Ní {{mileage}} km · Tẹ láti ṣètò",
+    "requestedDetail": "A ti béèrè {{service}} rẹ ní {{branch}}. A ó jẹ́rìí sí i láìpẹ́."
   },
   "support": {
     "title": "Ìrànlọ́wọ́",
@@ -249,7 +260,10 @@
     "attachPhoto": "So àwòrán mọ́",
     "sendReply": "Fi ìdáhùn ránṣẹ́",
     "document": "Ìwé",
-    "agentTyping": "Ìrànlọ́wọ́ ń kọ̀wé…"
+    "agentTyping": "Ìrànlọ́wọ́ ń kọ̀wé…",
+    "loadTicketsError": "A kò lè gbé àwọn ìbéèrè wọlé. {{message}}",
+    "expectedResponse": "Ìdáhùn àkọ́kọ́ ní àkókò wákàtí {{hours}}",
+    "typicalResponse": "Ìdáhùn déédéé ní wákàtí {{hours}}"
   },
   "notifications": {
     "title": "Ìfitónilétí",
@@ -325,7 +339,9 @@
     "batteryFree": "Bátìrì: ìrọ́pò ọ̀fẹ́ fún oṣù {{months}}, títí di {{date}}.",
     "batteryPartial": "Bátìrì: ìdánilójú ìpín títí di oṣù {{months}}, èyí ni {{date}}.",
     "batteryExpired": "Bátìrì: ìdánilójú parí ní oṣù {{months}}.",
-    "adviserConfirms": "Olùdámọ̀ràn àtúnṣe rẹ yóò jẹ́rìí sí àbájáde ìkẹyìn."
+    "adviserConfirms": "Olùdámọ̀ràn àtúnṣe rẹ yóò jẹ́rìí sí àbájáde ìkẹyìn.",
+    "loadError": "A kò lè gbé ìdánilójú wọlé. {{message}}",
+    "reviewWithin48": "Ẹgbẹ́ ìdánilójú wa yóò ṣàyẹ̀wò ìbéèrè {{category}} rẹ, wọn yóò sì dáhùn láàárín wákàtí 48."
   },
   "bookings": {
     "title": "Ìfiṣọ̀wọ̀",
@@ -343,7 +359,8 @@
     "estimatedValue": "IYE ÌPÀÀRỌ̀ TÍ A GBÉ LÉWỌ̀N",
     "finalValueNote": "A ó jẹ́rìí sí iye ìkẹyìn lẹ́yìn àyẹ̀wò",
     "addPhotos": "Fi àwòrán ọkọ̀ rẹ kún un",
-    "valuationRequested": "A ti béèrè ìgbéléwọ̀n"
+    "valuationRequested": "A ti béèrè ìgbéléwọ̀n",
+    "specialistConfirms": "Ọ̀jọ̀gbọ́n Elizade yóò jẹ́rìí sí iye ìpààrọ̀ {{make}} {{model}} rẹ lẹ́yìn àyẹ̀wò kíákíá."
   },
   "watchlist": {
     "subtitle": "Àwọn àwòṣe tí o ń tọpasẹ̀",
@@ -353,7 +370,8 @@
     "editPreferences": "Ṣàtúnṣe àyànfẹ́",
     "removeConfirm": "Yọ kúrò nínú àkójọ ìṣọ́?",
     "empty": "Kò sí àwòṣe tí a fi pamọ́ síbẹ̀",
-    "emptyHint": "Tẹ ọkàn lórí ọkọ̀ èyíkéyìí láti tọpasẹ̀ àwòṣe náà."
+    "emptyHint": "Tẹ ọkàn lórí ọkọ̀ èyíkéyìí láti tọpasẹ̀ àwòṣe náà.",
+    "removeDetail": "A kò ní tọpasẹ̀ {{model}} mọ́. O lè fi kún un lẹ́ẹ̀kansí nígbàkúùgbà."
   },
   "financing": {
     "title": "Ẹ̀rọ ìṣirò ìnáwó",
@@ -361,13 +379,15 @@
     "vehiclePrice": "Iye owó ọkọ̀",
     "totalInterest": "Àpapọ̀ èlé",
     "totalPayable": "Àpapọ̀ tí a ó san",
-    "disclaimer": "Ìgbéléwọ̀n nìkan. Àwọn àdéhùn ìkẹyìn wà lábẹ́ ìfọwọ́sí Elizade Finance."
+    "disclaimer": "Ìgbéléwọ̀n nìkan. Àwọn àdéhùn ìkẹyìn wà lábẹ́ ìfọwọ́sí Elizade Finance.",
+    "tenorAndDown": "fún oṣù {{months}} · {{down}} ìdásílẹ̀"
   },
   "quote": {
     "requested": "A ti béèrè iye owó",
     "title": "Béèrè iye owó",
     "pickupShowroom": "Ibi gbígbé ọkọ̀",
-    "addOns": "Àfikún tí kì í ṣe dandan"
+    "addOns": "Àfikún tí kì í ṣe dandan",
+    "willBeSent": "A ó fi iye owó ìṣèdéédé fún {{vehicle}} rẹ ránṣẹ́ sí ímeèlì rẹ, yóò sì hàn nínú Ìrànlọ́wọ́ láìpẹ́."
   },
   "testDrive": {
     "booked": "A ti ṣètò ìdánwò ìwakọ̀!",
@@ -376,7 +396,8 @@
     "viewBookings": "Wo ìfiṣọ̀wọ̀ mi",
     "holdingDeposit": "Owó ìdádúró (5%)",
     "depositNote": "Ó dá ọkọ̀ yìí dúró fún ọjọ́ 7. A ó yọ ọ́ pátápátá kúrò nínú iye owó ìkẹyìn.",
-    "change": "Yí padà"
+    "change": "Yí padà",
+    "requestedDetail": "A ti béèrè ìdánwò ìwakọ̀ {{vehicle}} rẹ ní {{branch}}. Ẹgbẹ́ wa yóò jẹ́rìí sí i láìpẹ́."
   },
   "home": {
     "openProfile": "Ṣí àkọọ́lẹ̀ rẹ"

@@ -79,7 +79,7 @@ export function QuoteModal({ visible, vehicle, onClose }: Props) {
               </Animated.View>
               <Txt variant="headlineMedium" style={{ marginTop: 20 }}>{tr('quote.requested')}</Txt>
               <Txt tone="secondary" center style={{ marginTop: 8 }}>
-                A formal quotation for your {vehicleTitle(vehicle)} will be sent to your email and appear in Support shortly.
+                {tr('quote.willBeSent', { vehicle: vehicleTitle(vehicle) })}
               </Txt>
               <View style={{ height: 20 }} />
               <PrimaryButton label={tr('common.done')} onPress={close} style={{ width: '100%' }} />

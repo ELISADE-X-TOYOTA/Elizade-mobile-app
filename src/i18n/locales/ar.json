@@ -67,7 +67,7 @@
     "otpTitle": "أدخل الرمز",
     "otpSubtitle": "أرسلنا رمزًا من 6 أرقام إلى {{target}}",
     "resendCode": "إعادة إرسال الرمز",
-    "resendIn": "إعادة الإرسال خلال {{seconds}} ثانية",
+    "resendIn": "إعادة الإرسال خلال {{time}}",
     "verify": "تحقق",
     "alreadyHaveAccount": "لديك حساب بالفعل؟",
     "noAccount": "ليس لديك حساب؟",
@@ -97,7 +97,12 @@
     "lastNamePlaceholder": "Adewale",
     "phonePlaceholder": "+234 800 000 0000",
     "otpSubtitleShort": "أدخل الرمز المكوّن من 6 أرقام المُرسَل إلى {{email}}",
-    "yourEmail": "بريدك الإلكتروني"
+    "yourEmail": "بريدك الإلكتروني",
+    "stepOf": "الخطوة {{current}} من {{total}}",
+    "didntGetIt": "لم يصلك الرمز؟",
+    "didntReceiveIt": "لم يصلك الرمز؟",
+    "haveAccount": "هل لديك حساب بالفعل؟",
+    "allSet": "كل شيء جاهز يا {{name}}!"
   },
   "profile": {
     "title": "الملف الشخصي",
@@ -202,7 +207,10 @@
     "available": "متاحة",
     "testDrive": "تجربة قيادة",
     "tradeIn": "الاستبدال",
-    "loadError": "تعذّر تحميل هذه المركبة"
+    "loadError": "تعذّر تحميل هذه المركبة",
+    "loadCarsError": "تعذّر تحميل السيارات. {{message}}",
+    "loadVehiclesError": "تعذّر تحميل المركبات. {{message}}",
+    "verifiedDealerOwners": "وكيل موثّق · {{count}} مالك"
   },
   "service": {
     "title": "الصيانة",
@@ -230,7 +238,10 @@
     "issuePlaceholder": "مثال: صوت غريب من الفرامل الأمامية، المكيف لا يبرّد…",
     "noUpcoming": "لا توجد مواعيد قادمة.",
     "noActiveJobs": "لا توجد أعمال صيانة جارية.",
-    "loadError": "تعذّر تحميل الصيانة."
+    "loadError": "تعذّر تحميل الصيانة.",
+    "dueInDays": "{{vehicle}} · خلال {{days}} يومًا",
+    "atMileageTapToBook": "عند {{mileage}} كم · اضغط للحجز",
+    "requestedDetail": "تم طلب {{service}} في {{branch}}. سنؤكد قريبًا."
   },
   "support": {
     "title": "الدعم",
@@ -249,7 +260,10 @@
     "attachPhoto": "إرفاق صورة",
     "sendReply": "إرسال الرد",
     "document": "مستند",
-    "agentTyping": "الدعم يكتب…"
+    "agentTyping": "الدعم يكتب…",
+    "loadTicketsError": "تعذّر تحميل التذاكر. {{message}}",
+    "expectedResponse": "الرد الأول المتوقع خلال {{hours}} ساعة",
+    "typicalResponse": "الرد المعتاد خلال {{hours}} ساعة"
   },
   "notifications": {
     "title": "الإشعارات",
@@ -325,7 +339,9 @@
     "batteryFree": "البطارية: استبدال مجاني لمدة {{months}} شهرًا، حتى {{date}}.",
     "batteryPartial": "البطارية: تغطية تناسبية حتى {{months}} شهرًا، أي {{date}}.",
     "batteryExpired": "البطارية: انتهت التغطية عند {{months}} شهرًا.",
-    "adviserConfirms": "يؤكد مستشار الخدمة النتيجة النهائية."
+    "adviserConfirms": "يؤكد مستشار الخدمة النتيجة النهائية.",
+    "loadError": "تعذّر تحميل الضمان. {{message}}",
+    "reviewWithin48": "سيراجع فريق الضمان مطالبتك بخصوص {{category}} ويرد عليك خلال 48 ساعة."
   },
   "bookings": {
     "title": "الحجوزات",
@@ -343,7 +359,8 @@
     "estimatedValue": "القيمة التقديرية للاستبدال",
     "finalValueNote": "تُؤكَّد القيمة النهائية بعد الفحص",
     "addPhotos": "أضف صورًا لمركبتك",
-    "valuationRequested": "تم طلب التقييم"
+    "valuationRequested": "تم طلب التقييم",
+    "specialistConfirms": "سيؤكد أحد مختصي إليزادي قيمة استبدال {{make}} {{model}} بعد فحص مادي سريع."
   },
   "watchlist": {
     "subtitle": "الطرازات التي تتابعها",
@@ -353,7 +370,8 @@
     "editPreferences": "تعديل التفضيلات",
     "removeConfirm": "إزالة من قائمة المتابعة؟",
     "empty": "لا توجد طرازات محفوظة بعد",
-    "emptyHint": "اضغط على القلب في أي مركبة لمتابعة ذلك الطراز."
+    "emptyHint": "اضغط على القلب في أي مركبة لمتابعة ذلك الطراز.",
+    "removeDetail": "لن تتم متابعة {{model}} بعد الآن. يمكنك إضافته مرة أخرى في أي وقت."
   },
   "financing": {
     "title": "حاسبة التمويل",
@@ -361,13 +379,15 @@
     "vehiclePrice": "سعر المركبة",
     "totalInterest": "إجمالي الفائدة",
     "totalPayable": "الإجمالي المستحق",
-    "disclaimer": "تقدير فقط. تخضع الشروط النهائية لموافقة إليزادي للتمويل."
+    "disclaimer": "تقدير فقط. تخضع الشروط النهائية لموافقة إليزادي للتمويل.",
+    "tenorAndDown": "لمدة {{months}} شهرًا · دفعة أولى {{down}}"
   },
   "quote": {
     "requested": "تم طلب عرض السعر",
     "title": "طلب عرض سعر",
     "pickupShowroom": "معرض الاستلام",
-    "addOns": "إضافات اختيارية"
+    "addOns": "إضافات اختيارية",
+    "willBeSent": "سيُرسَل عرض سعر رسمي لـ {{vehicle}} إلى بريدك الإلكتروني وسيظهر في الدعم قريبًا."
   },
   "testDrive": {
     "booked": "تم حجز تجربة القيادة!",
@@ -376,7 +396,8 @@
     "viewBookings": "عرض حجوزاتي",
     "holdingDeposit": "عربون الحجز (5%)",
     "depositNote": "يحجز هذه المركبة لمدة 7 أيام. يُخصم بالكامل من السعر النهائي.",
-    "change": "تغيير"
+    "change": "تغيير",
+    "requestedDetail": "تم طلب تجربة قيادة {{vehicle}} في {{branch}}. سيؤكد فريقنا قريبًا."
   },
   "home": {
     "openProfile": "افتح ملفك الشخصي"

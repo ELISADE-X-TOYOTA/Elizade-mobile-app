@@ -290,7 +290,7 @@ export default function Register() {
               </Animated.View>
             </View>
             <Txt variant="labelSmall" tone="secondary" style={{ marginTop: 8 }}>
-              Step {index + 1} of {ORDER.length}
+              {tr('auth.stepOf', { current: index + 1, total: ORDER.length })}
             </Txt>
           </View>
         </View>
@@ -412,15 +412,15 @@ export default function Register() {
                 <View style={{ marginTop: spacing.md, alignItems: 'center' }}>
                   {secondsLeft > 0 ? (
                     <Txt tone="secondary">
-                      Didn't get it?{'  '}
+                      {tr('auth.didntGetIt')}{'  '}
                       <Txt variant="titleSmall" tone="tertiary">
-                        Resend in {resendMmss}
+                        {tr('auth.resendIn', { time: resendMmss })}
                       </Txt>
                     </Txt>
                   ) : (
                     <Pressable onPress={resend} disabled={resending} hitSlop={8}>
                       <Txt tone="secondary">
-                        Didn't get it?{'  '}
+                        {tr('auth.didntGetIt')}{'  '}
                         <Txt variant="titleSmall" color={t.colors.accentText}>
                           {resending ? 'Sending…' : 'Resend code'}
                         </Txt>
@@ -439,7 +439,7 @@ export default function Register() {
           {step === 'name' && (
             <Pressable onPress={() => router.replace('/(auth)/login')} style={{ marginTop: spacing.md, alignItems: 'center' }}>
               <Txt tone="secondary">
-                Already have an account?{'  '}
+                {tr('auth.haveAccount')}{'  '}
                 <Txt variant="titleSmall" color={t.colors.accentText}>{tr('auth.login')}</Txt>
               </Txt>
             </Pressable>
@@ -600,7 +600,7 @@ function Success({ firstName, onDone }: { firstName: string; onDone: () => void 
           <Ionicons name="checkmark-circle" size={72} color={t.colors.successText} />
         </Animated.View>
         <Txt variant="headlineLarge" center style={{ marginTop: spacing.xl }}>
-          You're all set, {firstName}!
+          {tr('auth.allSet', { name: firstName })}
         </Txt>
         <Txt variant="bodyLarge" tone="secondary" center style={{ marginTop: spacing.sm }}>{tr('auth.accountReady')}</Txt>
       </View>

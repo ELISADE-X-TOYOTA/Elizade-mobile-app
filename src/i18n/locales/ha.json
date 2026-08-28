@@ -67,7 +67,7 @@
     "otpTitle": "Shigar da lambar ka",
     "otpSubtitle": "Mun aika lamba mai lambobi 6 zuwa {{target}}",
     "resendCode": "Sake aika lamba",
-    "resendIn": "Sake aikawa cikin daƙiƙa {{seconds}}",
+    "resendIn": "Sake aikawa cikin {{time}}",
     "verify": "Tabbatar",
     "alreadyHaveAccount": "Kana da asusu?",
     "noAccount": "Ba ka da asusu?",
@@ -97,7 +97,12 @@
     "lastNamePlaceholder": "Adewale",
     "phonePlaceholder": "+234 800 000 0000",
     "otpSubtitleShort": "Shigar da lambar lambobi 6 da aka aika zuwa {{email}}",
-    "yourEmail": "imel ɗin ka"
+    "yourEmail": "imel ɗin ka",
+    "stepOf": "Mataki {{current}} cikin {{total}}",
+    "didntGetIt": "Ba ka samu ba?",
+    "didntReceiveIt": "Ba ka samu ba?",
+    "haveAccount": "Ka riga ka na da asusu?",
+    "allSet": "Komai ya shirya, {{name}}!"
   },
   "profile": {
     "title": "Bayanan ka",
@@ -202,7 +207,10 @@
     "available": "Akwai",
     "testDrive": "Gwajin tuƙi",
     "tradeIn": "Musanya",
-    "loadError": "An kasa loda wannan mota"
+    "loadError": "An kasa loda wannan mota",
+    "loadCarsError": "An kasa loda motoci. {{message}}",
+    "loadVehiclesError": "An kasa loda motoci. {{message}}",
+    "verifiedDealerOwners": "Wakili da aka tabbatar · masu mallaka {{count}}"
   },
   "service": {
     "title": "Gyara",
@@ -230,7 +238,10 @@
     "issuePlaceholder": "misali baƙon sauti daga birki na gaba, AC ba ya yin sanyi…",
     "noUpcoming": "Babu alkawari mai zuwa.",
     "noActiveJobs": "Babu aikin gyara da ake yi.",
-    "loadError": "An kasa loda gyara."
+    "loadError": "An kasa loda gyara.",
+    "dueInDays": "{{vehicle}} · cikin kwanaki {{days}}",
+    "atMileageTapToBook": "A {{mileage}} km · Danna don yin rijista",
+    "requestedDetail": "An nemi {{service}} a {{branch}}. Za mu tabbatar nan ba da jimawa ba."
   },
   "support": {
     "title": "Taimako",
@@ -249,7 +260,10 @@
     "attachPhoto": "Haɗa hoto",
     "sendReply": "Aika amsa",
     "document": "Takarda",
-    "agentTyping": "Tallafi yana rubutu…"
+    "agentTyping": "Tallafi yana rubutu…",
+    "loadTicketsError": "An kasa loda buƙatun. {{message}}",
+    "expectedResponse": "Ana sa ran amsa ta farko cikin awanni {{hours}}",
+    "typicalResponse": "Amsa ta yau da kullun cikin awanni {{hours}}"
   },
   "notifications": {
     "title": "Sanarwa",
@@ -325,7 +339,9 @@
     "batteryFree": "Baturi: musanya kyauta na watanni {{months}}, har zuwa {{date}}.",
     "batteryPartial": "Baturi: waranti na rabo har watanni {{months}}, wato {{date}}.",
     "batteryExpired": "Baturi: warantin ya ƙare a watanni {{months}}.",
-    "adviserConfirms": "Mai ba da shawara kan gyara zai tabbatar da sakamakon ƙarshe."
+    "adviserConfirms": "Mai ba da shawara kan gyara zai tabbatar da sakamakon ƙarshe.",
+    "loadError": "An kasa loda waranti. {{message}}",
+    "reviewWithin48": "Ƙungiyar warantinmu za ta duba buƙatarka ta {{category}} kuma ta amsa cikin awanni 48."
   },
   "bookings": {
     "title": "Ajiye wuri",
@@ -343,7 +359,8 @@
     "estimatedValue": "KIMANIN DARAJAR MUSANYA",
     "finalValueNote": "Za a tabbatar da darajar ƙarshe bayan dubawa",
     "addPhotos": "Ƙara hotunan motarka",
-    "valuationRequested": "An nemi kimantawa"
+    "valuationRequested": "An nemi kimantawa",
+    "specialistConfirms": "Ƙwararren Elizade zai tabbatar da darajar musanya ta {{make}} {{model}} bayan gwaji na zahiri cikin sauri."
   },
   "watchlist": {
     "subtitle": "Samfuran da kake bi",
@@ -353,7 +370,8 @@
     "editPreferences": "Gyara zaɓuɓɓuka",
     "removeConfirm": "A cire daga jerin sa ido?",
     "empty": "Babu samfurin da aka ajiye tukuna",
-    "emptyHint": "Danna zuciya a kan kowace mota don bin wannan samfurin."
+    "emptyHint": "Danna zuciya a kan kowace mota don bin wannan samfurin.",
+    "removeDetail": "Ba za a ƙara bin {{model}} ba. Kana iya ƙara shi kuma a kowane lokaci."
   },
   "financing": {
     "title": "Na'urar lissafin tallafin kuɗi",
@@ -361,13 +379,15 @@
     "vehiclePrice": "Farashin mota",
     "totalInterest": "Jimlar riba",
     "totalPayable": "Jimlar da za a biya",
-    "disclaimer": "Kimanta kawai. Sharuɗɗan ƙarshe sun dogara ga amincewar Elizade Finance."
+    "disclaimer": "Kimanta kawai. Sharuɗɗan ƙarshe sun dogara ga amincewar Elizade Finance.",
+    "tenorAndDown": "na watanni {{months}} · {{down}} na farko"
   },
   "quote": {
     "requested": "An nemi farashi",
     "title": "Nemi farashi",
     "pickupShowroom": "Wurin ɗaukar mota",
-    "addOns": "Ƙarin abubuwa na zaɓi"
+    "addOns": "Ƙarin abubuwa na zaɓi",
+    "willBeSent": "Za a aika farashi na hukuma don {{vehicle}} zuwa imel ɗin ka kuma ya bayyana a Taimako nan ba da jimawa ba."
   },
   "testDrive": {
     "booked": "An yi rijistar gwajin tuƙi!",
@@ -376,7 +396,8 @@
     "viewBookings": "Duba rijistata",
     "holdingDeposit": "Kuɗin riƙewa (5%)",
     "depositNote": "Yana riƙe wannan motar na kwanaki 7. Za a cire shi gaba ɗaya daga farashin ƙarshe.",
-    "change": "Canza"
+    "change": "Canza",
+    "requestedDetail": "An nemi gwajin tuƙi na {{vehicle}} a {{branch}}. Ƙungiyarmu za ta tabbatar nan ba da jimawa ba."
   },
   "home": {
     "openProfile": "Buɗe bayanan ka"

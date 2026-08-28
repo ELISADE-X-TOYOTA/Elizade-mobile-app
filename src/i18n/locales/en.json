@@ -67,7 +67,7 @@
     "otpTitle": "Enter your code",
     "otpSubtitle": "We sent a 6-digit code to {{target}}",
     "resendCode": "Resend code",
-    "resendIn": "Resend in {{seconds}}s",
+    "resendIn": "Resend in {{time}}",
     "verify": "Verify",
     "alreadyHaveAccount": "Already have an account?",
     "noAccount": "Don't have an account?",
@@ -97,7 +97,12 @@
     "lastNamePlaceholder": "Adewale",
     "phonePlaceholder": "+234 800 000 0000",
     "otpSubtitleShort": "Enter the 6-digit code sent to {{email}}",
-    "yourEmail": "your email"
+    "yourEmail": "your email",
+    "stepOf": "Step {{current}} of {{total}}",
+    "didntGetIt": "Didn't get it?",
+    "didntReceiveIt": "Didn't receive it?",
+    "haveAccount": "Already have an account?",
+    "allSet": "You're all set, {{name}}!"
   },
   "profile": {
     "title": "Profile",
@@ -202,7 +207,10 @@
     "available": "Available",
     "testDrive": "Test Drive",
     "tradeIn": "Trade-in",
-    "loadError": "Couldn't load this vehicle"
+    "loadError": "Couldn't load this vehicle",
+    "loadCarsError": "Couldn't load cars. {{message}}",
+    "loadVehiclesError": "Couldn't load vehicles. {{message}}",
+    "verifiedDealerOwners": "Verified Dealer · {{count}} owner"
   },
   "service": {
     "title": "Service",
@@ -230,7 +238,10 @@
     "issuePlaceholder": "e.g. Strange noise from front brakes, AC not cooling…",
     "noUpcoming": "No upcoming appointments.",
     "noActiveJobs": "No active service jobs.",
-    "loadError": "Couldn't load service."
+    "loadError": "Couldn't load service.",
+    "dueInDays": "{{vehicle}} · in {{days}} days",
+    "atMileageTapToBook": "At {{mileage}} km · Tap to book",
+    "requestedDetail": "Your {{service}} at {{branch}} has been requested. We'll confirm shortly."
   },
   "support": {
     "title": "Support",
@@ -249,7 +260,10 @@
     "attachPhoto": "Attach a photo",
     "sendReply": "Send reply",
     "document": "Document",
-    "agentTyping": "Support is typing…"
+    "agentTyping": "Support is typing…",
+    "loadTicketsError": "Couldn't load tickets. {{message}}",
+    "expectedResponse": "Expected first response within {{hours}} hours",
+    "typicalResponse": "Typical response within {{hours}}h"
   },
   "notifications": {
     "title": "Notifications",
@@ -325,7 +339,9 @@
     "batteryFree": "Battery: free replacement for {{months}} months, until {{date}}.",
     "batteryPartial": "Battery: pro-rata cover to {{months}} months, until {{date}}.",
     "batteryExpired": "Battery: cover ended at {{months}} months.",
-    "adviserConfirms": "Your service adviser confirms the final outcome."
+    "adviserConfirms": "Your service adviser confirms the final outcome.",
+    "loadError": "Couldn't load warranty. {{message}}",
+    "reviewWithin48": "Our warranty team will review your {{category}} claim and get back to you within 48 hours."
   },
   "bookings": {
     "title": "Bookings",
@@ -343,7 +359,8 @@
     "estimatedValue": "ESTIMATED TRADE-IN VALUE",
     "finalValueNote": "Final value confirmed after inspection",
     "addPhotos": "Add photos of your vehicle",
-    "valuationRequested": "Valuation Requested"
+    "valuationRequested": "Valuation Requested",
+    "specialistConfirms": "An Elizade specialist will confirm your {{make}} {{model}} trade-in value after a quick physical inspection."
   },
   "watchlist": {
     "subtitle": "Models you are tracking",
@@ -353,7 +370,8 @@
     "editPreferences": "Edit preferences",
     "removeConfirm": "Remove from watchlist?",
     "empty": "No saved models yet",
-    "emptyHint": "Tap the heart on any vehicle to track that model."
+    "emptyHint": "Tap the heart on any vehicle to track that model.",
+    "removeDetail": "{{model}} will no longer be tracked. You can add it again at any time."
   },
   "financing": {
     "title": "Financing Calculator",
@@ -361,13 +379,15 @@
     "vehiclePrice": "Vehicle price",
     "totalInterest": "Total interest",
     "totalPayable": "Total payable",
-    "disclaimer": "Estimate only. Final terms are subject to Elizade Finance approval."
+    "disclaimer": "Estimate only. Final terms are subject to Elizade Finance approval.",
+    "tenorAndDown": "for {{months}} months · {{down}} down"
   },
   "quote": {
     "requested": "Quote Requested",
     "title": "Request a Quote",
     "pickupShowroom": "Pickup showroom",
-    "addOns": "Optional add-ons"
+    "addOns": "Optional add-ons",
+    "willBeSent": "A formal quotation for your {{vehicle}} will be sent to your email and appear in Support shortly."
   },
   "testDrive": {
     "booked": "Test Drive Booked!",
@@ -376,7 +396,8 @@
     "viewBookings": "View my bookings",
     "holdingDeposit": "Holding deposit (5%)",
     "depositNote": "Reserves this vehicle for 7 days. Fully deductible from the final price.",
-    "change": "Change"
+    "change": "Change",
+    "requestedDetail": "Your test drive of the {{vehicle}} at {{branch}} is requested. Our team will confirm shortly."
   },
   "home": {
     "openProfile": "Open your profile"

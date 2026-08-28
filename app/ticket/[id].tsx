@@ -138,7 +138,7 @@ export default function TicketDetail() {
                 <View style={[styles.sla, { backgroundColor: tint(t.colors.info, 0.08) }]}>
                   <Ionicons name="time-outline" size={15} color={t.colors.infoText} />
                   <Txt variant="bodySmall" color={t.colors.infoText} style={{ marginLeft: 6 }}>
-                    Typical response within {cat.slaHours}h
+                    {tr('support.typicalResponse', { hours: cat.slaHours })}
                   </Txt>
                 </View>
               )}

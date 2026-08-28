@@ -359,7 +359,7 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
   const { t: tr } = useTranslation();
   return (
     <View style={{ paddingHorizontal: spacing.screenH, paddingVertical: 28 }}>
-      <Txt tone="secondary">Couldn't load cars. {message}</Txt>
+      <Txt tone="secondary">{tr('shop.loadCarsError', { message })}</Txt>
       <Pressable onPress={onRetry} style={{ marginTop: 10 }}>
         <Txt variant="titleSmall" color={t.colors.primary}>{tr('common.tapToRetry')}</Txt>
       </Pressable>

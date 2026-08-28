@@ -113,7 +113,7 @@ export default function TradeIn() {
           </Animated.View>
           <Txt variant="headlineLarge" center style={{ marginTop: spacing.xl }}>{tr('tradeIn.valuationRequested')}</Txt>
           <Txt variant="bodyLarge" tone="secondary" center style={{ marginTop: spacing.sm }}>
-            An Elizade specialist will confirm your {make} {model} trade-in value after a quick physical inspection.
+            {tr('tradeIn.specialistConfirms', { make, model })}
           </Txt>
           {estimate && (
             <Txt variant="titleMedium" color={t.colors.primary} style={{ marginTop: spacing.md }}>

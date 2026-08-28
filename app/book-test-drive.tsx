@@ -84,8 +84,10 @@ export default function BookTestDrive() {
           </Animated.View>
           <Txt variant="headlineLarge" center style={{ marginTop: spacing.xl }}>{tr('testDrive.booked')}</Txt>
           <Txt variant="bodyLarge" tone="secondary" center style={{ marginTop: spacing.sm }}>
-            Your test drive of the {vehicleTitle(vehicle)} at {branches[showroom]?.name ?? 'Elizade'} is requested.
-            Our team will confirm shortly.
+            {tr('testDrive.requestedDetail', {
+              vehicle: vehicleTitle(vehicle),
+              branch: branches[showroom]?.name ?? 'Elizade',
+            })}
           </Txt>
           {reference ? (
             <View style={[styles.receipt, { backgroundColor: t.colors.surfaceAlt, borderColor: t.colors.border }]}>

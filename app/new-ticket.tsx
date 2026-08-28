@@ -112,7 +112,7 @@ export default function NewTicket() {
         <View style={[styles.sla, { backgroundColor: tint(t.colors.info, 0.08) }]}>
           <Ionicons name="time-outline" size={16} color={t.colors.infoText} />
           <Txt variant="bodySmall" color={t.colors.infoText} style={{ marginLeft: 8 }}>
-            Expected first response within {sla} hours
+            {tr('support.expectedResponse', { hours: sla })}
           </Txt>
         </View>
 

@@ -53,7 +53,7 @@ export default function Support() {
         {loading ? (
           [0, 1, 2].map((i) => <Skeleton key={i} height={92} radius={radius.lg} />)
         ) : error ? (
-          <Txt tone="secondary">Couldn't load tickets. {error}</Txt>
+          <Txt tone="secondary">{tr('support.loadTicketsError', { message: error })}</Txt>
         ) : tickets.length ? (
           tickets.map((tk) => <TicketCard key={tk.id} ticket={tk} />)
         ) : (

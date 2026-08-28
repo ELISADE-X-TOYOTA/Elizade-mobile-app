@@ -231,7 +231,7 @@ export default function WatchlistScreen() {
 
             <Txt variant="titleLarge" center style={{ marginTop: spacing.md }}>{tr('watchlist.removeConfirm')}</Txt>
             <Txt tone="secondary" center style={{ marginTop: 6 }}>
-              {removing?.model} will no longer be tracked. You can add it again at any time.
+              {tr('watchlist.removeDetail', { model: removing?.model ?? '' })}
             </Txt>
 
             {removeError ? (

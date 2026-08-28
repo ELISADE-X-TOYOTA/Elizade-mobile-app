@@ -67,7 +67,7 @@
     "otpTitle": "Introduce tu código",
     "otpSubtitle": "Enviamos un código de 6 dígitos a {{target}}",
     "resendCode": "Reenviar código",
-    "resendIn": "Reenviar en {{seconds}} s",
+    "resendIn": "Reenviar en {{time}}",
     "verify": "Verificar",
     "alreadyHaveAccount": "¿Ya tienes una cuenta?",
     "noAccount": "¿No tienes una cuenta?",
@@ -97,7 +97,12 @@
     "lastNamePlaceholder": "Adewale",
     "phonePlaceholder": "+234 800 000 0000",
     "otpSubtitleShort": "Introduce el código de 6 dígitos enviado a {{email}}",
-    "yourEmail": "tu correo"
+    "yourEmail": "tu correo",
+    "stepOf": "Paso {{current}} de {{total}}",
+    "didntGetIt": "¿No lo recibiste?",
+    "didntReceiveIt": "¿No lo recibiste?",
+    "haveAccount": "¿Ya tienes una cuenta?",
+    "allSet": "¡Todo listo, {{name}}!"
   },
   "profile": {
     "title": "Perfil",
@@ -202,7 +207,10 @@
     "available": "Disponible",
     "testDrive": "Prueba de manejo",
     "tradeIn": "Entrega a cuenta",
-    "loadError": "No se pudo cargar este vehículo"
+    "loadError": "No se pudo cargar este vehículo",
+    "loadCarsError": "No se pudieron cargar los coches. {{message}}",
+    "loadVehiclesError": "No se pudieron cargar los vehículos. {{message}}",
+    "verifiedDealerOwners": "Concesionario verificado · {{count}} propietario"
   },
   "service": {
     "title": "Servicio",
@@ -230,7 +238,10 @@
     "issuePlaceholder": "p. ej. ruido extraño en los frenos delanteros, el aire no enfría…",
     "noUpcoming": "No hay citas próximas.",
     "noActiveJobs": "No hay servicios activos.",
-    "loadError": "No se pudo cargar el servicio."
+    "loadError": "No se pudo cargar el servicio.",
+    "dueInDays": "{{vehicle}} · en {{days}} días",
+    "atMileageTapToBook": "A {{mileage}} km · Toca para reservar",
+    "requestedDetail": "Tu {{service}} en {{branch}} ha sido solicitado. Lo confirmaremos en breve."
   },
   "support": {
     "title": "Soporte",
@@ -249,7 +260,10 @@
     "attachPhoto": "Adjuntar una foto",
     "sendReply": "Enviar respuesta",
     "document": "Documento",
-    "agentTyping": "Soporte está escribiendo…"
+    "agentTyping": "Soporte está escribiendo…",
+    "loadTicketsError": "No se pudieron cargar los tickets. {{message}}",
+    "expectedResponse": "Primera respuesta esperada en {{hours}} horas",
+    "typicalResponse": "Respuesta habitual en {{hours}} h"
   },
   "notifications": {
     "title": "Notificaciones",
@@ -325,7 +339,9 @@
     "batteryFree": "Batería: sustitución gratuita durante {{months}} meses, hasta el {{date}}.",
     "batteryPartial": "Batería: cobertura prorrateada hasta los {{months}} meses, el {{date}}.",
     "batteryExpired": "Batería: la cobertura terminó a los {{months}} meses.",
-    "adviserConfirms": "Tu asesor de servicio confirma el resultado final."
+    "adviserConfirms": "Tu asesor de servicio confirma el resultado final.",
+    "loadError": "No se pudo cargar la garantía. {{message}}",
+    "reviewWithin48": "Nuestro equipo de garantía revisará tu reclamación de {{category}} y te responderá en 48 horas."
   },
   "bookings": {
     "title": "Reservas",
@@ -343,7 +359,8 @@
     "estimatedValue": "VALOR ESTIMADO DE ENTREGA",
     "finalValueNote": "Valor final confirmado tras la inspección",
     "addPhotos": "Añade fotos de tu vehículo",
-    "valuationRequested": "Tasación solicitada"
+    "valuationRequested": "Tasación solicitada",
+    "specialistConfirms": "Un especialista de Elizade confirmará el valor de entrega de tu {{make}} {{model}} tras una inspección física rápida."
   },
   "watchlist": {
     "subtitle": "Modelos que sigues",
@@ -353,7 +370,8 @@
     "editPreferences": "Editar preferencias",
     "removeConfirm": "¿Quitar de la lista?",
     "empty": "Aún no hay modelos guardados",
-    "emptyHint": "Toca el corazón en cualquier vehículo para seguir ese modelo."
+    "emptyHint": "Toca el corazón en cualquier vehículo para seguir ese modelo.",
+    "removeDetail": "{{model}} dejará de seguirse. Puedes añadirlo de nuevo cuando quieras."
   },
   "financing": {
     "title": "Calculadora de financiación",
@@ -361,13 +379,15 @@
     "vehiclePrice": "Precio del vehículo",
     "totalInterest": "Intereses totales",
     "totalPayable": "Total a pagar",
-    "disclaimer": "Solo una estimación. Las condiciones finales dependen de la aprobación de Elizade Finance."
+    "disclaimer": "Solo una estimación. Las condiciones finales dependen de la aprobación de Elizade Finance.",
+    "tenorAndDown": "durante {{months}} meses · {{down}} de entrada"
   },
   "quote": {
     "requested": "Cotización solicitada",
     "title": "Solicitar una cotización",
     "pickupShowroom": "Showroom de recogida",
-    "addOns": "Extras opcionales"
+    "addOns": "Extras opcionales",
+    "willBeSent": "Se enviará una cotización formal de tu {{vehicle}} a tu correo y aparecerá en Soporte en breve."
   },
   "testDrive": {
     "booked": "¡Prueba de manejo reservada!",
@@ -376,7 +396,8 @@
     "viewBookings": "Ver mis reservas",
     "holdingDeposit": "Depósito de reserva (5 %)",
     "depositNote": "Reserva este vehículo durante 7 días. Totalmente deducible del precio final.",
-    "change": "Cambiar"
+    "change": "Cambiar",
+    "requestedDetail": "Tu prueba de manejo del {{vehicle}} en {{branch}} está solicitada. Nuestro equipo lo confirmará en breve."
   },
   "home": {
     "openProfile": "Abrir tu perfil"

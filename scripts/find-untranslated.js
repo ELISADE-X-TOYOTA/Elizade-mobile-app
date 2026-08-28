@@ -54,6 +54,40 @@ const UI_PROPS =
 /** A JSX text node: >Some Words< — must start with a letter. */
 const JSX_TEXT = />\s*([A-Za-z][^<>{}\n]{2,80}?)\s*</g;
 
+/**
+ * JSX text that MIXES words with an interpolation:
+ *   >Expected first response within {sla} hours<
+ *
+ * THE BLIND SPOT THIS CLOSES: `JSX_TEXT` above excludes `{` and `}` so that it
+ * does not match code, and the side effect was that any sentence containing a
+ * value was invisible to the scanner. It reported zero untranslated strings
+ * while roughly thirty of these sat in the app in English — the report was
+ * accurate about what it looked at and silent about what it did not.
+ *
+ * These are the strings that matter MOST to translate, because a sentence
+ * built by concatenating fragments around a value cannot be reordered by a
+ * translator; word order differs between English and, say, Yoruba or Arabic.
+ */
+const JSX_INTERPOLATED = />((?:[^<>{}]*\{[^{}]*\}[^<>{}]*)+)</g;
+
+/**
+ * Does this look like prose rather than an expression?
+ *
+ * The interpolation is blanked out first, then what remains must contain two
+ * real words. `{cond ? (` and `{items.map((x) => (` leave nothing behind;
+ * "Expected first response within  hours" leaves plenty.
+ */
+function isProseAroundExpression(raw) {
+  const withoutExpressions = raw.replace(/\{[^{}]*\}/g, ' ').trim();
+  if (!withoutExpressions) return false;
+  // Reject leftovers that are still obviously syntax.
+  if (/[=;()[\]<>]|=>|\|\||&&/.test(withoutExpressions)) return false;
+  const words = withoutExpressions.match(/[A-Za-z][A-Za-z']{1,}/g) ?? [];
+  // One stray word ("of", "in") is usually punctuation between two values;
+  // two or more is a sentence someone has to translate.
+  return words.length >= 2;
+}
+
 function walk(dir, out = []) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
     const fp = path.join(dir, e.name);
@@ -82,6 +116,20 @@ for (const file of files) {
   };
 
   for (const m of src.matchAll(UI_PROPS)) record(m[2], m.index);
+
+  // Sentences built around a value. Reported separately from plain text nodes
+  // because `record`'s ignore rules assume a bare string.
+  for (const m of src.matchAll(JSX_INTERPOLATED)) {
+    const raw = m[1];
+    if (!isProseAroundExpression(raw)) continue;
+    const lineNo = src.slice(0, m.index).split(String.fromCharCode(10)).length;
+    const line = lines[lineNo - 1] ?? '';
+    if (/t\(|tr\(|i18n\.t\(/.test(line)) continue;
+    // A comment is not shipped copy.
+    if (/^\s*(\/\/|\*|\/\*)/.test(line)) continue;
+    hits.push({ line: lineNo, text: raw.trim().replace(/\s+/g, ' ') });
+  }
+
   for (const m of src.matchAll(JSX_TEXT)) {
     // JSX_TEXT also matches inside comments and generics; require the line to
     // look like markup rather than a type annotation.

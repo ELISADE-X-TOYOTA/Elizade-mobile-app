@@ -69,10 +69,10 @@ export default function Service() {
             <View style={{ flex: 1, marginLeft: 14 }}>
               <Txt variant="labelSmall" color="rgba(255,255,255,0.7)">{tr('service.nextServiceDue')}</Txt>
               <Txt variant="titleMedium" color={ON_DARK_INK}>
-                {owned.make} {owned.model} · in {dueInDays} days
+                {tr('service.dueInDays', { vehicle: `${owned.make} ${owned.model}`, days: dueInDays })}
               </Txt>
               <Txt variant="bodySmall" color="rgba(255,255,255,0.8)">
-                At {owned.nextServiceMileage.toLocaleString()} km · Tap to book
+                {tr('service.atMileageTapToBook', { mileage: owned.nextServiceMileage.toLocaleString() })}
               </Txt>
             </View>
             <Ionicons name="chevron-forward" size={22} color={ON_DARK_INK} />

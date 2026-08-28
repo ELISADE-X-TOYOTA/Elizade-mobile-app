@@ -48,7 +48,7 @@ export default function Warranty() {
             <Skeleton height={90} radius={radius.lg} />
           </>
         ) : error ? (
-          <Txt tone="secondary">Couldn't load warranty. {error}</Txt>
+          <Txt tone="secondary">{tr('warranty.loadError', { message: error })}</Txt>
         ) : (
           <>
             {/* Open recall alert */}

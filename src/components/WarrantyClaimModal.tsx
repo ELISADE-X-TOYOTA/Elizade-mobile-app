@@ -131,7 +131,7 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
               </Animated.View>
               <Txt variant="headlineMedium" style={{ marginTop: 20 }}>{tr('warranty.claimSubmitted')}</Txt>
               <Txt tone="secondary" center style={{ marginTop: 8 }}>
-                Our warranty team will review your {category.toLowerCase()} claim and get back to you within 48 hours.
+                {tr('warranty.reviewWithin48', { category: category.toLowerCase() })}
               </Txt>
               <View style={{ height: 20 }} />
               <PrimaryButton label={tr('common.done')} onPress={close} style={{ width: '100%' }} />

@@ -227,7 +227,7 @@ export default function CarDetails() {
             <View style={{ flex: 1, marginLeft: 12 }}>
               <Txt variant="titleMedium">{v.dealerName}</Txt>
               <Txt variant="bodySmall" tone="secondary">
-                Verified Dealer · {v.ownerHistory} owner
+                {tr('shop.verifiedDealerOwners', { count: v.ownerHistory })}
               </Txt>
             </View>
             <RoundAction icon="chatbubble-outline" />
