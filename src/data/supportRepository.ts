@@ -1,6 +1,13 @@
 import * as ImagePicker from 'expo-image-picker';
 import { mapTicket, mapTicketMessage } from '../api/customer-mappers';
-import { CreateTicketBody, supportApi, uploadTicketAttachment } from '../api/support';
+import {
+  CreateTicketBody,
+  MAX_ATTACHMENT_BYTES,
+  MAX_IMAGE_BYTES,
+  MAX_VIDEO_DURATION_SECONDS,
+  supportApi,
+  uploadMediaAttachment,
+} from '../api/support';
 import { APP } from '../constants/app';
 import { SupportTicket, TicketMessage } from '../domain/types';
 import { SUPPORT_TICKETS, TICKET_MESSAGES } from './mock';
@@ -12,6 +19,7 @@ export interface PickedAttachment {
   /** Local uri, for an instant thumbnail while the message is still a draft. */
   previewUri: string;
   name: string;
+  kind: 'image' | 'video' | 'document';
 }
 
 export type PickResult =
@@ -28,6 +36,7 @@ export type PickResult =
  */
 export async function pickTicketAttachment(
   source: 'library' | 'camera' = 'library',
+  uploadPath = '/support/attachments/upload',
 ): Promise<PickResult> {
   const perm =
     source === 'camera'
@@ -40,22 +49,33 @@ export async function pickTicketAttachment(
       message:
         source === 'camera'
           ? 'Camera access is needed to take a photo.'
-          : 'Photo access is needed to attach an image.',
+          : 'Photo and video access is needed to attach media.',
     };
   }
 
   const result =
     source === 'camera'
       ? await ImagePicker.launchCameraAsync({ quality: 0.7 })
-      : await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.7 });
+      : await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images', 'videos'], quality: 0.7 });
 
   if (result.canceled || !result.assets?.length) return null;
   const asset = result.assets[0];
-  const name = asset.fileName ?? `attachment-${Date.now()}.jpg`;
+  const kind = asset.type === 'video' ? 'video' : 'image';
+  const name = asset.fileName ?? `attachment-${Date.now()}.${kind === 'video' ? 'mp4' : 'jpg'}`;
+  const fileSize = asset.fileSize ?? 0;
+  if (fileSize > (kind === 'video' ? MAX_ATTACHMENT_BYTES : MAX_IMAGE_BYTES)) {
+    return {
+      ok: false,
+      message: kind === 'video' ? 'Videos must be 50MB or smaller.' : 'Images must be 10MB or smaller.',
+    };
+  }
+  if (kind === 'video' && asset.duration != null && asset.duration > MAX_VIDEO_DURATION_SECONDS * 1000) {
+    return { ok: false, message: `Videos must be ${MAX_VIDEO_DURATION_SECONDS} seconds or shorter.` };
+  }
 
   if (APP.useMock) {
     // Offline demo: skip the round-trip and show the local file.
-    return { ok: true, attachment: { url: asset.uri, previewUri: asset.uri, name } };
+    return { ok: true, attachment: { url: asset.uri, previewUri: asset.uri, name, kind } };
   }
 
   // A local `file://` URI is not an attachment the API will accept — it only
@@ -65,8 +85,13 @@ export async function pickTicketAttachment(
   // guard below (`isUploadedAttachment`) stops that reaching the wire.
 
   try {
-    const url = await uploadTicketAttachment(asset.uri, name, asset.mimeType ?? 'image/jpeg');
-    return { ok: true, attachment: { url, previewUri: asset.uri, name } };
+    const url = await uploadMediaAttachment(
+      asset.uri,
+      name,
+      asset.mimeType ?? (kind === 'video' ? 'video/mp4' : 'image/jpeg'),
+      uploadPath,
+    );
+    return { ok: true, attachment: { url, previewUri: asset.uri, name, kind } };
   } catch (e) {
     return { ok: false, message: e instanceof Error ? e.message : 'Could not upload that file.' };
   }

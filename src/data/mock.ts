@@ -51,6 +51,7 @@ function base(v: Partial<Vehicle> & Pick<Vehicle, 'id' | 'make' | 'model' | 'tri
   return {
     color: 'Pearl White',
     colorHex: '#EDEDED',
+    availability: 'available',
     fuelType: 'Petrol',
     transmission: 'Automatic',
     engine: '2.0L',
@@ -204,6 +205,7 @@ export const VEHICLES: Vehicle[] = [
     colorHex: '#5B6066',
     price: 48_000_000,
     category: 'suv',
+    availability: 'unavailable',
     fuelType: 'Petrol',
     engine: '1.5L Turbo',
     horsepower: 156,
@@ -292,6 +294,7 @@ export const SERVICE_APPOINTMENTS: ServiceAppointment[] = [
     status: 'in_progress',
     issueDescription: '45,000km periodic maintenance',
     mileageAtBooking: 44_980,
+    attachmentUrls: [],
   },
   {
     id: 'sa2',
@@ -304,6 +307,7 @@ export const SERVICE_APPOINTMENTS: ServiceAppointment[] = [
     status: 'confirmed',
     issueDescription: 'Pre-trip full inspection',
     mileageAtBooking: 45_100,
+    attachmentUrls: [],
   },
   {
     id: 'sa3',
@@ -316,6 +320,7 @@ export const SERVICE_APPOINTMENTS: ServiceAppointment[] = [
     status: 'completed',
     issueDescription: 'AC not cooling — compressor check',
     mileageAtBooking: 39_500,
+    attachmentUrls: [],
   },
 ];
 

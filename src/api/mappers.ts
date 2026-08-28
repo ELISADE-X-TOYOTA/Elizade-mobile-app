@@ -1,5 +1,5 @@
 import { APP } from '../constants/app';
-import { ListingType, Vehicle, VehicleCategory } from '../domain/types';
+import { ListingType, Vehicle, VehicleAvailability, VehicleCategory } from '../domain/types';
 import { Branch, VehicleDetail, VehicleListItem } from './vehicles';
 
 /** Resolve a possibly-relative media path against the API host (mirrors web). */
@@ -57,6 +57,10 @@ function priceOf(v: { price: string | number; isPromotional: boolean; promotiona
   return v.isPromotional && v.promotionalPrice != null ? Number(v.promotionalPrice) : Number(v.price);
 }
 
+const AVAILABILITIES: VehicleAvailability[] = ['available', 'reserved', 'sold', 'unavailable'];
+const mapAvailability = (value: string): VehicleAvailability =>
+  AVAILABILITIES.includes(value as VehicleAvailability) ? (value as VehicleAvailability) : 'unavailable';
+
 export function mapListItemToVehicle(item: VehicleListItem, branches?: Map<string, Branch>): Vehicle {
   const category = deriveCategory(item.make, item.model, item.fuelType);
   const branch = branches?.get(item.branchId);
@@ -69,6 +73,7 @@ export function mapListItemToVehicle(item: VehicleListItem, branches?: Map<strin
     color: item.color,
     colorHex: item.colorHex || '#1F2937',
     price: priceOf(item),
+    availability: mapAvailability(item.availability),
     fuelType: item.fuelType,
     transmission: item.transmission,
     engine: '',
@@ -102,6 +107,7 @@ export function mapDetailToVehicle(d: VehicleDetail): Vehicle {
     color: d.color,
     colorHex: d.colorHex || '#1F2937',
     price: priceOf(d),
+    availability: mapAvailability(d.availability),
     fuelType: d.fuelType,
     transmission: d.transmission,
     engine: d.engine || '—',

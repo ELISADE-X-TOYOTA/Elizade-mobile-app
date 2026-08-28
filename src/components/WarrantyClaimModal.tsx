@@ -82,7 +82,7 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
       return;
     }
     setAttachError(undefined);
-    const res = await pickTicketAttachment('library');
+    const res = await pickTicketAttachment('library', '/warranty/claims/attachments/upload');
     if (!res) return;
     if (!res.ok) {
       setAttachError(res.message);
