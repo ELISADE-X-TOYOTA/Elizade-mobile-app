@@ -1,4 +1,5 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { router } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import {
@@ -28,6 +29,7 @@ const CATEGORIES = Object.keys(CATEGORY_META) as VehicleCategory[];
 /** Elizade showroom — browse new Toyota / Jetour / JAC inventory. */
 export default function Shop() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const category = useStore((s) => s.categoryFilter);
   const setCategory = useStore((s) => s.setCategoryFilter);
@@ -66,8 +68,8 @@ export default function Shop() {
   return (
     <View style={{ flex: 1, backgroundColor: 'transparent', paddingTop: insets.top }}>
       <View style={{ paddingHorizontal: spacing.screenH, paddingVertical: spacing.sm }}>
-        <Txt variant="headlineMedium">Showroom</Txt>
-        <Txt tone="secondary">Explore Elizade's latest Toyota, Jetour & JAC vehicles</Txt>
+        <Txt variant="headlineMedium">{tr('shop.showroom')}</Txt>
+        <Txt tone="secondary">{tr('shop.showroomSubtitle')}</Txt>
       </View>
 
       {/* Search */}
@@ -78,21 +80,21 @@ export default function Shop() {
             keyboardAppearance={t.isDark ? 'dark' : 'light'}
             value={search}
             onChangeText={(v) => setSearch(clean(v, 60))}
-            placeholder="Search make, model, year…"
+            placeholder={tr('shop.searchPlaceholder')}
             placeholderTextColor={t.colors.textTertiary}
             returnKeyType="search"
             autoCorrect={false}
-            accessibilityLabel="Search vehicles"
+            accessibilityLabel={tr('shop.searchVehicles')}
             style={[t.type.bodyMedium, { flex: 1, marginLeft: 10, color: t.colors.textPrimary, paddingVertical: 0 }]}
           />
           {search.length > 0 && (
-            <Pressable onPress={() => setSearch('')} hitSlop={8} accessibilityLabel="Clear search">
+            <Pressable onPress={() => setSearch('')} hitSlop={8} accessibilityLabel={tr('shop.clearSearch')}>
               <Ionicons name="close-circle" size={18} color={t.colors.textTertiary} />
             </Pressable>
           )}
           <Pressable
             onPress={() => setFilterOpen(true)}
-            accessibilityLabel="Filter vehicles"
+            accessibilityLabel={tr('shop.filterVehicles')}
             style={{ marginLeft: 8, position: 'relative' }}
             hitSlop={8}
           >
@@ -125,9 +127,7 @@ export default function Shop() {
         <View style={{ padding: spacing.screenH }}>
           <Txt tone="secondary">Couldn't load vehicles. {error}</Txt>
           <Pressable onPress={reload} style={{ marginTop: 10 }}>
-            <Txt variant="titleSmall" color={t.colors.primary}>
-              Tap to retry
-            </Txt>
+            <Txt variant="titleSmall" color={t.colors.primary}>{tr('common.tapToRetry')}</Txt>
           </Pressable>
         </View>
       ) : loading ? (
@@ -198,6 +198,7 @@ function Chip({
   onPress: () => void;
 }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <Pressable
       onPress={onPress}

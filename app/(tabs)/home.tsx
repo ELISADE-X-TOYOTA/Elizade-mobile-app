@@ -3,6 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FlatList, ListRenderItemInfo, Pressable, RefreshControl, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import Animated, { FadeInRight } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CarCard } from '../../src/components/CarCard';
@@ -42,6 +43,7 @@ const getCarouselLayout = (_: unknown, index: number) => ({
 
 export default function Home() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const category = useStore((s) => s.categoryFilter);
   const setCategory = useStore((s) => s.setCategoryFilter);
@@ -150,7 +152,7 @@ export default function Home() {
             <Pressable
               onPress={() => router.push('/(tabs)/profile')}
               accessibilityRole="button"
-              accessibilityLabel="Open your profile"
+              accessibilityLabel={tr('home.openProfile')}
               hitSlop={6}
             >
               <Avatar user={user} size={48} />
@@ -181,21 +183,21 @@ export default function Home() {
           keyboardAppearance={t.isDark ? 'dark' : 'light'}
               value={search}
               onChangeText={(v) => setSearch(clean(v, 60))}
-              placeholder="What car are you looking for?"
+              placeholder={tr('shop.whatCarLooking')}
               placeholderTextColor={t.colors.textTertiary}
               returnKeyType="search"
               autoCorrect={false}
-              accessibilityLabel="Search vehicles"
+              accessibilityLabel={tr('shop.searchVehicles')}
               style={[t.type.bodyMedium, { flex: 1, color: t.colors.textPrimary, paddingVertical: 0 }]}
             />
             {search.length > 0 && (
-              <Pressable onPress={() => setSearch('')} hitSlop={8} accessibilityLabel="Clear search">
+              <Pressable onPress={() => setSearch('')} hitSlop={8} accessibilityLabel={tr('shop.clearSearch')}>
                 <Ionicons name="close-circle" size={18} color={t.colors.textTertiary} />
               </Pressable>
             )}
             <Pressable
               onPress={() => setFilterOpen(true)}
-              accessibilityLabel="Filter vehicles"
+              accessibilityLabel={tr('shop.filterVehicles')}
               style={{ marginLeft: 8 }}
             >
               <LinearGradient colors={t.gradients.accent} style={styles.searchBtn}>
@@ -222,7 +224,7 @@ export default function Home() {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ paddingHorizontal: spacing.screenH, gap: 10, paddingVertical: spacing.lg }}
         >
-          <Chip label="All" icon="grid" active={category === null} onPress={() => setCategory(null)} />
+          <Chip label={tr('common.all')} icon="grid" active={category === null} onPress={() => setCategory(null)} />
           {CATEGORIES.map((c) => (
             <Chip
               key={c}
@@ -292,7 +294,7 @@ export default function Home() {
         {!loading && !error && !isSearching && list.length > 0 && (
           <>
             <View style={{ paddingHorizontal: spacing.screenH, marginTop: spacing.xl, marginBottom: spacing.sm }}>
-              <SectionHeader title="Recommended For You" />
+              <SectionHeader title={tr('shop.recommended')} />
             </View>
             <View style={{ paddingHorizontal: spacing.screenH, gap: 14 }}>
               {list.map((v) => (
@@ -331,6 +333,7 @@ function Chip({
   onPress: () => void;
 }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <Pressable
       onPress={onPress}
@@ -353,13 +356,12 @@ function Chip({
 
 function ErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <View style={{ paddingHorizontal: spacing.screenH, paddingVertical: 28 }}>
       <Txt tone="secondary">Couldn't load cars. {message}</Txt>
       <Pressable onPress={onRetry} style={{ marginTop: 10 }}>
-        <Txt variant="titleSmall" color={t.colors.primary}>
-          Tap to retry
-        </Txt>
+        <Txt variant="titleSmall" color={t.colors.primary}>{tr('common.tapToRetry')}</Txt>
       </Pressable>
     </View>
   );
@@ -367,6 +369,7 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
 
 const RecommendedTile = memo(function RecommendedTile({ vehicle }: { vehicle: Vehicle }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const v = vehicle;
   return (
     <Pressable

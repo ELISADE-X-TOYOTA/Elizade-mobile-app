@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { radius, spacing } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
@@ -41,6 +42,7 @@ const SORTS = [
  */
 export function FilterSheet({ visible, value, fuelTypes, transmissions, onApply, onClose }: Props) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
 
   const toggle = (key: keyof VehicleFilters, v: string | number) =>
@@ -56,21 +58,17 @@ export function FilterSheet({ visible, value, fuelTypes, transmissions, onApply,
           <View style={[styles.handle, { backgroundColor: t.colors.border }]} />
 
           <View style={[styles.header, { paddingHorizontal: spacing.lg }]}>
-            <Txt variant="titleLarge" style={{ flex: 1 }}>
-              Filters
-            </Txt>
+            <Txt variant="titleLarge" style={{ flex: 1 }}>{tr('filters.title')}</Txt>
             {activeCount > 0 && (
               <Pressable onPress={() => onApply({})} hitSlop={8}>
-                <Txt variant="titleSmall" color={t.colors.primary}>
-                  Clear all
-                </Txt>
+                <Txt variant="titleSmall" color={t.colors.primary}>{tr('common.clearAll')}</Txt>
               </Pressable>
             )}
           </View>
 
           <ScrollView style={{ maxHeight: 420 }} contentContainerStyle={{ padding: spacing.lg }} showsVerticalScrollIndicator={false}>
             {fuelTypes.length > 0 && (
-              <Section title="Fuel type">
+              <Section title={tr('shop.fuelType')}>
                 {fuelTypes.map((f) => (
                   <Chip key={f} label={f} active={value.fuelType === f} onPress={() => toggle('fuelType', f)} />
                 ))}
@@ -78,14 +76,14 @@ export function FilterSheet({ visible, value, fuelTypes, transmissions, onApply,
             )}
 
             {transmissions.length > 0 && (
-              <Section title="Transmission">
-                {transmissions.map((tr) => (
-                  <Chip key={tr} label={tr} active={value.transmission === tr} onPress={() => toggle('transmission', tr)} />
+              <Section title={tr('filters.transmission')}>
+                {transmissions.map((trans) => (
+                  <Chip key={trans} label={trans} active={value.transmission === trans} onPress={() => toggle('transmission', trans)} />
                 ))}
               </Section>
             )}
 
-            <Section title="Max price">
+            <Section title={tr('shop.maxPrice')}>
               {PRICE_CAPS.map((p) => (
                 <Chip
                   key={p}
@@ -96,7 +94,7 @@ export function FilterSheet({ visible, value, fuelTypes, transmissions, onApply,
               ))}
             </Section>
 
-            <Section title="Sort by">
+            <Section title={tr('common.sortBy')}>
               {SORTS.map((s) => (
                 <Chip key={s.key} label={s.label} active={value.sort === s.key} onPress={() => toggle('sort', s.key)} />
               ))}
@@ -104,7 +102,7 @@ export function FilterSheet({ visible, value, fuelTypes, transmissions, onApply,
           </ScrollView>
 
           <View style={{ paddingHorizontal: spacing.lg, paddingTop: 8 }}>
-            <PrimaryButton label="Show results" icon="checkmark" onPress={onClose} />
+            <PrimaryButton label={tr('common.showResults')} icon="checkmark" onPress={onClose} />
           </View>
         </View>
       </View>
@@ -125,6 +123,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 function Chip({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <Pressable
       onPress={onPress}

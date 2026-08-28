@@ -316,6 +316,8 @@ export type ClaimStatus =
   | 'escalated'
   | 'closed';
 
+export type BatteryWarrantyStatus = 'unknown' | 'free' | 'partial' | 'expired';
+
 /** Answer from `GET /warranty/eligibility`, shown before a claim is filed. */
 export interface WarrantyEligibility {
   eligible: boolean;
@@ -327,6 +329,15 @@ export interface WarrantyEligibility {
   warrantyMonths: number;
   currentMileage: number;
   certificateNumber?: string | null;
+  /** Free-replacement window, in months from the in-service date. */
+  batteryFreeMonths: number;
+  /** Pro-rata window, in months. Cover ends here. */
+  batteryPartialMonths: number;
+  batteryFreeCoverageEnd?: string | null;
+  batteryPartialCoverageEnd?: string | null;
+  batteryStatus: BatteryWarrantyStatus;
+  /** True during free OR partial cover. Independent of `eligible`. */
+  batteryEligible: boolean;
 }
 
 export interface WarrantyClaim {

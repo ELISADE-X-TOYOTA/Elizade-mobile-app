@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Skeleton } from '../../src/components/Skeleton';
 import { Txt } from '../../src/components/Txt';
@@ -21,6 +22,7 @@ const PAST: TestDriveStatus[] = ['completed', 'cancelled'];
 /** My test-drive bookings — backed by GET /sales/test-drives. */
 export default function Bookings() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const [tab, setTab] = useState(0);
   const { bookings, loading, error, reload } = useTestDrives();
@@ -48,8 +50,8 @@ export default function Bookings() {
   return (
     <View style={{ flex: 1, backgroundColor: 'transparent', paddingTop: insets.top }}>
       <View style={{ paddingHorizontal: spacing.screenH, paddingVertical: spacing.sm }}>
-        <Txt variant="headlineMedium">Bookings</Txt>
-        <Txt tone="secondary">Your scheduled test drives</Txt>
+        <Txt variant="headlineMedium">{tr('bookings.title')}</Txt>
+        <Txt tone="secondary">{tr('bookings.subtitle')}</Txt>
       </View>
 
       <View style={[styles.tabs, { marginHorizontal: spacing.screenH, backgroundColor: t.colors.surfaceAlt }]}>
@@ -104,6 +106,7 @@ export default function Bookings() {
 
 function BookingCard({ booking, statusColor }: { booking: TestDriveBooking; statusColor: string }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const meta = TEST_DRIVE_STATUS_META[booking.status];
   const when = new Date(booking.scheduledAt);
 
@@ -141,6 +144,7 @@ function BookingCard({ booking, statusColor }: { booking: TestDriveBooking; stat
 
 function EmptyState({ title, body, onBrowse }: { title: string; body: string; onBrowse: () => void }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <View style={{ alignItems: 'center', paddingTop: 48, paddingHorizontal: spacing.md }}>
       <View style={[styles.emptyIcon, { backgroundColor: t.colors.surfaceAlt }]}>
@@ -153,9 +157,7 @@ function EmptyState({ title, body, onBrowse }: { title: string; body: string; on
         {body}
       </Txt>
       <Pressable onPress={onBrowse} style={[styles.browseBtn, { backgroundColor: t.colors.primary, marginTop: spacing.xl }]}>
-        <Txt variant="titleSmall" color={t.colors.onPrimary}>
-          Browse showroom
-        </Txt>
+        <Txt variant="titleSmall" color={t.colors.onPrimary}>{tr('common.browseShowroom')}</Txt>
       </Pressable>
     </View>
   );

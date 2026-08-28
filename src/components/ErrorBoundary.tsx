@@ -1,6 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
+// Class component: no hooks, so the instance is used directly.
+import i18n from '../i18n';
 import { Component, ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+
 import { palette, solid, tint } from '../theme/colors';
 import { radius, spacing } from '../theme/spacing';
 import { type } from '../theme/typography';
@@ -47,14 +50,12 @@ export class ErrorBoundary extends Component<Props, State> {
         <View style={[styles.icon, { backgroundColor: tint(c.error, 0.1) }]}>
           <Ionicons name="warning-outline" size={40} color={solid(c.error)} />
         </View>
-        <Text style={[type.headlineSmall, { color: c.textPrimary, marginTop: spacing.lg }]}>
-          Something went wrong
-        </Text>
+        <Text style={[type.headlineSmall, { color: c.textPrimary, marginTop: spacing.lg }]}>{i18n.t('errors.boundaryTitle')}</Text>
         <Text style={[type.bodyMedium, styles.body, { color: c.textSecondary }]}>
-          The app hit an unexpected problem. Please try again — your data is safe.
+          {i18n.t('errors.boundaryBody')}
         </Text>
         <Pressable onPress={this.reset} style={[styles.btn, { backgroundColor: solid(c.accent) }]}>
-          <Text style={[type.labelLarge, { color: c.onAccent }]}>Try Again</Text>
+          <Text style={[type.labelLarge, { color: c.onAccent }]}>{i18n.t('common.retry')}</Text>
         </Pressable>
       </View>
     );

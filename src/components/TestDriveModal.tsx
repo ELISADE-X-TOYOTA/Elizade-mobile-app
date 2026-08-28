@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useMemo, useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { bookTestDrive, reserveVehicle } from '../data/salesRepository';
@@ -29,6 +30,7 @@ const SLOT_HOURS = [9, 10, 12, 14, 16];
 /** Test-drive scheduling and reservation-with-deposit flow for Elizade sales. */
 export function TestDriveModal({ visible, vehicle, mode, onClose }: Props) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const { branches } = useBranches();
   const [showroom, setShowroom] = useState(0);
@@ -173,15 +175,11 @@ export function TestDriveModal({ visible, vehicle, mode, onClose }: Props) {
                     <Label text="Refundable deposit" />
                     <View style={[styles.depositCard, { backgroundColor: t.colors.surfaceAlt }]}>
                       <View style={{ flex: 1 }}>
-                        <Txt variant="bodySmall" tone="secondary">
-                          Holding deposit (5%)
-                        </Txt>
+                        <Txt variant="bodySmall" tone="secondary">{tr('testDrive.holdingDeposit')}</Txt>
                         <Txt variant="headlineSmall" color={t.colors.primary}>
                           {price(deposit)}
                         </Txt>
-                        <Txt variant="bodySmall" tone="secondary" style={{ marginTop: 4 }}>
-                          Reserves this vehicle for 7 days. Fully deductible from the final price.
-                        </Txt>
+                        <Txt variant="bodySmall" tone="secondary" style={{ marginTop: 4 }}>{tr('testDrive.depositNote')}</Txt>
                       </View>
                     </View>
                     <View style={[styles.payRow, { backgroundColor: t.colors.surfaceAlt }]}>
@@ -189,9 +187,7 @@ export function TestDriveModal({ visible, vehicle, mode, onClose }: Props) {
                       <Txt variant="titleSmall" style={{ flex: 1, marginLeft: 12 }}>
                         Visa •••• 4242
                       </Txt>
-                      <Txt variant="titleSmall" color={t.colors.primary}>
-                        Change
-                      </Txt>
+                      <Txt variant="titleSmall" color={t.colors.primary}>{tr('testDrive.change')}</Txt>
                     </View>
                   </>
                 )}
@@ -240,6 +236,7 @@ function SelectRow({
   onPress: () => void;
 }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <Pressable
       onPress={onPress}
@@ -281,6 +278,7 @@ function Success({
   onDone: () => void;
 }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const ref = reference ?? '—';
   return (
     <View style={{ padding: spacing.xl, alignItems: 'center' }}>
@@ -297,9 +295,7 @@ function Success({
       </Txt>
       <View style={[styles.receipt, { backgroundColor: t.colors.surfaceAlt }]}>
         <View>
-          <Txt variant="bodySmall" tone="secondary">
-            Reference
-          </Txt>
+          <Txt variant="bodySmall" tone="secondary">{tr('common.reference')}</Txt>
           <Txt variant="titleMedium">{ref}</Txt>
         </View>
         <View style={{ alignItems: 'flex-end' }}>
@@ -312,7 +308,7 @@ function Success({
         </View>
       </View>
       <View style={{ height: 24 }} />
-      <PrimaryButton label="Done" onPress={onDone} style={{ width: '100%' }} />
+      <PrimaryButton label={tr('common.done')} onPress={onDone} style={{ width: '100%' }} />
     </View>
   );
 }

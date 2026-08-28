@@ -2,6 +2,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import Animated, {
   FadeIn,
   FadeInUp,
@@ -10,8 +11,13 @@ import Animated, {
   withDelay,
   withTiming,
 } from 'react-native-reanimated';
+import { restoreSession } from '../src/data/authRepository';
+import { useStore } from '../src/store/useStore';
 import { Txt } from '../src/components/Txt';
 import { brand, solid } from '../src/theme/colors';
+
+/** Minimum time the splash stays up, so the brand moment is not a flicker. */
+const SPLASH_MS = 2600;
 
 /**
  * All-black launch screen for Elizade Connect.
@@ -20,9 +26,11 @@ import { brand, solid } from '../src/theme/colors';
  * Elizade customer — buying, owning and servicing a vehicle. The wordmark is
  * completed by "CONNECT", the three pillars sit under it, and the authorised
  * marques are credited at the foot. A car drives across a yellow road while
- * the app boots, then it routes to onboarding.
+ * the app boots, then it routes to the home tabs if a session was restored,
+ * or to onboarding if not.
  */
 export default function Splash() {
+  const { t: tr } = useTranslation();
   const scale = useSharedValue(0.7);
   const road = useSharedValue(0);
   const carX = useSharedValue(-120);
@@ -31,8 +39,37 @@ export default function Splash() {
     scale.value = withTiming(1, { duration: 700 });
     carX.value = withDelay(700, withTiming(0, { duration: 900 }));
     road.value = withDelay(700, withTiming(1, { duration: 1000 }));
-    const timer = setTimeout(() => router.replace('/onboarding'), 2600);
-    return () => clearTimeout(timer);
+
+    /*
+      Restore the session while the splash animation plays.
+
+      This used to be `router.replace('/onboarding')` unconditionally, which
+      is why signing in never seemed to stick: a perfectly good token sat in
+      SecureStore and the app walked straight past it to the login screen.
+
+      The restore runs CONCURRENTLY with the animation rather than after it,
+      so a returning customer pays no extra wait — by the time the car has
+      driven across, the answer is usually already in.
+    */
+    let cancelled = false;
+    const settle = Promise.all([
+      restoreSession().catch(() => null),
+      new Promise((resolve) => setTimeout(resolve, SPLASH_MS)),
+    ]);
+
+    settle.then(([user]) => {
+      if (cancelled) return;
+      if (user) {
+        useStore.getState().setCurrentUser(user);
+        router.replace('/(tabs)/home');
+      } else {
+        router.replace('/onboarding');
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, [scale, road, carX]);
 
   const logoStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
@@ -54,9 +91,7 @@ export default function Splash() {
 
       {/* The three pillars of the platform */}
       <Animated.View entering={FadeInUp.delay(700).duration(600)}>
-        <Txt variant="bodyLarge" color="rgba(255,255,255,0.85)" style={styles.tagline}>
-          Buy · Own · Service
-        </Txt>
+        <Txt variant="bodyLarge" color="rgba(255,255,255,0.85)" style={styles.tagline}>{tr('brand.tagline')}</Txt>
       </Animated.View>
 
       <View style={styles.silhouette}>
@@ -70,11 +105,9 @@ export default function Splash() {
 
       {/* Authorised marques — grounds the app in the real dealership */}
       <Animated.View entering={FadeIn.delay(1300).duration(700)} style={styles.footer}>
-        <Txt variant="labelSmall" color="rgba(255,255,255,0.5)" style={styles.marques}>
-          TOYOTA · JETOUR · JAC
-        </Txt>
+        <Txt variant="labelSmall" color="rgba(255,255,255,0.5)" style={styles.marques}>{tr('brand.brands')}</Txt>
         <Txt variant="labelSmall" color="rgba(255,255,255,0.32)" style={styles.authorised}>
-          Authorised Distributor · Elizade Nigeria Limited
+          {tr('brand.distributor')}
         </Txt>
       </Animated.View>
     </View>

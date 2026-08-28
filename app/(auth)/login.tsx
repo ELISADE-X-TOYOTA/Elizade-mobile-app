@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { AppTextField } from '../../src/components/AppTextField';
 import { AuthScaffold } from '../../src/components/AuthScaffold';
 import { PrimaryButton } from '../../src/components/PrimaryButton';
@@ -19,6 +20,7 @@ const MIN_ANIMATION_MS = 1100;
  *  verified on the OTP screen, which completes the sign-in. */
 export default function Login() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const [email, setEmail] = useState('');
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string>();
@@ -43,21 +45,21 @@ export default function Login() {
       router.push({ pathname: '/(auth)/otp', params: { email } });
     } catch (e) {
       setSending(false);
-      setError(e instanceof Error ? e.message : 'Could not send code');
+      setError(e instanceof Error ? e.message : tr('auth.couldNotSendCode'));
     }
   };
 
   return (
     <>
       <AuthScaffold
-        title="Welcome Back"
-        subtitle="Enter your email to get a one-time sign-in code."
+        title={tr('auth.welcomeBack')}
+        subtitle={tr('auth.loginSubtitle')}
         compactSubtitle
         showBack={false}
       >
         <AppTextField
-          label="Email"
-          placeholder="you@example.com"
+          label={tr('auth.email')}
+          placeholder={tr('auth.emailPlaceholder')}
           icon="mail-outline"
           keyboardType="email-address"
           value={email}
@@ -69,7 +71,7 @@ export default function Login() {
 
         <View style={{ height: spacing.xl }} />
         <PrimaryButton
-          label="Send Login Code"
+          label={tr('auth.sendLoginCode')}
           icon="mail-outline"
           loading={sending}
           onPress={sendCode}
@@ -80,10 +82,8 @@ export default function Login() {
           style={{ marginTop: spacing.xl, alignItems: 'center' }}
         >
           <Txt tone="secondary">
-            Don't have an account?{'  '}
-            <Txt variant="titleSmall" color={t.colors.accentText}>
-              Sign Up
-            </Txt>
+            {tr('auth.noAccount')}{'  '}
+            <Txt variant="titleSmall" color={t.colors.accentText}>{tr('auth.signUp')}</Txt>
           </Txt>
         </Pressable>
       </AuthScaffold>

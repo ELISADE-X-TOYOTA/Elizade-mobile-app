@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useEffect } from 'react';
 import { Modal, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import Animated, {
   Easing,
   FadeIn,
@@ -36,8 +37,10 @@ interface Props {
  * All animation runs on the UI thread via Reanimated, so it stays smooth even
  * while JS is busy parsing the response.
  */
-export function SendingOverlay({ visible, email, message = 'Sending your code' }: Props) {
+export function SendingOverlay({ visible, email, message }: Props) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
+  const copy = message ?? tr('auth.sendingCode');
 
   const pulse = useSharedValue(1);
   const halo = useSharedValue(0);
@@ -123,7 +126,7 @@ export function SendingOverlay({ visible, email, message = 'Sending your code' }
 
         <Animated.View entering={FadeInUp.delay(160).duration(400)} style={styles.copy}>
           <Txt variant="headlineSmall" center>
-            {message}
+            {copy}
           </Txt>
           {email ? (
             <Txt tone="secondary" center style={{ marginTop: 6 }} numberOfLines={1}>

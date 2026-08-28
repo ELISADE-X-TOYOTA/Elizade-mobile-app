@@ -2,6 +2,7 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PrimaryButton } from '../../src/components/PrimaryButton';
 import { Skeleton } from '../../src/components/Skeleton';
@@ -23,6 +24,7 @@ import { solid } from '../../src/theme/colors';
 
 export default function ServiceDetail() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { appointments, loading: apptLoading } = useAppointments();
@@ -88,9 +90,7 @@ export default function ServiceDetail() {
               <View style={[styles.eta, { backgroundColor: t.colors.primary }]}>
                 <MaterialCommunityIcons name="progress-clock" size={24} color={t.colors.onPrimary} />
                 <View style={{ marginLeft: 12 }}>
-                  <Txt variant="labelSmall" color={t.colors.onPrimary} style={{ opacity: 0.7 }}>
-                    ESTIMATED COMPLETION
-                  </Txt>
+                  <Txt variant="labelSmall" color={t.colors.onPrimary} style={{ opacity: 0.7 }}>{tr('service.estimatedCompletion')}</Txt>
                   <Txt variant="titleMedium" color={t.colors.onPrimary}>
                     {new Date(job.estimatedCompletion).toLocaleString('en', { hour: 'numeric', minute: '2-digit', day: 'numeric', month: 'short' })}
                   </Txt>
@@ -101,9 +101,7 @@ export default function ServiceDetail() {
             {/* Progress timeline */}
             {job && (
               <Card>
-                <Txt variant="titleMedium" style={{ marginBottom: spacing.md }}>
-                  Progress
-                </Txt>
+                <Txt variant="titleMedium" style={{ marginBottom: spacing.md }}>{tr('common.progress')}</Txt>
                 {job.stages.map((s, i) => (
                   <Stage key={s.label} stage={s} last={i === job.stages.length - 1} active={!s.completed && (i === 0 || job.stages[i - 1].completed)} />
                 ))}
@@ -115,9 +113,7 @@ export default function ServiceDetail() {
               <View style={[styles.card, styles.approvalCard, { backgroundColor: t.colors.surface, borderColor: solid(t.colors.warning) }]}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Ionicons name="alert-circle" size={20} color={t.colors.warningText} />
-                  <Txt variant="titleMedium" style={{ marginLeft: 8 }}>
-                    Additional work needed
-                  </Txt>
+                  <Txt variant="titleMedium" style={{ marginLeft: 8 }}>{tr('service.additionalWork')}</Txt>
                 </View>
                 <Txt tone="secondary" style={{ marginTop: 8 }}>
                   {job.additionalWork.description}
@@ -128,10 +124,10 @@ export default function ServiceDetail() {
                 {job.additionalWork.status === 'pending_approval' ? (
                   <View style={{ flexDirection: 'row', gap: 12, marginTop: spacing.md }}>
                     <View style={{ flex: 1 }}>
-                      <PrimaryButton label="Decline" variant="outline" loading={working} onPress={() => decide(false)} />
+                      <PrimaryButton label={tr('service.decline')} variant="outline" loading={working} onPress={() => decide(false)} />
                     </View>
                     <View style={{ flex: 1 }}>
-                      <PrimaryButton label="Approve" loading={working} onPress={() => decide(true)} />
+                      <PrimaryButton label={tr('service.approve')} loading={working} onPress={() => decide(true)} />
                     </View>
                   </View>
                 ) : (
@@ -154,9 +150,7 @@ export default function ServiceDetail() {
               <Card>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
                   <MaterialCommunityIcons name="account-wrench" size={20} color={t.colors.primary} />
-                  <Txt variant="titleMedium" style={{ marginLeft: 8 }}>
-                    Technician notes
-                  </Txt>
+                  <Txt variant="titleMedium" style={{ marginLeft: 8 }}>{tr('service.technicianNotes')}</Txt>
                 </View>
                 <Txt tone="secondary">{job.technicianNotes}</Txt>
               </Card>
@@ -165,20 +159,18 @@ export default function ServiceDetail() {
             {/* Invoice preview */}
             {job?.invoice && (
               <Card>
-                <Txt variant="titleMedium" style={{ marginBottom: spacing.sm }}>
-                  Invoice preview
-                </Txt>
+                <Txt variant="titleMedium" style={{ marginBottom: spacing.sm }}>{tr('service.invoicePreview')}</Txt>
                 {job.invoice.lineItems.map((li) => (
                   <Line key={li.description} label={li.description} amount={li.amount} />
                 ))}
-                <Line label="Tax (VAT)" amount={job.invoice.tax} />
+                <Line label={tr('service.tax')} amount={job.invoice.tax} />
                 <View style={[styles.divider, { backgroundColor: t.colors.border }]} />
-                <Line label="Total" amount={job.invoice.total} bold />
+                <Line label={tr('common.total')} amount={job.invoice.total} bold />
               </Card>
             )}
 
             {!loading && !appt && !job && (
-              <Txt tone="secondary">This service could not be found.</Txt>
+              <Txt tone="secondary">{tr('service.notFound')}</Txt>
             )}
           </>
         )}
@@ -189,11 +181,13 @@ export default function ServiceDetail() {
 
 function Card({ children }: { children: React.ReactNode }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return <View style={[styles.card, { backgroundColor: t.colors.surface, borderColor: t.colors.border }, t.shadows.soft]}>{children}</View>;
 }
 
 function Stage({ stage, last, active }: { stage: ServiceStage; last: boolean; active: boolean }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const color = stage.completed ? t.colors.successText : active ? t.colors.primary : t.colors.textTertiary;
   return (
     <View style={{ flexDirection: 'row' }}>
@@ -213,9 +207,7 @@ function Stage({ stage, last, active }: { stage: ServiceStage; last: boolean; ac
           </Txt>
         )}
         {active && !stage.timestamp && (
-          <Txt variant="bodySmall" color={t.colors.primary}>
-            In progress…
-          </Txt>
+          <Txt variant="bodySmall" color={t.colors.primary}>{tr('service.inProgress')}</Txt>
         )}
       </View>
     </View>
@@ -224,6 +216,7 @@ function Stage({ stage, last, active }: { stage: ServiceStage; last: boolean; ac
 
 function Line({ label, amount, bold }: { label: string; amount: number; bold?: boolean }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 5 }}>
       <Txt variant={bold ? 'titleMedium' : 'bodyMedium'} tone={bold ? 'primary' : 'secondary'}>

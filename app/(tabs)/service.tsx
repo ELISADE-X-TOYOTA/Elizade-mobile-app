@@ -3,6 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Skeleton } from '../../src/components/Skeleton';
 import { ServiceAppointmentActions } from '../../src/components/ServiceAppointmentActions';
@@ -27,6 +28,7 @@ const ACTIVE: AppointmentStatus[] = ['in_progress', 'awaiting_approval'];
 
 export default function Service() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const [tab, setTab] = useState(0);
   const { appointments, history, loading, error, reload } = useAppointments();
@@ -45,14 +47,10 @@ export default function Service() {
   return (
     <View style={{ flex: 1, backgroundColor: 'transparent', paddingTop: insets.top }}>
       <View style={[styles.headerRow, { paddingHorizontal: spacing.screenH }]}>
-        <Txt variant="headlineMedium" style={{ flex: 1 }}>
-          Service
-        </Txt>
+        <Txt variant="headlineMedium" style={{ flex: 1 }}>{tr('service.title')}</Txt>
         <Pressable onPress={() => router.push('/book-service')} style={[styles.addBtn, { backgroundColor: solid(t.colors.accent) }]}>
           <Ionicons name="add" size={20} color={t.colors.onAccent} />
-          <Txt variant="titleSmall" color={t.colors.onAccent} style={{ marginLeft: 4 }}>
-            Book
-          </Txt>
+          <Txt variant="titleSmall" color={t.colors.onAccent} style={{ marginLeft: 4 }}>{tr('service.book')}</Txt>
         </Pressable>
       </View>
 
@@ -70,9 +68,7 @@ export default function Service() {
               <MaterialCommunityIcons name="car-wrench" size={24} color={t.colors.onAccent} />
             </View>
             <View style={{ flex: 1, marginLeft: 14 }}>
-              <Txt variant="labelSmall" color="rgba(255,255,255,0.7)">
-                NEXT SERVICE DUE
-              </Txt>
+              <Txt variant="labelSmall" color="rgba(255,255,255,0.7)">{tr('service.nextServiceDue')}</Txt>
               <Txt variant="titleMedium" color={ON_DARK_INK}>
                 {owned.make} {owned.model} · in {dueInDays} days
               </Txt>
@@ -112,17 +108,17 @@ export default function Service() {
           {loading ? (
             [0, 1].map((i) => <Skeleton key={i} height={96} radius={radius.lg} />)
           ) : error ? (
-            <Txt tone="secondary">Couldn't load service. {error}</Txt>
+            <Txt tone="secondary">{tr('service.loadError')} {error}</Txt>
           ) : tab === 2 ? (
             history.length ? (
               history.map((h) => <HistoryCard key={h.id} item={h} />)
             ) : (
-              <Empty label="No service history yet." />
+              <Empty label={tr('service.noHistory')} />
             )
           ) : filtered.length ? (
             filtered.map((a) => <AppointmentCard key={a.id} appt={a} onUpdated={reload} />)
           ) : (
-            <Empty label={tab === 0 ? 'No upcoming appointments.' : 'No active service jobs.'} />
+            <Empty label={tab === 0 ? tr('service.noUpcoming') : tr('service.noActiveJobs')} />
           )}
         </View>
       </ScrollView>
@@ -132,6 +128,7 @@ export default function Service() {
 
 function AppointmentCard({ appt, onUpdated }: { appt: ServiceAppointment; onUpdated: () => void }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const meta = SERVICE_TYPE_META[appt.serviceType];
   const status = APPOINTMENT_STATUS_META[appt.status];
   const toneColor =
@@ -173,14 +170,25 @@ function AppointmentCard({ appt, onUpdated }: { appt: ServiceAppointment; onUpda
             </Txt>
           )}
         </View>
-      </Pressable>
-      <ServiceAppointmentActions appointment={appt} onUpdated={() => onUpdated()} />
-    </View>
+      </View>
+      <View style={[styles.divider, { backgroundColor: t.colors.border }]} />
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Ionicons name="calendar" size={15} color={t.colors.primary} />
+        <Txt variant="titleSmall" style={{ marginLeft: 6, flex: 1 }}>
+          {date.toLocaleDateString('en', { day: 'numeric', month: 'short' })} ·{' '}
+          {date.toLocaleTimeString('en', { hour: 'numeric', minute: '2-digit' })}
+        </Txt>
+        {ACTIVE.includes(appt.status) && (
+          <Txt variant="titleSmall" color={t.colors.primary}>{tr('service.track')}</Txt>
+        )}
+      </View>
+    </Pressable>
   );
 }
 
 function HistoryCard({ item }: { item: ServiceHistoryItem }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <View style={[styles.card, { backgroundColor: t.colors.surface, borderColor: t.colors.border }, t.shadows.soft]}>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -209,6 +217,7 @@ function HistoryCard({ item }: { item: ServiceHistoryItem }) {
 
 function Empty({ label }: { label: string }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <View style={{ alignItems: 'center', paddingTop: 60 }}>
       <View style={[styles.emptyIcon, { backgroundColor: t.colors.primary + '14' }]}>

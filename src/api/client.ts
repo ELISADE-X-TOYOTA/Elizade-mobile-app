@@ -1,5 +1,6 @@
 import { APP } from '../constants/app';
-import { getToken, setToken } from './session';
+import { clearSession, getRefreshToken, getToken, setRefreshToken, setToken } from './session';
+import { singleFlight } from './singleFlight';
 
 /**
  * API error surfaced to the UI.
@@ -85,12 +86,99 @@ interface Options {
   query?: Query;
   /** Attach the bearer token (default true). */
   auth?: boolean;
+  /** Internal: set on the one retry after a silent refresh, to stop a loop. */
+  _retried?: boolean;
 }
+
+/* ── Silent refresh ──────────────────────────────────────────────────────
+ *
+ * THE BUG THIS REPLACES: any 401, from any endpoint, called `setToken(null)`
+ * and the session was gone. One expired access token — or one endpoint the
+ * user simply lacked rights for — logged the customer out mid-task.
+ *
+ * NOW: a 401 tries to renew the session once. Only if the REFRESH itself
+ * fails is the session cleared, because that is the only response that
+ * actually means "you are no longer signed in".
+ *
+ * SINGLE-FLIGHT: a screen typically fires several requests at once, so an
+ * expired token produces a burst of simultaneous 401s. Without a shared
+ * promise each one would refresh independently — and since rotation
+ * invalidates the previous token, the second call would present a spent one
+ * and the backend would revoke the whole family as suspected theft. The app
+ * would log itself out by trying too hard to stay signed in. So the first
+ * 401 starts the refresh and the rest await the same promise.
+ */
+
+/** Listeners notified when the session ends for real (used to redirect). */
+type SessionEndedListener = () => void;
+const sessionEndedListeners = new Set<SessionEndedListener>();
+
+export function onSessionEnded(listener: SessionEndedListener): () => void {
+  sessionEndedListeners.add(listener);
+  return () => sessionEndedListeners.delete(listener);
+}
+
+async function endSession(): Promise<void> {
+  await clearSession();
+  sessionEndedListeners.forEach((fn) => {
+    try {
+      fn();
+    } catch {
+      /* a bad listener must not stop the others */
+    }
+  });
+}
+
+/**
+ * Exchanges the refresh token for a new pair. Resolves true on success.
+ *
+ * Deliberately uses bare `fetch`, not `apiFetch`: routing this through the
+ * wrapper would let a 401 from the refresh endpoint re-enter this very
+ * function, which is a recursion waiting to happen.
+ */
+async function performRefresh(): Promise<boolean> {
+  const refreshToken = await getRefreshToken();
+  if (!refreshToken) return false;
+
+  try {
+    const res = await fetch(`${resolveBaseUrl()}/auth/refresh`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ refreshToken }),
+    });
+
+    if (!res.ok) {
+      // 401 here means the grant is genuinely dead — expired, revoked, or
+      // reused. Anything else (500, 502) is the server's problem, not proof
+      // the user is signed out, so the session is left intact to retry later.
+      if (res.status === 401) await endSession();
+      return false;
+    }
+
+    const data = (await res.json()) as { access_token?: string; refresh_token?: string };
+    if (!data.access_token || !data.refresh_token) return false;
+
+    // Store both before returning: the rotated refresh token is single-use,
+    // so losing it here would strand the session on the next renewal.
+    await setToken(data.access_token);
+    await setRefreshToken(data.refresh_token);
+    return true;
+  } catch {
+    // Offline. Not an auth failure — keep the session and let the caller fail.
+    return false;
+  }
+}
+
+/**
+ * Refreshes at most once concurrently — see `singleFlight` for why that
+ * matters here (concurrent refreshes look like token theft to the backend).
+ */
+const refreshSession = singleFlight(performRefresh);
 
 /** Thin fetch wrapper around the shared Elizade REST API: HTTPS-only, bearer
  *  auth, timeout, and sanitized errors. */
 export async function apiFetch<T>(path: string, options: Options = {}): Promise<T> {
-  const { method = 'GET', body, query, auth = true } = options;
+  const { method = 'GET', body, query, auth = true, _retried = false } = options;
   const headers: Record<string, string> = { Accept: 'application/json' };
   if (body !== undefined) headers['Content-Type'] = 'application/json';
   if (auth) {
@@ -122,6 +210,25 @@ export async function apiFetch<T>(path: string, options: Options = {}): Promise<
   }
 
   if (!res.ok) {
+    /*
+      A 401 on an authenticated request means the ACCESS token was rejected —
+      not necessarily that the user is signed out. Renew once and replay.
+
+      `_retried` bounds this to a single attempt, so a server that 401s a
+      request even with a brand-new token fails cleanly instead of looping.
+      `auth` is checked because an unauthenticated call has no session to
+      renew, and the refresh endpoint itself must never land here.
+    */
+    if (res.status === 401 && auth && !_retried) {
+      const renewed = await refreshSession();
+      if (renewed) {
+        return apiFetch<T>(path, { ...options, _retried: true });
+      }
+      // Refresh failed. If it failed because the grant is dead, endSession()
+      // has already run inside performRefresh; if it failed because we are
+      // offline, the session is deliberately left alone.
+    }
+
     let detail: unknown;
     try {
       const data = await res.json();
@@ -129,8 +236,6 @@ export async function apiFetch<T>(path: string, options: Options = {}): Promise<
     } catch {
       /* non-JSON error body — fall through to the generic status message */
     }
-    // An expired/invalid token should not linger in secure storage.
-    if (res.status === 401) await setToken(null);
     throw new ApiError(safeMessage(detail, res.status), res.status);
   }
 

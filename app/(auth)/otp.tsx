@@ -1,11 +1,13 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { NativeSyntheticEvent, Pressable, TextInput, TextInputKeyPressEventData, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import Animated, { useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
 import { AuthScaffold } from '../../src/components/AuthScaffold';
 import { PrimaryButton } from '../../src/components/PrimaryButton';
 import { Txt } from '../../src/components/Txt';
 import { requestOtp, verifyOtp } from '../../src/data/authRepository';
+import { registerForPush } from '../../src/data/pushRepository';
 import { useStore } from '../../src/store/useStore';
 import { useWatchlistStore } from '../../src/store/useWatchlistStore';
 import { radius, spacing } from '../../src/theme/spacing';
@@ -18,6 +20,7 @@ const RESEND_SECONDS = 60;
 
 export default function Otp() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const { email, purpose } = useLocalSearchParams<{ email?: string; purpose?: string }>();
   const setCurrentUser = useStore((s) => s.setCurrentUser);
   const completeOnboarding = useStore((s) => s.completeOnboarding);
@@ -70,6 +73,12 @@ export default function Otp() {
         // intro as seen. The guide is only for users who just registered.
         completeOnboarding(user.id);
         loadWatchlist().catch(() => {});
+        // Ask for push only now — a prompt before sign-in is the one people decline,
+
+        // and iOS never asks twice.
+
+        registerForPush();
+
         router.replace('/(tabs)/home');
       } catch (e) {
         setError(e instanceof Error ? e.message : 'Invalid or expired code');
@@ -144,8 +153,8 @@ export default function Otp() {
 
   return (
     <AuthScaffold
-      title="Verify Code"
-      subtitle={`Enter the 6-digit code sent to ${email ?? 'your email'}`}
+      title={tr('auth.verifyCode')}
+      subtitle={tr('auth.otpSubtitleShort', { email: email ?? tr('auth.yourEmail') })}
       compactSubtitle
     >
       <Animated.View style={[{ flexDirection: 'row', justifyContent: 'space-between' }, shakeStyle]}>

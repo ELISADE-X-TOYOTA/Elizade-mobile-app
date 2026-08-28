@@ -1,14 +1,16 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { ActivityIndicator, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MAX_TICKET_ATTACHMENTS } from '../../src/api/support';
 import { AttachmentDrafts } from '../../src/components/AttachmentDrafts';
-import { SecureAttachment } from '../../src/components/SecureAttachment';
+import { KeyboardAwareView } from '../../src/components/KeyboardAware';
 import { Skeleton } from '../../src/components/Skeleton';
 import { Txt } from '../../src/components/Txt';
 import {
+  isUploadedAttachment,
   pickTicketAttachment,
   rateTicket,
   replyToTicket,
@@ -22,6 +24,7 @@ import {
   Tone,
 } from '../../src/domain/types';
 import { useTicket } from '../../src/hooks/useSupport';
+import { useTicketRealtime } from '../../src/hooks/useTicketRealtime';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
 import { cleanText } from '../../src/utils/sanitize';
@@ -29,6 +32,7 @@ import { tint } from '../../src/theme/colors';
 
 export default function TicketDetail() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { ticket, messages, loading, setMessages, setTicket } = useTicket(id ?? '');
@@ -37,6 +41,9 @@ export default function TicketDetail() {
   const [drafts, setDrafts] = useState<PickedAttachment[]>([]);
   const [attaching, setAttaching] = useState(false);
   const [attachError, setAttachError] = useState<string>();
+
+  // Live thread: agent replies, typing, and status arrive without a refresh.
+  const realtime = useTicketRealtime(id ?? '', messages, setMessages);
 
   // A photo on its own is a complete reply, so an empty box is sendable once
   // something is attached — the API accepts either.
@@ -55,9 +62,10 @@ export default function TicketDetail() {
   const send = async () => {
     const body = cleanText(text);
     if (!id || (!body && !drafts.length)) return;
-    const urls = drafts.map((d) => d.url);
+    const urls = drafts.map((d) => d.url).filter(isUploadedAttachment);
     setText('');
     setDrafts([]);
+    realtime.onTyping(false);
     setAttachError(undefined);
     setSending(true);
     try {
@@ -82,14 +90,17 @@ export default function TicketDetail() {
     setTicket({ ...ticket, satisfactionRating: n });
   };
 
-  const status = ticket ? TICKET_STATUS_META[ticket.status] : null;
+  // An agent moving the ticket updates the badge here, live. `liveStatus`
+  // wins over the loaded value because it is strictly newer.
+  const effectiveStatus = (realtime.liveStatus as SupportTicket['status'] | undefined) ?? ticket?.status;
+  const status = effectiveStatus ? TICKET_STATUS_META[effectiveStatus] : null;
   const cat = ticket ? TICKET_CATEGORY_META[ticket.category] : null;
   const canReply = ticket?.status === 'open' || ticket?.status === 'in_progress';
   const showRating = ticket?.status === 'resolved' || ticket?.status === 'closed';
 
   return (
     <View style={{ flex: 1, backgroundColor: 'transparent' }}>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={insets.top}>
+      <KeyboardAwareView offset={insets.top}>
         {/* Header */}
         <View style={[styles.header, { paddingTop: insets.top + spacing.xs, backgroundColor: t.colors.surface, borderColor: t.colors.border }]}>
           <Pressable onPress={() => router.back()} style={[styles.backBtn, { backgroundColor: t.colors.surfaceAlt, borderColor: t.colors.border }]}>
@@ -135,6 +146,16 @@ export default function TicketDetail() {
                 <Bubble key={m.id} message={m} />
               ))}
 
+              {/* Sits where the reply will appear, so it reads as the agent
+                  composing rather than as a status message. */}
+              {realtime.peerTyping && (
+                <View style={[styles.typing, { backgroundColor: t.colors.surfaceAlt, borderColor: t.colors.border }]}>
+                  <Txt variant="bodySmall" tone="secondary">
+                    {tr('support.agentTyping')}
+                  </Txt>
+                </View>
+              )}
+
               {showRating && (
                 <RatingCard rating={ticket?.satisfactionRating} onRate={rate} />
               )}
@@ -165,7 +186,7 @@ export default function TicketDetail() {
                 disabled={attaching || drafts.length >= MAX_TICKET_ATTACHMENTS}
                 hitSlop={8}
                 accessibilityRole="button"
-                accessibilityLabel="Attach a photo or video"
+                accessibilityLabel={tr('support.attachPhoto')}
                 style={[
                   styles.attachBtn,
                   {
@@ -186,7 +207,11 @@ export default function TicketDetail() {
           // iOS renders a LIGHT keyboard in dark mode without this.
           keyboardAppearance={t.isDark ? 'dark' : 'light'}
                 value={text}
-                onChangeText={setText}
+                onChangeText={(v) => {
+                  setText(v);
+                  // The client debounces: one start event, then an idle timer.
+                  realtime.onTyping(v.length > 0);
+                }}
                 maxLength={1000}
                 placeholder={drafts.length ? 'Add a note (optional)…' : 'Type a reply…'}
                 placeholderTextColor={t.colors.textTertiary}
@@ -198,7 +223,7 @@ export default function TicketDetail() {
                 onPress={send}
                 disabled={!canSend}
                 accessibilityRole="button"
-                accessibilityLabel="Send reply"
+                accessibilityLabel={tr('support.sendReply')}
                 accessibilityState={{ disabled: !canSend }}
                 style={[styles.sendBtn, { backgroundColor: canSend ? t.colors.primary : t.colors.border }]}
               >
@@ -211,7 +236,7 @@ export default function TicketDetail() {
             </View>
           </View>
         )}
-      </KeyboardAvoidingView>
+      </KeyboardAwareView>
     </View>
   );
 }
@@ -224,6 +249,7 @@ function toneColor(t: ReturnType<typeof useTheme>, tone: Tone) {
 
 function Bubble({ message }: { message: TicketMessage }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const mine = message.author === 'customer';
   return (
     <View style={{ alignSelf: mine ? 'flex-end' : 'flex-start', maxWidth: '82%' }}>
@@ -262,9 +288,7 @@ function Bubble({ message }: { message: TicketMessage }) {
                     variant="bodySmall"
                     color={mine ? t.colors.onPrimary : t.colors.textSecondary}
                     style={{ marginLeft: 6 }}
-                  >
-                    Document
-                  </Txt>
+                  >{tr('support.document')}</Txt>
                 </View>
               ) : (
                 <SecureAttachment
@@ -286,6 +310,7 @@ function Bubble({ message }: { message: TicketMessage }) {
 
 function RatingCard({ rating, onRate }: { rating?: number; onRate: (n: number) => void }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <View style={[styles.ratingCard, { backgroundColor: t.colors.surface, borderColor: t.colors.border }]}>
       <Ionicons name="checkmark-circle" size={28} color={t.colors.successText} />
@@ -310,6 +335,13 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: spacing.screenH, paddingBottom: spacing.sm, borderBottomWidth: 1 },
   backBtn: { width: 42, height: 42, borderRadius: 21, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   pill: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: radius.pill },
+  typing: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+  },
   sla: { flexDirection: 'row', alignItems: 'center', alignSelf: 'center', paddingHorizontal: 12, paddingVertical: 6, borderRadius: radius.pill },
   bubble: { padding: 12, borderRadius: radius.lg },
   ratingCard: { alignItems: 'center', padding: spacing.lg, borderRadius: radius.lg, borderWidth: 1, marginTop: spacing.md },

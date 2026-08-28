@@ -4,6 +4,7 @@ import {
   markAllNotificationsRead,
   markNotificationRead,
 } from '../data/notificationsRepository';
+import { subscribeToNotifications } from '../data/notificationStream';
 import { AppNotification, UserProfile } from '../domain/types';
 import { useStore } from '../store/useStore';
 
@@ -48,6 +49,27 @@ export function useNotifications() {
 
   useEffect(() => load(), [load]);
 
+  /*
+    Live updates.
+
+    Without this the list only refreshed on mount, so anything raised while
+    the customer was already in the app — an admin asking for more documents
+    on an ownership claim, most importantly, because that BLOCKS their claim
+    until they act — sat unseen until they happened to reopen the screen.
+
+    The server sends only a count. We refetch rather than trusting a pushed
+    object, so an item can never appear in the list before the API will
+    actually serve it.
+
+    Only while signed in: the stream is authenticated, and subscribing
+    without a session would just retry against a 401.
+  */
+  useEffect(() => {
+    if (!user) return;
+    const handle = subscribeToNotifications(() => load());
+    return () => handle.stop();
+  }, [user, load]);
+
   /**
    * Prepend the welcome notice for a first-time customer. It stops being
    * generated once they've both read it and finished the tour, so it never
@@ -68,7 +90,12 @@ export function useNotifications() {
         return;
       }
       setItems((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
-      markNotificationRead(id);
+      // Fire-and-forget, but NOT unhandled. Without the catch a dropped
+      // connection here surfaced as "Uncaught (in promise) ApiError: No
+      // connection" — a red error box over a screen the customer was only
+      // reading. The optimistic update above already stands; the server
+      // catches up on the next fetch.
+      markNotificationRead(id).catch(() => {});
     },
     [markLocalRead],
   );
@@ -76,7 +103,7 @@ export function useNotifications() {
   const markAllRead = useCallback(() => {
     markLocalRead(WELCOME_NOTIFICATION_ID);
     setItems((prev) => prev.map((n) => ({ ...n, read: true })));
-    markAllNotificationsRead();
+    markAllNotificationsRead().catch(() => {});
   }, [markLocalRead]);
 
   const unread = merged.filter((n) => !n.read).length;

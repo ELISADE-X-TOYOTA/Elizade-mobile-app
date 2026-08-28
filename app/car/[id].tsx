@@ -1,4 +1,6 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import {
@@ -32,6 +34,7 @@ const { width } = Dimensions.get('window');
 
 export default function CarDetails() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { vehicle, loading, error } = useVehicle(id ?? '');
@@ -152,9 +155,7 @@ export default function CarDetails() {
             {v.isVerified && (
               <View style={[styles.verified, { backgroundColor: tint(t.colors.success, 0.12) }]}>
                 <Ionicons name="shield-checkmark" size={13} color={t.colors.successText} />
-                <Txt variant="labelSmall" color={t.colors.successText} style={{ marginLeft: 4 }}>
-                  Verified
-                </Txt>
+                <Txt variant="labelSmall" color={t.colors.successText} style={{ marginLeft: 4 }}>{tr('shop.verified')}</Txt>
               </View>
             )}
           </View>
@@ -171,9 +172,7 @@ export default function CarDetails() {
           )}
 
           {/* Specs */}
-          <Txt variant="titleLarge" style={{ marginTop: spacing.xl, marginBottom: spacing.md }}>
-            Specifications
-          </Txt>
+          <Txt variant="titleLarge" style={{ marginTop: spacing.xl, marginBottom: spacing.md }}>{tr('shop.specifications')}</Txt>
           <View style={styles.specGrid}>
             {specs.map((s) => (
               <View key={s.label} style={[styles.specCard, { backgroundColor: t.colors.surface, borderColor: t.colors.border }]}>
@@ -193,9 +192,7 @@ export default function CarDetails() {
           </View>
 
           {/* Features */}
-          <Txt variant="titleLarge" style={{ marginTop: spacing.xl, marginBottom: spacing.md }}>
-            Features
-          </Txt>
+          <Txt variant="titleLarge" style={{ marginTop: spacing.xl, marginBottom: spacing.md }}>{tr('shop.features')}</Txt>
           <View style={styles.features}>
             {v.features.map((f) => (
               <View key={f} style={[styles.feature, { backgroundColor: t.colors.surface, borderColor: t.colors.border }]}>
@@ -208,13 +205,11 @@ export default function CarDetails() {
           </View>
 
           {/* Buying tools */}
-          <Txt variant="titleLarge" style={{ marginTop: spacing.xl, marginBottom: spacing.md }}>
-            Buying Tools
-          </Txt>
+          <Txt variant="titleLarge" style={{ marginTop: spacing.xl, marginBottom: spacing.md }}>{tr('shop.buyingTools')}</Txt>
           <View style={{ flexDirection: 'row', gap: 12 }}>
-            <ToolBtn icon="calculator" label="Financing" onPress={() => setFinanceOpen(true)} />
-            <ToolBtn icon="document-text" label="Get Quote" onPress={() => setQuoteOpen(true)} />
-            <ToolBtn icon="swap-horizontal" label="Trade-in" onPress={() => router.push('/trade-in')} />
+            <ToolBtn icon="calculator" label={tr('shop.financing')} onPress={() => setFinanceOpen(true)} />
+            <ToolBtn icon="document-text" label={tr('shop.getQuote')} onPress={() => setQuoteOpen(true)} />
+            <ToolBtn icon="swap-horizontal" label={tr('shop.tradeIn')} onPress={() => router.push('/trade-in')} />
           </View>
 
           {/* Owner */}
@@ -239,40 +234,23 @@ export default function CarDetails() {
       <View style={[styles.bottombar, { backgroundColor: t.colors.surface, paddingBottom: insets.bottom + 12 }, t.shadows.elevated]}>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <View>
-            <Txt variant="bodySmall" tone="secondary">
-              Price
-            </Txt>
+            <Txt variant="bodySmall" tone="secondary">{tr('common.price')}</Txt>
             <Txt variant="titleLarge" color={t.colors.primary}>
               {priceCompact(v.price)}
             </Txt>
           </View>
-          <View style={[styles.availChip, { backgroundColor: tint(availabilityFill, 0.12) }]}>
-            <Ionicons name={isAvailable ? 'checkmark-circle' : 'time-outline'} size={14} color={availabilityText} />
-            <Txt variant="labelSmall" color={availabilityText} style={{ marginLeft: 4 }}>
-              {availabilityLabel}
-            </Txt>
+          <View style={[styles.availChip, { backgroundColor: tint(t.colors.success, 0.12) }]}>
+            <Ionicons name="checkmark-circle" size={14} color={t.colors.successText} />
+            <Txt variant="labelSmall" color={t.colors.successText} style={{ marginLeft: 4 }}>{tr('shop.available')}</Txt>
           </View>
         </View>
         <View style={{ flexDirection: 'row', gap: 12, marginTop: 12 }}>
-          {isAvailable ? (
-            <View style={{ flex: 1 }}>
-              <PrimaryButton label="Reserve" variant="outline" onPress={() => setSale('reserve')} />
-            </View>
-          ) : (
-            <View style={{ flex: 1 }}>
-              <PrimaryButton
-                label={notifyStatus?.subscribed ? 'Alerts on' : 'Notify Me'}
-                icon="notifications-outline"
-                loading={notifyLoading}
-                onPress={() =>
-                  (notifyStatus?.subscribed ? unsubscribeFromNotifyMe(v.id) : subscribeToNotifyMe(v.id)).catch(() => {})
-                }
-              />
-            </View>
-          )}
+          <View style={{ flex: 1 }}>
+            <PrimaryButton label={tr('shop.reserve')} variant="outline" onPress={() => setSale('reserve')} />
+          </View>
           <View style={{ flex: 1 }}>
             <PrimaryButton
-              label="Test Drive"
+              label={tr('shop.testDrive')}
               icon="car-sport"
               onPress={() => router.push(`/book-test-drive?vehicleId=${v.id}`)}
             />
@@ -289,6 +267,7 @@ export default function CarDetails() {
 
 function DetailLoading() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <View style={{ flex: 1, backgroundColor: 'transparent' }}>
       <Skeleton height={340} radius={0} />
@@ -305,13 +284,14 @@ function DetailLoading() {
 
 function DetailError({ message }: { message?: string }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   return (
     <View style={{ flex: 1, backgroundColor: 'transparent', paddingTop: insets.top + 60, paddingHorizontal: spacing.screenH }}>
       <Pressable onPress={() => router.back()} style={{ marginBottom: 20 }}>
         <Ionicons name="arrow-back" size={24} color={t.colors.textPrimary} />
       </Pressable>
-      <Txt variant="titleLarge">Couldn't load this vehicle</Txt>
+      <Txt variant="titleLarge">{tr('shop.loadError')}</Txt>
       <Txt tone="secondary" style={{ marginTop: 8 }}>
         {message ?? 'Please check your connection and try again.'}
       </Txt>
@@ -329,6 +309,7 @@ function CircleBtn({ icon, onPress, tint }: { icon: keyof typeof Ionicons.glyphM
 
 function ToolBtn({ icon, label, onPress }: { icon: keyof typeof Ionicons.glyphMap; label: string; onPress: () => void }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <Pressable onPress={onPress} style={[styles.tool, { backgroundColor: t.colors.surface, borderColor: t.colors.border }]}>
       <View style={[styles.toolIcon, { backgroundColor: t.colors.primary + '14' }]}>
@@ -343,6 +324,7 @@ function ToolBtn({ icon, label, onPress }: { icon: keyof typeof Ionicons.glyphMa
 
 function RoundAction({ icon }: { icon: keyof typeof Ionicons.glyphMap }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <View style={[styles.roundAction, { backgroundColor: t.colors.primary + '14' }]}>
       <Ionicons name={icon} size={20} color={t.colors.primary} />

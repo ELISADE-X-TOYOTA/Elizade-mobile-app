@@ -1,6 +1,7 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { OVERLAY_CHIP, OVERLAY_CHIP_INK, tint } from '../../src/theme/colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NetworkCarImage } from '../../src/components/NetworkCarImage';
@@ -15,6 +16,7 @@ import { price } from '../../src/utils/format';
 
 export default function GarageVehicle() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { vehicle, history, warranty, loading } = useOwnedVehicle(id ?? '');
@@ -37,9 +39,7 @@ export default function GarageVehicle() {
         <Pressable onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={24} color={t.colors.textPrimary} />
         </Pressable>
-        <Txt variant="titleLarge" style={{ marginTop: 20 }}>
-          Vehicle not found
-        </Txt>
+        <Txt variant="titleLarge" style={{ marginTop: 20 }}>{tr('garage.notFound')}</Txt>
       </View>
     );
   }
@@ -94,7 +94,7 @@ export default function GarageVehicle() {
             <Pressable onPress={() => router.push('/warranty')} style={[styles.warranty, { backgroundColor: tint(t.colors.success, 0.08), borderColor: tint(t.colors.success, 0.251) }]}>
               <Ionicons name="shield-checkmark" size={22} color={t.colors.successText} />
               <View style={{ flex: 1, marginLeft: 12 }}>
-                <Txt variant="titleSmall">Warranty active</Txt>
+                <Txt variant="titleSmall">{tr('garage.warrantyActive')}</Txt>
                 <Txt variant="bodySmall" tone="secondary">
                   Valid until {new Date(warranty.endDate).toLocaleDateString('en', { month: 'short', year: 'numeric' })} · {warranty.mileageLimit.toLocaleString()} km
                 </Txt>
@@ -106,21 +106,19 @@ export default function GarageVehicle() {
           {/* Quick actions */}
           <View style={{ flexDirection: 'row', gap: 12, marginTop: spacing.md }}>
             <View style={{ flex: 1 }}>
-              <PrimaryButton label="Book Service" icon="construct" onPress={() => router.push('/book-service')} />
+              <PrimaryButton label={tr('service.bookService')} icon="construct" onPress={() => router.push('/book-service')} />
             </View>
             <View style={{ flex: 1 }}>
-              <PrimaryButton label="Warranty" variant="outline" icon="shield-checkmark" onPress={() => router.push('/warranty')} />
+              <PrimaryButton label={tr('profile.warrantyRecalls')} variant="outline" icon="shield-checkmark" onPress={() => router.push('/warranty')} />
             </View>
           </View>
 
           {/* Service history */}
-          <Txt variant="titleLarge" style={{ marginTop: spacing.xl, marginBottom: spacing.sm }}>
-            Service history
-          </Txt>
+          <Txt variant="titleLarge" style={{ marginTop: spacing.xl, marginBottom: spacing.sm }}>{tr('service.history')}</Txt>
           {history.length ? (
             history.map((h) => <HistoryRow key={h.id} item={h} />)
           ) : (
-            <Txt tone="secondary">No service records yet.</Txt>
+            <Txt tone="secondary">{tr('garage.noServiceRecords')}</Txt>
           )}
         </View>
       </ScrollView>
@@ -130,6 +128,7 @@ export default function GarageVehicle() {
 
 function HistoryRow({ item }: { item: ServiceHistoryItem }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <View style={[styles.historyRow, { backgroundColor: t.colors.surface, borderColor: t.colors.border }]}>
       <View style={[styles.dot, { backgroundColor: tint(t.colors.success, 0.094) }]}>

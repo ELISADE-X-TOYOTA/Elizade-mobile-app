@@ -1,8 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { router } from 'expo-router';
 import { ReactNode } from 'react';
 import {
-  KeyboardAvoidingView,
   Platform,
   Pressable,
   ScrollView,
@@ -12,6 +12,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { spacing } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
+import { KeyboardAwareView } from './KeyboardAware';
 import { Txt } from './Txt';
 
 interface Props {
@@ -45,22 +46,25 @@ export function AuthScaffold({
   footer,
 }: Props) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
 
   return (
     <View style={{ flex: 1, backgroundColor: t.colors.background }}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        // Android resizes the window itself, but 'height' keeps the pinned
-        // footer glued to the keyboard rather than letting it be covered.
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
+      {/*
+        `behavior` is undefined on Android ON PURPOSE. The manifest sets
+        `adjustResize`, so the window has ALREADY shrunk by the keyboard
+        height by the time this renders — the previous `'height'` applied
+        that inset a second time and lifted the form roughly a keyboard too
+        far, hiding the field the user had just tapped.
+      */}
+      <KeyboardAwareView>
         <View style={[styles.header, { paddingTop: insets.top + spacing.xs }]}>
           {showBack ? (
             <Pressable
               onPress={() => (router.canGoBack() ? router.back() : router.replace('/(auth)/login'))}
               accessibilityRole="button"
-              accessibilityLabel="Go back"
+              accessibilityLabel={tr('common.goBack')}
               style={[
                 styles.backBtn,
                 { backgroundColor: t.colors.surfaceAlt, borderColor: t.colors.border },
@@ -113,7 +117,7 @@ export function AuthScaffold({
             </View>
           ) : null}
         </View>
-      </KeyboardAvoidingView>
+      </KeyboardAwareView>
     </View>
   );
 }

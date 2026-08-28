@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import {
@@ -12,6 +13,7 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useKeyboardHeight } from '../src/components/KeyboardAware';
 import { PrimaryButton } from '../src/components/PrimaryButton';
 import { Skeleton } from '../src/components/Skeleton';
 import { Txt } from '../src/components/Txt';
@@ -26,7 +28,9 @@ import { ON_DARK_INK, solid, tint } from '../src/theme/colors';
  */
 export default function WatchlistScreen() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
+  const keyboardHeight = useKeyboardHeight();
   const items = useWatchlistStore((s) => s.items);
   const loading = useWatchlistStore((s) => s.loading);
   const error = useWatchlistStore((s) => s.error);
@@ -109,12 +113,8 @@ export default function WatchlistScreen() {
         >
           <Ionicons name="arrow-back" size={22} color={t.colors.textPrimary} />
         </Pressable>
-        <Txt variant="headlineMedium" style={{ marginTop: spacing.md }}>
-          Watchlist
-        </Txt>
-        <Txt tone="secondary" style={{ marginTop: 4 }}>
-          Models you are tracking
-        </Txt>
+        <Txt variant="headlineMedium" style={{ marginTop: spacing.md }}>{tr('profile.watchlist')}</Txt>
+        <Txt tone="secondary" style={{ marginTop: 4 }}>{tr('watchlist.subtitle')}</Txt>
       </View>
 
       <ScrollView
@@ -160,15 +160,11 @@ export default function WatchlistScreen() {
               <View style={[styles.actions, { borderTopColor: t.colors.border }]}>
                 <Pressable onPress={() => openEdit(item)} style={styles.actionBtn}>
                   <Ionicons name="create-outline" size={18} color={t.colors.primary} />
-                  <Txt variant="titleSmall" color={t.colors.primary} style={{ marginLeft: 6 }}>
-                    Edit
-                  </Txt>
+                  <Txt variant="titleSmall" color={t.colors.primary} style={{ marginLeft: 6 }}>{tr('common.edit')}</Txt>
                 </Pressable>
                 <Pressable onPress={() => confirmRemove(item)} style={styles.actionBtn}>
                   <Ionicons name="trash-outline" size={18} color={t.colors.errorText} />
-                  <Txt variant="titleSmall" color={t.colors.errorText} style={{ marginLeft: 6 }}>
-                    Remove
-                  </Txt>
+                  <Txt variant="titleSmall" color={t.colors.errorText} style={{ marginLeft: 6 }}>{tr('common.remove')}</Txt>
                 </Pressable>
               </View>
             </View>
@@ -179,23 +175,28 @@ export default function WatchlistScreen() {
       <Modal visible={!!editing} transparent animationType="slide" onRequestClose={() => setEditing(null)} statusBarTranslucent>
         <View style={styles.backdrop}>
           <Pressable style={{ flex: 1 }} onPress={() => setEditing(null)} />
-          <View style={[styles.sheet, { backgroundColor: t.colors.surface, paddingBottom: insets.bottom + spacing.lg }]}>
+          {/*
+          A bottom sheet is pinned to the bottom of the screen, so the keyboard
+          covers it FIRST — and a KeyboardAvoidingView inside a Modal measures
+          against the screen rather than the sheet, so it does not help here.
+          Padding by the live keyboard height lifts the sheet instead, which
+          keeps its own inputs and its submit button reachable.
+        */}
+        <View style={[styles.sheet, { backgroundColor: t.colors.surface, paddingBottom: insets.bottom + spacing.lg + keyboardHeight }]}>
             <View style={[styles.handle, { backgroundColor: t.colors.border }]} />
-            <Txt variant="titleLarge" style={{ paddingHorizontal: spacing.lg }}>
-              Edit preferences
-            </Txt>
+            <Txt variant="titleLarge" style={{ paddingHorizontal: spacing.lg }}>{tr('watchlist.editPreferences')}</Txt>
             <Txt tone="secondary" style={{ paddingHorizontal: spacing.lg, marginTop: 4 }}>
               {editing?.model}
             </Txt>
             <View style={{ padding: spacing.lg, gap: 12 }}>
-              <Field label="Trim" value={trim} onChangeText={setTrim} placeholder="e.g. XLE" />
-              <Field label="Colour" value={color} onChangeText={setColor} placeholder="e.g. Pearl White" />
+              <Field label={tr('watchlist.trim')} value={trim} onChangeText={setTrim} placeholder={tr('watchlist.trimPlaceholder')} />
+              <Field label={tr('shop.colour')} value={color} onChangeText={setColor} placeholder={tr('watchlist.colourPlaceholder')} />
               {actionError ? (
                 <Txt variant="bodySmall" color={t.colors.errorText}>
                   {actionError}
                 </Txt>
               ) : null}
-              <PrimaryButton label="Save" loading={saving} onPress={saveEdit} />
+              <PrimaryButton label={tr('common.save')} loading={saving} onPress={saveEdit} />
             </View>
           </View>
         </View>
@@ -228,9 +229,7 @@ export default function WatchlistScreen() {
               <Ionicons name="trash-outline" size={22} color={t.colors.errorText} />
             </View>
 
-            <Txt variant="titleLarge" center style={{ marginTop: spacing.md }}>
-              Remove from watchlist?
-            </Txt>
+            <Txt variant="titleLarge" center style={{ marginTop: spacing.md }}>{tr('watchlist.removeConfirm')}</Txt>
             <Txt tone="secondary" center style={{ marginTop: 6 }}>
               {removing?.model} will no longer be tracked. You can add it again at any time.
             </Txt>
@@ -251,7 +250,7 @@ export default function WatchlistScreen() {
                   { borderColor: t.colors.border, opacity: removeBusy ? 0.5 : 1 },
                 ]}
               >
-                <Txt variant="titleSmall">Cancel</Txt>
+                <Txt variant="titleSmall">{tr('common.cancel')}</Txt>
               </Pressable>
 
               <Pressable
@@ -267,9 +266,7 @@ export default function WatchlistScreen() {
                 {removeBusy ? (
                   <ActivityIndicator size="small" color={ON_DARK_INK} />
                 ) : (
-                  <Txt variant="titleSmall" color={ON_DARK_INK}>
-                    Remove
-                  </Txt>
+                  <Txt variant="titleSmall" color={ON_DARK_INK}>{tr('common.remove')}</Txt>
                 )}
               </Pressable>
             </View>
@@ -292,6 +289,7 @@ function Field({
   placeholder: string;
 }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <View>
       <Txt variant="titleSmall" style={{ marginBottom: 6 }}>
@@ -323,21 +321,16 @@ function Field({
 
 function EmptyState({ onBrowse }: { onBrowse: () => void }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <View style={{ alignItems: 'center', paddingTop: 48, paddingHorizontal: spacing.md }}>
       <View style={[styles.emptyIcon, { backgroundColor: t.colors.surfaceAlt }]}>
         <Ionicons name="heart-outline" size={36} color={t.colors.textTertiary} />
       </View>
-      <Txt variant="titleLarge" center style={{ marginTop: spacing.md }}>
-        No saved models yet
-      </Txt>
-      <Txt tone="secondary" center style={{ marginTop: spacing.sm }}>
-        Tap the heart on any vehicle to track that model.
-      </Txt>
+      <Txt variant="titleLarge" center style={{ marginTop: spacing.md }}>{tr('watchlist.empty')}</Txt>
+      <Txt tone="secondary" center style={{ marginTop: spacing.sm }}>{tr('watchlist.emptyHint')}</Txt>
       <Pressable onPress={onBrowse} style={[styles.browseBtn, { backgroundColor: t.colors.primary, marginTop: spacing.xl }]}>
-        <Txt variant="titleSmall" color={t.colors.onPrimary}>
-          Browse showroom
-        </Txt>
+        <Txt variant="titleSmall" color={t.colors.onPrimary}>{tr('common.browseShowroom')}</Txt>
       </Pressable>
     </View>
   );

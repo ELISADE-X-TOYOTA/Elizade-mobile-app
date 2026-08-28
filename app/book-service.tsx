@@ -1,11 +1,11 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { MAX_TICKET_ATTACHMENTS } from '../src/api/support';
-import { AttachmentDrafts } from '../src/components/AttachmentDrafts';
+import { KeyboardAwareScrollView } from '../src/components/KeyboardAware';
 import { PrimaryButton } from '../src/components/PrimaryButton';
 import { Txt } from '../src/components/Txt';
 import { pickTicketAttachment, type PickedAttachment } from '../src/data/supportRepository';
@@ -17,14 +17,15 @@ import { radius, spacing } from '../src/theme/spacing';
 import { useTheme } from '../src/theme/useTheme';
 import { cleanText } from '../src/utils/sanitize';
 import { tint } from '../src/theme/colors';
+import { bookableDays, bookableSlots, slotDateTime, validateBooking } from '../src/domain/booking';
 
 const TYPES = Object.keys(SERVICE_TYPE_META) as ServiceType[];
-const TIME_SLOTS = ['9:00 AM', '10:30 AM', '12:00 PM', '2:00 PM', '4:00 PM'];
-/** Hour-of-day for each slot above, applied to the selected date. */
-const SLOT_HOURS = [9, 10, 12, 14, 16];
+/** Re-evaluated on every render so the list cannot go stale on a screen that
+ *  has been open a while. */
 
 export default function BookService() {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
 
   const { type: typeParam } = useLocalSearchParams<{ type?: ServiceType }>();
@@ -36,7 +37,7 @@ export default function BookService() {
     typeParam && (['periodic', 'repair', 'inspection', 'recall'] as ServiceType[]).includes(typeParam) ? typeParam : 'periodic',
   );
   const [branch, setBranch] = useState(0);
-  const [dateIdx, setDateIdx] = useState(1);
+  const [dateIdx, setDateIdx] = useState(0);
   const [slot, setSlot] = useState(0);
   const [issue, setIssue] = useState('');
   const [attachments, setAttachments] = useState<PickedAttachment[]>([]);
@@ -46,7 +47,15 @@ export default function BookService() {
   const [error, setError] = useState<string>();
   const [done, setDone] = useState(false);
 
-  const dates = useMemo(() => Array.from({ length: 7 }, (_, i) => new Date(Date.now() + i * 86_400_000)), []);
+  // Only days with something left on them. A day rendered greyed-out and
+  // unselectable is worse than an absent one: the customer taps it, nothing
+  // happens, and nothing explains why.
+  const dates = useMemo(() => bookableDays(7), []);
+  const selectedDay = dates[dateIdx] ?? dates[0];
+  // Same-day slots that have already passed (or fall inside the lead time)
+  // are not offered at all, rather than offered and rejected by the API.
+  const slots = useMemo(() => (selectedDay ? bookableSlots(selectedDay) : []), [selectedDay]);
+  const selectedSlot = slots[slot] ?? slots[0];
 
   const addAttachment = async () => {
     if (attaching || attachments.length >= MAX_TICKET_ATTACHMENTS) {
@@ -72,9 +81,21 @@ export default function BookService() {
     }
     setLoading(true);
     setError(undefined);
-    // Apply the chosen time slot to the chosen day.
-    const at = new Date(dates[dateIdx]);
-    at.setHours(SLOT_HOURS[slot] ?? 9, 0, 0, 0);
+    if (!selectedDay || !selectedSlot) {
+      setError('Choose a date and time for this service.');
+      setLoading(false);
+      return;
+    }
+    const at = slotDateTime(selectedDay, selectedSlot);
+
+    // Re-checked HERE, not only when the list was built. A form open since
+    // 13:59 still shows a 2:00 PM slot at 14:05; only this catches that.
+    const invalid = validateBooking(at);
+    if (invalid) {
+      setError(invalid);
+      setLoading(false);
+      return;
+    }
     try {
       await createAppointment({
         ownedVehicleId: owned.id,
@@ -100,15 +121,13 @@ export default function BookService() {
           <Animated.View entering={ZoomIn.duration(500)} style={[styles.successIcon, { backgroundColor: tint(t.colors.success, 0.12) }]}>
             <Ionicons name="checkmark-circle" size={72} color={t.colors.successText} />
           </Animated.View>
-          <Txt variant="headlineLarge" center style={{ marginTop: spacing.xl }}>
-            Service Requested!
-          </Txt>
+          <Txt variant="headlineLarge" center style={{ marginTop: spacing.xl }}>{tr('service.serviceRequested')}</Txt>
           <Txt variant="bodyLarge" tone="secondary" center style={{ marginTop: spacing.sm }}>
             Your {SERVICE_TYPE_META[type].label.toLowerCase()} at {branches[branch]?.name ?? 'Elizade'} has been requested. We'll confirm shortly.
           </Txt>
         </View>
         <View style={{ paddingBottom: insets.bottom + spacing.md }}>
-          <PrimaryButton label="Done" icon="arrow-forward" onPress={() => router.back()} />
+          <PrimaryButton label={tr('common.done')} icon="arrow-forward" onPress={() => router.back()} />
         </View>
       </View>
     );
@@ -120,12 +139,10 @@ export default function BookService() {
         <Pressable onPress={() => router.back()} style={[styles.backBtn, { backgroundColor: t.colors.surfaceAlt, borderColor: t.colors.border }]}>
           <Ionicons name="arrow-back" size={22} color={t.colors.textPrimary} />
         </Pressable>
-        <Txt variant="headlineMedium" style={{ marginTop: spacing.md }}>
-          Book a Service
-        </Txt>
+        <Txt variant="headlineMedium" style={{ marginTop: spacing.md }}>{tr('service.bookAService')}</Txt>
       </View>
 
-      <ScrollView contentContainerStyle={{ padding: spacing.screenH, paddingBottom: 40 }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+      <KeyboardAwareScrollView contentContainerStyle={{ padding: spacing.screenH, paddingBottom: 40 }}>
         <Label text="Vehicle" />
         {ownedVehicles.length === 0 ? (
           <Txt tone="secondary">
@@ -199,14 +216,14 @@ export default function BookService() {
 
         <Label text="Time" />
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-          {TIME_SLOTS.map((time, i) => (
+          {slots.map((s, i) => (
             <Pressable
-              key={time}
+              key={s.label}
               onPress={() => setSlot(i)}
               style={[styles.slot, { backgroundColor: slot === i ? t.colors.primary : t.colors.surfaceAlt, borderColor: slot === i ? t.colors.primary : t.colors.border }]}
             >
               <Txt variant="titleSmall" color={slot === i ? t.colors.onPrimary : t.colors.textPrimary}>
-                {time}
+                {s.label}
               </Txt>
             </Pressable>
           ))}
@@ -219,7 +236,7 @@ export default function BookService() {
           value={issue}
           onChangeText={setIssue}
           maxLength={1000}
-          placeholder="e.g. Strange noise from front brakes, AC not cooling…"
+          placeholder={tr('service.issuePlaceholder')}
           placeholderTextColor={t.colors.textTertiary}
           multiline
           style={[
@@ -266,13 +283,13 @@ export default function BookService() {
 
         <View style={{ height: spacing.xl }} />
         <PrimaryButton
-          label="Request Service"
+          label={tr('service.requestService')}
           icon="construct"
           loading={loading}
           disabled={ownedVehicles.length === 0 || branches.length === 0 || attaching}
           onPress={submit}
         />
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </View>
   );
 }
@@ -299,6 +316,7 @@ function SelectRow({
   onPress: () => void;
 }) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   return (
     <Pressable
       onPress={onPress}
