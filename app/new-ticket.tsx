@@ -155,7 +155,7 @@ export default function NewTicket() {
               ? 'Uploading…'
               : attachmentsFull
                 ? `Maximum ${MAX_TICKET_ATTACHMENTS} attachments`
-                : 'Attach a photo'}
+                : 'Attach a photo or video'}
           </Txt>
         </Pressable>
 

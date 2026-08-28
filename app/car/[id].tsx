@@ -2,11 +2,9 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Dimensions,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
   Pressable,
   ScrollView,
   Share,
@@ -15,13 +13,15 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CompareButton } from '../../src/components/CompareButton';
-import { NetworkCarImage } from '../../src/components/NetworkCarImage';
+import { NotifyMeCard } from '../../src/components/NotifyMeCard';
 import { PrimaryButton } from '../../src/components/PrimaryButton';
 import { Skeleton } from '../../src/components/Skeleton';
 import { Txt } from '../../src/components/Txt';
+import { Vehicle360Viewer } from '../../src/components/Vehicle360Viewer';
 import { ON_DARK_INK, OVERLAY_CHIP, OVERLAY_CHIP_INK, solid, tint } from '../../src/theme/colors';
 import { vehicleSubtitle, vehicleTitle, Vehicle } from '../../src/domain/types';
 import { useVehicle } from '../../src/hooks/useVehicles';
+import { useNotifyMeStore } from '../../src/store/useNotifyMeStore';
 import { useWatchlistStore } from '../../src/store/useWatchlistStore';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
@@ -42,10 +42,19 @@ export default function CarDetails() {
     vehicle ? s.items.some((i) => i.model === vehicle.model) : false,
   );
   const toggleVehicle = useWatchlistStore((s) => s.toggleVehicle);
-  const [imgIndex, setImgIndex] = useState(0);
   const [sale, setSale] = useState<SalesMode | null>(null);
   const [financeOpen, setFinanceOpen] = useState(false);
   const [quoteOpen, setQuoteOpen] = useState(false);
+  const notifyStatus = useNotifyMeStore((s) => s.statuses[id ?? '']);
+  const notifyLoading = useNotifyMeStore((s) => s.loading[id ?? ''] ?? false);
+  const notifyError = useNotifyMeStore((s) => s.errors[id ?? '']);
+  const loadNotifyStatus = useNotifyMeStore((s) => s.load);
+  const subscribeToNotifyMe = useNotifyMeStore((s) => s.subscribe);
+  const unsubscribeFromNotifyMe = useNotifyMeStore((s) => s.unsubscribe);
+
+  useEffect(() => {
+    if (id) loadNotifyStatus(id);
+  }, [id, loadNotifyStatus]);
 
   const shareVehicle = useCallback(async (vehicle: Vehicle) => {
     const title = vehicleTitle(vehicle);
@@ -66,13 +75,21 @@ export default function CarDetails() {
     }
   }, []);
 
-  const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) =>
-    setImgIndex(Math.round(e.nativeEvent.contentOffset.x / width));
-
   if (loading) return <DetailLoading />;
   if (error || !vehicle) return <DetailError message={error} />;
 
   const v = vehicle;
+  const isAvailable = v.availability === 'available';
+  const availabilityLabel =
+    v.availability === 'reserved'
+      ? 'Reserved'
+      : v.availability === 'sold'
+        ? 'Sold'
+        : isAvailable
+          ? 'Available'
+          : 'Unavailable';
+  const availabilityFill = v.availability === 'sold' ? t.colors.error : isAvailable ? t.colors.success : t.colors.warning;
+  const availabilityText = v.availability === 'sold' ? t.colors.errorText : isAvailable ? t.colors.successText : t.colors.warningText;
 
   const specs: { icon: keyof typeof MaterialCommunityIcons.glyphMap; label: string; value: string }[] = [
     { icon: 'engine', label: 'Engine', value: v.engine },
@@ -88,20 +105,9 @@ export default function CarDetails() {
   return (
     <View style={{ flex: 1, backgroundColor: 'transparent' }}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 140 }}>
-        {/* Image carousel */}
-        <View style={{ height: 340 }}>
-          <ScrollView horizontal pagingEnabled showsHorizontalScrollIndicator={false} onMomentumScrollEnd={onScroll}>
-            {v.images.map((uri, i) => (
-              <View key={i} style={{ width, height: 340 }}>
-                <NetworkCarImage uri={uri} />
-              </View>
-            ))}
-          </ScrollView>
-          <LinearGradient
-            colors={['rgba(0,0,0,0.35)', 'transparent', 'rgba(0,0,0,0.25)']}
-            style={StyleSheet.absoluteFill}
-            pointerEvents="none"
-          />
+        {/* Interactive image viewer + detail-backed configuration */}
+        <View>
+          <Vehicle360Viewer vehicle={v} />
 
           {/* Top bar */}
           <View style={[styles.topbar, { top: insets.top + 4 }]}>
@@ -121,30 +127,6 @@ export default function CarDetails() {
             </View>
           </View>
 
-          {/* 360 chip */}
-          <View style={styles.chip360}>
-            <MaterialCommunityIcons name="rotate-360" size={18} color={ON_DARK_INK} />
-            <Txt variant="bodySmall" color={ON_DARK_INK} style={{ marginLeft: 6 }}>
-              360° View
-            </Txt>
-          </View>
-
-          {/* Dots */}
-          {v.images.length > 1 && (
-            <View style={styles.dots}>
-              {v.images.map((_, i) => (
-                <View
-                  key={i}
-                  style={{
-                    width: i === imgIndex ? 20 : 7,
-                    height: 7,
-                    borderRadius: 4,
-                    backgroundColor: i === imgIndex ? solid(t.colors.accent) : 'rgba(255,255,255,0.6)',
-                  }}
-                />
-              ))}
-            </View>
-          )}
         </View>
 
         {/* Body sheet */}
@@ -177,6 +159,17 @@ export default function CarDetails() {
               </View>
             )}
           </View>
+
+          {!isAvailable && (
+            <NotifyMeCard
+              vehicle={v}
+              status={notifyStatus}
+              loading={notifyLoading}
+              error={notifyError}
+              onSubscribe={() => subscribeToNotifyMe(v.id).catch(() => {})}
+              onUnsubscribe={() => unsubscribeFromNotifyMe(v.id).catch(() => {})}
+            />
+          )}
 
           {/* Specs */}
           <Txt variant="titleLarge" style={{ marginTop: spacing.xl, marginBottom: spacing.md }}>{tr('shop.specifications')}</Txt>
@@ -342,8 +335,6 @@ function RoundAction({ icon }: { icon: keyof typeof Ionicons.glyphMap }) {
 const styles = StyleSheet.create({
   topbar: { position: 'absolute', left: 16, right: 16, flexDirection: 'row', justifyContent: 'space-between' },
   circle: { width: 40, height: 40, borderRadius: 20, backgroundColor: OVERLAY_CHIP, alignItems: 'center', justifyContent: 'center' },
-  chip360: { position: 'absolute', right: 16, bottom: 56, flexDirection: 'row', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.45)', paddingHorizontal: 12, paddingVertical: 8, borderRadius: radius.pill },
-  dots: { position: 'absolute', bottom: 44, left: 0, right: 0, flexDirection: 'row', justifyContent: 'center', gap: 6 },
   sheet: { marginTop: -24, borderTopLeftRadius: 28, borderTopRightRadius: 28, padding: spacing.screenH, paddingTop: spacing.xl },
   row: { flexDirection: 'row', alignItems: 'center' },
   rowBetween: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' },

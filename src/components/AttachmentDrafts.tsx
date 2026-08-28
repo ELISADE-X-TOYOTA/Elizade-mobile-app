@@ -43,12 +43,20 @@ export function AttachmentDrafts({ items, onRemove }: Props) {
           <View
             style={[styles.media, { borderColor: t.colors.border, backgroundColor: t.colors.surfaceAlt }]}
           >
-            {/* A PDF has no preview frame — show a document glyph instead. */}
-            {a.name.toLowerCase().endsWith('.pdf') ? (
+            {/* Documents and videos get safe local preview tiles; images use
+                the picker URI so no authenticated media request is needed. */}
+            {a.kind === 'document' || a.name.toLowerCase().endsWith('.pdf') ? (
               <View style={styles.pdf}>
                 <Ionicons name="document-text-outline" size={24} color={t.colors.textSecondary} />
                 <Txt variant="labelSmall" tone="secondary" numberOfLines={1} style={{ marginTop: 2 }}>
                   PDF
+                </Txt>
+              </View>
+            ) : a.kind === 'video' || /\.(mp4|mov)$/i.test(a.name) ? (
+              <View style={styles.pdf}>
+                <Ionicons name="play-circle-outline" size={28} color={t.colors.primary} />
+                <Txt variant="labelSmall" tone="secondary" numberOfLines={1} style={{ marginTop: 2 }}>
+                  VIDEO
                 </Txt>
               </View>
             ) : (

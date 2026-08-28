@@ -6,6 +6,7 @@ import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-n
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Skeleton } from '../../src/components/Skeleton';
+import { ServiceAppointmentActions } from '../../src/components/ServiceAppointmentActions';
 import { Txt } from '../../src/components/Txt';
 import { OWNED_VEHICLES } from '../../src/data/mock';
 import {
@@ -115,7 +116,7 @@ export default function Service() {
               <Empty label={tr('service.noHistory')} />
             )
           ) : filtered.length ? (
-            filtered.map((a) => <AppointmentCard key={a.id} appt={a} />)
+            filtered.map((a) => <AppointmentCard key={a.id} appt={a} onUpdated={reload} />)
           ) : (
             <Empty label={tab === 0 ? tr('service.noUpcoming') : tr('service.noActiveJobs')} />
           )}
@@ -125,7 +126,7 @@ export default function Service() {
   );
 }
 
-function AppointmentCard({ appt }: { appt: ServiceAppointment }) {
+function AppointmentCard({ appt, onUpdated }: { appt: ServiceAppointment; onUpdated: () => void }) {
   const t = useTheme();
   const { t: tr } = useTranslation();
   const meta = SERVICE_TYPE_META[appt.serviceType];
@@ -136,26 +137,38 @@ function AppointmentCard({ appt }: { appt: ServiceAppointment }) {
   const date = new Date(appt.scheduledAt);
 
   return (
-    <Pressable
-      onPress={() => router.push(`/service-detail/${appt.id}`)}
-      style={[styles.card, { backgroundColor: t.colors.surface, borderColor: t.colors.border }, t.shadows.soft]}
-    >
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <View style={[styles.typeIcon, { backgroundColor: t.colors.primary + '14' }]}>
-          <MaterialCommunityIcons name={meta.icon as any} size={22} color={t.colors.primary} />
+    <View style={[styles.card, { backgroundColor: t.colors.surface, borderColor: t.colors.border }, t.shadows.soft]}>
+      <Pressable onPress={() => router.push(`/service-detail/${appt.id}`)}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={[styles.typeIcon, { backgroundColor: t.colors.primary + '14' }]}>
+            <MaterialCommunityIcons name={meta.icon as any} size={22} color={t.colors.primary} />
+          </View>
+          <View style={{ flex: 1, marginLeft: 12 }}>
+            <Txt variant="titleMedium" numberOfLines={1}>
+              {meta.label}
+            </Txt>
+            <Txt variant="bodySmall" tone="secondary" numberOfLines={1}>
+              {appt.vehicleTitle} · {appt.branchName}
+            </Txt>
+          </View>
+          <View style={[styles.pill, { backgroundColor: toneColor + '1F' }]}>
+            <Txt variant="labelSmall" color={toneColor}>
+              {status.label}
+            </Txt>
+          </View>
         </View>
-        <View style={{ flex: 1, marginLeft: 12 }}>
-          <Txt variant="titleMedium" numberOfLines={1}>
-            {meta.label}
+        <View style={[styles.divider, { backgroundColor: t.colors.border }]} />
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Ionicons name="calendar" size={15} color={t.colors.primary} />
+          <Txt variant="titleSmall" style={{ marginLeft: 6, flex: 1 }}>
+            {date.toLocaleDateString('en', { day: 'numeric', month: 'short' })} ·{' '}
+            {date.toLocaleTimeString('en', { hour: 'numeric', minute: '2-digit' })}
           </Txt>
-          <Txt variant="bodySmall" tone="secondary" numberOfLines={1}>
-            {appt.vehicleTitle} · {appt.branchName}
-          </Txt>
-        </View>
-        <View style={[styles.pill, { backgroundColor: toneColor + '1F' }]}>
-          <Txt variant="labelSmall" color={toneColor}>
-            {status.label}
-          </Txt>
+          {ACTIVE.includes(appt.status) && (
+            <Txt variant="titleSmall" color={t.colors.primary}>
+              Track →
+            </Txt>
+          )}
         </View>
       </View>
       <View style={[styles.divider, { backgroundColor: t.colors.border }]} />

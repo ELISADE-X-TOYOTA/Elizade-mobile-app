@@ -11,6 +11,9 @@ export type VehicleCategory =
 
 export type ListingType = 'rent' | 'sale' | 'auction';
 
+/** Inventory state used by the showroom CTA and availability alerts. */
+export type VehicleAvailability = 'available' | 'reserved' | 'sold' | 'unavailable';
+
 export interface Vehicle {
   id: string;
   make: string;
@@ -20,6 +23,7 @@ export interface Vehicle {
   color: string;
   colorHex: string;
   price: number;
+  availability: VehicleAvailability;
   rentPerDay?: number;
   category: VehicleCategory;
   fuelType: string;
@@ -49,6 +53,14 @@ export interface Vehicle {
   ownerHistory: number;
   isVerified: boolean;
   dealerName: string;
+}
+
+/** Customer's availability-alert state for a vehicle. */
+export interface NotifyMeStatus {
+  vehicleId: string;
+  subscribed: boolean;
+  subscriptionId?: string | null;
+  createdAt?: string | null;
 }
 
 export type BookingStatus = 'upcoming' | 'active' | 'completed' | 'cancelled';
@@ -199,6 +211,7 @@ export interface ServiceAppointment {
   status: AppointmentStatus;
   issueDescription: string;
   mileageAtBooking: number;
+  attachmentUrls?: string[];
 }
 
 export interface ServiceStage {
@@ -334,6 +347,7 @@ export interface WarrantyClaim {
   description: string;
   status: ClaimStatus;
   submittedAt: string;
+  attachmentUrls?: string[];
 }
 
 export const WARRANTY_CLAIM_CATEGORIES = [

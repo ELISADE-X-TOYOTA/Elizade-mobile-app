@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
@@ -292,13 +291,10 @@ function Bubble({ message }: { message: TicketMessage }) {
                   >{tr('support.document')}</Txt>
                 </View>
               ) : (
-                <Image
+                <SecureAttachment
                   key={url}
-                  source={{ uri: url }}
                   style={styles.bubbleImage}
-                  contentFit="cover"
-                  transition={150}
-                  cachePolicy="memory-disk"
+                  uri={url}
                 />
               ),
             )}

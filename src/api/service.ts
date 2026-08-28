@@ -17,6 +17,8 @@ export interface CreateAppointmentBody {
   scheduledAt: string;
   mileageAtBooking: number;
   issueDescription: string;
+  /** Media URLs returned by the shared attachment upload endpoint. */
+  attachmentUrls?: string[];
 }
 
 export const serviceApi = {
@@ -38,6 +40,19 @@ export const serviceApi = {
 
   create: (body: CreateAppointmentBody) =>
     apiFetch<ServiceAppointmentDto>('/service/appointments', { method: 'POST', body }),
+
+  /** Move a requested or confirmed appointment to a new slot. */
+  reschedule: (appointmentId: string, scheduledAt: string) =>
+    apiFetch<ServiceAppointmentDto>(`/service/appointments/${appointmentId}/reschedule`, {
+      method: 'PATCH',
+      body: { scheduledAt },
+    }),
+
+  /** Cancel an appointment owned by the signed-in customer. */
+  cancel: (appointmentId: string) =>
+    apiFetch<ServiceAppointmentDto>(`/service/appointments/${appointmentId}/cancel`, {
+      method: 'POST',
+    }),
 
   /** Approve or decline extra work found mid-service. */
   decideAdditionalWork: (jobId: string, workId: string, approve: boolean) =>
