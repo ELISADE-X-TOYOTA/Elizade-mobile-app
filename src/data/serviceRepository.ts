@@ -1,4 +1,5 @@
 import { mapAppointment, mapServiceHistory, mapServiceJob } from '../api/customer-mappers';
+import { ApiError } from '../api/client';
 import { CreateAppointmentBody, serviceApi } from '../api/service';
 import { APP } from '../constants/app';
 import { ServiceAppointment, ServiceHistoryItem, ServiceJob } from '../domain/types';
@@ -70,12 +71,50 @@ export async function createAppointment(body: CreateAppointmentBody): Promise<Se
       status: 'requested',
       issueDescription: body.issueDescription,
       mileageAtBooking: body.mileageAtBooking,
+      attachmentUrls: body.attachmentUrls ?? [],
     };
     mockAppointments = [appt, ...mockAppointments];
     return appt;
   }
   const created = await serviceApi.create(body);
   return mapAppointment(created, ownedVehicleImage(created.vehicleId));
+}
+
+export async function rescheduleAppointment(
+  appointmentId: string,
+  scheduledAt: string,
+): Promise<ServiceAppointment> {
+  if (APP.useMock) {
+    await delay(500);
+    const index = mockAppointments.findIndex((a) => a.id === appointmentId);
+    if (index < 0) throw new ApiError('Appointment not found', 404);
+    const appointment = mockAppointments[index];
+    if (!['requested', 'confirmed'].includes(appointment.status)) {
+      throw new ApiError('This appointment cannot be rescheduled.', 400);
+    }
+    const updated = { ...appointment, scheduledAt };
+    mockAppointments = mockAppointments.map((a, i) => (i === index ? updated : a));
+    return updated;
+  }
+  const updated = await serviceApi.reschedule(appointmentId, scheduledAt);
+  return mapAppointment(updated, ownedVehicleImage(updated.vehicleId));
+}
+
+export async function cancelAppointment(appointmentId: string): Promise<ServiceAppointment> {
+  if (APP.useMock) {
+    await delay(500);
+    const index = mockAppointments.findIndex((a) => a.id === appointmentId);
+    if (index < 0) throw new ApiError('Appointment not found', 404);
+    const appointment = mockAppointments[index];
+    if (['completed', 'cancelled'].includes(appointment.status)) {
+      throw new ApiError('This appointment cannot be cancelled.', 400);
+    }
+    const updated = { ...appointment, status: 'cancelled' as const };
+    mockAppointments = mockAppointments.map((a, i) => (i === index ? updated : a));
+    return updated;
+  }
+  const updated = await serviceApi.cancel(appointmentId);
+  return mapAppointment(updated, ownedVehicleImage(updated.vehicleId));
 }
 
 export async function approveAdditionalWork(

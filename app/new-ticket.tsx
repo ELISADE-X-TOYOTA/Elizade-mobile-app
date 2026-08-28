@@ -130,7 +130,7 @@ export default function NewTicket() {
           onPress={attach}
           disabled={attaching || attachmentsFull}
           accessibilityRole="button"
-          accessibilityLabel="Attach a photo"
+          accessibilityLabel="Attach a photo or video"
           accessibilityState={{ disabled: attaching || attachmentsFull }}
           style={[
             styles.attach,
@@ -147,7 +147,7 @@ export default function NewTicket() {
               ? 'Uploading…'
               : attachmentsFull
                 ? `Maximum ${MAX_TICKET_ATTACHMENTS} attachments`
-                : 'Attach a photo'}
+                : 'Attach a photo or video'}
           </Txt>
         </Pressable>
 

@@ -78,7 +78,7 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
       return;
     }
     setAttachError(undefined);
-    const res = await pickTicketAttachment('library');
+    const res = await pickTicketAttachment('library', '/warranty/claims/attachments/upload');
     if (!res) return;
     if (!res.ok) {
       setAttachError(res.message);
@@ -221,7 +221,7 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
                 >
                   <Ionicons name="camera-outline" size={20} color={t.colors.primary} />
                   <Txt variant="titleSmall" color={t.colors.primary} style={{ marginLeft: 8 }}>
-                    Add photos or documents
+                    Add photos, videos, or documents
                   </Txt>
                 </Pressable>
                 <AttachmentDrafts

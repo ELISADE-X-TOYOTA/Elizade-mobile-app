@@ -44,6 +44,7 @@ export interface ServiceAppointmentDto {
   serviceType: string;
   scheduledAt: string;
   status: string;
+  attachmentUrls?: string[];
   branchId: string;
   branchName: string;
   jobId: string | null;
@@ -157,6 +158,7 @@ export interface WarrantyClaimDto {
   vehicleLabel: string;
   createdAt: string;
   updatedAt: string;
+  attachmentUrls?: string[];
 }
 
 // ── Support ──────────────────────────────────────────────────────────

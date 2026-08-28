@@ -1,11 +1,14 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { MAX_TICKET_ATTACHMENTS } from '../src/api/support';
+import { AttachmentDrafts } from '../src/components/AttachmentDrafts';
 import { PrimaryButton } from '../src/components/PrimaryButton';
 import { Txt } from '../src/components/Txt';
+import { pickTicketAttachment, type PickedAttachment } from '../src/data/supportRepository';
 import { createAppointment } from '../src/data/serviceRepository';
 import { useBranches } from '../src/hooks/useBranches';
 import { useOwnedVehicles } from '../src/hooks/useGarage';
@@ -36,11 +39,29 @@ export default function BookService() {
   const [dateIdx, setDateIdx] = useState(1);
   const [slot, setSlot] = useState(0);
   const [issue, setIssue] = useState('');
+  const [attachments, setAttachments] = useState<PickedAttachment[]>([]);
+  const [attaching, setAttaching] = useState(false);
+  const [attachError, setAttachError] = useState<string>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
   const [done, setDone] = useState(false);
 
   const dates = useMemo(() => Array.from({ length: 7 }, (_, i) => new Date(Date.now() + i * 86_400_000)), []);
+
+  const addAttachment = async () => {
+    if (attaching || attachments.length >= MAX_TICKET_ATTACHMENTS) {
+      if (attachments.length >= MAX_TICKET_ATTACHMENTS) {
+        setAttachError(`You can attach up to ${MAX_TICKET_ATTACHMENTS} files.`);
+      }
+      return;
+    }
+    setAttaching(true);
+    setAttachError(undefined);
+    const result = await pickTicketAttachment('library', '/service/attachments/upload');
+    if (result && !result.ok) setAttachError(result.message);
+    if (result && result.ok) setAttachments((prev) => [...prev, result.attachment]);
+    setAttaching(false);
+  };
 
   const submit = async () => {
     const owned = ownedVehicles[vehicle];
@@ -62,6 +83,7 @@ export default function BookService() {
         scheduledAt: at.toISOString(),
         issueDescription: cleanText(issue) || SERVICE_TYPE_META[type].label,
         mileageAtBooking: owned.mileage,
+        attachmentUrls: attachments.map((attachment) => attachment.url),
       });
       setDone(true);
     } catch (e) {
@@ -206,6 +228,36 @@ export default function BookService() {
           ]}
         />
 
+        <Pressable
+          onPress={addAttachment}
+          disabled={attaching || attachments.length >= MAX_TICKET_ATTACHMENTS}
+          style={[
+            styles.attach,
+            {
+              borderColor: t.colors.border,
+              opacity: attaching || attachments.length >= MAX_TICKET_ATTACHMENTS ? 0.5 : 1,
+            },
+          ]}
+        >
+          {attaching ? (
+            <ActivityIndicator size="small" color={t.colors.primary} />
+          ) : (
+            <Ionicons name="camera-outline" size={20} color={t.colors.primary} />
+          )}
+          <Txt variant="titleSmall" color={t.colors.primary} style={{ marginLeft: 8 }}>
+            Add photos, videos, or documents
+          </Txt>
+        </Pressable>
+        <AttachmentDrafts
+          items={attachments}
+          onRemove={(url) => setAttachments((prev) => prev.filter((attachment) => attachment.url !== url))}
+        />
+        {attachError ? (
+          <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: spacing.sm }}>
+            {attachError}
+          </Txt>
+        ) : null}
+
         {error ? (
           <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: spacing.md }}>
             {error}
@@ -217,7 +269,7 @@ export default function BookService() {
           label="Request Service"
           icon="construct"
           loading={loading}
-          disabled={ownedVehicles.length === 0 || branches.length === 0}
+          disabled={ownedVehicles.length === 0 || branches.length === 0 || attaching}
           onPress={submit}
         />
       </ScrollView>
@@ -270,5 +322,6 @@ const styles = StyleSheet.create({
   typeCard: { width: '47%', flexGrow: 1, padding: 14, borderRadius: radius.md, borderWidth: 1 },
   dateChip: { width: 56, height: 64, borderRadius: radius.md, borderWidth: 1, alignItems: 'center', justifyContent: 'center', gap: 2 },
   slot: { paddingHorizontal: 16, height: 44, borderRadius: radius.md, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  attach: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 52, borderRadius: radius.md, borderWidth: 1, borderStyle: 'dashed', marginTop: spacing.lg },
   successIcon: { width: 112, height: 112, borderRadius: 56, alignItems: 'center', justifyContent: 'center' },
 });

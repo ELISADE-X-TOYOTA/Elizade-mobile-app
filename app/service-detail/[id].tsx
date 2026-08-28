@@ -5,11 +5,14 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PrimaryButton } from '../../src/components/PrimaryButton';
 import { Skeleton } from '../../src/components/Skeleton';
+import { ServiceAppointmentActions } from '../../src/components/ServiceAppointmentActions';
+import { SecureAttachment } from '../../src/components/SecureAttachment';
 import { Txt } from '../../src/components/Txt';
 import { approveAdditionalWork } from '../../src/data/serviceRepository';
 import {
   APPOINTMENT_STATUS_META,
   SERVICE_TYPE_META,
+  ServiceAppointment,
   ServiceStage,
 } from '../../src/domain/types';
 import { useAppointments, useServiceJob } from '../../src/hooks/useService';
@@ -25,8 +28,12 @@ export default function ServiceDetail() {
   const { appointments, loading: apptLoading } = useAppointments();
   const { job, loading: jobLoading, setJob } = useServiceJob(id ?? '');
   const [working, setWorking] = useState(false);
+  const [appointmentOverride, setAppointmentOverride] = useState<ServiceAppointment>();
 
-  const appt = useMemo(() => appointments.find((a) => a.id === id), [appointments, id]);
+  const appt = useMemo(
+    () => appointmentOverride ?? appointments.find((a) => a.id === id),
+    [appointmentOverride, appointments, id],
+  );
   const loading = apptLoading || jobLoading;
 
   const decide = async (approve: boolean) => {
@@ -55,12 +62,25 @@ export default function ServiceDetail() {
           <>
             {/* Header */}
             {appt && (
-              <View>
+              <>
                 <Txt variant="headlineSmall">{SERVICE_TYPE_META[appt.serviceType].label}</Txt>
                 <Txt tone="secondary" style={{ marginTop: 2 }}>
                   {appt.vehicleTitle} · {appt.branchName}
                 </Txt>
-              </View>
+                <ServiceAppointmentActions appointment={appt} onUpdated={setAppointmentOverride} />
+                {!!appt.attachmentUrls?.length && (
+                  <Card>
+                    <Txt variant="titleMedium" style={{ marginBottom: spacing.sm }}>
+                      Issue attachments
+                    </Txt>
+                    <View style={{ flexDirection: 'row', gap: 8 }}>
+                      {appt.attachmentUrls.slice(0, 5).map((url) => (
+                        <SecureAttachment key={url} uri={url} style={styles.attachment} />
+                      ))}
+                    </View>
+                  </Card>
+                )}
+              </>
             )}
 
             {/* ETA */}
@@ -224,4 +244,5 @@ const styles = StyleSheet.create({
   dot: { width: 24, height: 24, borderRadius: 12, borderWidth: 2, alignItems: 'center', justifyContent: 'center' },
   decided: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', paddingHorizontal: 12, paddingVertical: 6, borderRadius: radius.pill, marginTop: spacing.md },
   divider: { height: 1, marginVertical: 10 },
+  attachment: { width: 72, height: 72 },
 });

@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Skeleton } from '../src/components/Skeleton';
 import { Txt } from '../src/components/Txt';
 import { WarrantyClaimModal } from '../src/components/WarrantyClaimModal';
+import { SecureAttachment } from '../src/components/SecureAttachment';
 import { OWNED_VEHICLES } from '../src/data/mock';
 import {
   CLAIM_STATUS_META,
@@ -244,6 +245,13 @@ function ClaimCard({ claim }: { claim: WarrantyClaim }) {
       <Txt variant="bodySmall" tone="tertiary" style={{ marginTop: 6 }}>
         {claim.vehicleTitle} · {new Date(claim.submittedAt).toLocaleDateString('en', { day: 'numeric', month: 'short' })}
       </Txt>
+      {!!claim.attachmentUrls?.length && (
+        <View style={{ flexDirection: 'row', gap: 8, marginTop: spacing.sm }}>
+          {claim.attachmentUrls.slice(0, 3).map((url) => (
+            <SecureAttachment key={url} uri={url} style={styles.claimAttachment} />
+          ))}
+        </View>
+      )}
     </View>
   );
 }
@@ -256,4 +264,5 @@ const styles = StyleSheet.create({
   card: { padding: spacing.md, borderRadius: radius.lg, borderWidth: 1 },
   fileBtn: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, height: 36, borderRadius: radius.pill },
   recallBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 46, borderRadius: radius.md, marginTop: spacing.md },
+  claimAttachment: { width: 64, height: 64 },
 });

@@ -96,6 +96,7 @@ export function mapAppointment(d: ServiceAppointmentDto, image = ''): ServiceApp
     status: d.status as ServiceAppointment['status'],
     issueDescription: d.issueDescription ?? '',
     mileageAtBooking: d.mileageAtBooking ?? 0,
+    attachmentUrls: (d.attachmentUrls ?? []).map(resolveMediaUrl).filter(Boolean),
   };
 }
 
@@ -218,6 +219,7 @@ export function mapClaim(d: WarrantyClaimDto): WarrantyClaim {
       ? (d.status as ClaimStatus)
       : 'submitted',
     submittedAt: d.createdAt,
+    attachmentUrls: (d.attachmentUrls ?? []).map(resolveMediaUrl).filter(Boolean),
   };
 }
 
