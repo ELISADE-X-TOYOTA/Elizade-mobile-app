@@ -1,5 +1,5 @@
 import { Vehicle } from './types';
-import { mileage as fmtMileage, price as fmtPrice } from '../utils/format';
+import { mileageOrNull, price as fmtPrice } from '../utils/format';
 
 /**
  * Builds the side-by-side spec matrix for the vehicle comparison screen.
@@ -164,8 +164,12 @@ export function buildComparison(a: Vehicle, b: Vehicle): Comparison {
         row('Drivetrain', spec(a, 'drivetrain'), spec(b, 'drivetrain')),
         row('0–100 km/h', spec(a, 'acceleration'), spec(b, 'acceleration')),
         row('Top Speed', spec(a, 'topSpeed'), spec(b, 'topSpeed')),
-        // Mileage of 0 is meaningful (brand new), so it is not filtered by `real`.
-        row('Odometer', fmtMileage(a.mileage), fmtMileage(b.mileage)),
+        // Mileage of 0 is meaningful (brand new), so it is NOT filtered by
+        // `real` — but null and NaN are, because "we have not recorded this"
+        // is not the same claim as "zero kilometres". `mileageOrNull` draws
+        // exactly that line; the previous formatter threw on the first and
+        // printed "NaN km" for the second.
+        row('Odometer', mileageOrNull(a.mileage), mileageOrNull(b.mileage)),
       ],
     },
     {

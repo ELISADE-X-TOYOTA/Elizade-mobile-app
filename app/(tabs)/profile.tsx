@@ -8,8 +8,8 @@ import { Avatar } from '../../src/components/Avatar';
 import { Txt } from '../../src/components/Txt';
 import { logout } from '../../src/data/authRepository';
 import { pickAndUploadAvatar, removeAvatar } from '../../src/data/profileRepository';
-import { MOCK_USER } from '../../src/data/mock';
 import { fullName } from '../../src/domain/types';
+import { useSignedInUser } from '../../src/hooks/useSignedInUser';
 import { useStore } from '../../src/store/useStore';
 import { useWatchlistStore } from '../../src/store/useWatchlistStore';
 import { radius, spacing } from '../../src/theme/spacing';
@@ -24,7 +24,7 @@ export default function Profile() {
   const insets = useSafeAreaInsets();
   const savedCount = useWatchlistStore((s) => s.items.length);
   const clearWatchlist = useWatchlistStore((s) => s.clear);
-  const user = useStore((s) => s.currentUser) ?? MOCK_USER;
+  const user = useSignedInUser();
   const setCurrentUser = useStore((s) => s.setCurrentUser);
 
   const [photoOpen, setPhotoOpen] = useState(false);
@@ -40,6 +40,7 @@ export default function Profile() {
 
   /** Pick → upload → PATCH /users/me, then reflect the new photo everywhere. */
   const changePhoto = async (source: 'library' | 'camera') => {
+    if (!user) return;
     setPhotoOpen(false);
     setAvatarError(undefined);
     setAvatarBusy(true);
@@ -59,6 +60,7 @@ export default function Profile() {
   };
 
   const clearPhoto = async () => {
+    if (!user) return;
     setPhotoOpen(false);
     setAvatarBusy(true);
     try {
@@ -78,6 +80,9 @@ export default function Profile() {
     { id: 'services', label: t('profile.statServices'), value: '0', icon: 'construct' },
   ];
 
+  // No signed-in customer: `useSignedInUser` is redirecting to login, so
+  // render nothing rather than a screen shaped like someone's account.
+  if (!user) return null;
   return (
     <View style={{ flex: 1, backgroundColor: 'transparent' }}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
@@ -147,14 +152,12 @@ export default function Profile() {
           <Row icon="car-sport-outline" label={t('profile.myVehicles')} onPress={() => router.push('/garage')} />
           <Row icon="heart-outline" label={t('profile.watchlist')} onPress={() => router.push('/watchlist')} />
           <Row icon="trending-up-outline" label={t('profile.myLeads')} onPress={() => router.push('/leads')} />
-          <Row icon="notifications-outline" label={t('profile.notifications')} onPress={() => router.push('/notification-settings')} />
           <Row icon="shield-checkmark-outline" label={t('profile.warrantyRecalls')} onPress={() => router.push('/warranty')} />
           <Row icon="time-outline" label={t('profile.serviceHistory')} onPress={() => router.push('/(tabs)/service')} last />
         </Group>
 
         <Group title={t('profile.groupAccount')}>
-          <Row icon="person-outline" label={t('profile.personalDetails')} />
-          <Row icon="wallet-outline" label={t('profile.paymentMethods')} last />
+          <Row icon="person-outline" label={t('profile.personalDetails')} last />
         </Group>
 
         <Group title={t('profile.groupPreferences')}>

@@ -8,6 +8,37 @@ import { MOCK_USER } from './mock';
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+/**
+ * The only token the offline demo accepts as a session.
+ *
+ * Named rather than inlined so `verifyOtp` and `restoreSession` cannot drift:
+ * if they disagree, either the demo stops working or any leftover token logs
+ * someone straight in.
+ */
+const MOCK_SESSION_TOKEN = 'mock-session-token';
+
+/**
+ * The whole profile, cached verbatim.
+ *
+ * Previously only five fields were stored and `restoreSession` padded the rest
+ * from MOCK_USER, which meant a returning customer was shown the demo user's
+ * phone, city and role as if they were their own.
+ */
+function toCache(user: UserProfile) {
+  return {
+    id: user.id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    otherName: user.otherName ?? null,
+    email: user.email,
+    phone: user.phone,
+    city: user.city,
+    avatar: user.avatar ?? null,
+    role: user.role,
+  };
+}
+
+
 /** Request a one-time code, delivered to the email address. */
 export async function requestOtp(body: authApi.OtpRequestBody): Promise<void> {
   if (APP.useMock) {
@@ -26,7 +57,7 @@ export async function verifyOtp(params: {
 }): Promise<UserProfile> {
   if (APP.useMock) {
     await delay(700);
-    await setToken('mock-token');
+    await setToken(MOCK_SESSION_TOKEN);
     return {
       ...MOCK_USER,
       ...params.profile,
@@ -35,13 +66,7 @@ export async function verifyOtp(params: {
   }
   const res = await authApi.verifyOtp({ email: params.email, code: params.code });
   // Seed the cache now so the NEXT cold start renders signed-in immediately.
-  await cacheUser({
-    id: res.user.id,
-    firstName: res.user.firstName,
-    lastName: res.user.lastName,
-    email: res.user.email,
-    avatar: res.user.avatar ?? null,
-  });
+  await cacheUser(toCache(res.user));
   return res.user;
 }
 
@@ -107,8 +132,20 @@ export async function logout(): Promise<void> {
  */
 export async function restoreSession(): Promise<UserProfile | null> {
   if (APP.useMock) {
+    /*
+      Only a token this build actually minted counts.
+
+      `useMock` defaults to `__DEV__`, so any development build took ANY string
+      sitting in SecureStore as proof of a session and went straight to the
+      home tab — including a real access token left behind by a previous
+      non-mock run, and including one belonging to a different account. That is
+      the auto-login: no credentials entered, no code verified.
+
+      Checking for the sentinel that `verifyOtp` writes in mock mode keeps the
+      offline demo working while making a stale or foreign token worthless.
+    */
     const token = await getToken();
-    return token ? MOCK_USER : null;
+    return token === MOCK_SESSION_TOKEN ? MOCK_USER : null;
   }
 
   const token = await getToken();
@@ -121,13 +158,7 @@ export async function restoreSession(): Promise<UserProfile | null> {
   const revalidate = authApi
     .fetchCurrentUser()
     .then(async (user) => {
-      await cacheUser({
-        id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        avatar: user.avatar ?? null,
-      });
+      await cacheUser(toCache(user));
       return user;
     })
     .catch(() => null);
@@ -137,13 +168,18 @@ export async function restoreSession(): Promise<UserProfile | null> {
     void revalidate.then((fresh) => {
       if (fresh) useStore.getState().setCurrentUser(fresh);
     });
+    // The cached profile as-is. Spreading MOCK_USER over it here is what put
+    // the demo user's phone, city and role in front of real customers.
     return {
-      ...MOCK_USER,
       id: cached.id,
       firstName: cached.firstName,
       lastName: cached.lastName,
+      otherName: cached.otherName ?? null,
       email: cached.email,
+      phone: cached.phone,
+      city: cached.city,
       avatar: cached.avatar ?? undefined,
+      role: cached.role,
     };
   }
 

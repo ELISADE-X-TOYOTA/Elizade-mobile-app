@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { NotifyMeStatus, Vehicle, vehicleTitle } from '../domain/types';
 import { useTheme } from '../theme/useTheme';
 import { radius, spacing } from '../theme/spacing';
@@ -18,6 +19,7 @@ interface Props {
 /** Availability alert CTA for vehicles that cannot be reserved today. */
 export function NotifyMeCard({ vehicle, status, loading, error, onSubscribe, onUnsubscribe }: Props) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const subscribed = status?.subscribed === true;
 
   return (
@@ -39,11 +41,11 @@ export function NotifyMeCard({ vehicle, status, loading, error, onSubscribe, onU
         ) : null}
         {subscribed ? (
           <Pressable onPress={onUnsubscribe} disabled={loading} style={styles.remove} accessibilityRole="button">
-            {loading ? <ActivityIndicator size="small" color={t.colors.primary} /> : <Txt variant="labelMedium" color={t.colors.primary}>Turn off alerts</Txt>}
+            {loading ? <ActivityIndicator size="small" color={t.colors.primary} /> : <Txt variant="labelMedium" color={t.colors.primary}>{tr('shop.turnOffAlerts')}</Txt>}
           </Pressable>
         ) : (
           <PrimaryButton
-            label="Notify Me"
+            label={tr('shop.notifyMe')}
             icon="notifications-outline"
             onPress={onSubscribe}
             loading={loading}

@@ -126,7 +126,6 @@
     "warrantyRecalls": "Akwụkwọ nkwa na ịkpọghachi",
     "serviceHistory": "Akụkọ nrụzi",
     "personalDetails": "Nkọwa onwe gị",
-    "paymentMethods": "Ụzọ ịkwụ ụgwọ",
     "language": "Asụsụ",
     "privacySecurity": "Nzuzo na nchekwa",
     "helpCenter": "Ebe enyemaka",
@@ -210,7 +209,18 @@
     "loadError": "Enweghị ike ibubata ụgbọala a",
     "loadCarsError": "Enweghị ike ibubata ụgbọala. {{message}}",
     "loadVehiclesError": "Enweghị ike ibubata ụgbọala. {{message}}",
-    "verifiedDealerOwners": "Onye na-ere akwadoro · onye nwe {{count}}"
+    "verifiedDealerOwners": "Onye na-ere akwadoro · onye nwe {{count}}",
+    "imageViewer": "Ihe nlele foto ụgbọala",
+    "prevAngle": "Akụkụ gara aga",
+    "nextAngle": "Akụkụ ọzọ",
+    "configure": "Hazie",
+    "configureTitle": "Hazie nhọrọ gị",
+    "configureSubtitle": "Họrọ nkọwa ị chọrọ ịkọrọ Elizade.",
+    "exteriorFinish": "Agba èzí",
+    "includedHighlights": "Ihe ndị so na ya",
+    "configureDisclaimer": "Nhọrọ a bụ maka ajụjụ gị, ọ naghịkwa agbanwe ọnụahịa ụgbọala ekwuputara.",
+    "notifyMe": "Mee ka m mara",
+    "turnOffAlerts": "Gbanyụọ ọkwa"
   },
   "service": {
     "title": "Nrụzi",
@@ -241,7 +251,17 @@
     "loadError": "Enweghị ike ibubata nrụzi.",
     "dueInDays": "{{vehicle}} · n'ime ụbọchị {{days}}",
     "atMileageTapToBook": "Na {{mileage}} km · Pịa ka i debe",
-    "requestedDetail": "Arịọla {{service}} gị na {{branch}}. Anyị ga-akwado ya n'oge na-adịghị anya."
+    "requestedDetail": "Arịọla {{service}} gị na {{branch}}. Anyị ga-akwado ya n'oge na-adịghị anya.",
+    "reschedule": "Hazigharia",
+    "cancel": "Kagbuo",
+    "keepAppointment": "Jide oge nzute",
+    "cancelAppointment": "Kagbuo oge nzute",
+    "confirmNewTime": "Kwado oge ọhụrụ",
+    "cancelConfirm": "Kagbuo oge nzute?",
+    "rescheduleTitle": "Hazigharia oge nzute",
+    "rescheduleSubtitle": "Họrọ ụbọchị na oge ọhụrụ.",
+    "addAttachments": "Tinye foto, vidiyo ma ọ bụ akwụkwọ",
+    "issueAttachments": "Ihe ejikọrọ"
   },
   "support": {
     "title": "Enyemaka",

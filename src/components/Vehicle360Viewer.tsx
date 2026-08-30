@@ -1,4 +1,5 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useMemo, useRef, useState } from 'react';
 import {
@@ -34,6 +35,7 @@ interface Props {
  */
 export function Vehicle360Viewer({ vehicle }: Props) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const frames = useMemo(() => (vehicle.images.length ? vehicle.images : ['']), [vehicle.images]);
   const scrollRef = useRef<ScrollView>(null);
   const [frameIndex, setFrameIndex] = useState(0);
@@ -66,7 +68,7 @@ export function Vehicle360Viewer({ vehicle }: Props) {
           showsHorizontalScrollIndicator={false}
           onMomentumScrollEnd={onScroll}
           scrollEventThrottle={16}
-          accessibilityLabel="Vehicle image viewer"
+          accessibilityLabel={tr('shop.imageViewer')}
         >
           {frames.map((uri, index) => (
             <View key={`${uri}-${index}`} style={styles.frame}>
@@ -100,7 +102,7 @@ export function Vehicle360Viewer({ vehicle }: Props) {
               onPress={() => moveFrame(-1)}
               style={[styles.arrow, styles.arrowLeft]}
               accessibilityRole="button"
-              accessibilityLabel="Previous vehicle angle"
+              accessibilityLabel={tr('shop.prevAngle')}
             >
               <Ionicons name="chevron-back" size={22} color={OVERLAY_CHIP_INK} />
             </Pressable>
@@ -108,7 +110,7 @@ export function Vehicle360Viewer({ vehicle }: Props) {
               onPress={() => moveFrame(1)}
               style={[styles.arrow, styles.arrowRight]}
               accessibilityRole="button"
-              accessibilityLabel="Next vehicle angle"
+              accessibilityLabel={tr('shop.nextAngle')}
             >
               <Ionicons name="chevron-forward" size={22} color={OVERLAY_CHIP_INK} />
             </Pressable>
@@ -126,9 +128,7 @@ export function Vehicle360Viewer({ vehicle }: Props) {
             accessibilityLabel={configOpen ? 'Hide vehicle configurator' : 'Open vehicle configurator'}
           >
             <Ionicons name="options-outline" size={16} color={OVERLAY_CHIP_INK} />
-            <Txt variant="labelSmall" color={OVERLAY_CHIP_INK} style={{ marginLeft: 5 }}>
-              Configure
-            </Txt>
+            <Txt variant="labelSmall" color={OVERLAY_CHIP_INK} style={{ marginLeft: 5 }}>{tr('shop.configure')}</Txt>
           </Pressable>
         </View>
 
@@ -151,10 +151,8 @@ export function Vehicle360Viewer({ vehicle }: Props) {
         <View style={[styles.config, { backgroundColor: t.colors.surface, borderColor: t.colors.border }]}>
           <View style={styles.configHeading}>
             <View style={{ flex: 1 }}>
-              <Txt variant="titleLarge">Configure your shortlist</Txt>
-              <Txt variant="bodySmall" tone="secondary" style={{ marginTop: 3 }}>
-                Select the details you want to discuss with Elizade.
-              </Txt>
+              <Txt variant="titleLarge">{tr('shop.configureTitle')}</Txt>
+              <Txt variant="bodySmall" tone="secondary" style={{ marginTop: 3 }}>{tr('shop.configureSubtitle')}</Txt>
             </View>
             <Ionicons name="sparkles-outline" size={22} color={t.colors.primary} />
           </View>
@@ -162,9 +160,7 @@ export function Vehicle360Viewer({ vehicle }: Props) {
           <View style={[styles.finish, { backgroundColor: tint(t.colors.accent, 0.1) }]}>
             <View style={[styles.swatch, { backgroundColor: vehicle.colorHex, borderColor: t.colors.border }]} />
             <View style={{ flex: 1, marginLeft: 10 }}>
-              <Txt variant="labelSmall" tone="secondary">
-                Exterior finish
-              </Txt>
+              <Txt variant="labelSmall" tone="secondary">{tr('shop.exteriorFinish')}</Txt>
               <Txt variant="titleSmall">{vehicle.color}</Txt>
             </View>
             <Ionicons name="checkmark-circle" size={20} color={t.colors.successText} />
@@ -172,9 +168,7 @@ export function Vehicle360Viewer({ vehicle }: Props) {
 
           {!!vehicle.features.length && (
             <>
-              <Txt variant="labelMedium" tone="secondary" style={{ marginTop: spacing.md, marginBottom: spacing.xs }}>
-                Included highlights
-              </Txt>
+              <Txt variant="labelMedium" tone="secondary" style={{ marginTop: spacing.md, marginBottom: spacing.xs }}>{tr('shop.includedHighlights')}</Txt>
               <View style={styles.featureList}>
                 {vehicle.features.map((feature) => {
                   const selected = selectedFeatures.includes(feature);
@@ -206,9 +200,7 @@ export function Vehicle360Viewer({ vehicle }: Props) {
               </View>
             </>
           )}
-          <Txt variant="bodySmall" tone="tertiary" style={{ marginTop: spacing.md }}>
-            This selection is for your enquiry and does not change listed vehicle pricing.
-          </Txt>
+          <Txt variant="bodySmall" tone="tertiary" style={{ marginTop: spacing.md }}>{tr('shop.configureDisclaimer')}</Txt>
         </View>
       )}
     </View>

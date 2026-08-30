@@ -12,7 +12,6 @@ import { CarCardSkeleton } from '../../src/components/Skeleton';
 import { SectionHeader } from '../../src/components/SectionHeader';
 import { clean } from '../../src/utils/sanitize';
 import { Txt } from '../../src/components/Txt';
-import { MOCK_USER } from '../../src/data/mock';
 import { CATEGORY_META, Vehicle, VehicleCategory, vehicleTitle } from '../../src/domain/types';
 import { Avatar } from '../../src/components/Avatar';
 import { DashboardPanel } from '../../src/components/DashboardPanel';
@@ -21,6 +20,7 @@ import { IntroGuide } from '../../src/components/IntroGuide';
 import { useDashboard } from '../../src/hooks/useDashboard';
 import { useNotifications } from '../../src/hooks/useNotifications';
 import { useVehicles } from '../../src/hooks/useVehicles';
+import { useSignedInUser } from '../../src/hooks/useSignedInUser';
 import { useStore } from '../../src/store/useStore';
 import { useWatchlistStore } from '../../src/store/useWatchlistStore';
 import { radius, spacing } from '../../src/theme/spacing';
@@ -47,7 +47,7 @@ export default function Home() {
   const insets = useSafeAreaInsets();
   const category = useStore((s) => s.categoryFilter);
   const setCategory = useStore((s) => s.setCategoryFilter);
-  const user = useStore((s) => s.currentUser) ?? MOCK_USER;
+  const user = useSignedInUser();
 
   // Search box + server-side filters.
   const [search, setSearch] = useState('');
@@ -137,6 +137,9 @@ export default function Home() {
     [],
   );
 
+  // No signed-in customer: `useSignedInUser` is redirecting to login, so
+  // render nothing rather than a screen shaped like someone's account.
+  if (!user) return null;
   return (
     <View style={{ flex: 1, backgroundColor: 'transparent' }}>
       <ScrollView

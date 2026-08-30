@@ -126,7 +126,6 @@
     "warrantyRecalls": "Waranti da kiran gyara",
     "serviceHistory": "Tarihin gyara",
     "personalDetails": "Bayanan kai",
-    "paymentMethods": "Hanyoyin biya",
     "language": "Harshe",
     "privacySecurity": "Sirri da tsaro",
     "helpCenter": "Cibiyar taimako",
@@ -210,7 +209,18 @@
     "loadError": "An kasa loda wannan mota",
     "loadCarsError": "An kasa loda motoci. {{message}}",
     "loadVehiclesError": "An kasa loda motoci. {{message}}",
-    "verifiedDealerOwners": "Wakili da aka tabbatar · masu mallaka {{count}}"
+    "verifiedDealerOwners": "Wakili da aka tabbatar · masu mallaka {{count}}",
+    "imageViewer": "Mai duba hotunan mota",
+    "prevAngle": "Kusurwar da ta gabata",
+    "nextAngle": "Kusurwa ta gaba",
+    "configure": "Tsara",
+    "configureTitle": "Tsara zaɓinka",
+    "configureSubtitle": "Zaɓi bayanan da kake son tattaunawa da Elizade.",
+    "exteriorFinish": "Launin waje",
+    "includedHighlights": "Abubuwan da ke ciki",
+    "configureDisclaimer": "Wannan zaɓi na tambayarka ne kuma ba ya canza farashin motar da aka sanar.",
+    "notifyMe": "Sanar da ni",
+    "turnOffAlerts": "Kashe sanarwa"
   },
   "service": {
     "title": "Gyara",
@@ -241,7 +251,17 @@
     "loadError": "An kasa loda gyara.",
     "dueInDays": "{{vehicle}} · cikin kwanaki {{days}}",
     "atMileageTapToBook": "A {{mileage}} km · Danna don yin rijista",
-    "requestedDetail": "An nemi {{service}} a {{branch}}. Za mu tabbatar nan ba da jimawa ba."
+    "requestedDetail": "An nemi {{service}} a {{branch}}. Za mu tabbatar nan ba da jimawa ba.",
+    "reschedule": "Sake tsarawa",
+    "cancel": "Soke",
+    "keepAppointment": "Riƙe alkawari",
+    "cancelAppointment": "Soke alkawari",
+    "confirmNewTime": "Tabbatar da sabon lokaci",
+    "cancelConfirm": "A soke alkawarin?",
+    "rescheduleTitle": "Sake tsara alkawari",
+    "rescheduleSubtitle": "Zaɓi sabon rana da lokaci.",
+    "addAttachments": "Ƙara hotuna, bidiyo ko takardu",
+    "issueAttachments": "Abubuwan da aka haɗa"
   },
   "support": {
     "title": "Taimako",

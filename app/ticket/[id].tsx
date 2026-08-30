@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MAX_TICKET_ATTACHMENTS } from '../../src/api/support';
 import { AttachmentDrafts } from '../../src/components/AttachmentDrafts';
+import { SecureAttachment } from '../../src/components/SecureAttachment';
 import { KeyboardAwareView } from '../../src/components/KeyboardAware';
 import { Skeleton } from '../../src/components/Skeleton';
 import { Txt } from '../../src/components/Txt';

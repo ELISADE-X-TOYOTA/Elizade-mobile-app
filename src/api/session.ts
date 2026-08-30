@@ -105,12 +105,30 @@ export async function setToken(token: string | null): Promise<void> {
   Only the fields the shell needs to render are kept: enough to paint a
   correct header offline, not a full profile mirror.
 */
+/**
+ * The signed-in profile, cached so a returning customer sees their own details
+ * on the first frame instead of a spinner.
+ *
+ * THE WHOLE PROFILE, not a subset. It used to hold five fields, and
+ * `restoreSession` filled the rest by spreading MOCK_USER over it — so a real
+ * customer was shown the demo user's phone number, city and ROLE until the
+ * revalidation landed. A cache that has to be padded with fabricated data is
+ * the wrong shape.
+ *
+ * Safe to widen: this goes through `writeRaw`, which is SecureStore (the
+ * platform keystore) on device — the same encrypted store as the tokens, not
+ * plaintext AsyncStorage.
+ */
 export interface CachedUser {
   id: string;
   firstName: string;
   lastName: string;
+  otherName?: string | null;
   email: string;
+  phone: string;
+  city: string;
   avatar?: string | null;
+  role: 'customer' | 'staff' | 'admin';
 }
 
 export async function cacheUser(user: CachedUser | null): Promise<void> {

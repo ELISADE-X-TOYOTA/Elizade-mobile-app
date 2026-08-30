@@ -126,7 +126,6 @@
     "warrantyRecalls": "Garantía y llamadas a revisión",
     "serviceHistory": "Historial de servicio",
     "personalDetails": "Datos personales",
-    "paymentMethods": "Métodos de pago",
     "language": "Idioma",
     "privacySecurity": "Privacidad y seguridad",
     "helpCenter": "Centro de ayuda",
@@ -210,7 +209,18 @@
     "loadError": "No se pudo cargar este vehículo",
     "loadCarsError": "No se pudieron cargar los coches. {{message}}",
     "loadVehiclesError": "No se pudieron cargar los vehículos. {{message}}",
-    "verifiedDealerOwners": "Concesionario verificado · {{count}} propietario"
+    "verifiedDealerOwners": "Concesionario verificado · {{count}} propietario",
+    "imageViewer": "Visor de imágenes del vehículo",
+    "prevAngle": "Ángulo anterior",
+    "nextAngle": "Ángulo siguiente",
+    "configure": "Configurar",
+    "configureTitle": "Configura tu selección",
+    "configureSubtitle": "Elige los detalles que quieres tratar con Elizade.",
+    "exteriorFinish": "Acabado exterior",
+    "includedHighlights": "Equipamiento incluido",
+    "configureDisclaimer": "Esta selección es para tu consulta y no cambia el precio publicado del vehículo.",
+    "notifyMe": "Avisarme",
+    "turnOffAlerts": "Desactivar avisos"
   },
   "service": {
     "title": "Servicio",
@@ -241,7 +251,17 @@
     "loadError": "No se pudo cargar el servicio.",
     "dueInDays": "{{vehicle}} · en {{days}} días",
     "atMileageTapToBook": "A {{mileage}} km · Toca para reservar",
-    "requestedDetail": "Tu {{service}} en {{branch}} ha sido solicitado. Lo confirmaremos en breve."
+    "requestedDetail": "Tu {{service}} en {{branch}} ha sido solicitado. Lo confirmaremos en breve.",
+    "reschedule": "Reprogramar",
+    "cancel": "Cancelar",
+    "keepAppointment": "Mantener la cita",
+    "cancelAppointment": "Cancelar la cita",
+    "confirmNewTime": "Confirmar nueva hora",
+    "cancelConfirm": "¿Cancelar la cita?",
+    "rescheduleTitle": "Reprogramar la cita",
+    "rescheduleSubtitle": "Elige una nueva fecha y hora.",
+    "addAttachments": "Añadir fotos, vídeos o documentos",
+    "issueAttachments": "Archivos adjuntos"
   },
   "support": {
     "title": "Soporte",

@@ -72,9 +72,7 @@ export default function ServiceDetail() {
                 <ServiceAppointmentActions appointment={appt} onUpdated={setAppointmentOverride} />
                 {!!appt.attachmentUrls?.length && (
                   <Card>
-                    <Txt variant="titleMedium" style={{ marginBottom: spacing.sm }}>
-                      Issue attachments
-                    </Txt>
+                    <Txt variant="titleMedium" style={{ marginBottom: spacing.sm }}>{tr('service.issueAttachments')}</Txt>
                     <View style={{ flexDirection: 'row', gap: 8 }}>
                       {appt.attachmentUrls.slice(0, 5).map((url) => (
                         <SecureAttachment key={url} uri={url} style={styles.attachment} />

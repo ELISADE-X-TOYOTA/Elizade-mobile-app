@@ -126,7 +126,6 @@
     "warrantyRecalls": "Ìdánilójú àti ìpè padà",
     "serviceHistory": "Ìtàn àtúnṣe",
     "personalDetails": "Àlàyé ara ẹni",
-    "paymentMethods": "Ọ̀nà ìsanwó",
     "language": "Èdè",
     "privacySecurity": "Ìpamọ́ àti ààbò",
     "helpCenter": "Ibùdó ìrànlọ́wọ́",
@@ -210,7 +209,18 @@
     "loadError": "A kò lè gbé ọkọ̀ yìí wọlé",
     "loadCarsError": "A kò lè gbé àwọn ọkọ̀ wọlé. {{message}}",
     "loadVehiclesError": "A kò lè gbé àwọn ọkọ̀ wọlé. {{message}}",
-    "verifiedDealerOwners": "Olùtajà tí a jẹ́rìí sí · onílé {{count}}"
+    "verifiedDealerOwners": "Olùtajà tí a jẹ́rìí sí · onílé {{count}}",
+    "imageViewer": "Ẹ̀rọ ìwo àwòrán ọkọ̀",
+    "prevAngle": "Igun tí ó ṣáájú",
+    "nextAngle": "Igun tí ó kàn",
+    "configure": "Ṣètò",
+    "configureTitle": "Ṣètò àyànfẹ́ rẹ",
+    "configureSubtitle": "Yan àwọn àlàyé tí o fẹ́ jíròrò pẹ̀lú Elizade.",
+    "exteriorFinish": "Àwọ̀ òde",
+    "includedHighlights": "Àwọn ohun tí ó wà nínú rẹ̀",
+    "configureDisclaimer": "Àyànfẹ́ yìí wà fún ìbéèrè rẹ, kò sì yí iye owó ọkọ̀ tí a kéde padà.",
+    "notifyMe": "Sọ fún mi",
+    "turnOffAlerts": "Pa ìkìlọ̀ kúrò"
   },
   "service": {
     "title": "Àtúnṣe",
@@ -241,7 +251,17 @@
     "loadError": "A kò lè gbé àtúnṣe wọlé.",
     "dueInDays": "{{vehicle}} · ní ọjọ́ {{days}}",
     "atMileageTapToBook": "Ní {{mileage}} km · Tẹ láti ṣètò",
-    "requestedDetail": "A ti béèrè {{service}} rẹ ní {{branch}}. A ó jẹ́rìí sí i láìpẹ́."
+    "requestedDetail": "A ti béèrè {{service}} rẹ ní {{branch}}. A ó jẹ́rìí sí i láìpẹ́.",
+    "reschedule": "Tún ṣètò",
+    "cancel": "Fagilé",
+    "keepAppointment": "Fi ìpàdé sílẹ̀ bẹ́ẹ̀",
+    "cancelAppointment": "Fagilé ìpàdé",
+    "confirmNewTime": "Jẹ́rìí àkókò tuntun",
+    "cancelConfirm": "Fagilé ìpàdé náà?",
+    "rescheduleTitle": "Tún ìpàdé ṣètò",
+    "rescheduleSubtitle": "Yan ọjọ́ àti àkókò tuntun.",
+    "addAttachments": "Fi àwòrán, fídíò tàbí ìwé kún un",
+    "issueAttachments": "Àwọn ìwé àfikún"
   },
   "support": {
     "title": "Ìrànlọ́wọ́",

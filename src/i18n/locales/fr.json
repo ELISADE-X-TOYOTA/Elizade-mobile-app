@@ -126,7 +126,6 @@
     "warrantyRecalls": "Garantie et rappels",
     "serviceHistory": "Historique d'entretien",
     "personalDetails": "Informations personnelles",
-    "paymentMethods": "Moyens de paiement",
     "language": "Langue",
     "privacySecurity": "Confidentialité et sécurité",
     "helpCenter": "Centre d'aide",
@@ -210,7 +209,18 @@
     "loadError": "Impossible de charger ce véhicule",
     "loadCarsError": "Impossible de charger les voitures. {{message}}",
     "loadVehiclesError": "Impossible de charger les véhicules. {{message}}",
-    "verifiedDealerOwners": "Concessionnaire vérifié · {{count}} propriétaire"
+    "verifiedDealerOwners": "Concessionnaire vérifié · {{count}} propriétaire",
+    "imageViewer": "Visionneuse d'images du véhicule",
+    "prevAngle": "Angle précédent",
+    "nextAngle": "Angle suivant",
+    "configure": "Configurer",
+    "configureTitle": "Configurez votre sélection",
+    "configureSubtitle": "Choisissez les détails que vous souhaitez aborder avec Elizade.",
+    "exteriorFinish": "Finition extérieure",
+    "includedHighlights": "Équipements inclus",
+    "configureDisclaimer": "Cette sélection concerne votre demande et ne modifie pas le prix affiché du véhicule.",
+    "notifyMe": "Me prévenir",
+    "turnOffAlerts": "Désactiver les alertes"
   },
   "service": {
     "title": "Entretien",
@@ -241,7 +251,17 @@
     "loadError": "Impossible de charger l'entretien.",
     "dueInDays": "{{vehicle}} · dans {{days}} jours",
     "atMileageTapToBook": "À {{mileage}} km · Touchez pour réserver",
-    "requestedDetail": "Votre {{service}} à {{branch}} a été demandé. Nous confirmerons sous peu."
+    "requestedDetail": "Votre {{service}} à {{branch}} a été demandé. Nous confirmerons sous peu.",
+    "reschedule": "Reprogrammer",
+    "cancel": "Annuler",
+    "keepAppointment": "Conserver le rendez-vous",
+    "cancelAppointment": "Annuler le rendez-vous",
+    "confirmNewTime": "Confirmer le nouvel horaire",
+    "cancelConfirm": "Annuler le rendez-vous ?",
+    "rescheduleTitle": "Reprogrammer le rendez-vous",
+    "rescheduleSubtitle": "Choisissez une nouvelle date et heure.",
+    "addAttachments": "Ajouter des photos, vidéos ou documents",
+    "issueAttachments": "Pièces jointes"
   },
   "support": {
     "title": "Assistance",

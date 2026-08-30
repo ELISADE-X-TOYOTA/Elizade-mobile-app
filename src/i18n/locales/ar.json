@@ -126,7 +126,6 @@
     "warrantyRecalls": "الضمان والاستدعاءات",
     "serviceHistory": "سجل الصيانة",
     "personalDetails": "البيانات الشخصية",
-    "paymentMethods": "طرق الدفع",
     "language": "اللغة",
     "privacySecurity": "الخصوصية والأمان",
     "helpCenter": "مركز المساعدة",
@@ -210,7 +209,18 @@
     "loadError": "تعذّر تحميل هذه المركبة",
     "loadCarsError": "تعذّر تحميل السيارات. {{message}}",
     "loadVehiclesError": "تعذّر تحميل المركبات. {{message}}",
-    "verifiedDealerOwners": "وكيل موثّق · {{count}} مالك"
+    "verifiedDealerOwners": "وكيل موثّق · {{count}} مالك",
+    "imageViewer": "عارض صور المركبة",
+    "prevAngle": "الزاوية السابقة",
+    "nextAngle": "الزاوية التالية",
+    "configure": "تخصيص",
+    "configureTitle": "خصّص اختيارك",
+    "configureSubtitle": "اختر التفاصيل التي تريد مناقشتها مع إليزادي.",
+    "exteriorFinish": "اللون الخارجي",
+    "includedHighlights": "المزايا المتضمنة",
+    "configureDisclaimer": "هذا الاختيار خاص باستفسارك ولا يغيّر السعر المعلن للمركبة.",
+    "notifyMe": "أبلغني",
+    "turnOffAlerts": "إيقاف التنبيهات"
   },
   "service": {
     "title": "الصيانة",
@@ -241,7 +251,17 @@
     "loadError": "تعذّر تحميل الصيانة.",
     "dueInDays": "{{vehicle}} · خلال {{days}} يومًا",
     "atMileageTapToBook": "عند {{mileage}} كم · اضغط للحجز",
-    "requestedDetail": "تم طلب {{service}} في {{branch}}. سنؤكد قريبًا."
+    "requestedDetail": "تم طلب {{service}} في {{branch}}. سنؤكد قريبًا.",
+    "reschedule": "إعادة جدولة",
+    "cancel": "إلغاء",
+    "keepAppointment": "الإبقاء على الموعد",
+    "cancelAppointment": "إلغاء الموعد",
+    "confirmNewTime": "تأكيد الموعد الجديد",
+    "cancelConfirm": "إلغاء الموعد؟",
+    "rescheduleTitle": "إعادة جدولة الموعد",
+    "rescheduleSubtitle": "اختر تاريخًا ووقتًا جديدين.",
+    "addAttachments": "أضف صورًا أو مقاطع فيديو أو مستندات",
+    "issueAttachments": "المرفقات"
   },
   "support": {
     "title": "الدعم",

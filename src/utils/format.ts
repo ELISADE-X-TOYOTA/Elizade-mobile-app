@@ -16,7 +16,25 @@ export function perDay(value: number): string {
   return `${price(value)}/day`;
 }
 
-export function mileage(km: number): string {
+/**
+ * Odometer reading, or a dash when there isn't one.
+ *
+ * The parameter used to be a bare `number`, which the type system cannot
+ * enforce across an API boundary: responses are parsed JSON, so a null column
+ * arrives as `null` and `null.toLocaleString()` takes the screen down. It also
+ * accepted NaN — `estMileage` returns NaN whenever a vehicle has no `year` —
+ * and rendered a literal "NaN km" to someone deciding whether to buy the car.
+ *
+ * Both now read as "not published", which is the truth in either case.
+ */
+export function mileage(km: number | null | undefined): string {
+  if (km == null || !Number.isFinite(km)) return '—';
+  return `${km.toLocaleString('en-NG')} km`;
+}
+
+/** Numeric-or-nothing variant, for callers that distinguish unknown values. */
+export function mileageOrNull(km: number | null | undefined): string | null {
+  if (km == null || !Number.isFinite(km)) return null;
   return `${km.toLocaleString('en-NG')} km`;
 }
 

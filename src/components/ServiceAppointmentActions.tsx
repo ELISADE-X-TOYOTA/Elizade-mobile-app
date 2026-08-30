@@ -1,4 +1,5 @@
 import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useMemo, useState } from 'react';
 import { cancelAppointment, rescheduleAppointment } from '../data/serviceRepository';
 import { AppointmentStatus, ServiceAppointment } from '../domain/types';
@@ -23,6 +24,7 @@ type Sheet = 'reschedule' | 'cancel' | null;
 /** Customer actions shared by service cards and the appointment detail. */
 export function ServiceAppointmentActions({ appointment, onUpdated }: Props) {
   const t = useTheme();
+  const { t: tr } = useTranslation();
   const [sheet, setSheet] = useState<Sheet>(null);
   const [dateIdx, setDateIdx] = useState(1);
   const [slot, setSlot] = useState(0);
@@ -85,12 +87,12 @@ export function ServiceAppointmentActions({ appointment, onUpdated }: Props) {
       <View style={styles.actions}>
         {canReschedule && (
           <View style={styles.action}>
-            <PrimaryButton label="Reschedule" variant="outline" icon="calendar-outline" onPress={() => open('reschedule')} />
+            <PrimaryButton label={tr('service.reschedule')} variant="outline" icon="calendar-outline" onPress={() => open('reschedule')} />
           </View>
         )}
         {canCancel && (
           <View style={styles.action}>
-            <PrimaryButton label="Cancel" variant="outline" icon="close-circle-outline" onPress={() => open('cancel')} />
+            <PrimaryButton label={tr('service.cancel')} variant="outline" icon="close-circle-outline" onPress={() => open('cancel')} />
           </View>
         )}
       </View>
@@ -102,7 +104,7 @@ export function ServiceAppointmentActions({ appointment, onUpdated }: Props) {
             <View style={[styles.handle, { backgroundColor: t.colors.border }]} />
             {sheet === 'cancel' ? (
               <>
-                <Txt variant="titleLarge">Cancel appointment?</Txt>
+                <Txt variant="titleLarge">{tr('service.cancelConfirm')}</Txt>
                 <Txt tone="secondary" style={{ marginTop: spacing.sm }}>
                   This will cancel your {appointment.serviceType} appointment on{' '}
                   {new Date(appointment.scheduledAt).toLocaleDateString('en', { day: 'numeric', month: 'short' })}.
@@ -110,19 +112,17 @@ export function ServiceAppointmentActions({ appointment, onUpdated }: Props) {
                 {error ? <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: spacing.md }}>{error}</Txt> : null}
                 <View style={styles.confirmActions}>
                   <View style={styles.action}>
-                    <PrimaryButton label="Keep appointment" variant="outline" disabled={working} onPress={close} />
+                    <PrimaryButton label={tr('service.keepAppointment')} variant="outline" disabled={working} onPress={close} />
                   </View>
                   <View style={styles.action}>
-                    <PrimaryButton label="Cancel appointment" loading={working} onPress={submitCancel} />
+                    <PrimaryButton label={tr('service.cancelAppointment')} loading={working} onPress={submitCancel} />
                   </View>
                 </View>
               </>
             ) : (
               <>
-                <Txt variant="titleLarge">Reschedule appointment</Txt>
-                <Txt variant="bodySmall" tone="secondary" style={{ marginTop: 4 }}>
-                  Choose a new date and time.
-                </Txt>
+                <Txt variant="titleLarge">{tr('service.rescheduleTitle')}</Txt>
+                <Txt variant="bodySmall" tone="secondary" style={{ marginTop: 4 }}>{tr('service.rescheduleSubtitle')}</Txt>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.dateRow}>
                   {dates.map((date, i) => (
                     <Pressable
@@ -166,7 +166,7 @@ export function ServiceAppointmentActions({ appointment, onUpdated }: Props) {
                 </View>
                 {error ? <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: spacing.sm }}>{error}</Txt> : null}
                 <View style={{ marginTop: spacing.md }}>
-                  <PrimaryButton label="Confirm new time" icon="calendar" loading={working} onPress={submitReschedule} />
+                  <PrimaryButton label={tr('service.confirmNewTime')} icon="calendar" loading={working} onPress={submitReschedule} />
                 </View>
               </>
             )}

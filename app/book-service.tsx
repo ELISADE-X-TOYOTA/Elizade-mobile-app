@@ -1,13 +1,15 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AttachmentDrafts } from '../src/components/AttachmentDrafts';
 import { KeyboardAwareScrollView } from '../src/components/KeyboardAware';
 import { PrimaryButton } from '../src/components/PrimaryButton';
 import { Txt } from '../src/components/Txt';
+import { MAX_TICKET_ATTACHMENTS } from '../src/api/support';
 import { pickTicketAttachment, type PickedAttachment } from '../src/data/supportRepository';
 import { createAppointment } from '../src/data/serviceRepository';
 import { useBranches } from '../src/hooks/useBranches';
@@ -261,9 +263,7 @@ export default function BookService() {
           ) : (
             <Ionicons name="camera-outline" size={20} color={t.colors.primary} />
           )}
-          <Txt variant="titleSmall" color={t.colors.primary} style={{ marginLeft: 8 }}>
-            Add photos, videos, or documents
-          </Txt>
+          <Txt variant="titleSmall" color={t.colors.primary} style={{ marginLeft: 8 }}>{tr('service.addAttachments')}</Txt>
         </Pressable>
         <AttachmentDrafts
           items={attachments}

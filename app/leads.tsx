@@ -61,6 +61,11 @@ export default function LeadsScreen() {
       <ScrollView
         contentContainerStyle={{
           padding: spacing.screenH,
+          // `headerShown` is false app-wide, so the `Stack.Screen` title above
+          // never renders and this content starts at y=0 — under the status
+          // bar and notch. Every other screen pays its own top inset; this one
+          // did not, which is what pushed the header off the top of the display.
+          paddingTop: insets.top + spacing.md,
           paddingBottom: insets.bottom + spacing.xl,
         }}
         refreshControl={

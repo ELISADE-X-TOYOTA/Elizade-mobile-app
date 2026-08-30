@@ -157,7 +157,9 @@ function AppointmentCard({ appt, onUpdated }: { appt: ServiceAppointment; onUpda
             </Txt>
           </View>
         </View>
+
         <View style={[styles.divider, { backgroundColor: t.colors.border }]} />
+
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Ionicons name="calendar" size={15} color={t.colors.primary} />
           <Txt variant="titleSmall" style={{ marginLeft: 6, flex: 1 }}>
@@ -165,24 +167,11 @@ function AppointmentCard({ appt, onUpdated }: { appt: ServiceAppointment; onUpda
             {date.toLocaleTimeString('en', { hour: 'numeric', minute: '2-digit' })}
           </Txt>
           {ACTIVE.includes(appt.status) && (
-            <Txt variant="titleSmall" color={t.colors.primary}>
-              Track →
-            </Txt>
+            <Txt variant="titleSmall" color={t.colors.primary}>{tr('service.track')}</Txt>
           )}
         </View>
-      </View>
-      <View style={[styles.divider, { backgroundColor: t.colors.border }]} />
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Ionicons name="calendar" size={15} color={t.colors.primary} />
-        <Txt variant="titleSmall" style={{ marginLeft: 6, flex: 1 }}>
-          {date.toLocaleDateString('en', { day: 'numeric', month: 'short' })} ·{' '}
-          {date.toLocaleTimeString('en', { hour: 'numeric', minute: '2-digit' })}
-        </Txt>
-        {ACTIVE.includes(appt.status) && (
-          <Txt variant="titleSmall" color={t.colors.primary}>{tr('service.track')}</Txt>
-        )}
-      </View>
-    </Pressable>
+      </Pressable>
+    </View>
   );
 }
 

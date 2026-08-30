@@ -126,7 +126,6 @@
     "warrantyRecalls": "Warranty & Recalls",
     "serviceHistory": "Service History",
     "personalDetails": "Personal Details",
-    "paymentMethods": "Payment Methods",
     "language": "Language",
     "privacySecurity": "Privacy & Security",
     "helpCenter": "Help Center",
@@ -210,7 +209,18 @@
     "loadError": "Couldn't load this vehicle",
     "loadCarsError": "Couldn't load cars. {{message}}",
     "loadVehiclesError": "Couldn't load vehicles. {{message}}",
-    "verifiedDealerOwners": "Verified Dealer · {{count}} owner"
+    "verifiedDealerOwners": "Verified Dealer · {{count}} owner",
+    "imageViewer": "Vehicle image viewer",
+    "prevAngle": "Previous vehicle angle",
+    "nextAngle": "Next vehicle angle",
+    "configure": "Configure",
+    "configureTitle": "Configure your shortlist",
+    "configureSubtitle": "Select the details you want to discuss with Elizade.",
+    "exteriorFinish": "Exterior finish",
+    "includedHighlights": "Included highlights",
+    "configureDisclaimer": "This selection is for your enquiry and does not change listed vehicle pricing.",
+    "notifyMe": "Notify Me",
+    "turnOffAlerts": "Turn off alerts"
   },
   "service": {
     "title": "Service",
@@ -241,7 +251,17 @@
     "loadError": "Couldn't load service.",
     "dueInDays": "{{vehicle}} · in {{days}} days",
     "atMileageTapToBook": "At {{mileage}} km · Tap to book",
-    "requestedDetail": "Your {{service}} at {{branch}} has been requested. We'll confirm shortly."
+    "requestedDetail": "Your {{service}} at {{branch}} has been requested. We'll confirm shortly.",
+    "reschedule": "Reschedule",
+    "cancel": "Cancel",
+    "keepAppointment": "Keep appointment",
+    "cancelAppointment": "Cancel appointment",
+    "confirmNewTime": "Confirm new time",
+    "cancelConfirm": "Cancel appointment?",
+    "rescheduleTitle": "Reschedule appointment",
+    "rescheduleSubtitle": "Choose a new date and time.",
+    "addAttachments": "Add photos, videos, or documents",
+    "issueAttachments": "Issue attachments"
   },
   "support": {
     "title": "Support",
