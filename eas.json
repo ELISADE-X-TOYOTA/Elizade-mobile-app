@@ -12,7 +12,9 @@
       },
       "env": {
         "EXPO_PUBLIC_API_URL": "https://elizade-backend-api-production.up.railway.app/api/v1",
-        "EXPO_PUBLIC_USE_MOCK": "false"
+        "EXPO_PUBLIC_USE_MOCK": "false",
+        "EXPO_PUBLIC_SERVICE_PRICES": "true",
+        "EXPO_PUBLIC_START_SIGNED_OUT": "false"
       },
       "ios": {
         "simulator": true
@@ -25,7 +27,9 @@
       },
       "env": {
         "EXPO_PUBLIC_API_URL": "https://elizade-backend-api-production.up.railway.app/api/v1",
-        "EXPO_PUBLIC_USE_MOCK": "false"
+        "EXPO_PUBLIC_USE_MOCK": "false",
+        "EXPO_PUBLIC_SERVICE_PRICES": "true",
+        "EXPO_PUBLIC_START_SIGNED_OUT": "false"
       },
       "ios": {
         "resourceClass": "m-medium"
@@ -37,7 +41,9 @@
       },
       "env": {
         "EXPO_PUBLIC_API_URL": "https://elizade-backend-api-production.up.railway.app/api/v1",
-        "EXPO_PUBLIC_USE_MOCK": "false"
+        "EXPO_PUBLIC_USE_MOCK": "false",
+        "EXPO_PUBLIC_SERVICE_PRICES": "true",
+        "EXPO_PUBLIC_START_SIGNED_OUT": "false"
       },
       "ios": {
         "resourceClass": "m-medium"
@@ -50,7 +56,9 @@
       },
       "env": {
         "EXPO_PUBLIC_API_URL": "https://elizade-backend-api-production.up.railway.app/api/v1",
-        "EXPO_PUBLIC_USE_MOCK": "false"
+        "EXPO_PUBLIC_USE_MOCK": "false",
+        "EXPO_PUBLIC_SERVICE_PRICES": "true",
+        "EXPO_PUBLIC_START_SIGNED_OUT": "false"
       }
     }
   },

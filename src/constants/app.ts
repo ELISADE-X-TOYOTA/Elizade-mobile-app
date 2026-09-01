@@ -26,16 +26,20 @@ const startSignedOut = process.env.EXPO_PUBLIC_START_SIGNED_OUT?.trim() === 'tru
 /**
  * Show the service price board.
  *
- * OFF until Elizade publishes real prices. The screen and its API client are
- * finished and reachable the moment this flips, but until a real price book
- * exists the only thing behind it is sample data — and a price in a customer's
- * hand is a quote. A wrong one costs the dealership an argument at the desk.
+ * ON unless explicitly "false" — and the default direction is the whole point.
  *
- * Turning it on needs BOTH: this flag, and a published price book on the
- * backend. The screen still renders its "not published yet" state if the flag
- * is on and the board is empty, so flipping it early is safe, just pointless.
+ * This was opt-in while no prices existed. A price book is published now, so
+ * the gate had outlived its purpose, and it failed in the worst way: `.env` is
+ * gitignored and is NOT uploaded to an EAS build, so the flag was simply absent
+ * in the bundle. Opt-in meant absent read as OFF, and the Prices button
+ * vanished from every release build while working perfectly in Expo Go —
+ * invisible in development, exactly like the blank price tags before it.
+ *
+ * Defaulting ON removes that class of bug: a missing variable can no longer
+ * hide a finished screen. There is no risk in it — with no published board the
+ * screen renders its own honest "not published yet" state.
  */
-const servicePrices = process.env.EXPO_PUBLIC_SERVICE_PRICES?.trim() === 'true';
+const servicePrices = process.env.EXPO_PUBLIC_SERVICE_PRICES?.trim() !== 'false';
 
 /**
  * MOCK DEFAULTS DIFFER BY BUILD, deliberately.
