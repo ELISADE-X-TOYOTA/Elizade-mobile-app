@@ -11,6 +11,8 @@ import Animated, {
   withDelay,
   withTiming,
 } from 'react-native-reanimated';
+import { clearSession } from '../src/api/session';
+import { APP } from '../src/constants/app';
 import { restoreSession } from '../src/data/authRepository';
 import { useStore } from '../src/store/useStore';
 import { Txt } from '../src/components/Txt';
@@ -52,8 +54,17 @@ export default function Splash() {
       driven across, the answer is usually already in.
     */
     let cancelled = false;
+    /*
+      `startSignedOut` wipes the stored credentials rather than merely routing
+      past them. Skipping the restore alone would leave a live token in
+      SecureStore, so the "signed out" app would still be sending authenticated
+      requests — and signing in again would stack a second session on top of
+      one that was never ended.
+    */
     const settle = Promise.all([
-      restoreSession().catch(() => null),
+      APP.startSignedOut
+        ? clearSession().then(() => null)
+        : restoreSession().catch(() => null),
       new Promise((resolve) => setTimeout(resolve, SPLASH_MS)),
     ]);
 

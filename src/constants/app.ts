@@ -11,6 +11,19 @@ const configuredUrl = process.env.EXPO_PUBLIC_API_URL?.trim();
 const configuredMock = process.env.EXPO_PUBLIC_USE_MOCK?.trim();
 
 /**
+ * Discard any stored session on launch and open at the login screen.
+ *
+ * For testing the sign-in flow. Without it the app does what a customer wants
+ * — a token saved at last sign-in is restored and the splash goes straight to
+ * the home tab, which looks like "auto login" when you are trying to reach the
+ * auth screens on purpose.
+ *
+ * Off unless explicitly "true", so a release build cannot inherit it and sign
+ * every customer out on every launch.
+ */
+const startSignedOut = process.env.EXPO_PUBLIC_START_SIGNED_OUT?.trim() === 'true';
+
+/**
  * MOCK DEFAULTS DIFFER BY BUILD, deliberately.
  *
  * A fresh dev checkout with no `.env` should still run, so development
@@ -48,5 +61,7 @@ export const APP = {
   apiBaseUrl: configuredUrl || UNCONFIGURED_API,
   /** When true, bundled mock data powers the UI instead of the API. */
   useMock,
+  /** When true, every launch clears the stored session and opens at login. */
+  startSignedOut,
   version: Constants.expoConfig?.version ?? '1.0.0',
 } as const;
