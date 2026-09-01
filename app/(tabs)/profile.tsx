@@ -172,6 +172,11 @@ export default function Profile() {
         </Group>
 
         <Group title={t('profile.groupSupport')}>
+          <Row
+            icon="lock-closed-outline"
+            label={t('appLock.settingsTitle')}
+            onPress={() => router.push('/security')}
+          />
           <Row icon="shield-checkmark-outline" label={t('profile.privacySecurity')} />
           <Row icon="help-circle-outline" label={t('profile.helpCenter')} />
           <Row icon="log-out-outline" label={t('auth.signOut')} danger last onPress={signOut} />

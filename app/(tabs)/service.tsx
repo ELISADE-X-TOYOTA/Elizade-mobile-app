@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Skeleton } from '../../src/components/Skeleton';
 import { ServiceAppointmentActions } from '../../src/components/ServiceAppointmentActions';
 import { Txt } from '../../src/components/Txt';
+import { APP } from '../../src/constants/app';
 import { OWNED_VEHICLES } from '../../src/data/mock';
 import {
   APPOINTMENT_STATUS_META,
@@ -48,6 +49,18 @@ export default function Service() {
     <View style={{ flex: 1, backgroundColor: 'transparent', paddingTop: insets.top }}>
       <View style={[styles.headerRow, { paddingHorizontal: spacing.screenH }]}>
         <Txt variant="headlineMedium" style={{ flex: 1 }}>{tr('service.title')}</Txt>
+        {/* Hidden until Elizade publishes real prices — see APP.servicePrices. */}
+        {APP.servicePrices ? (
+          <Pressable
+            onPress={() => router.push('/service-prices')}
+            accessibilityRole="button"
+            accessibilityLabel={tr('servicePrices.title')}
+            style={[styles.pricesBtn, { borderColor: t.colors.border, backgroundColor: t.colors.surface }]}
+          >
+            <MaterialCommunityIcons name="tag-outline" size={18} color={t.colors.textPrimary} />
+            <Txt variant="titleSmall" style={{ marginLeft: 4 }}>{tr('servicePrices.short')}</Txt>
+          </Pressable>
+        ) : null}
         <Pressable onPress={() => router.push('/book-service')} style={[styles.addBtn, { backgroundColor: solid(t.colors.accent) }]}>
           <Ionicons name="add" size={20} color={t.colors.onAccent} />
           <Txt variant="titleSmall" color={t.colors.onAccent} style={{ marginLeft: 4 }}>{tr('service.book')}</Txt>
@@ -222,6 +235,16 @@ function Empty({ label }: { label: string }) {
 const styles = StyleSheet.create({
   headerRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: spacing.sm },
   addBtn: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, height: 40, borderRadius: radius.pill },
+  // Secondary to "Book": outlined, so booking stays the primary action.
+  pricesBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    height: 40,
+    borderRadius: radius.pill,
+    borderWidth: StyleSheet.hairlineWidth,
+    marginRight: 8,
+  },
   reminder: { flexDirection: 'row', alignItems: 'center', padding: spacing.md, borderRadius: radius.lg },
   reminderIcon: { width: 48, height: 48, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
   tabs: { flexDirection: 'row', marginHorizontal: spacing.screenH, marginTop: spacing.lg, padding: 4, borderRadius: radius.pill, borderWidth: 1 },

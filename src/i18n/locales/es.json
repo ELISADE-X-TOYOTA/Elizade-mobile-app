@@ -104,6 +104,39 @@
     "haveAccount": "¿Ya tienes una cuenta?",
     "allSet": "¡Todo listo, {{name}}!"
   },
+  "appLock": {
+    "settingsTitle": "Bloqueo de la app",
+    "toggleLabel": "Pedir desbloqueo al abrir la app",
+    "title": "Elizade Connect está bloqueada",
+    "body": "Desbloquea con tu dispositivo para continuar.",
+    "prompt": "Desbloquear Elizade Connect",
+    "unlock": "Desbloquear",
+    "checking": "Comprobando…",
+    "useAccount": "Iniciar sesión con otra cuenta",
+    "failed": "No coincide. Inténtalo de nuevo.",
+    "lockout": "Demasiados intentos. Tu dispositivo ha pausado el desbloqueo: espera un momento o usa tu código.",
+    "unavailable": "Este dispositivo no tiene bloqueo de pantalla configurado.",
+    "noDeviceLock": "Sin bloqueo de pantalla en este dispositivo",
+    "setUpDeviceLock": "Configura huella, desbloqueo facial o PIN en los ajustes del dispositivo para usar el bloqueo.",
+    "softOnly": "El bloqueo está activo, pero este dispositivo no pudo resellar tu sesión guardada.",
+    "confirmEnable": "Confirma tu identidad para activar el bloqueo",
+    "confirmDisable": "Confirma tu identidad para desactivar el bloqueo",
+    "howTitle": "Cómo funciona",
+    "howResume": "Tras {{minutes}} minutos en segundo plano, se pedirá desbloquear de nuevo.",
+    "howSession": "Tras {{days}} días sin abrir la app, se cerrará la sesión y deberás iniciarla otra vez.",
+    "howKeystore": "Tu sesión guardada se conserva en el almacenamiento seguro del dispositivo.",
+    "enrollTitle": "Protege tu cuenta",
+    "enrollBody": "Usa {{method}} para desbloquear Elizade Connect la próxima vez.",
+    "enrollEnable": "Activar",
+    "enrollLater": "Ahora no",
+    "method": {
+      "face": "Desbloqueo facial",
+      "fingerprint": "Huella digital",
+      "iris": "Escaneo de iris",
+      "passcode": "PIN o patrón del dispositivo",
+      "none": "Bloqueo del dispositivo"
+    }
+  },
   "profile": {
     "title": "Perfil",
     "verifiedMember": "Miembro verificado",
@@ -262,6 +295,23 @@
     "rescheduleSubtitle": "Elige una nueva fecha y hora.",
     "addAttachments": "Añadir fotos, vídeos o documentos",
     "issueAttachments": "Archivos adjuntos"
+  },
+  "servicePrices": {
+    "title": "Precios de servicio",
+    "short": "Precios",
+    "model": "Modelo del vehículo",
+    "mileage": "Kilometraje",
+    "km": "{{km}} km",
+    "group": {
+      "periodic": "Mantenimiento periódico",
+      "chassis": "Chasis",
+      "engine": "Motor"
+    },
+    "notPublished": "Los precios aún no están publicados",
+    "notPublishedBody": "Elizade todavía no ha publicado una lista de precios. Vuelva más tarde o consulte a su asesor de servicio para obtener un presupuesto.",
+    "loadError": "No se pudieron cargar los precios: {{message}}",
+    "disclaimer": "Los precios mostrados son estimaciones y pueden variar según el trabajo realmente realizado.",
+    "inclusive": "Precios con mano de obra, piezas e impuestos incluidos."
   },
   "support": {
     "title": "Soporte",

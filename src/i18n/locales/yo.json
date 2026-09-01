@@ -104,6 +104,39 @@
     "haveAccount": "Ṣé o ti ní àkàǹtì tẹ́lẹ̀?",
     "allSet": "Ó ti ṣetán, {{name}}!"
   },
+  "appLock": {
+    "settingsTitle": "Titiipa ohun elo",
+    "toggleLabel": "Beere ìsílẹ̀ kí o tó wọlé sí ohun elo",
+    "title": "A ti tiipa Elizade Connect",
+    "body": "Lo ẹrọ rẹ láti ṣí i kí o lè tẹ̀síwájú.",
+    "prompt": "Ṣí Elizade Connect",
+    "unlock": "Ṣí i",
+    "checking": "Ń ṣàyẹ̀wò…",
+    "useAccount": "Wọlé pẹ̀lú àkọọ́lẹ̀ mìíràn",
+    "failed": "Kò bá ara mu. Gbìyànjú lẹ́ẹ̀kansí.",
+    "lockout": "Ìgbìyànjú pọ̀ jù. Ẹrọ rẹ ti dá ìṣílẹ̀ dúró — dúró díẹ̀, tàbí lo nọ́mbà àṣírí rẹ.",
+    "unavailable": "Kò sí títiipa ojú-ìwé lórí ẹrọ yìí.",
+    "noDeviceLock": "Kò sí títiipa ojú-ìwé lórí ẹrọ yìí",
+    "setUpDeviceLock": "Ṣètò ìka ọwọ́, ìdánimọ̀ ojú tàbí nọ́mbà àṣírí nínú ètò ẹrọ rẹ láti lo títiipa ohun elo.",
+    "softOnly": "Títiipa ti ṣiṣẹ́, ṣùgbọ́n ẹrọ yìí kò lè tún fi ìwọlé rẹ pamọ́ sínú rẹ̀.",
+    "confirmEnable": "Fọwọ́sí pé ìwọ ni láti tan títiipa",
+    "confirmDisable": "Fọwọ́sí pé ìwọ ni láti pa títiipa",
+    "howTitle": "Bí ó ṣe ń ṣiṣẹ́",
+    "howResume": "Lẹ́yìn ìṣẹ́jú {{minutes}} ní ẹ̀yìn, a ó bẹ̀ ọ́ láti tún ṣí i.",
+    "howSession": "Lẹ́yìn ọjọ́ {{days}} láìṣí ohun elo, a ó mú ọ jáde, ìwọ yóò sì wọlé padà.",
+    "howKeystore": "A ń fi ìwọlé rẹ pamọ́ sí ibi ìpamọ́ tí ó ní ààbò nínú ẹrọ rẹ.",
+    "enrollTitle": "Dáàbò bo àkọọ́lẹ̀ rẹ",
+    "enrollBody": "Lo {{method}} láti ṣí Elizade Connect nígbà tó ń bọ̀.",
+    "enrollEnable": "Tan án",
+    "enrollLater": "Kì í ṣe nísinsìnyí",
+    "method": {
+      "face": "Ìdánimọ̀ ojú",
+      "fingerprint": "Ìka ọwọ́",
+      "iris": "Ìwòyẹ̀wò ojú",
+      "passcode": "Nọ́mbà àṣírí tàbí àwòrán ẹrọ",
+      "none": "Títiipa ẹrọ"
+    }
+  },
   "profile": {
     "title": "Àkọọ́lẹ̀ rẹ",
     "verifiedMember": "Ọmọ ẹgbẹ́ tí a ti jẹ́rìí sí",
@@ -262,6 +295,23 @@
     "rescheduleSubtitle": "Yan ọjọ́ àti àkókò tuntun.",
     "addAttachments": "Fi àwòrán, fídíò tàbí ìwé kún un",
     "issueAttachments": "Àwọn ìwé àfikún"
+  },
+  "servicePrices": {
+    "title": "Owó ìtọ́jú ọkọ̀",
+    "short": "Owó",
+    "model": "Àwòrán ọkọ̀",
+    "mileage": "Ìwọ̀n ìrìn àjò",
+    "km": "{{km}} km",
+    "group": {
+      "periodic": "Ìtọ́jú ìgbà dé ìgbà",
+      "chassis": "Chassis",
+      "engine": "Ẹ́ńjìnnì"
+    },
+    "notPublished": "A kò tí ì tẹ owó jáde",
+    "notPublishedBody": "Elizade kò tí ì tẹ àtòjọ owó ìtọ́jú jáde. Jọ̀wọ́ padà wá, tàbí kàn sí olùdámọ̀ràn ìtọ́jú rẹ fún ìdíyelé.",
+    "loadError": "A kò lè gbé owó wọlé: {{message}}",
+    "disclaimer": "Owó tí a fi hàn jẹ́ ìdíyelé àfojúsùn, ó sì lè yàtọ̀ gẹ́gẹ́ bí iṣẹ́ tí a ṣe.",
+    "inclusive": "Owó náà ti ní iṣẹ́ ọwọ́, ohun èlò àti owó orí nínú."
   },
   "support": {
     "title": "Ìrànlọ́wọ́",

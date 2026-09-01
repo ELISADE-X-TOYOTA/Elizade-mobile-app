@@ -24,6 +24,20 @@ const configuredMock = process.env.EXPO_PUBLIC_USE_MOCK?.trim();
 const startSignedOut = process.env.EXPO_PUBLIC_START_SIGNED_OUT?.trim() === 'true';
 
 /**
+ * Show the service price board.
+ *
+ * OFF until Elizade publishes real prices. The screen and its API client are
+ * finished and reachable the moment this flips, but until a real price book
+ * exists the only thing behind it is sample data — and a price in a customer's
+ * hand is a quote. A wrong one costs the dealership an argument at the desk.
+ *
+ * Turning it on needs BOTH: this flag, and a published price book on the
+ * backend. The screen still renders its "not published yet" state if the flag
+ * is on and the board is empty, so flipping it early is safe, just pointless.
+ */
+const servicePrices = process.env.EXPO_PUBLIC_SERVICE_PRICES?.trim() === 'true';
+
+/**
  * MOCK DEFAULTS DIFFER BY BUILD, deliberately.
  *
  * A fresh dev checkout with no `.env` should still run, so development
@@ -63,5 +77,7 @@ export const APP = {
   useMock,
   /** When true, every launch clears the stored session and opens at login. */
   startSignedOut,
+  /** When true, the service price board is reachable from the Service tab. */
+  servicePrices,
   version: Constants.expoConfig?.version ?? '1.0.0',
 } as const;

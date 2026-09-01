@@ -21,7 +21,8 @@
         },
         "NSCameraUsageDescription": "Elizade Connect uses the camera so you can photograph your vehicle for a trade-in valuation, a warranty claim, or a support ticket.",
         "NSPhotoLibraryUsageDescription": "Elizade Connect needs access to your photos so you can attach images to warranty claims, support tickets, and vehicle ownership documents.",
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSFaceIDUsageDescription": "Elizade Connect uses Face ID to unlock the app so your vehicle, service and warranty details stay private if your phone is left unattended."
       }
     },
     "android": {
@@ -34,7 +35,8 @@
       },
       "softwareKeyboardLayoutMode": "resize",
       "permissions": [
-        "android.permission.RECORD_AUDIO"
+        "android.permission.RECORD_AUDIO",
+        "android.permission.USE_BIOMETRIC"
       ]
     },
     "plugins": [
@@ -61,6 +63,12 @@
         {
           "photosPermission": "Elizade Connect needs access to your photos so you can attach images to warranty claims, support tickets, and vehicle ownership documents.",
           "cameraPermission": "Elizade Connect uses the camera so you can photograph your vehicle for a trade-in valuation, a warranty claim, or a support ticket."
+        }
+      ],
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Elizade Connect uses Face ID to unlock the app so your vehicle, service and warranty details stay private if your phone is left unattended."
         }
       ]
     ],

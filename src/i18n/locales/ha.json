@@ -104,6 +104,39 @@
     "haveAccount": "Ka riga ka na da asusu?",
     "allSet": "Komai ya shirya, {{name}}!"
   },
+  "appLock": {
+    "settingsTitle": "Kulle manhaja",
+    "toggleLabel": "Nemi buɗewa kafin shiga manhaja",
+    "title": "An kulle Elizade Connect",
+    "body": "Yi amfani da na'urarka don buɗewa ka ci gaba.",
+    "prompt": "Buɗe Elizade Connect",
+    "unlock": "Buɗe",
+    "checking": "Ana dubawa…",
+    "useAccount": "Shiga da wani asusu",
+    "failed": "Bai dace ba. Sake gwadawa.",
+    "lockout": "Yawan gwaji. Na'urarka ta dakatar da buɗewa — jira kaɗan, ko ka yi amfani da lambar sirri.",
+    "unavailable": "Babu kulle allo a wannan na'urar.",
+    "noDeviceLock": "Babu kulle allo a wannan na'urar",
+    "setUpDeviceLock": "Saita zanan yatsa, buɗewa da fuska ko lambar allo a saitunan na'urarka don amfani da kulle manhaja.",
+    "softOnly": "An kunna kulle manhaja, amma na'urar ba ta iya sake ɓoye bayanan shiga naka ba.",
+    "confirmEnable": "Tabbatar da kai don kunna kulle manhaja",
+    "confirmDisable": "Tabbatar da kai don kashe kulle manhaja",
+    "howTitle": "Yadda yake aiki",
+    "howResume": "Bayan minti {{minutes}} a baya, za a nemi ka sake buɗewa.",
+    "howSession": "Bayan kwana {{days}} ba tare da buɗe manhaja ba, za a fitar da kai kuma za ka sake shiga.",
+    "howKeystore": "Ana ajiye bayanan shiga naka a wurin ajiya mai tsaro na na'urarka.",
+    "enrollTitle": "Kare asusunka",
+    "enrollBody": "Yi amfani da {{method}} don buɗe Elizade Connect gaba.",
+    "enrollEnable": "Kunna",
+    "enrollLater": "Ba yanzu ba",
+    "method": {
+      "face": "Buɗewa da fuska",
+      "fingerprint": "Zanan yatsa",
+      "iris": "Duban ido",
+      "passcode": "Lambar sirri ko zane",
+      "none": "Kulle na'ura"
+    }
+  },
   "profile": {
     "title": "Bayanan ka",
     "verifiedMember": "Memba tabbatacce",
@@ -262,6 +295,23 @@
     "rescheduleSubtitle": "Zaɓi sabon rana da lokaci.",
     "addAttachments": "Ƙara hotuna, bidiyo ko takardu",
     "issueAttachments": "Abubuwan da aka haɗa"
+  },
+  "servicePrices": {
+    "title": "Farashin gyara",
+    "short": "Farashi",
+    "model": "Nau'in mota",
+    "mileage": "Nisan tafiya",
+    "km": "{{km}} km",
+    "group": {
+      "periodic": "Kulawa na lokaci-lokaci",
+      "chassis": "Chassis",
+      "engine": "Injin"
+    },
+    "notPublished": "Ba a buga farashi ba tukuna",
+    "notPublishedBody": "Elizade ba ta buga jerin farashin gyara ba tukuna. Ka duba nan gaba, ko ka tuntubi mai ba da shawara kan gyara don samun farashi.",
+    "loadError": "An kasa loda farashi: {{message}}",
+    "disclaimer": "Farashin da aka nuna kiyasi ne kuma yana iya sauyawa bisa aikin da aka yi.",
+    "inclusive": "Farashi ya haɗa da aiki, kayan gyara da haraji."
   },
   "support": {
     "title": "Taimako",

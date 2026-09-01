@@ -104,6 +104,39 @@
     "haveAccount": "Vous avez déjà un compte ?",
     "allSet": "Tout est prêt, {{name}} !"
   },
+  "appLock": {
+    "settingsTitle": "Verrouillage de l'app",
+    "toggleLabel": "Exiger un déverrouillage à l'ouverture",
+    "title": "Elizade Connect est verrouillée",
+    "body": "Déverrouillez avec votre appareil pour continuer.",
+    "prompt": "Déverrouiller Elizade Connect",
+    "unlock": "Déverrouiller",
+    "checking": "Vérification…",
+    "useAccount": "Se connecter avec un autre compte",
+    "failed": "Cela ne correspond pas. Réessayez.",
+    "lockout": "Trop de tentatives. Votre appareil a suspendu le déverrouillage — patientez ou utilisez votre code.",
+    "unavailable": "Aucun verrouillage d'écran n'est configuré sur cet appareil.",
+    "noDeviceLock": "Aucun verrouillage d'écran sur cet appareil",
+    "setUpDeviceLock": "Configurez une empreinte, la reconnaissance faciale ou un code dans les réglages pour utiliser le verrouillage.",
+    "softOnly": "Le verrouillage est actif, mais cet appareil n'a pas pu resceller votre connexion enregistrée.",
+    "confirmEnable": "Confirmez votre identité pour activer le verrouillage",
+    "confirmDisable": "Confirmez votre identité pour désactiver le verrouillage",
+    "howTitle": "Fonctionnement",
+    "howResume": "Après {{minutes}} minutes en arrière-plan, un déverrouillage sera demandé.",
+    "howSession": "Après {{days}} jours sans ouvrir l'app, vous serez déconnecté et devrez vous reconnecter.",
+    "howKeystore": "Votre connexion enregistrée est conservée dans le stockage sécurisé de votre appareil.",
+    "enrollTitle": "Protégez votre compte",
+    "enrollBody": "Utilisez {{method}} pour déverrouiller Elizade Connect la prochaine fois.",
+    "enrollEnable": "Activer",
+    "enrollLater": "Plus tard",
+    "method": {
+      "face": "Reconnaissance faciale",
+      "fingerprint": "Empreinte digitale",
+      "iris": "Reconnaissance de l'iris",
+      "passcode": "Code ou schéma de l'appareil",
+      "none": "Verrouillage de l'appareil"
+    }
+  },
   "profile": {
     "title": "Profil",
     "verifiedMember": "Membre vérifié",
@@ -262,6 +295,23 @@
     "rescheduleSubtitle": "Choisissez une nouvelle date et heure.",
     "addAttachments": "Ajouter des photos, vidéos ou documents",
     "issueAttachments": "Pièces jointes"
+  },
+  "servicePrices": {
+    "title": "Tarifs d'entretien",
+    "short": "Tarifs",
+    "model": "Modèle du véhicule",
+    "mileage": "Kilométrage",
+    "km": "{{km}} km",
+    "group": {
+      "periodic": "Entretien périodique",
+      "chassis": "Châssis",
+      "engine": "Moteur"
+    },
+    "notPublished": "Les tarifs ne sont pas encore publiés",
+    "notPublishedBody": "Elizade n'a pas encore publié de liste de tarifs. Revenez plus tard ou contactez votre conseiller après-vente pour un devis.",
+    "loadError": "Impossible de charger les tarifs : {{message}}",
+    "disclaimer": "Les prix affichés sont des estimations et peuvent varier selon les travaux réellement effectués.",
+    "inclusive": "Prix incluant main-d'œuvre, pièces et taxes."
   },
   "support": {
     "title": "Assistance",

@@ -104,6 +104,39 @@
     "haveAccount": "Ị nweelarị akaụntụ?",
     "allSet": "Ihe niile adịla njikere, {{name}}!"
   },
+  "appLock": {
+    "settingsTitle": "Mkpọchi ngwa",
+    "toggleLabel": "Chọọ mmeghe tupu ịbanye na ngwa",
+    "title": "Akpọchiela Elizade Connect",
+    "body": "Jiri ngwaọrụ gị meghee ka ị gaa n'ihu.",
+    "prompt": "Meghee Elizade Connect",
+    "unlock": "Meghee",
+    "checking": "Na-elele…",
+    "useAccount": "Banye site na akaụntụ ọzọ",
+    "failed": "Ọ dabaghị. Nwaa ọzọ.",
+    "lockout": "Ọtụtụ nnwale. Ngwaọrụ gị akwụsịtụla mmeghe — chere ntakịrị, ma ọ bụ jiri koodu gị.",
+    "unavailable": "Enweghị mkpọchi ihuenyo edobere na ngwaọrụ a.",
+    "noDeviceLock": "Enweghị mkpọchi ihuenyo na ngwaọrụ a",
+    "setUpDeviceLock": "Debe mgbaaka, mmeghe ihu ma ọ bụ koodu na ntọala ngwaọrụ gị iji jiri mkpọchi ngwa.",
+    "softOnly": "Mkpọchi ngwa agbanyela, mana ngwaọrụ a enweghị ike ịkpuchi nbanye gị echekwara.",
+    "confirmEnable": "Kwado na ọ bụ gị iji gbanye mkpọchi ngwa",
+    "confirmDisable": "Kwado na ọ bụ gị iji gbanyụọ mkpọchi ngwa",
+    "howTitle": "Otu ọ si arụ ọrụ",
+    "howResume": "Mgbe nkeji {{minutes}} gasịrị n'azụ, a ga-arịọ gị ka i meghee ọzọ.",
+    "howSession": "Mgbe ụbọchị {{days}} gasịrị na-emeghebeghị ngwa, a ga-ewepụ gị, ị ga-abanyekwa ọzọ.",
+    "howKeystore": "A na-echekwa nbanye gị n'ebe nchekwa echedoro nke ngwaọrụ gị.",
+    "enrollTitle": "Chebe akaụntụ gị",
+    "enrollBody": "Jiri {{method}} meghee Elizade Connect oge ọzọ.",
+    "enrollEnable": "Gbanye",
+    "enrollLater": "Ọ bụghị ugbu a",
+    "method": {
+      "face": "Mmeghe ihu",
+      "fingerprint": "Mgbaaka",
+      "iris": "Nyocha anya",
+      "passcode": "Koodu ma ọ bụ ụkpụrụ ngwaọrụ",
+      "none": "Mkpọchi ngwaọrụ"
+    }
+  },
   "profile": {
     "title": "Profaịlụ",
     "verifiedMember": "Onye òtù akwadoro",
@@ -262,6 +295,23 @@
     "rescheduleSubtitle": "Họrọ ụbọchị na oge ọhụrụ.",
     "addAttachments": "Tinye foto, vidiyo ma ọ bụ akwụkwọ",
     "issueAttachments": "Ihe ejikọrọ"
+  },
+  "servicePrices": {
+    "title": "Ọnụahịa ọrụ ụgbọala",
+    "short": "Ọnụahịa",
+    "model": "Ụdị ụgbọala",
+    "mileage": "Ogologo njem",
+    "km": "{{km}} km",
+    "group": {
+      "periodic": "Nlekọta oge na oge",
+      "chassis": "Chassis",
+      "engine": "Injin"
+    },
+    "notPublished": "E bipụtabeghị ọnụahịa",
+    "notPublishedBody": "Elizade ebipụtabeghị ndepụta ọnụahịa ọrụ. Biko lọghachi ma ọ bụ kpọtụrụ onye ndụmọdụ ọrụ gị maka ọnụahịa.",
+    "loadError": "Enweghị ike ibudata ọnụahịa: {{message}}",
+    "disclaimer": "Ọnụahịa e gosiri bụ atụmatụ, ọ nwere ike ịgbanwe dabere na ọrụ e mere n'ezie.",
+    "inclusive": "Ọnụahịa gụnyere ọrụ aka, akụrụngwa na ụtụ."
   },
   "support": {
     "title": "Enyemaka",
