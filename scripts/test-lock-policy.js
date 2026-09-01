@@ -146,6 +146,48 @@ const MIN = 60 * 1000;
   }
 }
 
+// ── The biometric-bound credentials left on real devices ────────────────
+//
+// Removing the biometric CODE does not stop the prompt: `requireAuthentication`
+// is a property of the stored keystore entry, so an entry written by the
+// withdrawn build keeps demanding a fingerprint whatever the new code passes.
+// The entry has to be deleted, and the deletion has to happen BEFORE the first
+// read — because the read is what raises the prompt.
+{
+  const src = fs.readFileSync(path.join(root, 'src', 'api', 'session.ts'), 'utf8');
+
+  check(
+    'a one-time purge of biometric-bound credentials exists',
+    /purgeBiometricBoundCredentials/.test(src),
+  );
+  check(
+    'the purge deletes the access token',
+    /deleteItemAsync\(TOKEN_KEY\)/.test(src),
+    'rewriting is impossible — reading the value to preserve it is the prompt',
+  );
+  check(
+    'the purge deletes the refresh token',
+    /deleteItemAsync\(REFRESH_KEY\)/.test(src),
+  );
+
+  // The ordering is the whole fix, so assert it positionally.
+  const readRawAt = src.indexOf('async function readRaw');
+  const body = src.slice(readRawAt, src.indexOf('async function writeRaw'));
+  const purgeAt = body.indexOf('await purgeBiometricBoundCredentials()');
+  const getAt = body.indexOf('SecureStore.getItemAsync');
+  check(
+    'the purge is awaited BEFORE the first credential read',
+    purgeAt !== -1 && getAt !== -1 && purgeAt < getAt,
+    'reading first would raise the very prompt the purge removes',
+  );
+
+  check(
+    'the completion marker is written after the deletions',
+    src.indexOf('PURGE_DONE_KEY, ') > src.indexOf('deleteItemAsync(TOKEN_KEY)'),
+    'a crash midway must leave the cleanup to run again, not look complete',
+  );
+}
+
 fs.rmSync(out, { recursive: true, force: true });
 
 console.log(`\n${pass} passed, ${fail} failed`);

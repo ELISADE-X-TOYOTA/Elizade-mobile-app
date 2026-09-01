@@ -27,16 +27,88 @@ let cachedRefresh: string | null | undefined;
   NO BIOMETRIC GATE ON THIS STORAGE.
 
   Tokens were briefly written with `requireAuthentication: true`, which binds
-  the keystore entry to the enrolled biometric set. It worked, and it was the
-  wrong trade: every cold read raised a fingerprint prompt on top of the app's
-  own, and on Android the key is destroyed whenever the enrolled set changes —
-  so adding a fingerprint silently logged people out.
+  the keystore entry to the enrolled biometric set. It was the wrong trade:
+  every cold read raised a fingerprint prompt on top of the app's own, and on
+  Android the key is destroyed whenever the enrolled set changes — so adding a
+  fingerprint silently logged people out.
 
   The credentials still live in the platform secure store (Keychain /
   EncryptedSharedPreferences), which is hardware-backed and the part that
   actually matters. Re-authentication is the email OTP, and freshness is the
   five-minute background timeout.
 */
+
+/** Set by the withdrawn build that stored tokens behind the device gate. */
+const LEGACY_PROTECTED_KEY = 'elizade_tokens_protected';
+/** Marks that the one-time cleanup below has already run on this install. */
+const PURGE_DONE_KEY = 'elizade_biometric_purge_v1';
+
+/**
+ * Delete any credential still bound to the device biometric.
+ *
+ * WHY DELETING IS THE ONLY OPTION.
+ *
+ * `requireAuthentication` is a property of the STORED KEYSTORE ENTRY, not of
+ * the call that reads it. An entry written by the withdrawn build keeps
+ * demanding a fingerprint forever, whatever the current code passes — so
+ * removing the biometric code did not stop the prompt, and could not. The
+ * entry has to go.
+ *
+ * It cannot be rewritten in place either: reading it to preserve the value is
+ * the very thing that raises the prompt. Deleting does NOT require
+ * authentication, so that is the way out. The cost is one sign-in with an email
+ * OTP, which is exactly what the app now uses.
+ *
+ * Runs at most once per launch, and every credential read waits for it.
+ */
+let purge: Promise<void> | null = null;
+
+function purgeBiometricBoundCredentials(): Promise<void> {
+  if (purge) return purge;
+  purge = (async () => {
+    if (!useSecure) return;
+    try {
+      // An ordinary read — this marker was never written behind the gate, so
+      // it cannot prompt.
+      const alreadyPurged = await SecureStore.getItemAsync(PURGE_DONE_KEY);
+      if (alreadyPurged === '1') return;
+
+      /*
+        UNCONDITIONAL, not conditional on the legacy flag.
+
+        Detecting the bad state by that flag looked tidier, but it fails exactly
+        when it matters: if the flag were ever lost while the token entry stayed
+        bound, the prompt would persist with nothing able to clear it, and the
+        customer would be locked out of their own app with no way back. There is
+        no way to test-read the entry to find out — the read IS the prompt.
+
+        So this runs once per install regardless. The cost is a single re-login
+        for anyone upgrading; the alternative is an unrecoverable handset.
+      */
+      await Promise.all([
+        SecureStore.deleteItemAsync(TOKEN_KEY).catch(() => {}),
+        SecureStore.deleteItemAsync(REFRESH_KEY).catch(() => {}),
+        SecureStore.deleteItemAsync(USER_KEY).catch(() => {}),
+        SecureStore.deleteItemAsync(ACTIVITY_KEY).catch(() => {}),
+      ]);
+      await SecureStore.deleteItemAsync(LEGACY_PROTECTED_KEY).catch(() => {});
+
+      // In-memory copies go too, or a token read before the purge would keep
+      // the session alive against credentials that no longer exist.
+      cached = null;
+      cachedRefresh = null;
+
+      // Written LAST, so a crash midway through leaves the cleanup to run
+      // again rather than marking a half-done job as complete.
+      await SecureStore.setItemAsync(PURGE_DONE_KEY, '1', {
+        keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
+      }).catch(() => {});
+    } catch {
+      /* nothing to clean up, or the store is unavailable — either way, proceed */
+    }
+  })();
+  return purge;
+}
 
 /** Non-credential storage: flags and timestamps. */
 async function readPlain(key: string): Promise<string | null> {
@@ -69,6 +141,9 @@ async function writePlain(key: string, value: string | null): Promise<void> {
 
 async function readRaw(key: string): Promise<string | null> {
   if (!useSecure) return AsyncStorage.getItem(key);
+  // BEFORE the first read, not after: reading a biometric-bound entry is what
+  // raises the prompt, so the purge has to win the race with it.
+  await purgeBiometricBoundCredentials();
   try {
     return await SecureStore.getItemAsync(key);
   } catch {
