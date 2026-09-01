@@ -102,40 +102,8 @@
     "didntGetIt": "Ba ka samu ba?",
     "didntReceiveIt": "Ba ka samu ba?",
     "haveAccount": "Ka riga ka na da asusu?",
-    "allSet": "Komai ya shirya, {{name}}!"
-  },
-  "appLock": {
-    "settingsTitle": "Kulle manhaja",
-    "toggleLabel": "Nemi buɗewa kafin shiga manhaja",
-    "title": "An kulle Elizade Connect",
-    "body": "Yi amfani da na'urarka don buɗewa ka ci gaba.",
-    "prompt": "Buɗe Elizade Connect",
-    "unlock": "Buɗe",
-    "checking": "Ana dubawa…",
-    "useAccount": "Shiga da wani asusu",
-    "failed": "Bai dace ba. Sake gwadawa.",
-    "lockout": "Yawan gwaji. Na'urarka ta dakatar da buɗewa — jira kaɗan, ko ka yi amfani da lambar sirri.",
-    "unavailable": "Babu kulle allo a wannan na'urar.",
-    "noDeviceLock": "Babu kulle allo a wannan na'urar",
-    "setUpDeviceLock": "Saita zanan yatsa, buɗewa da fuska ko lambar allo a saitunan na'urarka don amfani da kulle manhaja.",
-    "softOnly": "An kunna kulle manhaja, amma na'urar ba ta iya sake ɓoye bayanan shiga naka ba.",
-    "confirmEnable": "Tabbatar da kai don kunna kulle manhaja",
-    "confirmDisable": "Tabbatar da kai don kashe kulle manhaja",
-    "howTitle": "Yadda yake aiki",
-    "howResume": "Bayan minti {{minutes}} a baya, za a nemi ka sake buɗewa.",
-    "howSession": "Bayan kwana {{days}} ba tare da buɗe manhaja ba, za a fitar da kai kuma za ka sake shiga.",
-    "howKeystore": "Ana ajiye bayanan shiga naka a wurin ajiya mai tsaro na na'urarka.",
-    "enrollTitle": "Kare asusunka",
-    "enrollBody": "Yi amfani da {{method}} don buɗe Elizade Connect gaba.",
-    "enrollEnable": "Kunna",
-    "enrollLater": "Ba yanzu ba",
-    "method": {
-      "face": "Buɗewa da fuska",
-      "fingerprint": "Zanan yatsa",
-      "iris": "Duban ido",
-      "passcode": "Lambar sirri ko zane",
-      "none": "Kulle na'ura"
-    }
+    "allSet": "Komai ya shirya, {{name}}!",
+    "sessionTimedOut": "Domin tsaronka, an fitar da kai bayan minti 5 ba tare da amfani ba. Shigar da imel ɗinka don samun sabon lamba."
   },
   "profile": {
     "title": "Bayanan ka",

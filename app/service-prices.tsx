@@ -15,6 +15,7 @@ import {
 } from '../src/data/priceBoardRepository';
 import { radius, spacing } from '../src/theme/spacing';
 import { useTheme } from '../src/theme/useTheme';
+import { groupNumber, naira } from '../src/utils/format';
 import { solid } from '../src/theme/colors';
 
 const GROUP_ORDER: PriceGroup[] = ['periodic', 'chassis', 'engine'];
@@ -70,15 +71,15 @@ export default function ServicePrices() {
     };
   }, []);
 
-  const money = useMemo(() => {
-    const currency = board?.currency || 'NGN';
-    return (value: number) =>
-      new Intl.NumberFormat('en-NG', {
-        style: 'currency',
-        currency,
-        maximumFractionDigits: 0,
-      }).format(value);
-  }, [board?.currency]);
+  /*
+    `naira`, not `Intl.NumberFormat`.
+
+    This screen originally formatted with `new Intl.NumberFormat('en-NG', {
+    style: 'currency' })`, which works in Expo Go and renders BLANK in a
+    release build — Hermes has no ICU currency data, so every price tag on the
+    board came out empty. See the note at the top of `utils/format.ts`.
+  */
+  const money = naira;
 
   /** Periodic work is banded by distance; chassis and engine are flat (band 0). */
   const priceFor = (code: string, group: PriceGroup): number | null => {
@@ -154,7 +155,10 @@ export default function ServicePrices() {
               values={board.mileageBandsKm}
               selected={band}
               onSelect={setBand}
-              format={(km) => tr('servicePrices.km', { km: Number(km).toLocaleString('en-NG') })}
+              // Also engine-independent — `toLocaleString('en-NG')` drops the
+              // thousands separator under Hermes, turning "100,000 km" into
+              // "100000 km" on exactly the builds customers install.
+              format={(km) => tr('servicePrices.km', { km: groupNumber(km) })}
             />
 
             {sections.map(({ group, rows }) => (

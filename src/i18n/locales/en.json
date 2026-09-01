@@ -102,40 +102,8 @@
     "didntGetIt": "Didn't get it?",
     "didntReceiveIt": "Didn't receive it?",
     "haveAccount": "Already have an account?",
-    "allSet": "You're all set, {{name}}!"
-  },
-  "appLock": {
-    "settingsTitle": "App Lock",
-    "toggleLabel": "Require unlock to open the app",
-    "title": "Elizade Connect is locked",
-    "body": "Unlock with your device to continue.",
-    "prompt": "Unlock Elizade Connect",
-    "unlock": "Unlock",
-    "checking": "Checking…",
-    "useAccount": "Sign in with a different account",
-    "failed": "That didn't match. Try again.",
-    "lockout": "Too many attempts. Your device has paused unlocking — wait a moment, or use your passcode.",
-    "unavailable": "No screen lock is set up on this device.",
-    "noDeviceLock": "No screen lock set up on this device",
-    "setUpDeviceLock": "Set up a fingerprint, face unlock or screen PIN in your device settings to use App Lock.",
-    "softOnly": "App Lock is on, but this device could not re-seal your saved sign-in behind it.",
-    "confirmEnable": "Confirm it's you to turn on App Lock",
-    "confirmDisable": "Confirm it's you to turn off App Lock",
-    "howTitle": "How it works",
-    "howResume": "After {{minutes}} minutes in the background, you'll be asked to unlock again.",
-    "howSession": "After {{days}} days without opening the app, you'll be signed out and asked to log in.",
-    "howKeystore": "Your saved sign-in is kept in your device's secure hardware store.",
-    "enrollTitle": "Protect your account",
-    "enrollBody": "Use {{method}} to unlock Elizade Connect next time.",
-    "enrollEnable": "Turn on",
-    "enrollLater": "Not now",
-    "method": {
-      "face": "Face unlock",
-      "fingerprint": "Fingerprint",
-      "iris": "Iris scan",
-      "passcode": "Device PIN or pattern",
-      "none": "Device lock"
-    }
+    "allSet": "You're all set, {{name}}!",
+    "sessionTimedOut": "For your security, you were signed out after 5 minutes away. Enter your email to get a new code."
   },
   "profile": {
     "title": "Profile",

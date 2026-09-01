@@ -16,53 +16,29 @@ import { Platform } from 'react-native';
 const TOKEN_KEY = 'elizade_access_token';
 const REFRESH_KEY = 'elizade_refresh_token';
 const USER_KEY = 'elizade_cached_user';
-/** Last time the app was demonstrably in use, for session expiry. */
+/** Last time the app was demonstrably in use. */
 const ACTIVITY_KEY = 'elizade_last_active_at';
-/** Whether the credentials above were written behind the device gate. */
-const PROTECTED_KEY = 'elizade_tokens_protected';
 const useSecure = Platform.OS !== 'web';
 
 let cached: string | null | undefined;
 let cachedRefresh: string | null | undefined;
 
-/**
- * Are the tokens stored behind the hardware gate?
- *
- * Read once and held, because every read of the credentials consults it and
- * hitting storage for a boolean on each API call is wasteful.
- */
-let protectedMode: boolean | undefined;
+/*
+  NO BIOMETRIC GATE ON THIS STORAGE.
 
-/**
- * True once a hardware-gated read has succeeded this launch.
- *
- * The app-lock overlay checks this so a customer is not asked for the same
- * fingerprint twice at launch — once by the keystore unsealing the token, then
- * again by our own prompt half a second later.
- */
-let hardwareUnlockedThisLaunch = false;
+  Tokens were briefly written with `requireAuthentication: true`, which binds
+  the keystore entry to the enrolled biometric set. It worked, and it was the
+  wrong trade: every cold read raised a fingerprint prompt on top of the app's
+  own, and on Android the key is destroyed whenever the enrolled set changes —
+  so adding a fingerprint silently logged people out.
 
-export function wasHardwareUnlockedThisLaunch(): boolean {
-  return hardwareUnlockedThisLaunch;
-}
+  The credentials still live in the platform secure store (Keychain /
+  EncryptedSharedPreferences), which is hardware-backed and the part that
+  actually matters. Re-authentication is the email OTP, and freshness is the
+  five-minute background timeout.
+*/
 
-/** Cleared on lock so the next unlock genuinely re-authenticates. */
-export function resetHardwareUnlock(): void {
-  hardwareUnlockedThisLaunch = false;
-}
-
-export async function isProtectedMode(): Promise<boolean> {
-  if (protectedMode !== undefined) return protectedMode;
-  if (!useSecure) return (protectedMode = false);
-  try {
-    protectedMode = (await SecureStore.getItemAsync(PROTECTED_KEY)) === '1';
-  } catch {
-    protectedMode = false;
-  }
-  return protectedMode;
-}
-
-/** Storage that never carries the biometric requirement (flags, timestamps). */
+/** Non-credential storage: flags and timestamps. */
 async function readPlain(key: string): Promise<string | null> {
   if (!useSecure) return AsyncStorage.getItem(key);
   try {
@@ -91,30 +67,13 @@ async function writePlain(key: string, value: string | null): Promise<void> {
   }
 }
 
-async function readRaw(key: string, prompt?: string): Promise<string | null> {
+async function readRaw(key: string): Promise<string | null> {
   if (!useSecure) return AsyncStorage.getItem(key);
-  const gated = await isProtectedMode();
   try {
-    const value = await SecureStore.getItemAsync(
-      key,
-      gated
-        ? { requireAuthentication: true, authenticationPrompt: prompt ?? 'Unlock Elizade Connect' }
-        : undefined,
-    );
-    if (gated && value !== null) hardwareUnlockedThisLaunch = true;
-    return value;
+    return await SecureStore.getItemAsync(key);
   } catch {
-    /*
-      Two very different causes, one safe response.
-
-      Either the customer dismissed the biometric prompt, or the key was
-      invalidated because the device's enrolled biometrics changed — Android
-      destroys keys bound to a biometric set when that set changes, which is the
-      behaviour that makes this storage worth having.
-
-      Both mean "no usable credential right now". Returning null puts them on the
-      login screen; it never silently downgrades to an unprotected read.
-    */
+    // The keystore can still throw — a changed device credential, a corrupt
+    // entry. Treat it as "no usable credential" and let the customer sign in.
     return null;
   }
 }
@@ -126,54 +85,15 @@ async function writeRaw(key: string, value: string | null): Promise<void> {
     return;
   }
   if (value) {
-    const gated = await isProtectedMode();
     await SecureStore.setItemAsync(key, value, {
       keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
-      ...(gated ? { requireAuthentication: true } : {}),
     });
   } else {
     await SecureStore.deleteItemAsync(key);
   }
 }
 
-/**
- * Move the stored credentials in or out of the hardware gate.
- *
- * The tokens have to be re-written: the requirement is a property of the
- * keystore entry, not a runtime check, so flipping a flag without rewriting
- * would leave a "protected" account whose token still reads without a prompt.
- *
- * Returns false and changes NOTHING if the rewrite fails — better to leave the
- * customer signed in unprotected, and tell them, than to half-apply this and
- * strand them behind a gate their device cannot open.
- */
-export async function setHardwareProtection(enabled: boolean): Promise<boolean> {
-  if (!useSecure) return false;
-  const token = await getToken();
-  const refresh = await getRefreshToken();
-  const previous = await isProtectedMode();
-  if (previous === enabled) return true;
-
-  try {
-    protectedMode = enabled;
-    await writePlain(PROTECTED_KEY, enabled ? '1' : null);
-    if (token) await writeRaw(TOKEN_KEY, token);
-    if (refresh) await writeRaw(REFRESH_KEY, refresh);
-    return true;
-  } catch {
-    protectedMode = previous;
-    await writePlain(PROTECTED_KEY, previous ? '1' : null);
-    try {
-      if (token) await writeRaw(TOKEN_KEY, token);
-      if (refresh) await writeRaw(REFRESH_KEY, refresh);
-    } catch {
-      /* already reported via the false below */
-    }
-    return false;
-  }
-}
-
-/** Stamp "the app was used just now", for the session-expiry clock. */
+/** Stamp "the app was used just now". */
 export async function touchActivity(at: number = Date.now()): Promise<void> {
   await writePlain(ACTIVITY_KEY, String(at));
 }
@@ -220,13 +140,9 @@ export async function setRefreshToken(token: string | null): Promise<void> {
  */
 export async function clearSession(): Promise<void> {
   await Promise.all([setToken(null), setRefreshToken(null), cacheUser(null)]);
-  // The activity stamp and the gate flag go too. Leaving the stamp behind would
-  // expire the NEXT customer to sign in on this handset against the last one's
-  // idle clock; leaving the flag would demand a fingerprint for a token that no
-  // longer exists.
-  await Promise.all([writePlain(ACTIVITY_KEY, null), writePlain(PROTECTED_KEY, null)]);
-  protectedMode = false;
-  hardwareUnlockedThisLaunch = false;
+  // The activity stamp goes too — leaving it behind would judge the NEXT
+  // customer to sign in on this handset against the last one's clock.
+  await writePlain(ACTIVITY_KEY, null);
 }
 
 export async function setToken(token: string | null): Promise<void> {

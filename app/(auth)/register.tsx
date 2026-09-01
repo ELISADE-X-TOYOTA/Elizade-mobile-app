@@ -33,7 +33,6 @@ import { Txt } from '../../src/components/Txt';
 import { APP } from '../../src/constants/app';
 import { touchActivity } from '../../src/api/session';
 import { requestOtp, verifyOtp } from '../../src/data/authRepository';
-import { offerAppLockEnrollment } from '../../src/security/enrollment';
 import { EmailAvailabilityResult, useEmailAvailability } from '../../src/hooks/useEmailAvailability';
 import { useStore } from '../../src/store/useStore';
 import { useWatchlistStore } from '../../src/store/useWatchlistStore';
@@ -159,7 +158,6 @@ export default function Register() {
         setCurrentUser(user);
         loadWatchlist().catch(() => {});
         void touchActivity();
-        void offerAppLockEnrollment();
         setDone(true);
       } catch {
         setOtpError(true);

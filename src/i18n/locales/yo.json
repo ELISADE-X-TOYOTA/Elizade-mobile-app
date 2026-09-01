@@ -102,40 +102,8 @@
     "didntGetIt": "O kò rí i?",
     "didntReceiveIt": "O kò rí i?",
     "haveAccount": "Ṣé o ti ní àkàǹtì tẹ́lẹ̀?",
-    "allSet": "Ó ti ṣetán, {{name}}!"
-  },
-  "appLock": {
-    "settingsTitle": "Titiipa ohun elo",
-    "toggleLabel": "Beere ìsílẹ̀ kí o tó wọlé sí ohun elo",
-    "title": "A ti tiipa Elizade Connect",
-    "body": "Lo ẹrọ rẹ láti ṣí i kí o lè tẹ̀síwájú.",
-    "prompt": "Ṣí Elizade Connect",
-    "unlock": "Ṣí i",
-    "checking": "Ń ṣàyẹ̀wò…",
-    "useAccount": "Wọlé pẹ̀lú àkọọ́lẹ̀ mìíràn",
-    "failed": "Kò bá ara mu. Gbìyànjú lẹ́ẹ̀kansí.",
-    "lockout": "Ìgbìyànjú pọ̀ jù. Ẹrọ rẹ ti dá ìṣílẹ̀ dúró — dúró díẹ̀, tàbí lo nọ́mbà àṣírí rẹ.",
-    "unavailable": "Kò sí títiipa ojú-ìwé lórí ẹrọ yìí.",
-    "noDeviceLock": "Kò sí títiipa ojú-ìwé lórí ẹrọ yìí",
-    "setUpDeviceLock": "Ṣètò ìka ọwọ́, ìdánimọ̀ ojú tàbí nọ́mbà àṣírí nínú ètò ẹrọ rẹ láti lo títiipa ohun elo.",
-    "softOnly": "Títiipa ti ṣiṣẹ́, ṣùgbọ́n ẹrọ yìí kò lè tún fi ìwọlé rẹ pamọ́ sínú rẹ̀.",
-    "confirmEnable": "Fọwọ́sí pé ìwọ ni láti tan títiipa",
-    "confirmDisable": "Fọwọ́sí pé ìwọ ni láti pa títiipa",
-    "howTitle": "Bí ó ṣe ń ṣiṣẹ́",
-    "howResume": "Lẹ́yìn ìṣẹ́jú {{minutes}} ní ẹ̀yìn, a ó bẹ̀ ọ́ láti tún ṣí i.",
-    "howSession": "Lẹ́yìn ọjọ́ {{days}} láìṣí ohun elo, a ó mú ọ jáde, ìwọ yóò sì wọlé padà.",
-    "howKeystore": "A ń fi ìwọlé rẹ pamọ́ sí ibi ìpamọ́ tí ó ní ààbò nínú ẹrọ rẹ.",
-    "enrollTitle": "Dáàbò bo àkọọ́lẹ̀ rẹ",
-    "enrollBody": "Lo {{method}} láti ṣí Elizade Connect nígbà tó ń bọ̀.",
-    "enrollEnable": "Tan án",
-    "enrollLater": "Kì í ṣe nísinsìnyí",
-    "method": {
-      "face": "Ìdánimọ̀ ojú",
-      "fingerprint": "Ìka ọwọ́",
-      "iris": "Ìwòyẹ̀wò ojú",
-      "passcode": "Nọ́mbà àṣírí tàbí àwòrán ẹrọ",
-      "none": "Títiipa ẹrọ"
-    }
+    "allSet": "Ó ti ṣetán, {{name}}!",
+    "sessionTimedOut": "Fún ààbò rẹ, a mú ọ jáde lẹ́yìn ìṣẹ́jú 5 láìlò. Tẹ ìmeèlì rẹ láti gba kóòdù tuntun."
   },
   "profile": {
     "title": "Àkọọ́lẹ̀ rẹ",

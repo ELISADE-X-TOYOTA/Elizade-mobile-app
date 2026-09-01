@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -21,9 +21,17 @@ const MIN_ANIMATION_MS = 1100;
 export default function Login() {
   const t = useTheme();
   const { t: tr } = useTranslation();
-  const [email, setEmail] = useState('');
+  /*
+    `email` and `reason` are set when the session timed out in the background.
+    Prefilling means one tap to get a new code instead of retyping an address
+    the app already knew, and `reason` lets the screen say why they are here —
+    an unexplained return to login reads as the app losing their account.
+  */
+  const { email: prefill, reason } = useLocalSearchParams<{ email?: string; reason?: string }>();
+  const [email, setEmail] = useState(prefill ?? '');
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string>();
+  const timedOut = reason === 'timeout';
 
   const sendCode = async () => {
     if (!isValidEmail(email)) {
@@ -57,6 +65,13 @@ export default function Login() {
         compactSubtitle
         showBack={false}
       >
+        {/* Says why they are back here, so a timeout does not read as a fault. */}
+        {timedOut ? (
+          <Txt tone="secondary" style={{ marginBottom: spacing.md }}>
+            {tr('auth.sessionTimedOut')}
+          </Txt>
+        ) : null}
+
         <AppTextField
           label={tr('auth.email')}
           placeholder={tr('auth.emailPlaceholder')}

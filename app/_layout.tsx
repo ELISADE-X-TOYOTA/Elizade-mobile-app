@@ -21,7 +21,7 @@ import { migrateLegacyToken } from '../src/api/session';
 // Side-effect import: configures i18next before any screen renders.
 import { restoreLanguage } from '../src/i18n';
 import { ErrorBoundary } from '../src/components/ErrorBoundary';
-import { AppLockGate } from '../src/components/AppLockGate';
+import { SessionTimeoutWatcher } from '../src/components/SessionTimeoutWatcher';
 import { CompareTray } from '../src/components/CompareTray';
 import { PatternBackground } from '../src/components/PatternBackground';
 import { useStore } from '../src/store/useStore';
@@ -166,7 +166,6 @@ export default function RootLayout() {
           <Stack.Screen name="book-test-drive" />
           <Stack.Screen name="watchlist" />
           <Stack.Screen name="notification-settings" />
-          <Stack.Screen name="security" />
           <Stack.Screen name="book-service" />
           <Stack.Screen name="service-detail/[id]" />
           {/* Gated by APP.servicePrices — the screen redirects out when off. */}
@@ -188,12 +187,8 @@ export default function RootLayout() {
             duplicate trays during a screen transition.
           */}
           <CompareTray />
-          {/*
-            LAST inside the provider, so it paints above every route including
-            modals and the compare tray. A lock that something can render over
-            is not a lock.
-          */}
-          <AppLockGate />
+          {/* Renders nothing; owns the AppState subscription. */}
+          <SessionTimeoutWatcher />
         </SafeAreaProvider>
         </ThemeProvider>
       </ErrorBoundary>

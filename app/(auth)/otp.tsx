@@ -8,7 +8,6 @@ import { PrimaryButton } from '../../src/components/PrimaryButton';
 import { Txt } from '../../src/components/Txt';
 import { touchActivity } from '../../src/api/session';
 import { requestOtp, verifyOtp } from '../../src/data/authRepository';
-import { offerAppLockEnrollment } from '../../src/security/enrollment';
 import { registerForPush } from '../../src/data/pushRepository';
 import { useStore } from '../../src/store/useStore';
 import { useWatchlistStore } from '../../src/store/useWatchlistStore';
@@ -81,10 +80,8 @@ export default function Otp() {
 
         registerForPush();
 
-        // Starts the session-expiry clock from a real sign-in, and offers App
-        // Lock while the customer is still thinking about their account.
+        // Starts the activity clock from a real sign-in.
         void touchActivity();
-        void offerAppLockEnrollment();
 
         router.replace('/(tabs)/home');
       } catch (e) {
