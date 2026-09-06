@@ -11,10 +11,66 @@ import { singleFlight } from './singleFlight';
  */
 export class ApiError extends Error {
   status: number;
-  constructor(message: string, status: number) {
+  /** Machine-readable code from the API envelope, when the server sent one. */
+  code?: string;
+  /**
+   * The server's `X-Request-ID`.
+   *
+   * This is the whole reason a support conversation can move past "it says
+   * something went wrong". Show it on the error screen, and the exact server
+   * log line for that failure is one grep away.
+   */
+  requestId?: string;
+  /** True when the request never produced a response (abort, DNS, offline). */
+  isNetwork: boolean;
+
+  constructor(
+    message: string,
+    status: number,
+    extra: { code?: string; requestId?: string; isNetwork?: boolean } = {},
+  ) {
     super(message);
     this.name = 'ApiError';
     this.status = status;
+    this.code = extra.code;
+    this.requestId = extra.requestId;
+    this.isNetwork = extra.isNetwork ?? false;
+  }
+}
+
+/* ── Error reporting hook ────────────────────────────────────────────────
+ *
+ * Deliberately a hook rather than a direct Sentry import: this module is used
+ * by tests and by the web build, and hard-wiring a vendor SDK here would drag
+ * native dependencies into both. `app/_layout.tsx` registers the real reporter.
+ *
+ * A reporter that throws must never break the request path — the failure it
+ * would mask is the one the user is already having.
+ */
+export interface ApiErrorReport {
+  status: number;
+  code?: string;
+  requestId?: string;
+  /** Path template only — never the query string, which carries emails. */
+  path: string;
+  method: string;
+  isNetwork: boolean;
+  durationMs: number;
+}
+
+type ApiErrorReporter = (report: ApiErrorReport) => void;
+let reporter: ApiErrorReporter | null = null;
+
+export function setApiErrorReporter(fn: ApiErrorReporter | null): void {
+  reporter = fn;
+}
+
+function report(r: ApiErrorReport): void {
+  if (!reporter) return;
+  try {
+    reporter(r);
+  } catch {
+    /* observability must never be the thing that breaks the app */
   }
 }
 
@@ -36,6 +92,10 @@ function statusMessage(status: number): string {
   if (status === 404) return 'We couldn’t find what you were looking for.';
   if (status === 409) return 'That conflicts with an existing record.';
   if (status === 429) return 'Too many attempts. Please wait a moment and try again.';
+  // 503 is the server saying "over capacity, retry" — distinct from 500, which
+  // means a fault. Worth separating: one is worth retrying immediately, the
+  // other is not.
+  if (status === 503) return 'Elizade services are busy right now. Please try again in a moment.';
   if (status >= 500) return 'Elizade services are temporarily unavailable. Please try again shortly.';
   return 'Something went wrong. Please try again.';
 }
@@ -189,6 +249,7 @@ export async function apiFetch<T>(path: string, options: Options = {}): Promise<
   const base = resolveBaseUrl();
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  const startedAt = Date.now();
 
   let res: Response;
   try {
@@ -201,9 +262,36 @@ export async function apiFetch<T>(path: string, options: Options = {}): Promise<
   } catch (e) {
     // Network/abort failures must not leak URLs or native error text.
     const aborted = e instanceof Error && e.name === 'AbortError';
+    /*
+      A TIMEOUT IS NOT EVIDENCE ABOUT THE USER'S NETWORK.
+
+      This previously said "The request timed out. Please check your
+      connection." During the connection-leak outage the server was answering
+      in ~30s and this client aborts at 20s, so EVERY request died here — and
+      every tester, on four different networks, was told the fault was theirs.
+      They said it wasn't. They were right.
+
+      An abort means only that no answer arrived in time. The cause may be the
+      network or the server, and the client cannot tell which, so it should not
+      assert either. The `isNetwork` flag and the report below are how the
+      truth gets established — from aggregate data, not from a guess shown to
+      one user.
+    */
+    const code = aborted ? 'client_timeout' : 'client_offline';
+    report({
+      status: 0,
+      code,
+      path,
+      method,
+      isNetwork: true,
+      durationMs: Math.round(Date.now() - startedAt),
+    });
     throw new ApiError(
-      aborted ? 'The request timed out. Please check your connection.' : 'No connection. Please check your network and try again.',
+      aborted
+        ? 'This is taking longer than usual. Please try again.'
+        : 'No connection. Please check your network and try again.',
       0,
+      { code, isNetwork: true },
     );
   } finally {
     clearTimeout(timer);
@@ -229,14 +317,45 @@ export async function apiFetch<T>(path: string, options: Options = {}): Promise<
       // offline, the session is deliberately left alone.
     }
 
+    /*
+      Reads the current envelope ({code, message, requestId, ...}) and still
+      understands both older shapes, because a rolled-back API or a cached
+      gateway response can serve either:
+        {"detail": "..."}                    — plain HTTPException
+        {"detail": [{"msg": "..."}]}         — raw FastAPI validation
+    */
     let detail: unknown;
+    let code: string | undefined;
     try {
       const data = await res.json();
-      detail = typeof data?.detail === 'string' ? data.detail : Array.isArray(data?.detail) ? data.detail[0]?.msg : undefined;
+      code = typeof data?.code === 'string' ? data.code : undefined;
+      detail =
+        typeof data?.message === 'string'
+          ? data.message
+          : typeof data?.detail === 'string'
+            ? data.detail
+            : Array.isArray(data?.detail)
+              ? data.detail[0]?.msg
+              : undefined;
     } catch {
       /* non-JSON error body — fall through to the generic status message */
     }
-    throw new ApiError(safeMessage(detail, res.status), res.status);
+
+    // Header, not the body: it is present even when the body is HTML from a
+    // proxy that never reached the app.
+    const requestId = res.headers.get('X-Request-ID') ?? undefined;
+
+    report({
+      status: res.status,
+      code,
+      requestId,
+      path,
+      method,
+      isNetwork: false,
+      durationMs: Math.round(Date.now() - startedAt),
+    });
+
+    throw new ApiError(safeMessage(detail, res.status), res.status, { code, requestId });
   }
 
   if (res.status === 204) return undefined as T;
