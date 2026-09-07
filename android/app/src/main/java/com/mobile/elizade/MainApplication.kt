@@ -1,4 +1,4 @@
-package com.elizade.app
+package com.mobile.elizade
 
 import android.app.Application
 import android.content.res.Configuration

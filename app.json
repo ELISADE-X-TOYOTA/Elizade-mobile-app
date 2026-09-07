@@ -14,7 +14,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.elizade.app",
+      "bundleIdentifier": "com.mobile.elizade",
       "infoPlist": {
         "NSAppTransportSecurity": {
           "NSAllowsArbitraryLoads": false
@@ -25,7 +25,7 @@
       }
     },
     "android": {
-      "package": "com.elizade.app",
+      "package": "com.mobile.elizade",
       "usesCleartextTraffic": false,
       "allowBackup": false,
       "adaptiveIcon": {

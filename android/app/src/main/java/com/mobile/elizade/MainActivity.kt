@@ -1,4 +1,4 @@
-package com.elizade.app
+package com.mobile.elizade
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build

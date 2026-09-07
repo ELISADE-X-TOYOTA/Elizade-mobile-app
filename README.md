@@ -186,11 +186,38 @@ test-drive booking** — all wired to live endpoints.
 
 ---
 
+## Release builds
+
+iOS bundle id / Android package: **`com.mobile.elizade`** (both platforms —
+must match the App IDs registered under the Meristem Apple Developer Team and
+Meristem Google Play account). EAS project: `@elizade/elizade`.
+
+Native `ios/` is **not committed** — it's generated on demand via
+`npx expo prebuild --platform ios` (`just prebuild-ios`). `android/` **is**
+committed and hand-maintained alongside `app.json`.
+
+Common commands are in the [`justfile`](justfile) — run `just` to list them.
+Full build/release walkthrough (credentials, signing, submitting to
+App Store Connect / Play Console) is in
+[`docs/BUILD_OPS.md`](docs/BUILD_OPS.md).
+
+Quick reference:
+
+```bash
+just typecheck            # gate — run before any build
+just prebuild-ios         # regenerate ios/ from app.json
+just build-ios-cloud      # EAS cloud build, production profile
+just build-ios-local      # EAS build, but compiled on this machine
+just submit-ios           # push latest EAS iOS build to App Store Connect
+just version-set-ios      # bump EAS's remote iOS build number (interactive)
+```
+
+Signing credentials (App Store Connect API key, Android keystore) live in the
+git-ignored `credentials/` folder locally and in EAS's remote credential
+store — never in git.
+
 ## Not done
 
-- **No release build pipeline.** No Android SDK on the current machine and no
-  `eas.json`. Verified via typecheck + `expo export`; there is no installable
-  APK yet. Needs an EAS account or a local SDK.
 - **No structured device QA pass.**
 - **No front-end tests** (see Checks).
 - **No crash reporting** — `ErrorBoundary` catches crashes but the
