@@ -68,6 +68,8 @@
     "otpSubtitle": "Enviamos un código de 6 dígitos a {{target}}",
     "resendCode": "Reenviar código",
     "resendIn": "Reenviar en {{time}}",
+    "codeExpiresIn": "Este código caduca en {{time}}",
+    "codeExpired": "Este código ha caducado. Solicita uno nuevo.",
     "verify": "Verificar",
     "alreadyHaveAccount": "¿Ya tienes una cuenta?",
     "noAccount": "¿No tienes una cuenta?",

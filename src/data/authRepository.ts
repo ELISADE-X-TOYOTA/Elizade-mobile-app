@@ -3,6 +3,7 @@ import * as authApi from '../api/auth';
 import { cacheUser, clearSession, getToken, readCachedUser, setToken } from '../api/session';
 import { useStore } from '../store/useStore';
 import { APP } from '../constants/app';
+import { DEFAULT_OTP_EXPIRY_MINUTES } from '../constants/otp';
 import { UserProfile } from '../domain/types';
 import { MOCK_USER } from './mock';
 
@@ -39,13 +40,25 @@ function toCache(user: UserProfile) {
 }
 
 
-/** Request a one-time code, delivered to the email address. */
-export async function requestOtp(body: authApi.OtpRequestBody): Promise<void> {
+/**
+ * Request a one-time code, delivered to the email address.
+ *
+ * Returns how many minutes that code stays valid, straight from the server.
+ * The response always carried it and this function used to throw it away, so
+ * the screens had nothing to show and the 60-second resend cooldown became the
+ * only visible clock — which testers reasonably read as the expiry, against an
+ * email that said ten minutes.
+ */
+export async function requestOtp(body: authApi.OtpRequestBody): Promise<number> {
   if (APP.useMock) {
     await delay(700);
-    return;
+    return DEFAULT_OTP_EXPIRY_MINUTES;
   }
-  await authApi.requestOtp(body);
+  const res = await authApi.requestOtp(body);
+  // A backend that predates the field, or any non-numeric answer, must not put
+  // "expires in NaN" on the sign-in screen.
+  const minutes = Number(res?.expires_in_minutes);
+  return Number.isFinite(minutes) && minutes > 0 ? minutes : DEFAULT_OTP_EXPIRY_MINUTES;
 }
 
 /** Verify the code and return the signed-in user (token persisted internally). */

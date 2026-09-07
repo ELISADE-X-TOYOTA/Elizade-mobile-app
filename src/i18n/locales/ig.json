@@ -68,6 +68,8 @@
     "otpSubtitle": "Anyị zigaara {{target}} koodu nwere ọnụọgụ isii",
     "resendCode": "Zipu koodu ọzọ",
     "resendIn": "Zipughachi na {{time}}",
+    "codeExpiresIn": "Koodu a ga-agwụ na {{time}}",
+    "codeExpired": "Koodu a agwụla. Rịọ maka ọhụrụ.",
     "verify": "Nyochaa",
     "alreadyHaveAccount": "Ị nwere akaụntụ?",
     "noAccount": "Ị nweghị akaụntụ?",

@@ -68,6 +68,8 @@
     "otpSubtitle": "Mun aika lamba mai lambobi 6 zuwa {{target}}",
     "resendCode": "Sake aika lamba",
     "resendIn": "Sake aikawa cikin {{time}}",
+    "codeExpiresIn": "Wannan lambar za ta ƙare cikin {{time}}",
+    "codeExpired": "Wannan lambar ta ƙare. Nemi sabuwa.",
     "verify": "Tabbatar",
     "alreadyHaveAccount": "Kana da asusu?",
     "noAccount": "Ba ka da asusu?",

@@ -9,7 +9,7 @@
     "web": "expo start --web",
     "check:theme": "node scripts/check-theme.js",
     "typecheck": "tsc --noEmit",
-    "verify": "npm run typecheck && npm run check:theme && npm run check:i18n && npm run check:untranslated && npm run test:singleflight && npm run test:sse && npm run test:socket && npm run test:booking && npm run test:compare",
+    "verify": "npm run typecheck && npm run check:theme && npm run check:i18n && npm run check:untranslated && npm run test:singleflight && npm run test:sse && npm run test:socket && npm run test:booking && npm run test:compare && npm run test:otp",
     "check:i18n": "node scripts/check-i18n.js",
     "check:untranslated": "node scripts/find-untranslated.js",
     "test:singleflight": "node scripts/test-singleflight.js",
@@ -17,7 +17,8 @@
     "check:worklets": "node scripts/check-worklets.js",
     "test:socket": "node scripts/test-socket-backoff.js",
     "test:booking": "node scripts/test-booking-slots.js",
-    "test:compare": "node scripts/test-compare.js"
+    "test:compare": "node scripts/test-compare.js",
+    "test:otp": "node scripts/test-otp-countdown.js"
   },
   "dependencies": {
     "@expo-google-fonts/outfit": "^0.4.3",

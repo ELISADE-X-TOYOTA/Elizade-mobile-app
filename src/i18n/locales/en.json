@@ -68,6 +68,8 @@
     "otpSubtitle": "We sent a 6-digit code to {{target}}",
     "resendCode": "Resend code",
     "resendIn": "Resend in {{time}}",
+    "codeExpiresIn": "This code expires in {{time}}",
+    "codeExpired": "This code has expired. Request a new one.",
     "verify": "Verify",
     "alreadyHaveAccount": "Already have an account?",
     "noAccount": "Don't have an account?",

@@ -68,6 +68,8 @@
     "otpSubtitle": "A ti fi kóòdù oní nọ́mbà mẹ́fà ránṣẹ́ sí {{target}}",
     "resendCode": "Tún kóòdù ránṣẹ́",
     "resendIn": "Fi ránṣẹ́ lẹ́ẹ̀kansí ní {{time}}",
+    "codeExpiresIn": "Kóòdù yìí yóò pari ní {{time}}",
+    "codeExpired": "Kóòdù yìí ti pari. Béèrè fún tuntun.",
     "verify": "Ṣàyẹ̀wò",
     "alreadyHaveAccount": "Ṣé o ti ní àkàǹtì?",
     "noAccount": "Ṣé o kò ní àkàǹtì?",

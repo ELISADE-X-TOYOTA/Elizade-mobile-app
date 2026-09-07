@@ -68,6 +68,8 @@
     "otpSubtitle": "أرسلنا رمزًا من 6 أرقام إلى {{target}}",
     "resendCode": "إعادة إرسال الرمز",
     "resendIn": "إعادة الإرسال خلال {{time}}",
+    "codeExpiresIn": "تنتهي صلاحية هذا الرمز خلال {{time}}",
+    "codeExpired": "انتهت صلاحية هذا الرمز. اطلب رمزًا جديدًا.",
     "verify": "تحقق",
     "alreadyHaveAccount": "لديك حساب بالفعل؟",
     "noAccount": "ليس لديك حساب؟",

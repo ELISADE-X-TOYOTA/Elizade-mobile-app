@@ -33,6 +33,7 @@ import { Txt } from '../../src/components/Txt';
 import { APP } from '../../src/constants/app';
 import { touchActivity } from '../../src/api/session';
 import { requestOtp, verifyOtp } from '../../src/data/authRepository';
+import { useOtpCountdown } from '../../src/hooks/useOtpCountdown';
 import { EmailAvailabilityResult, useEmailAvailability } from '../../src/hooks/useEmailAvailability';
 import { useStore } from '../../src/store/useStore';
 import { useWatchlistStore } from '../../src/store/useWatchlistStore';
@@ -58,8 +59,6 @@ const MIN_ANIMATION_MS = 1100;
 
 /** OTP length — must match the backend's OTP_LENGTH. */
 const LEN = 6;
-/** Seconds before "Resend code" becomes available again. */
-const RESEND_SECONDS = 60;
 
 /** Multi-step registration wizard with a progress bar. */
 export default function Register() {
@@ -83,7 +82,6 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
   const [resendError, setResendError] = useState<string>();
-  const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
   const [error, setError] = useState<string>();
   const [otpError, setOtpError] = useState(false);
   const [done, setDone] = useState(false);
@@ -94,14 +92,12 @@ export default function Register() {
   const submitted = useRef(false);
   const otpBoxesRef = useRef<OtpBoxesHandle>(null);
 
-  // ── Resend countdown (OTP step only) ───────────────────────────────────
-  useEffect(() => {
-    if (step !== 'otp' || secondsLeft <= 0) return;
-    const id = setInterval(() => setSecondsLeft((s) => (s <= 1 ? 0 : s - 1)), 1000);
-    return () => clearInterval(id);
-  }, [step, secondsLeft]);
-
-  const resendMmss = `${Math.floor(secondsLeft / 60)}:${String(secondsLeft % 60).padStart(2, '0')}`;
+  // ── Countdowns (OTP step only) ─────────────────────────────────────────
+  // The code's lifetime and the resend cooldown are different things. Only the
+  // cooldown used to be on screen, so the app looked like it was contradicting
+  // the email — 60 seconds here against ten minutes there.
+  const countdown = useOtpCountdown({ active: step === 'otp' });
+  const { restart: restartCountdown } = countdown;
 
   // Animated progress fill.
   const progress = useSharedValue(0.25);
@@ -173,15 +169,15 @@ export default function Register() {
   );
 
   const resend = async () => {
-    if (secondsLeft > 0 || resending) return;
+    if (!countdown.canResend || resending) return;
     setResending(true);
     setResendError(undefined);
     try {
-      await requestOtp({ email, purpose: 'register', firstName, lastName, otherName });
+      const minutes = await requestOtp({ email, purpose: 'register', firstName, lastName, otherName });
       setCode(Array(LEN).fill(''));
       submitted.current = false;
       setOtpError(false);
-      setSecondsLeft(RESEND_SECONDS);
+      restartCountdown(minutes);
       otpBoxesRef.current?.focusFirst();
     } catch (e) {
       setResendError(e instanceof Error ? e.message : 'Could not resend the code');
@@ -218,7 +214,13 @@ export default function Register() {
         setSending(true);
         const startedAt = Date.now();
         try {
-          await requestOtp({ email, purpose: 'register', firstName, lastName, otherName });
+          const minutes = await requestOtp({ email, purpose: 'register', firstName, lastName, otherName });
+          // Started from the server's lifetime, so the screen and the email
+          // agree. Set BEFORE the animation hold below, not after: the clock
+          // is an absolute deadline, and the code was minted just now, so
+          // anchoring it here makes the hold count against the code's life —
+          // which it genuinely does.
+          restartCountdown(minutes);
           // Hold the animation briefly so the transition reads as deliberate.
           const elapsed = Date.now() - startedAt;
           if (elapsed < MIN_ANIMATION_MS) {
@@ -226,7 +228,6 @@ export default function Register() {
           }
           setSending(false);
           submitted.current = false;
-          setSecondsLeft(RESEND_SECONDS);
           setResendError(undefined);
           setStep('otp');
         } catch (e) {
@@ -402,21 +403,27 @@ export default function Register() {
                   <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: 10 }}>
                     {resendError}
                   </Txt>
+                ) : countdown.expired ? (
+                  // The code on screen is dead. Say so rather than letting
+                  // someone type it out and collect a rejection for it.
+                  <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: 10 }}>
+                    {tr('auth.codeExpired')}
+                  </Txt>
                 ) : (
                   <Txt variant="bodySmall" tone="tertiary" style={{ marginTop: 10 }}>
                     {loading
                       ? 'Verifying…'
                       : DEMO_MODE
                         ? `Demo code: ${DEMO_OTP}`
-                        : 'Verification starts automatically once all six digits are in.'}
+                        : tr('auth.codeExpiresIn', { time: countdown.expiryLabel })}
                   </Txt>
                 )}
                 <View style={{ marginTop: spacing.md, alignItems: 'center' }}>
-                  {secondsLeft > 0 ? (
+                  {!countdown.canResend ? (
                     <Txt tone="secondary">
                       {tr('auth.didntGetIt')}{'  '}
                       <Txt variant="titleSmall" tone="tertiary">
-                        {tr('auth.resendIn', { time: resendMmss })}
+                        {tr('auth.resendIn', { time: countdown.resendLabel })}
                       </Txt>
                     </Txt>
                   ) : (
