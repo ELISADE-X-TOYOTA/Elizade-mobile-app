@@ -388,7 +388,9 @@
   "bookings": {
     "title": "Ìfiṣọ̀wọ̀",
     "subtitle": "Àwọn ìdánwò ìwakọ̀ tí o ṣètò",
-    "viewProgress": "Wo ìlọsíwájú"
+    "viewProgress": "Wo ìlọsíwájú",
+    "typeTestDrive": "Ìdanwò Āyòkèlè",
+    "typeService": "Ìtójú Āyòkèlè"
   },
   "tradeIn": {
     "title": "Ìgbéléwọ̀n ìpààrọ̀",

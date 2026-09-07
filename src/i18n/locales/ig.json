@@ -388,7 +388,9 @@
   "bookings": {
     "title": "Ndebe oche",
     "subtitle": "Nnwale ịnya ụgbọala i haziri",
-    "viewProgress": "Lee ọganihu"
+    "viewProgress": "Lee ọganihu",
+    "typeTestDrive": "Nnwale Ọkwụ ụgbọ",
+    "typeService": "ọrụ nlekọta"
   },
   "tradeIn": {
     "title": "Nleba anya mgbanwe",

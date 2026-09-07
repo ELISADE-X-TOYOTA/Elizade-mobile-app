@@ -388,7 +388,9 @@
   "bookings": {
     "title": "Ajiye wuri",
     "subtitle": "Gwajin tuƙi da ka shirya",
-    "viewProgress": "Duba ci gaba"
+    "viewProgress": "Duba ci gaba",
+    "typeTestDrive": "Gwajin Tuki",
+    "typeService": "Gyara"
   },
   "tradeIn": {
     "title": "Kimanta musanya",

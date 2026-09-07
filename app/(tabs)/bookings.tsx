@@ -19,6 +19,30 @@ const TABS = ['Upcoming', 'Past'] as const;
 const UPCOMING: TestDriveStatus[] = ['requested', 'confirmed'];
 const PAST: TestDriveStatus[] = ['completed', 'cancelled'];
 
+/**
+ * What kind of booking a card is showing.
+ *
+ * A customer's bookings are not all the same thing, and the card gave no clue
+ * which was which — the same generic car icon and the same layout regardless.
+ * The kind now drives the icon and a labelled chip, so it is legible at a
+ * glance rather than inferred from the vehicle name.
+ *
+ * NOTE: only `testDrive` reaches this screen today. The tab is backed solely
+ * by `GET /sales/test-drives`; service appointments live in the Service tab
+ * and are not merged in here. `service` is defined because the card is now
+ * genuinely kind-driven and that is the single place a merge would plug into
+ * — not because servicing currently appears.
+ */
+type BookingKind = 'testDrive' | 'service';
+
+const BOOKING_KIND_META: Record<
+  BookingKind,
+  { icon: keyof typeof Ionicons.glyphMap; labelKey: string }
+> = {
+  testDrive: { icon: 'car-sport', labelKey: 'bookings.typeTestDrive' },
+  service: { icon: 'construct', labelKey: 'bookings.typeService' },
+};
+
 /** My test-drive bookings — backed by GET /sales/test-drives. */
 export default function Bookings() {
   const t = useTheme();
@@ -104,10 +128,19 @@ export default function Bookings() {
   );
 }
 
-function BookingCard({ booking, statusColor }: { booking: TestDriveBooking; statusColor: string }) {
+function BookingCard({
+  booking,
+  statusColor,
+  kind = 'testDrive',
+}: {
+  booking: TestDriveBooking;
+  statusColor: string;
+  kind?: BookingKind;
+}) {
   const t = useTheme();
   const { t: tr } = useTranslation();
   const when = new Date(booking.scheduledAt);
+  const kindMeta = BOOKING_KIND_META[kind];
 
   /*
     THE LIVE STAGE, NOT `booking.status`.
@@ -127,15 +160,33 @@ function BookingCard({ booking, statusColor }: { booking: TestDriveBooking; stat
     <View style={[styles.card, { backgroundColor: t.colors.surface, borderColor: t.colors.border }, t.shadows.soft]}>
       <View style={styles.cardTop}>
         <View style={[styles.iconWrap, { backgroundColor: t.colors.primary + '14' }]}>
-          <Ionicons name="car-sport" size={22} color={t.colors.primary} />
+          <Ionicons name={kindMeta.icon} size={22} color={t.colors.primary} />
         </View>
         <View style={{ flex: 1, marginLeft: 12 }}>
           <Txt variant="titleMedium" numberOfLines={1}>
             {booking.vehicleLabel}
           </Txt>
-          <Txt variant="bodySmall" tone="secondary" numberOfLines={1}>
-            {booking.branchName}
-          </Txt>
+          {/*
+            The kind, stated rather than implied. The card previously showed
+            only the vehicle and the branch, which is identical whether you
+            booked a test drive or a service — a customer had no way to tell
+            their bookings apart except by remembering.
+          */}
+          <View style={styles.kindRow}>
+            <View style={[styles.kindChip, { backgroundColor: t.colors.primary + '14' }]}>
+              <Txt variant="labelSmall" color={t.colors.primary}>
+                {tr(kindMeta.labelKey)}
+              </Txt>
+            </View>
+            <Txt
+              variant="bodySmall"
+              tone="secondary"
+              numberOfLines={1}
+              style={{ marginLeft: 6, flex: 1 }}
+            >
+              {booking.branchName}
+            </Txt>
+          </View>
         </View>
         <View style={[styles.badge, { backgroundColor: statusColor + '22' }]}>
           <Txt variant="labelSmall" color={statusColor}>
@@ -169,7 +220,12 @@ function BookingCard({ booking, statusColor }: { booking: TestDriveBooking; stat
   if (!trackable) return body;
   return (
     <Pressable
-      onPress={() => router.push(`/lead/${booking.leadId}`)}
+      // The kind travels with the booking. The lead itself does not record
+      // which customer action created it in any form worth rendering, and the
+      // card already knows — so passing it beats inferring it there.
+      onPress={() =>
+        router.push({ pathname: '/lead/[id]', params: { id: booking.leadId!, kind } })
+      }
       accessibilityRole="button"
       accessibilityLabel={tr('bookings.viewProgress')}
       style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
@@ -206,6 +262,8 @@ const styles = StyleSheet.create({
   card: { borderRadius: radius.lg, borderWidth: 1, padding: 14, marginBottom: 12 },
   cardTop: { flexDirection: 'row', alignItems: 'center' },
   iconWrap: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
+  kindRow: { flexDirection: 'row', alignItems: 'center', marginTop: 3 },
+  kindChip: { paddingHorizontal: 7, paddingVertical: 2, borderRadius: radius.pill },
   badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: radius.pill },
   metaRow: { flexDirection: 'row', alignItems: 'center', marginTop: 12, paddingTop: 12, borderTopWidth: StyleSheet.hairlineWidth },
   emptyIcon: { width: 72, height: 72, borderRadius: 36, alignItems: 'center', justifyContent: 'center' },

@@ -388,7 +388,9 @@
   "bookings": {
     "title": "الحجوزات",
     "subtitle": "تجارب القيادة المجدولة",
-    "viewProgress": "عرض التقدم"
+    "viewProgress": "عرض التقدم",
+    "typeTestDrive": "قيادة تجريبية",
+    "typeService": "صيانة"
   },
   "tradeIn": {
     "title": "تقييم الاستبدال",

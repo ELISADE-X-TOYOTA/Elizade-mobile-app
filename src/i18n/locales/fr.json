@@ -388,7 +388,9 @@
   "bookings": {
     "title": "Réservations",
     "subtitle": "Vos essais programmés",
-    "viewProgress": "Voir la progression"
+    "viewProgress": "Voir la progression",
+    "typeTestDrive": "Essai routier",
+    "typeService": "Entretien"
   },
   "tradeIn": {
     "title": "Estimation de reprise",
