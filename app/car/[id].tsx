@@ -25,6 +25,7 @@ import { ON_DARK_INK, OVERLAY_CHIP, OVERLAY_CHIP_INK, solid, tint } from '../../
 import { vehicleSubtitle, vehicleTitle, Vehicle } from '../../src/domain/types';
 import { useVehicle } from '../../src/hooks/useVehicles';
 import { useNotifyMeStore } from '../../src/store/useNotifyMeStore';
+import { useStore } from '../../src/store/useStore';
 import { useWatchlistStore } from '../../src/store/useWatchlistStore';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
@@ -50,6 +51,22 @@ export default function CarDetails() {
   const [quoteOpen, setQuoteOpen] = useState(false);
   /** Sticky-bar height, measured on layout. 140 is only the first-frame guess. */
   const [barHeight, setBarHeight] = useState(140);
+  /*
+    The same measurement, published for the compare tray.
+
+    The tray is mounted once at the app root and cannot see this screen's
+    sticky bar, so it docked at ~50pt from the bottom and landed on top of it —
+    Reserve and Test Drive were underneath the dock the moment a car was staged
+    for comparison. Sharing the measured height rather than letting the tray
+    guess keeps it correct on a handset with a gesture bar and one without.
+  */
+  const setStickyBarHeight = useStore((s) => s.setStickyBarHeight);
+  useEffect(() => {
+    setStickyBarHeight(barHeight);
+  }, [barHeight, setStickyBarHeight]);
+  // Reset on the way out, or the tray floats above a bar that is no longer
+  // there on whatever screen comes next.
+  useEffect(() => () => setStickyBarHeight(0), [setStickyBarHeight]);
   const notifyStatus = useNotifyMeStore((s) => s.statuses[id ?? '']);
   const notifyLoading = useNotifyMeStore((s) => s.loading[id ?? ''] ?? false);
   const notifyError = useNotifyMeStore((s) => s.errors[id ?? '']);

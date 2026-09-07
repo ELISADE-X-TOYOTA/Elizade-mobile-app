@@ -16,6 +16,7 @@ import { COMPARE_LIMIT, CompareEntry, useStore } from '../store/useStore';
 import { radius, spacing } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
 import { priceCompact } from '../utils/format';
+import { trayBottomOffset } from '../utils/trayLayout';
 import { Txt } from './Txt';
 import { solid } from '../theme/colors';
 
@@ -32,9 +33,6 @@ function isShowroomRoute(path: string): boolean {
   return path === '/shop' || path.startsWith('/car/');
 }
 
-/** Height of the floating tab bar, so the tray docks above rather than over it. */
-const TAB_BAR_H = 66;
-
 export function CompareTray() {
   const t = useTheme();
   const { t: tr } = useTranslation();
@@ -45,6 +43,7 @@ export function CompareTray() {
   const clearCompare = useStore((s) => s.clearCompare);
   const swapNotice = useStore((s) => s.swapNotice);
   const dismissSwapNotice = useStore((s) => s.dismissSwapNotice);
+  const stickyBarHeight = useStore((s) => s.stickyBarHeight);
 
   // Above the early return — hooks must run on every render.
   useEffect(() => {
@@ -56,8 +55,18 @@ export function CompareTray() {
   if (!isShowroomRoute(pathname) || compare.length === 0) return null;
 
   const onTabScreen = pathname === '/shop';
-  const bottom =
-    (insets.bottom > 0 ? insets.bottom : 12) + (onTabScreen ? TAB_BAR_H + 10 : spacing.md);
+  /*
+    What the tray has to clear differs by screen: the floating tab bar in the
+    grid, and a car's own sticky action bar on its details page — which the
+    tray used to sit on top of, putting Reserve and Test Drive underneath the
+    dock. The arithmetic lives in `trayLayout` because it is pure, easy to get
+    wrong by an invisible ~34pt, and impossible to catch with a typecheck.
+  */
+  const bottom = trayBottomOffset({
+    onTabScreen,
+    safeAreaBottom: insets.bottom,
+    stickyBarHeight,
+  });
   const ready = compare.length === COMPARE_LIMIT;
 
   return (
@@ -106,7 +115,14 @@ export function CompareTray() {
             compare[i] ? (
               <Slot key={compare[i].id} entry={compare[i]} onRemove={() => removeFromCompare(compare[i].id)} />
             ) : (
-              <EmptySlot key={`empty-${i}`} />
+              // On a car's details page the only compare buttons are back in
+              // the grid, so the empty slot has somewhere to send you. In the
+              // grid itself they are already on screen, so it stays a hint —
+              // see EmptySlot.
+              <EmptySlot
+                key={`empty-${i}`}
+                onPress={onTabScreen ? undefined : () => router.push('/(tabs)/shop')}
+              />
             ),
           )}
         </View>
@@ -176,14 +192,54 @@ function Slot({ entry, onRemove }: { entry: CompareEntry; onRemove: () => void }
   );
 }
 
-function EmptySlot() {
+/**
+ * The second slot, before a second car is chosen.
+ *
+ * THIS WAS A DEAD END. It rendered a `+` and "Pick a second car" behind a
+ * dashed border — an add affordance in every visual respect — as a plain
+ * `View` with no handler. And it is the ONLY route onward from a car's
+ * details page: the compare buttons live on the grid's cards, so a customer
+ * who staged one car there was told to pick a second, given something that
+ * looked like the way to do it, and got nothing. The "Compare" button below
+ * stays disabled until two are staged, so that did nothing either. Two dead
+ * controls, one after the other, which is exactly how it was reported.
+ *
+ * `onPress` is OPTIONAL on purpose. In the showroom grid the compare buttons
+ * are already on screen, so there is nowhere to send anyone and this is a
+ * status hint, not a control — it renders as plain text with no button role.
+ * Wiring it there to navigate to the page you are already on would just be a
+ * different dead button.
+ */
+function EmptySlot({ onPress }: { onPress?: () => void }) {
   const t = useTheme();
   const { t: tr } = useTranslation();
-  return (
-    <View style={[styles.slot, styles.empty, { borderColor: t.colors.border }]}>
+
+  const content = (
+    <>
       <Ionicons name="add" size={17} color={t.colors.textTertiary} />
       <Txt variant="bodySmall" tone="tertiary" numberOfLines={1} style={{ marginLeft: 6, flex: 1 }}>{tr('compare.pickSecond')}</Txt>
-    </View>
+    </>
+  );
+
+  if (!onPress) {
+    return (
+      <View style={[styles.slot, styles.empty, { borderColor: t.colors.border }]}>{content}</View>
+    );
+  }
+
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={tr('compare.pickSecond')}
+      style={({ pressed }) => [
+        styles.slot,
+        styles.empty,
+        { borderColor: pressed ? t.colors.accentText : t.colors.border, opacity: pressed ? 0.7 : 1 },
+      ]}
+    >
+      {content}
+    </Pressable>
   );
 }
 
