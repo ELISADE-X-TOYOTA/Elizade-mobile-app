@@ -221,7 +221,9 @@
     "includedHighlights": "Abubuwan da ke ciki",
     "configureDisclaimer": "Wannan zaɓi na tambayarka ne kuma ba ya canza farashin motar da aka sanar.",
     "notifyMe": "Sanar da ni",
-    "turnOffAlerts": "Kashe sanarwa"
+    "turnOffAlerts": "Kashe sanarwa",
+    "messageDealer": "Aika saƙo ga dila",
+    "callDealer": "Kira dila"
   },
   "service": {
     "title": "Gyara",
@@ -435,7 +437,10 @@
     "holdingDeposit": "Kuɗin riƙewa (5%)",
     "depositNote": "Yana riƙe wannan motar na kwanaki 7. Za a cire shi gaba ɗaya daga farashin ƙarshe.",
     "change": "Canza",
-    "requestedDetail": "An nemi gwajin tuƙi na {{vehicle}} a {{branch}}. Ƙungiyarmu za ta tabbatar nan ba da jimawa ba."
+    "requestedDetail": "An nemi gwajin tuƙi na {{vehicle}} a {{branch}}. Ƙungiyarmu za ta tabbatar nan ba da jimawa ba.",
+    "reserveVehicle": "Ajiye Mota",
+    "depositCollectedLater": "Ba a karɓar biyan kuɗi yanzu. Ƙungiyar tallace-tallacenmu za ta tuntuɓe ka don shirya ajiya.",
+    "alreadyReserved": "Ka riga ka ajiye wannan motar. Duba ta a ƙarƙashin Ajiya."
   },
   "home": {
     "openProfile": "Buɗe bayanan ka"

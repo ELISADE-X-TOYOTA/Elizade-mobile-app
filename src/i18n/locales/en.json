@@ -221,7 +221,9 @@
     "includedHighlights": "Included highlights",
     "configureDisclaimer": "This selection is for your enquiry and does not change listed vehicle pricing.",
     "notifyMe": "Notify Me",
-    "turnOffAlerts": "Turn off alerts"
+    "turnOffAlerts": "Turn off alerts",
+    "messageDealer": "Message dealer",
+    "callDealer": "Call dealer"
   },
   "service": {
     "title": "Service",
@@ -435,7 +437,10 @@
     "holdingDeposit": "Holding deposit (5%)",
     "depositNote": "Reserves this vehicle for 7 days. Fully deductible from the final price.",
     "change": "Change",
-    "requestedDetail": "Your test drive of the {{vehicle}} at {{branch}} is requested. Our team will confirm shortly."
+    "requestedDetail": "Your test drive of the {{vehicle}} at {{branch}} is requested. Our team will confirm shortly.",
+    "reserveVehicle": "Reserve Vehicle",
+    "depositCollectedLater": "No payment is taken now. Our sales team will contact you to arrange the deposit.",
+    "alreadyReserved": "You have already reserved this vehicle. See it under Reservations."
   },
   "home": {
     "openProfile": "Open your profile"

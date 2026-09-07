@@ -221,7 +221,9 @@
     "includedHighlights": "Àwọn ohun tí ó wà nínú rẹ̀",
     "configureDisclaimer": "Àyànfẹ́ yìí wà fún ìbéèrè rẹ, kò sì yí iye owó ọkọ̀ tí a kéde padà.",
     "notifyMe": "Sọ fún mi",
-    "turnOffAlerts": "Pa ìkìlọ̀ kúrò"
+    "turnOffAlerts": "Pa ìkìlọ̀ kúrò",
+    "messageDealer": "Fi iṣẹ́ ránṣẹ́ sí olùtà",
+    "callDealer": "Pe olùtà"
   },
   "service": {
     "title": "Àtúnṣe",
@@ -435,7 +437,10 @@
     "holdingDeposit": "Owó ìdádúró (5%)",
     "depositNote": "Ó dá ọkọ̀ yìí dúró fún ọjọ́ 7. A ó yọ ọ́ pátápátá kúrò nínú iye owó ìkẹyìn.",
     "change": "Yí padà",
-    "requestedDetail": "A ti béèrè ìdánwò ìwakọ̀ {{vehicle}} rẹ ní {{branch}}. Ẹgbẹ́ wa yóò jẹ́rìí sí i láìpẹ́."
+    "requestedDetail": "A ti béèrè ìdánwò ìwakọ̀ {{vehicle}} rẹ ní {{branch}}. Ẹgbẹ́ wa yóò jẹ́rìí sí i láìpẹ́.",
+    "reserveVehicle": "Fi Ọkọ̀ Pamọ́",
+    "depositCollectedLater": "A kò gba owó kankan báyìí. Àwọn òṣìṣẹ́ tà wa yóò kàn sí ọ láti ṣètò ìdógó.",
+    "alreadyReserved": "O ti fi ọkọ̀ yìí pamọ́ tẹ́lẹ̀. Wò ó lábẹ́ Ìfipamọ́."
   },
   "home": {
     "openProfile": "Ṣí àkọọ́lẹ̀ rẹ"

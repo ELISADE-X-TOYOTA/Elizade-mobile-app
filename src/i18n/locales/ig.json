@@ -221,7 +221,9 @@
     "includedHighlights": "Ihe ndị so na ya",
     "configureDisclaimer": "Nhọrọ a bụ maka ajụjụ gị, ọ naghịkwa agbanwe ọnụahịa ụgbọala ekwuputara.",
     "notifyMe": "Mee ka m mara",
-    "turnOffAlerts": "Gbanyụọ ọkwa"
+    "turnOffAlerts": "Gbanyụọ ọkwa",
+    "messageDealer": "Zigara onye na-ere ahịa ozi",
+    "callDealer": "Kpọọ onye na-ere ahịa"
   },
   "service": {
     "title": "Nrụzi",
@@ -435,7 +437,10 @@
     "holdingDeposit": "Ego ijide (5%)",
     "depositNote": "Ọ na-ejide ụgbọala a ruo ụbọchị 7. A ga-ewepụ ya kpamkpam na ọnụahịa ikpeazụ.",
     "change": "Gbanwee",
-    "requestedDetail": "Arịọla nnwale ịnya {{vehicle}} gị na {{branch}}. Ndị otu anyị ga-akwado ya n'oge na-adịghị anya."
+    "requestedDetail": "Arịọla nnwale ịnya {{vehicle}} gị na {{branch}}. Ndị otu anyị ga-akwado ya n'oge na-adịghị anya.",
+    "reserveVehicle": "Debe Ụgbọala",
+    "depositCollectedLater": "A naghị anara ụgwọ ugbu a. Ndị otu ahịa anyị ga-akpọtụrụ gị iji hazie ego nchekwa.",
+    "alreadyReserved": "Ị debeelarị ụgbọala a. Lelee ya n'okpuru Ndebe."
   },
   "home": {
     "openProfile": "Mepee profaịlụ gị"

@@ -4,13 +4,16 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import {
+  Alert,
   Dimensions,
+  Linking,
   Pressable,
   ScrollView,
   Share,
   StyleSheet,
   View,
 } from 'react-native';
+import { APP } from '../../src/constants/app';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CompareButton } from '../../src/components/CompareButton';
 import { NotifyMeCard } from '../../src/components/NotifyMeCard';
@@ -45,6 +48,8 @@ export default function CarDetails() {
   const [sale, setSale] = useState<SalesMode | null>(null);
   const [financeOpen, setFinanceOpen] = useState(false);
   const [quoteOpen, setQuoteOpen] = useState(false);
+  /** Sticky-bar height, measured on layout. 140 is only the first-frame guess. */
+  const [barHeight, setBarHeight] = useState(140);
   const notifyStatus = useNotifyMeStore((s) => s.statuses[id ?? '']);
   const notifyLoading = useNotifyMeStore((s) => s.loading[id ?? ''] ?? false);
   const notifyError = useNotifyMeStore((s) => s.errors[id ?? '']);
@@ -55,6 +60,23 @@ export default function CarDetails() {
   useEffect(() => {
     if (id) loadNotifyStatus(id);
   }, [id, loadNotifyStatus]);
+
+  /**
+   * Hands off to the native dialer.
+   *
+   * `openURL` rejects on a device with no telephony (a tablet, an emulator),
+   * and an unhandled rejection there would surface as a silent no-op — the
+   * exact symptom being fixed. So the number is shown instead, which still
+   * lets someone call from another phone.
+   */
+  const callSupport = useCallback(async () => {
+    const url = `tel:${APP.supportPhone}`;
+    try {
+      await Linking.openURL(url);
+    } catch {
+      Alert.alert(tr('shop.callDealer'), APP.supportPhone);
+    }
+  }, [tr]);
 
   const shareVehicle = useCallback(async (vehicle: Vehicle) => {
     const title = vehicleTitle(vehicle);
@@ -104,7 +126,18 @@ export default function CarDetails() {
 
   return (
     <View style={{ flex: 1, backgroundColor: 'transparent' }}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 140 }}>
+      {/*
+        Padding is MEASURED, not guessed. It was a hardcoded 140, but the
+        sticky bar's real height is its content plus `insets.bottom` — which is
+        0 on an older handset and ~34pt on one with a gesture bar. On those, the
+        bar covered the last card, clipping the dealer name and verification
+        line. Measuring means it is correct on every device instead of on the
+        one it was eyeballed against.
+      */}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: barHeight + spacing.lg }}
+      >
         {/* Interactive image viewer + detail-backed configuration */}
         <View>
           <Vehicle360Viewer vehicle={v} />
@@ -223,15 +256,26 @@ export default function CarDetails() {
                 {tr('shop.verifiedDealerOwners', { count: v.ownerHistory })}
               </Txt>
             </View>
-            <RoundAction icon="chatbubble-outline" />
+            <RoundAction
+              icon="chatbubble-outline"
+              accessibilityLabel={tr('shop.messageDealer')}
+              onPress={() => router.push('/support')}
+            />
             <View style={{ width: 8 }} />
-            <RoundAction icon="call" />
+            <RoundAction
+              icon="call"
+              accessibilityLabel={tr('shop.callDealer')}
+              onPress={callSupport}
+            />
           </View>
         </View>
       </ScrollView>
 
       {/* Sticky bottom bar */}
-      <View style={[styles.bottombar, { backgroundColor: t.colors.surface, paddingBottom: insets.bottom + 12 }, t.shadows.elevated]}>
+      <View
+        onLayout={(e) => setBarHeight(e.nativeEvent.layout.height)}
+        style={[styles.bottombar, { backgroundColor: t.colors.surface, paddingBottom: insets.bottom + 12 }, t.shadows.elevated]}
+      >
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
           <View>
             <Txt variant="bodySmall" tone="secondary">{tr('common.price')}</Txt>
@@ -322,13 +366,37 @@ function ToolBtn({ icon, label, onPress }: { icon: keyof typeof Ionicons.glyphMa
   );
 }
 
-function RoundAction({ icon }: { icon: keyof typeof Ionicons.glyphMap }) {
+/**
+ * WAS A PLAIN `View`, so the message and call icons on the dealer card were
+ * decorative — they looked exactly like buttons and did nothing when tapped.
+ * Nothing was broken; nothing had ever been wired.
+ *
+ * `hitSlop` because a 36pt circle is under the 44pt minimum touch target, and
+ * these sit at the bottom of a long scroll where a near-miss is easy.
+ */
+function RoundAction({
+  icon,
+  onPress,
+  accessibilityLabel,
+}: {
+  icon: keyof typeof Ionicons.glyphMap;
+  onPress: () => void;
+  accessibilityLabel: string;
+}) {
   const t = useTheme();
-  const { t: tr } = useTranslation();
   return (
-    <View style={[styles.roundAction, { backgroundColor: t.colors.primary + '14' }]}>
+    <Pressable
+      onPress={onPress}
+      hitSlop={8}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+      style={({ pressed }) => [
+        styles.roundAction,
+        { backgroundColor: t.colors.primary + (pressed ? '2A' : '14') },
+      ]}
+    >
       <Ionicons name={icon} size={20} color={t.colors.primary} />
-    </View>
+    </Pressable>
   );
 }
 

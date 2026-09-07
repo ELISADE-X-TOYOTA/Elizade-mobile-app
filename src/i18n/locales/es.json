@@ -221,7 +221,9 @@
     "includedHighlights": "Equipamiento incluido",
     "configureDisclaimer": "Esta selección es para tu consulta y no cambia el precio publicado del vehículo.",
     "notifyMe": "Avisarme",
-    "turnOffAlerts": "Desactivar avisos"
+    "turnOffAlerts": "Desactivar avisos",
+    "messageDealer": "Enviar mensaje al concesionario",
+    "callDealer": "Llamar al concesionario"
   },
   "service": {
     "title": "Servicio",
@@ -435,7 +437,10 @@
     "holdingDeposit": "Depósito de reserva (5 %)",
     "depositNote": "Reserva este vehículo durante 7 días. Totalmente deducible del precio final.",
     "change": "Cambiar",
-    "requestedDetail": "Tu prueba de manejo del {{vehicle}} en {{branch}} está solicitada. Nuestro equipo lo confirmará en breve."
+    "requestedDetail": "Tu prueba de manejo del {{vehicle}} en {{branch}} está solicitada. Nuestro equipo lo confirmará en breve.",
+    "reserveVehicle": "Reservar vehículo",
+    "depositCollectedLater": "No se cobra ningún pago ahora. Nuestro equipo de ventas le contactará para gestionar el depósito.",
+    "alreadyReserved": "Ya ha reservado este vehículo. Puede verlo en Reservas."
   },
   "home": {
     "openProfile": "Abrir tu perfil"

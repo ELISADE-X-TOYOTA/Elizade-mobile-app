@@ -221,7 +221,9 @@
     "includedHighlights": "Équipements inclus",
     "configureDisclaimer": "Cette sélection concerne votre demande et ne modifie pas le prix affiché du véhicule.",
     "notifyMe": "Me prévenir",
-    "turnOffAlerts": "Désactiver les alertes"
+    "turnOffAlerts": "Désactiver les alertes",
+    "messageDealer": "Contacter le concessionnaire",
+    "callDealer": "Appeler le concessionnaire"
   },
   "service": {
     "title": "Entretien",
@@ -435,7 +437,10 @@
     "holdingDeposit": "Acompte de réservation (5 %)",
     "depositNote": "Réserve ce véhicule pendant 7 jours. Entièrement déductible du prix final.",
     "change": "Modifier",
-    "requestedDetail": "Votre essai de la {{vehicle}} à {{branch}} est demandé. Notre équipe confirmera sous peu."
+    "requestedDetail": "Votre essai de la {{vehicle}} à {{branch}} est demandé. Notre équipe confirmera sous peu.",
+    "reserveVehicle": "Réserver le véhicule",
+    "depositCollectedLater": "Aucun paiement n'est prélevé maintenant. Notre équipe commerciale vous contactera pour organiser l'acompte.",
+    "alreadyReserved": "Vous avez déjà réservé ce véhicule. Retrouvez-le dans Réservations."
   },
   "home": {
     "openProfile": "Ouvrir votre profil"

@@ -4,6 +4,7 @@ import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ApiError } from '../api/client';
 import { bookTestDrive, reserveVehicle } from '../data/salesRepository';
 import { useBranches } from '../hooks/useBranches';
 import { Vehicle, vehicleTitle } from '../domain/types';
@@ -79,7 +80,23 @@ export function TestDriveModal({ visible, vehicle, mode, onClose }: Props) {
       }
       setDone(true);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Could not complete this request.');
+      /*
+        409 here means THIS VEHICLE IS ALREADY RESERVED — very often by the
+        same person, moments earlier, because a reservation succeeds exactly
+        once per vehicle and every tap after that is refused.
+
+        The generic message made a successful reservation look like a broken
+        button: the customer had already got what they asked for and was being
+        told something had gone wrong. Naming the real state is the fix.
+      */
+      const conflict = e instanceof ApiError && e.status === 409;
+      setError(
+        conflict
+          ? tr('testDrive.alreadyReserved')
+          : e instanceof Error
+            ? e.message
+            : 'Could not complete this request.',
+      );
     } finally {
       setLoading(false);
     }
@@ -182,12 +199,26 @@ export function TestDriveModal({ visible, vehicle, mode, onClose }: Props) {
                         <Txt variant="bodySmall" tone="secondary" style={{ marginTop: 4 }}>{tr('testDrive.depositNote')}</Txt>
                       </View>
                     </View>
+                    {/*
+                      THE SAVED CARD AND "Change" ARE GONE, deliberately.
+
+                      They were `Visa •••• 4242` — Stripe's test card number,
+                      hardcoded — beside a "Change" label that was a plain Txt
+                      with no press handler. There is no payment gateway in this
+                      app or in the backend: `POST /sales/reservations` writes a
+                      row and charges nothing.
+
+                      So the screen showed a padlocked "Pay Deposit ₦2,600,000"
+                      against a card that does not exist, for a transaction that
+                      never happened. Making "Change" pressable would have been
+                      the wrong fix — there is nothing to change it to. Telling
+                      the customer what actually happens is.
+                    */}
                     <View style={[styles.payRow, { backgroundColor: t.colors.surfaceAlt }]}>
-                      <Ionicons name="card" size={22} color={t.colors.primary} />
-                      <Txt variant="titleSmall" style={{ flex: 1, marginLeft: 12 }}>
-                        Visa •••• 4242
+                      <Ionicons name="information-circle" size={22} color={t.colors.primary} />
+                      <Txt variant="bodySmall" tone="secondary" style={{ flex: 1, marginLeft: 12 }}>
+                        {tr('testDrive.depositCollectedLater')}
                       </Txt>
-                      <Txt variant="titleSmall" color={t.colors.primary}>{tr('testDrive.change')}</Txt>
                     </View>
                   </>
                 )}
@@ -199,9 +230,18 @@ export function TestDriveModal({ visible, vehicle, mode, onClose }: Props) {
                     {error}
                   </Txt>
                 ) : null}
+                {/*
+                  "Reserve Vehicle", not "Pay Deposit · ₦2,600,000".
+
+                  The old label plus a padlock icon promised a card charge that
+                  no code performs. The button does exactly one thing — holds
+                  the vehicle — so it now says that. The deposit figure still
+                  appears above, where it belongs: as what will be owed, not as
+                  what is about to be taken.
+                */}
                 <PrimaryButton
-                  label={isTestDrive ? 'Confirm Test Drive' : `Pay Deposit · ${price(deposit)}`}
-                  icon={isTestDrive ? 'car-sport' : 'lock-closed'}
+                  label={isTestDrive ? 'Confirm Test Drive' : tr('testDrive.reserveVehicle')}
+                  icon={isTestDrive ? 'car-sport' : 'bookmark'}
                   loading={loading}
                   onPress={submit}
                 />
