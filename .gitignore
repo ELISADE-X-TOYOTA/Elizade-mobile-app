@@ -6,5 +6,16 @@ web-build/
 .DS_Store
 expo-env.d.ts
 
+# Generated native iOS project (regenerate via `npx expo prebuild --platform ios`)
+ios/
+
+# Local build artifacts (archives, IPAs, exported bundles)
+build/
+
 # Local env (API URL / flags)
 .env
+
+# Signing credentials (App Store Connect API key, certs, etc.)
+credentials/
+*.p8
+*.p12
