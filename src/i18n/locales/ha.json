@@ -437,7 +437,10 @@
     "holdingDeposit": "Kuɗin riƙewa (5%)",
     "depositNote": "Yana riƙe wannan motar na kwanaki 7. Za a cire shi gaba ɗaya daga farashin ƙarshe.",
     "change": "Canza",
-    "requestedDetail": "An nemi gwajin tuƙi na {{vehicle}} a {{branch}}. Ƙungiyarmu za ta tabbatar nan ba da jimawa ba."
+    "requestedDetail": "An nemi gwajin tuƙi na {{vehicle}} a {{branch}}. Ƙungiyarmu za ta tabbatar nan ba da jimawa ba.",
+    "reserveVehicle": "Ajiye Mota",
+    "depositCollectedLater": "Ba a karɓar biyan kuɗi yanzu. Ƙungiyar tallace-tallacenmu za ta tuntuɓe ka don shirya ajiya.",
+    "alreadyReserved": "Ka riga ka ajiye wannan motar. Duba ta a ƙarƙashin Ajiya."
   },
   "home": {
     "openProfile": "Buɗe bayanan ka"
