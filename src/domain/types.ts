@@ -1,5 +1,7 @@
 /** Domain models — mirror the Elizade web API (src/types/index.ts). */
 
+import type { LeadStage } from '../api/leads';
+
 export type VehicleCategory =
   | 'suv'
   | 'sedan'
@@ -140,9 +142,19 @@ export interface TestDriveBooking {
   branchId: string;
   branchName: string;
   scheduledAt: string;
+  /**
+   * The booking's own status. NEVER ADVANCES — the backend sets it to
+   * `requested` on creation and nothing ever changes it. Showing it is what
+   * made every test drive read "Requested" for ever.
+   */
   status: TestDriveStatus;
   notes?: string | null;
   leadId?: string | null;
+  /** Live pipeline stage from the linked lead. Prefer this everywhere. */
+  leadStage?: LeadStage | null;
+  leadStageLabel?: string | null;
+  leadStepIndex?: number | null;
+  leadStepCount?: number | null;
   createdAt: string;
 }
 

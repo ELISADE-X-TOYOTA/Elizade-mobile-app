@@ -33,6 +33,12 @@ function mapTestDrive(d: TestDriveDto): TestDriveBooking {
     status,
     notes: d.notes,
     leadId: d.leadId,
+    // The live stage. `status` above is frozen at "requested" server-side, so
+    // these are what the UI must render.
+    leadStage: (d.leadStage as TestDriveBooking['leadStage']) ?? null,
+    leadStageLabel: d.leadStageLabel ?? null,
+    leadStepIndex: d.leadStepIndex ?? null,
+    leadStepCount: d.leadStepCount ?? null,
     createdAt: d.createdAt,
   };
 }

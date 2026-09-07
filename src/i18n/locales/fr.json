@@ -385,7 +385,8 @@
   },
   "bookings": {
     "title": "Réservations",
-    "subtitle": "Vos essais programmés"
+    "subtitle": "Vos essais programmés",
+    "viewProgress": "Voir la progression"
   },
   "tradeIn": {
     "title": "Estimation de reprise",

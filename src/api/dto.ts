@@ -275,9 +275,16 @@ export interface TestDriveDto {
   branchId: string;
   branchName: string;
   scheduledAt: string;
+  /** The BOOKING's own status — frozen at "requested" by the backend and
+   *  never advanced. Do not show this to a customer; use `leadStage`. */
   status: string;
   notes?: string | null;
   leadId?: string | null;
+  /** The live pipeline stage of the lead this booking created. */
+  leadStage?: string | null;
+  leadStageLabel?: string | null;
+  leadStepIndex?: number | null;
+  leadStepCount?: number | null;
   createdAt: string;
 }
 
