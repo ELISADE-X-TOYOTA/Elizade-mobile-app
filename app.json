@@ -60,7 +60,8 @@
         "expo-image-picker",
         {
           "photosPermission": "Elizade Connect needs access to your photos so you can attach images to warranty claims, support tickets, and vehicle ownership documents.",
-          "cameraPermission": "Elizade Connect uses the camera so you can photograph your vehicle for a trade-in valuation, a warranty claim, or a support ticket."
+          "cameraPermission": "Elizade Connect uses the camera so you can photograph your vehicle for a trade-in valuation, a warranty claim, or a support ticket.",
+          "microphonePermission": false
         }
       ]
     ],
