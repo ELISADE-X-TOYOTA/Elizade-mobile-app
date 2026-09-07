@@ -212,7 +212,7 @@
     "loadError": "A kò lè gbé ọkọ̀ yìí wọlé",
     "loadCarsError": "A kò lè gbé àwọn ọkọ̀ wọlé. {{message}}",
     "loadVehiclesError": "A kò lè gbé àwọn ọkọ̀ wọlé. {{message}}",
-    "verifiedDealerOwners": "Olùtajà tí a jẹ́rìí sí · onílé {{count}}",
+    "verifiedDealer": "Olùtàjà tí a jẹ́rìí sí",
     "imageViewer": "Ẹ̀rọ ìwo àwòrán ọkọ̀",
     "prevAngle": "Igun tí ó ṣáájú",
     "nextAngle": "Igun tí ó kàn",

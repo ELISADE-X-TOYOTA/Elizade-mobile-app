@@ -212,7 +212,7 @@
     "loadError": "No se pudo cargar este vehículo",
     "loadCarsError": "No se pudieron cargar los coches. {{message}}",
     "loadVehiclesError": "No se pudieron cargar los vehículos. {{message}}",
-    "verifiedDealerOwners": "Concesionario verificado · {{count}} propietario",
+    "verifiedDealer": "Concesionario verificado",
     "imageViewer": "Visor de imágenes del vehículo",
     "prevAngle": "Ángulo anterior",
     "nextAngle": "Ángulo siguiente",

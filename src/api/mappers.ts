@@ -48,7 +48,6 @@ function derived(id: string, category: VehicleCategory) {
     rating: Number((4.3 + (h % 7) / 10).toFixed(1)),
     reviewCount: 20 + (h % 230),
     listingTypes: ['sale'] as ListingType[],
-    ownerHistory: 1,
     isVerified: true,
   };
 }

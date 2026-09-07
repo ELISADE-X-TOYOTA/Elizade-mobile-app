@@ -251,9 +251,19 @@ export default function CarDetails() {
               <Ionicons name="storefront" size={22} color={ON_DARK_INK} />
             </View>
             <View style={{ flex: 1, marginLeft: 12 }}>
-              <Txt variant="titleMedium">{v.dealerName}</Txt>
-              <Txt variant="bodySmall" tone="secondary">
-                {tr('shop.verifiedDealerOwners', { count: v.ownerHistory })}
+              <Txt variant="titleMedium" numberOfLines={1}>{v.dealerName}</Txt>
+              {/*
+                The owner count that used to sit here was invented. `ownerHistory`
+                was hardcoded to 1 in the vehicle mapper — no backend field feeds
+                it — so every car on the platform read "Verified Dealer · 1 owner"
+                whether it was new, ex-demo or third-hand. Previous ownership is a
+                material fact about a used car, and stating it next to a
+                verification badge lends it exactly the authority it had not
+                earned. Removed rather than defaulted: there is no data, and the
+                honest rendering of no data is silence.
+              */}
+              <Txt variant="bodySmall" tone="secondary" numberOfLines={1}>
+                {tr('shop.verifiedDealer')}
               </Txt>
             </View>
             <RoundAction

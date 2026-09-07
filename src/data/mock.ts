@@ -75,7 +75,6 @@ function base(v: Partial<Vehicle> & Pick<Vehicle, 'id' | 'make' | 'model' | 'tri
       Warranty: '3 Years / 100,000 km',
     },
     listingTypes: ['sale'],
-    ownerHistory: 0,
     isVerified: true,
     dealerName: 'Elizade Motors',
     ...v,

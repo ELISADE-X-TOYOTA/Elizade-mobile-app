@@ -83,12 +83,27 @@ if (!__DEV__ && !useMock && (!configuredUrl || configuredUrl === UNCONFIGURED_AP
  */
 const SUPPORT_PHONE = '+2347003549233';
 
+/**
+ * The number the WhatsApp button opens a chat with.
+ *
+ * SEPARATE FROM THE PHONE LINE, and defaulting to it only so the button works
+ * out of the box. `wa.me` resolves against a WhatsApp ACCOUNT, not a dialable
+ * number: a line with no account attached — which a 0700 service number very
+ * likely is — answers "phone number shared via url is invalid", replacing a
+ * dead button with a confusing one. Set EXPO_PUBLIC_SUPPORT_WHATSAPP to the
+ * number the business actually answers WhatsApp on, in E.164.
+ */
+const SUPPORT_WHATSAPP =
+  process.env.EXPO_PUBLIC_SUPPORT_WHATSAPP?.trim() || SUPPORT_PHONE;
+
 /** App-wide constants and feature flags. */
 export const APP = {
   name: 'Elizade',
   currency: '₦',
   /** E.164, no spaces — `tel:` links are unreliable with formatting. */
   supportPhone: SUPPORT_PHONE,
+  /** E.164. The WhatsApp ACCOUNT, which need not be the phone line. */
+  supportWhatsApp: SUPPORT_WHATSAPP,
   /** Shares the Elizade web backend. Set EXPO_PUBLIC_API_URL to override. */
   apiBaseUrl: configuredUrl || UNCONFIGURED_API,
   /** When true, bundled mock data powers the UI instead of the API. */

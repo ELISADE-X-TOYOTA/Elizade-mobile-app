@@ -212,7 +212,7 @@
     "loadError": "تعذّر تحميل هذه المركبة",
     "loadCarsError": "تعذّر تحميل السيارات. {{message}}",
     "loadVehiclesError": "تعذّر تحميل المركبات. {{message}}",
-    "verifiedDealerOwners": "وكيل موثّق · {{count}} مالك",
+    "verifiedDealer": "وكيل موثّق",
     "imageViewer": "عارض صور المركبة",
     "prevAngle": "الزاوية السابقة",
     "nextAngle": "الزاوية التالية",

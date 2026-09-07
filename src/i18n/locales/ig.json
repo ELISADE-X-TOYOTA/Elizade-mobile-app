@@ -212,7 +212,7 @@
     "loadError": "Enweghị ike ibubata ụgbọala a",
     "loadCarsError": "Enweghị ike ibubata ụgbọala. {{message}}",
     "loadVehiclesError": "Enweghị ike ibubata ụgbọala. {{message}}",
-    "verifiedDealerOwners": "Onye na-ere akwadoro · onye nwe {{count}}",
+    "verifiedDealer": "Onye na-ere akwadoro",
     "imageViewer": "Ihe nlele foto ụgbọala",
     "prevAngle": "Akụkụ gara aga",
     "nextAngle": "Akụkụ ọzọ",

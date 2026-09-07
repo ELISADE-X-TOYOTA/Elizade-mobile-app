@@ -212,7 +212,7 @@
     "loadError": "An kasa loda wannan mota",
     "loadCarsError": "An kasa loda motoci. {{message}}",
     "loadVehiclesError": "An kasa loda motoci. {{message}}",
-    "verifiedDealerOwners": "Wakili da aka tabbatar · masu mallaka {{count}}",
+    "verifiedDealer": "Wakili da aka tabbatar",
     "imageViewer": "Mai duba hotunan mota",
     "prevAngle": "Kusurwar da ta gabata",
     "nextAngle": "Kusurwa ta gaba",

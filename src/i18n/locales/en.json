@@ -212,7 +212,7 @@
     "loadError": "Couldn't load this vehicle",
     "loadCarsError": "Couldn't load cars. {{message}}",
     "loadVehiclesError": "Couldn't load vehicles. {{message}}",
-    "verifiedDealerOwners": "Verified Dealer · {{count}} owner",
+    "verifiedDealer": "Verified Dealer",
     "imageViewer": "Vehicle image viewer",
     "prevAngle": "Previous vehicle angle",
     "nextAngle": "Next vehicle angle",

@@ -212,7 +212,7 @@
     "loadError": "Impossible de charger ce véhicule",
     "loadCarsError": "Impossible de charger les voitures. {{message}}",
     "loadVehiclesError": "Impossible de charger les véhicules. {{message}}",
-    "verifiedDealerOwners": "Concessionnaire vérifié · {{count}} propriétaire",
+    "verifiedDealer": "Concessionnaire vérifié",
     "imageViewer": "Visionneuse d'images du véhicule",
     "prevAngle": "Angle précédent",
     "nextAngle": "Angle suivant",
