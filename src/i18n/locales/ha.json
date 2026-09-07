@@ -221,7 +221,9 @@
     "includedHighlights": "Abubuwan da ke ciki",
     "configureDisclaimer": "Wannan zaɓi na tambayarka ne kuma ba ya canza farashin motar da aka sanar.",
     "notifyMe": "Sanar da ni",
-    "turnOffAlerts": "Kashe sanarwa"
+    "turnOffAlerts": "Kashe sanarwa",
+    "messageDealer": "Aika saƙo ga dila",
+    "callDealer": "Kira dila"
   },
   "service": {
     "title": "Gyara",

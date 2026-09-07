@@ -221,7 +221,9 @@
     "includedHighlights": "Included highlights",
     "configureDisclaimer": "This selection is for your enquiry and does not change listed vehicle pricing.",
     "notifyMe": "Notify Me",
-    "turnOffAlerts": "Turn off alerts"
+    "turnOffAlerts": "Turn off alerts",
+    "messageDealer": "Message dealer",
+    "callDealer": "Call dealer"
   },
   "service": {
     "title": "Service",

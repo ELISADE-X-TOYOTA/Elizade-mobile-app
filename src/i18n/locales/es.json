@@ -221,7 +221,9 @@
     "includedHighlights": "Equipamiento incluido",
     "configureDisclaimer": "Esta selección es para tu consulta y no cambia el precio publicado del vehículo.",
     "notifyMe": "Avisarme",
-    "turnOffAlerts": "Desactivar avisos"
+    "turnOffAlerts": "Desactivar avisos",
+    "messageDealer": "Enviar mensaje al concesionario",
+    "callDealer": "Llamar al concesionario"
   },
   "service": {
     "title": "Servicio",

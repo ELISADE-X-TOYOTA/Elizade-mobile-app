@@ -221,7 +221,9 @@
     "includedHighlights": "Àwọn ohun tí ó wà nínú rẹ̀",
     "configureDisclaimer": "Àyànfẹ́ yìí wà fún ìbéèrè rẹ, kò sì yí iye owó ọkọ̀ tí a kéde padà.",
     "notifyMe": "Sọ fún mi",
-    "turnOffAlerts": "Pa ìkìlọ̀ kúrò"
+    "turnOffAlerts": "Pa ìkìlọ̀ kúrò",
+    "messageDealer": "Fi iṣẹ́ ránṣẹ́ sí olùtà",
+    "callDealer": "Pe olùtà"
   },
   "service": {
     "title": "Àtúnṣe",

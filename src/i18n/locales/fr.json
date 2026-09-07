@@ -221,7 +221,9 @@
     "includedHighlights": "Équipements inclus",
     "configureDisclaimer": "Cette sélection concerne votre demande et ne modifie pas le prix affiché du véhicule.",
     "notifyMe": "Me prévenir",
-    "turnOffAlerts": "Désactiver les alertes"
+    "turnOffAlerts": "Désactiver les alertes",
+    "messageDealer": "Contacter le concessionnaire",
+    "callDealer": "Appeler le concessionnaire"
   },
   "service": {
     "title": "Entretien",

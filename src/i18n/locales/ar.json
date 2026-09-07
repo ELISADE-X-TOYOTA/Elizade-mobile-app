@@ -221,7 +221,9 @@
     "includedHighlights": "المزايا المتضمنة",
     "configureDisclaimer": "هذا الاختيار خاص باستفسارك ولا يغيّر السعر المعلن للمركبة.",
     "notifyMe": "أبلغني",
-    "turnOffAlerts": "إيقاف التنبيهات"
+    "turnOffAlerts": "إيقاف التنبيهات",
+    "messageDealer": "مراسلة الوكيل",
+    "callDealer": "الاتصال بالوكيل"
   },
   "service": {
     "title": "الصيانة",

@@ -71,10 +71,24 @@ if (!__DEV__ && !useMock && (!configuredUrl || configuredUrl === UNCONFIGURED_AP
   );
 }
 
+/**
+ * The customer support line, as printed in transactional email footers.
+ *
+ * NOT the branch's own number. Branches DO carry a phone in the backend
+ * (`branches.phone`), but the vehicle payload does not expose it, so the app
+ * has no way to dial the specific showroom a car sits in. Until that field is
+ * added — and its data confirmed populated — dialling the main line is the
+ * honest behaviour: it reaches a human who can transfer, rather than a button
+ * that does nothing.
+ */
+const SUPPORT_PHONE = '+2347003549233';
+
 /** App-wide constants and feature flags. */
 export const APP = {
   name: 'Elizade',
   currency: '₦',
+  /** E.164, no spaces — `tel:` links are unreliable with formatting. */
+  supportPhone: SUPPORT_PHONE,
   /** Shares the Elizade web backend. Set EXPO_PUBLIC_API_URL to override. */
   apiBaseUrl: configuredUrl || UNCONFIGURED_API,
   /** When true, bundled mock data powers the UI instead of the API. */
