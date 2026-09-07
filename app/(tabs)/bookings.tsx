@@ -107,10 +107,23 @@ export default function Bookings() {
 function BookingCard({ booking, statusColor }: { booking: TestDriveBooking; statusColor: string }) {
   const t = useTheme();
   const { t: tr } = useTranslation();
-  const meta = TEST_DRIVE_STATUS_META[booking.status];
   const when = new Date(booking.scheduledAt);
 
-  return (
+  /*
+    THE LIVE STAGE, NOT `booking.status`.
+
+    `status` is written once when the booking is created and never advanced —
+    there is no admin endpoint for test drive bookings at all. Sales staff move
+    the LEAD through the pipeline, which is why a customer watched their
+    request sit on "Requested" while it was actually being worked.
+
+    Falls back to the frozen status only for rows that predate lead linking,
+    which is the one case where there is nothing better to show.
+  */
+  const label = booking.leadStageLabel ?? TEST_DRIVE_STATUS_META[booking.status].label;
+  const trackable = Boolean(booking.leadId);
+
+  const body = (
     <View style={[styles.card, { backgroundColor: t.colors.surface, borderColor: t.colors.border }, t.shadows.soft]}>
       <View style={styles.cardTop}>
         <View style={[styles.iconWrap, { backgroundColor: t.colors.primary + '14' }]}>
@@ -126,7 +139,7 @@ function BookingCard({ booking, statusColor }: { booking: TestDriveBooking; stat
         </View>
         <View style={[styles.badge, { backgroundColor: statusColor + '22' }]}>
           <Txt variant="labelSmall" color={statusColor}>
-            {meta.label}
+            {label}
           </Txt>
         </View>
       </View>
@@ -137,8 +150,32 @@ function BookingCard({ booking, statusColor }: { booking: TestDriveBooking; stat
           {' · '}
           {when.toLocaleTimeString('en', { hour: 'numeric', minute: '2-digit' })}
         </Txt>
+        {trackable ? (
+          <>
+            <View style={{ flex: 1 }} />
+            <Txt variant="labelSmall" color={t.colors.primary}>
+              {tr('bookings.viewProgress')}
+            </Txt>
+            <Ionicons name="chevron-forward" size={14} color={t.colors.primary} />
+          </>
+        ) : null}
       </View>
     </View>
+  );
+
+  // Routes to the lead tracker that already exists — `app/lead/[id].tsx`
+  // renders the full step-by-step progress and the staff timeline. No second
+  // detail screen: one place where a customer is told where things stand.
+  if (!trackable) return body;
+  return (
+    <Pressable
+      onPress={() => router.push(`/lead/${booking.leadId}`)}
+      accessibilityRole="button"
+      accessibilityLabel={tr('bookings.viewProgress')}
+      style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
+    >
+      {body}
+    </Pressable>
   );
 }
 

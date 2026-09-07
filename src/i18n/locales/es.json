@@ -385,7 +385,8 @@
   },
   "bookings": {
     "title": "Reservas",
-    "subtitle": "Tus pruebas de manejo programadas"
+    "subtitle": "Tus pruebas de manejo programadas",
+    "viewProgress": "Ver progreso"
   },
   "tradeIn": {
     "title": "Tasación de entrega a cuenta",

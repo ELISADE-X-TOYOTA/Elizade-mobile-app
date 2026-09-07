@@ -385,7 +385,8 @@
   },
   "bookings": {
     "title": "Bookings",
-    "subtitle": "Your scheduled test drives"
+    "subtitle": "Your scheduled test drives",
+    "viewProgress": "View progress"
   },
   "tradeIn": {
     "title": "Trade-in Valuation",

@@ -385,7 +385,8 @@
   },
   "bookings": {
     "title": "Ajiye wuri",
-    "subtitle": "Gwajin tuƙi da ka shirya"
+    "subtitle": "Gwajin tuƙi da ka shirya",
+    "viewProgress": "Duba ci gaba"
   },
   "tradeIn": {
     "title": "Kimanta musanya",
