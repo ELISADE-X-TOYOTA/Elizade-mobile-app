@@ -111,7 +111,18 @@ export default function Otp() {
   }, [code, loading, verify]);
 
   const onChange = (i: number, v: string) => {
-    const cleaned = v.replace(/[^0-9]/g, '');
+    // Alphanumeric, not digits-only.
+    //
+    // Real OTPs are six digits, but the App Store / Play Store reviewer signs
+    // in with a fixed code from the submission notes, and that code has to be
+    // alphanumeric to be worth anything: six boxes means six characters, and
+    // six DIGITS is a million combinations against an endpoint with no
+    // throttle. Six alphanumerics is ~57 billion.
+    //
+    // Stripping letters here made that code impossible to enter — by typing
+    // OR by pasting — which would have stranded a reviewer on this very
+    // screen. Case is preserved: the code is case-sensitive.
+    const cleaned = v.replace(/[^0-9a-zA-Z]/g, '');
     if (!cleaned) {
       const next = [...digits];
       next[i] = '';
@@ -173,7 +184,11 @@ export default function Otp() {
             value={d}
             onChangeText={(v) => onChange(i, v)}
             onKeyPress={(e) => onKey(i, e)}
-            keyboardType="number-pad"
+            keyboardType="numbers-and-punctuation"
+            // Numbers first (a real OTP is six digits) but letters reachable,
+            // so the reviewer's alphanumeric code can actually be typed.
+            autoCapitalize="none"
+            autoCorrect={false}
             // One-time-code autofill: iOS reads it from Messages, Android from
             // SMS Retriever — both deliver the whole code to the first box.
             textContentType="oneTimeCode"
