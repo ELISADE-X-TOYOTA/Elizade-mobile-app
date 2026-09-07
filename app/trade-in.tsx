@@ -75,7 +75,13 @@ export default function TradeIn() {
       return;
     }
     setAttachError(undefined);
-    const res = await pickTicketAttachment('library');
+    // Trade-in photos have their own upload endpoint and their own folder in
+    // the bucket (`customer/trade-ins/`). This screen was the only one that
+    // forgot to say so — book-service and the warranty claim modal both pass
+    // theirs — so valuation photos were being filed under `customer/support/`
+    // alongside ticket attachments, where no retention or lifecycle rule aimed
+    // at trade-in evidence would ever find them.
+    const res = await pickTicketAttachment('library', '/sales/trade-ins/photos/upload');
     if (!res) return;
     if (!res.ok) {
       setAttachError(res.message);
