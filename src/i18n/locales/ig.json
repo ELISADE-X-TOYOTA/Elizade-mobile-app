@@ -130,9 +130,15 @@
     "serviceHistory": "Akụkọ nrụzi",
     "personalDetails": "Nkọwa onwe gị",
     "language": "Asụsụ",
-    "privacySecurity": "Nzuzo na nchekwa",
     "helpCenter": "Ebe enyemaka",
-    "appearanceNote": "Ọ na-eso ụdị ngwaọrụ gị"
+    "appearanceNote": "Ọ na-eso ụdị ngwaọrụ gị",
+    "personalDetailsSubtitle": "Melite aha gị, ozi-e na obodo gị.",
+    "city": "Obodo",
+    "saveFailed": "Enweghị ike ịchekwa mgbanwe gị.",
+    "firstNameRequired": "Biko tinye aha mbụ gị.",
+    "lastNameRequired": "Biko tinye aha ikpeazụ gị.",
+    "emailInvalid": "Tinye adresị ozi-e ziri ezi.",
+    "emailChangeNotice": "Nke a bụ adresị nbanye gị. Anyị ga-adọ adresị ochie na nke ọhụrụ aka na ntị ma ọ gbanwee."
   },
   "leads": {
     "title": "Arịrịọ m",

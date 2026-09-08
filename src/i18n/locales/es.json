@@ -130,9 +130,15 @@
     "serviceHistory": "Historial de servicio",
     "personalDetails": "Datos personales",
     "language": "Idioma",
-    "privacySecurity": "Privacidad y seguridad",
     "helpCenter": "Centro de ayuda",
-    "appearanceNote": "Sigue el tema de tu dispositivo"
+    "appearanceNote": "Sigue el tema de tu dispositivo",
+    "personalDetailsSubtitle": "Actualiza tu nombre, correo y ciudad.",
+    "city": "Ciudad",
+    "saveFailed": "No se pudieron guardar los cambios.",
+    "firstNameRequired": "Introduce tu nombre.",
+    "lastNameRequired": "Introduce tus apellidos.",
+    "emailInvalid": "Introduce un correo válido.",
+    "emailChangeNotice": "Es tu dirección de acceso. Avisaremos a tu dirección anterior y a la nueva cuando cambie."
   },
   "leads": {
     "title": "Mis solicitudes",

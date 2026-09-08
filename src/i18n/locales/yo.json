@@ -130,9 +130,15 @@
     "serviceHistory": "Ìtàn àtúnṣe",
     "personalDetails": "Àlàyé ara ẹni",
     "language": "Èdè",
-    "privacySecurity": "Ìpamọ́ àti ààbò",
     "helpCenter": "Ibùdó ìrànlọ́wọ́",
-    "appearanceNote": "Ó ń tẹ̀lé àwọ̀ ẹ̀rọ rẹ"
+    "appearanceNote": "Ó ń tẹ̀lé àwọ̀ ẹ̀rọ rẹ",
+    "personalDetailsSubtitle": "Ṣe ìmúdojfúo orúkọ, íméìlì àti ilu rẹ.",
+    "city": "Ìlú",
+    "saveFailed": "Kò lè fi àwọn ìyipàdà rẹ pamọ́.",
+    "firstNameRequired": "Jọwọ tẹ orúkọ àkọ́kọ́ rẹ.",
+    "lastNameRequired": "Jọwọ tẹ orúkọ ìdílẹ̀ rẹ.",
+    "emailInvalid": "Tẹ àdírẹ́sì íméìlì tó tọ́.",
+    "emailChangeNotice": "Èyí ni àdírẹ́sì ìwọlé rẹ. A ó ṣe ìkilọ̀ fún àdírẹ́sì atì jò àti tí tuntun."
   },
   "leads": {
     "title": "Àwọn ìbéèrè mi",

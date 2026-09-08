@@ -130,9 +130,15 @@
     "serviceHistory": "Historique d'entretien",
     "personalDetails": "Informations personnelles",
     "language": "Langue",
-    "privacySecurity": "Confidentialité et sécurité",
     "helpCenter": "Centre d'aide",
-    "appearanceNote": "Suit le thème de votre appareil"
+    "appearanceNote": "Suit le thème de votre appareil",
+    "personalDetailsSubtitle": "Modifiez votre nom, e-mail et ville.",
+    "city": "Ville",
+    "saveFailed": "Impossible d'enregistrer vos modifications.",
+    "firstNameRequired": "Veuillez saisir votre prénom.",
+    "lastNameRequired": "Veuillez saisir votre nom.",
+    "emailInvalid": "Saisissez une adresse e-mail valide.",
+    "emailChangeNotice": "C'est votre adresse de connexion. Nous alerterons votre ancienne et votre nouvelle adresse lors du changement."
   },
   "leads": {
     "title": "Mes demandes",

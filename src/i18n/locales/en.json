@@ -130,9 +130,15 @@
     "serviceHistory": "Service History",
     "personalDetails": "Personal Details",
     "language": "Language",
-    "privacySecurity": "Privacy & Security",
     "helpCenter": "Help Center",
-    "appearanceNote": "Follows your device theme"
+    "appearanceNote": "Follows your device theme",
+    "personalDetailsSubtitle": "Update your name, email and city.",
+    "city": "City",
+    "saveFailed": "Could not save your changes.",
+    "firstNameRequired": "Please enter your first name.",
+    "lastNameRequired": "Please enter your last name.",
+    "emailInvalid": "Enter a valid email address.",
+    "emailChangeNotice": "This is your sign-in address. We'll alert both your old and new address when it changes."
   },
   "leads": {
     "title": "My Leads",

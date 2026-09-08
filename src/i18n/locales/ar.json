@@ -130,9 +130,15 @@
     "serviceHistory": "سجل الصيانة",
     "personalDetails": "البيانات الشخصية",
     "language": "اللغة",
-    "privacySecurity": "الخصوصية والأمان",
     "helpCenter": "مركز المساعدة",
-    "appearanceNote": "يتبع مظهر جهازك"
+    "appearanceNote": "يتبع مظهر جهازك",
+    "personalDetailsSubtitle": "حدّث اسمك وبريدك ومدينتك.",
+    "city": "المدينة",
+    "saveFailed": "تعذّر حفظ التغييرات.",
+    "firstNameRequired": "الرجاء إدخال اسمك الأول.",
+    "lastNameRequired": "الرجاء إدخال اسم العائلة.",
+    "emailInvalid": "أدخل بريدًا إلكترونيًا صالحًا.",
+    "emailChangeNotice": "هذا عنوان تسجيل دخولك. سننبّه عنوانيك القديم والجديد عند التغيير."
   },
   "leads": {
     "title": "طلباتي",
