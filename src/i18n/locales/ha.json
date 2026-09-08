@@ -393,7 +393,10 @@
     "batteryExpired": "Baturi: warantin ya ƙare a watanni {{months}}.",
     "adviserConfirms": "Mai ba da shawara kan gyara zai tabbatar da sakamakon ƙarshe.",
     "loadError": "An kasa loda waranti. {{message}}",
-    "reviewWithin48": "Ƙungiyar warantinmu za ta duba buƙatarka ta {{category}} kuma ta amsa cikin awanni 48."
+    "reviewWithin48": "Ƙungiyar warantinmu za ta duba buƙatarka ta {{category}} kuma ta amsa cikin awanni 48.",
+    "describeIssueHint": "Akalla haruffa {{count}} — me ya faru, kuma yaushe?",
+    "notEligible": "Bai cancanta ba",
+    "submitClaim": "Aika Da'awa"
   },
   "bookings": {
     "title": "Ajiye wuri",
@@ -419,7 +422,9 @@
     "finalValueNote": "Za a tabbatar da darajar ƙarshe bayan dubawa",
     "addPhotos": "Ƙara hotunan motarka",
     "valuationRequested": "An nemi kimantawa",
-    "specialistConfirms": "Ƙwararren Elizade zai tabbatar da darajar musanya ta {{make}} {{model}} bayan gwaji na zahiri cikin sauri."
+    "specialistConfirms": "Ƙwararren Elizade zai tabbatar da darajar musanya ta {{make}} {{model}} bayan gwaji na zahiri cikin sauri.",
+    "trackedUnderLeads": "Za ka iya bin wannan bukata a Bayani › Bukatuna.",
+    "trackRequest": "Bi wannan bukata"
   },
   "watchlist": {
     "subtitle": "Samfuran da kake bi",

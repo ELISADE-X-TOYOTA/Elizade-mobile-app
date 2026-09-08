@@ -393,7 +393,10 @@
     "batteryExpired": "Bátìrì: ìdánilójú parí ní oṣù {{months}}.",
     "adviserConfirms": "Olùdámọ̀ràn àtúnṣe rẹ yóò jẹ́rìí sí àbájáde ìkẹyìn.",
     "loadError": "A kò lè gbé ìdánilójú wọlé. {{message}}",
-    "reviewWithin48": "Ẹgbẹ́ ìdánilójú wa yóò ṣàyẹ̀wò ìbéèrè {{category}} rẹ, wọn yóò sì dáhùn láàárín wákàtí 48."
+    "reviewWithin48": "Ẹgbẹ́ ìdánilójú wa yóò ṣàyẹ̀wò ìbéèrè {{category}} rẹ, wọn yóò sì dáhùn láàárín wákàtí 48.",
+    "describeIssueHint": "O kéré tán àmì {{count}} — kín ni ó ṣẹlẹ, àti ìgbà wo?",
+    "notEligible": "Kò yẹ",
+    "submitClaim": "Fì ẹ̀bẹ̀ ranṣẹ́"
   },
   "bookings": {
     "title": "Ìfiṣọ̀wọ̀",
@@ -419,7 +422,9 @@
     "finalValueNote": "A ó jẹ́rìí sí iye ìkẹyìn lẹ́yìn àyẹ̀wò",
     "addPhotos": "Fi àwòrán ọkọ̀ rẹ kún un",
     "valuationRequested": "A ti béèrè ìgbéléwọ̀n",
-    "specialistConfirms": "Ọ̀jọ̀gbọ́n Elizade yóò jẹ́rìí sí iye ìpààrọ̀ {{make}} {{model}} rẹ lẹ́yìn àyẹ̀wò kíákíá."
+    "specialistConfirms": "Ọ̀jọ̀gbọ́n Elizade yóò jẹ́rìí sí iye ìpààrọ̀ {{make}} {{model}} rẹ lẹ́yìn àyẹ̀wò kíákíá.",
+    "trackedUnderLeads": "O le tọpinsẹ́ ìbéèrè yìí nínú Profaili › Àwọn ìbéèrè mi.",
+    "trackRequest": "Tọpinsẹ́ ìbéèrè yìí"
   },
   "watchlist": {
     "subtitle": "Àwọn àwòṣe tí o ń tọpasẹ̀",

@@ -393,7 +393,10 @@
     "batteryExpired": "Batterie : la couverture a pris fin à {{months}} mois.",
     "adviserConfirms": "Votre conseiller service confirme la décision finale.",
     "loadError": "Impossible de charger la garantie. {{message}}",
-    "reviewWithin48": "Notre équipe garantie examinera votre demande {{category}} et vous répondra sous 48 heures."
+    "reviewWithin48": "Notre équipe garantie examinera votre demande {{category}} et vous répondra sous 48 heures.",
+    "describeIssueHint": "Au moins {{count}} caractères — que s'est-il passé, et quand ?",
+    "notEligible": "Non éligible",
+    "submitClaim": "Envoyer la réclamation"
   },
   "bookings": {
     "title": "Réservations",
@@ -419,7 +422,9 @@
     "finalValueNote": "Valeur définitive confirmée après inspection",
     "addPhotos": "Ajouter des photos de votre véhicule",
     "valuationRequested": "Estimation demandée",
-    "specialistConfirms": "Un spécialiste Elizade confirmera la valeur de reprise de votre {{make}} {{model}} après une inspection physique rapide."
+    "specialistConfirms": "Un spécialiste Elizade confirmera la valeur de reprise de votre {{make}} {{model}} après une inspection physique rapide.",
+    "trackedUnderLeads": "Suivez cette demande dans Profil › Mes pistes.",
+    "trackRequest": "Suivre la demande"
   },
   "watchlist": {
     "subtitle": "Modèles que vous suivez",

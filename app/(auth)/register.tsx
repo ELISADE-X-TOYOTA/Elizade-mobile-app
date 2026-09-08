@@ -34,6 +34,7 @@ import { APP } from '../../src/constants/app';
 import { touchActivity } from '../../src/api/session';
 import { requestOtp, verifyOtp } from '../../src/data/authRepository';
 import { useOtpCountdown } from '../../src/hooks/useOtpCountdown';
+import { OTP_KEYBOARD_TYPE } from '../../src/constants/otpKeyboard';
 import { EmailAvailabilityResult, useEmailAvailability } from '../../src/hooks/useEmailAvailability';
 import { useStore } from '../../src/store/useStore';
 import { useWatchlistStore } from '../../src/store/useWatchlistStore';
@@ -577,7 +578,7 @@ const OtpBoxes = forwardRef<
           value={d}
           onChangeText={(v) => set(i, v)}
           onKeyPress={(e) => onKey(i, e)}
-          keyboardType="numbers-and-punctuation"
+          keyboardType={OTP_KEYBOARD_TYPE}
           // Numbers first (a real OTP is six digits) but letters reachable,
           // so the reviewer's alphanumeric code can actually be typed.
           autoCapitalize="none"

@@ -15,6 +15,7 @@ import { PrimaryButton } from './PrimaryButton';
 import { AttachmentDrafts } from './AttachmentDrafts';
 import { Txt } from './Txt';
 import { cleanText } from '../utils/sanitize';
+import { MIN_CLAIM_DESCRIPTION } from '../constants/warranty';
 import { tint } from '../theme/colors';
 
 interface Props {
@@ -65,6 +66,18 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
   }, [visible, vehicleId]);
 
   const blocked = eligibility?.eligible === false;
+  /*
+    The API requires at least 10 characters, and said so only AFTER submitting
+    — as a raw validation string, "String should have at least 10 characters",
+    to someone who had just written out their fault and attached photos. The
+    rule is now stated up front and counted as you type.
+
+    It also closes a latent 422: `description` used to fall back to the
+    CATEGORY name when left empty, and a category shorter than ten characters
+    ("Other") failed the same check with the same opaque message.
+  */
+  const trimmedDescription = cleanText(description);
+  const descriptionShort = trimmedDescription.length < MIN_CLAIM_DESCRIPTION;
 
   const close = () => {
     onClose();
@@ -98,7 +111,7 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
       await createClaim({
         ownedVehicleId: vehicleId,
         claimType: category,
-        description: cleanText(description) || category,
+        description: trimmedDescription,
         attachmentUrls: attachments.map((a) => a.url),
       });
       setDone(true);
@@ -202,7 +215,15 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
                   })}
                 </View>
 
-                <Txt variant="titleMedium" style={{ marginTop: spacing.lg, marginBottom: spacing.sm }}>{tr('warranty.describeIssue')}</Txt>
+                <View style={{ flexDirection: 'row', alignItems: 'baseline', marginTop: spacing.lg, marginBottom: spacing.sm }}>
+                  <Txt variant="titleMedium" style={{ flex: 1 }}>{tr('warranty.describeIssue')}</Txt>
+                  <Txt
+                    variant="labelSmall"
+                    color={descriptionShort ? t.colors.textTertiary : t.colors.successText}
+                  >
+                    {trimmedDescription.length}/{MIN_CLAIM_DESCRIPTION}
+                  </Txt>
+                </View>
                 <TextInput
           // iOS renders a LIGHT keyboard in dark mode without this.
           keyboardAppearance={t.isDark ? 'dark' : 'light'}
@@ -214,6 +235,9 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
                   multiline
                   style={[t.type.bodyLarge, { minHeight: 100, textAlignVertical: 'top', color: t.colors.textPrimary, backgroundColor: t.colors.surfaceAlt, borderRadius: radius.md, borderWidth: 1, borderColor: t.colors.border, padding: 14 }]}
                 />
+                <Txt variant="bodySmall" tone="tertiary" style={{ marginTop: 6 }}>
+                  {tr('warranty.describeIssueHint', { count: MIN_CLAIM_DESCRIPTION })}
+                </Txt>
 
                 <Pressable
                   onPress={addAttachment}
@@ -247,10 +271,13 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
                   </Txt>
                 ) : null}
                 <PrimaryButton
-                  label={blocked ? 'Not eligible' : 'Submit Claim'}
+                  label={blocked ? tr('warranty.notEligible') : tr('warranty.submitClaim')}
                   icon="shield-checkmark"
                   loading={loading}
-                  disabled={blocked}
+                  // The counter above says why, so a disabled button is not a
+                  // mystery — and it beats a server round-trip that answers
+                  // with a raw validation string.
+                  disabled={blocked || descriptionShort}
                   onPress={submit}
                 />
               </View>

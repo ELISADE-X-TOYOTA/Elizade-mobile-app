@@ -393,7 +393,10 @@
     "batteryExpired": "Batrị: mkpuchi kwụsịrị na ọnwa {{months}}.",
     "adviserConfirms": "Onye ndụmọdụ nrụzi gị ga-akwado mkpebi ikpeazụ.",
     "loadError": "Enweghị ike ibubata akwụkwọ nkwa. {{message}}",
-    "reviewWithin48": "Ndị otu akwụkwọ nkwa anyị ga-enyocha arịrịọ {{category}} gị ma zaghachi n'ime awa 48."
+    "reviewWithin48": "Ndị otu akwụkwọ nkwa anyị ga-enyocha arịrịọ {{category}} gị ma zaghachi n'ime awa 48.",
+    "describeIssueHint": "Opụ nta mkpụrụedemede {{count}} — gịnị mere, na mgbe ole?",
+    "notEligible": "Erughị eru",
+    "submitClaim": "Zipụ Nkwupụta"
   },
   "bookings": {
     "title": "Ndebe oche",
@@ -419,7 +422,9 @@
     "finalValueNote": "A ga-akwado uru ikpeazụ mgbe enyochachara ya",
     "addPhotos": "Tinye foto ụgbọala gị",
     "valuationRequested": "Arịọla nleba anya",
-    "specialistConfirms": "Ọkachamara Elizade ga-akwado uru mgbanwe {{make}} {{model}} gị mgbe enyochachara ya ngwa ngwa."
+    "specialistConfirms": "Ọkachamara Elizade ga-akwado uru mgbanwe {{make}} {{model}} gị mgbe enyochachara ya ngwa ngwa.",
+    "trackedUnderLeads": "Ị nwere ike iso arịrịọ a na Profaịl › Arịrịọ m.",
+    "trackRequest": "Soro arịrịọ a"
   },
   "watchlist": {
     "subtitle": "Ụdị ị na-eso",

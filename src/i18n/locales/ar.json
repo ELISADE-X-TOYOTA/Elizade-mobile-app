@@ -393,7 +393,10 @@
     "batteryExpired": "البطارية: انتهت التغطية عند {{months}} شهرًا.",
     "adviserConfirms": "يؤكد مستشار الخدمة النتيجة النهائية.",
     "loadError": "تعذّر تحميل الضمان. {{message}}",
-    "reviewWithin48": "سيراجع فريق الضمان مطالبتك بخصوص {{category}} ويرد عليك خلال 48 ساعة."
+    "reviewWithin48": "سيراجع فريق الضمان مطالبتك بخصوص {{category}} ويرد عليك خلال 48 ساعة.",
+    "describeIssueHint": "على الأقل {{count}} حرفًا — ماذا حدث ومتى؟",
+    "notEligible": "غير مؤهل",
+    "submitClaim": "إرسال المطالبة"
   },
   "bookings": {
     "title": "الحجوزات",
@@ -419,7 +422,9 @@
     "finalValueNote": "تُؤكَّد القيمة النهائية بعد الفحص",
     "addPhotos": "أضف صورًا لمركبتك",
     "valuationRequested": "تم طلب التقييم",
-    "specialistConfirms": "سيؤكد أحد مختصي إليزادي قيمة استبدال {{make}} {{model}} بعد فحص مادي سريع."
+    "specialistConfirms": "سيؤكد أحد مختصي إليزادي قيمة استبدال {{make}} {{model}} بعد فحص مادي سريع.",
+    "trackedUnderLeads": "يمكنك متابعة هذا الطلب في الملف الشخصي › طلباتي.",
+    "trackRequest": "تتبع الطلب"
   },
   "watchlist": {
     "subtitle": "الطرازات التي تتابعها",

@@ -393,7 +393,10 @@
     "batteryExpired": "Battery: cover ended at {{months}} months.",
     "adviserConfirms": "Your service adviser confirms the final outcome.",
     "loadError": "Couldn't load warranty. {{message}}",
-    "reviewWithin48": "Our warranty team will review your {{category}} claim and get back to you within 48 hours."
+    "reviewWithin48": "Our warranty team will review your {{category}} claim and get back to you within 48 hours.",
+    "describeIssueHint": "At least {{count}} characters — what happened, and when?",
+    "notEligible": "Not eligible",
+    "submitClaim": "Submit Claim"
   },
   "bookings": {
     "title": "Bookings",
@@ -419,7 +422,9 @@
     "finalValueNote": "Final value confirmed after inspection",
     "addPhotos": "Add photos of your vehicle",
     "valuationRequested": "Valuation Requested",
-    "specialistConfirms": "An Elizade specialist will confirm your {{make}} {{model}} trade-in value after a quick physical inspection."
+    "specialistConfirms": "An Elizade specialist will confirm your {{make}} {{model}} trade-in value after a quick physical inspection.",
+    "trackedUnderLeads": "You can follow this request under Profile › My Leads.",
+    "trackRequest": "Track this request"
   },
   "watchlist": {
     "subtitle": "Models you are tracking",
