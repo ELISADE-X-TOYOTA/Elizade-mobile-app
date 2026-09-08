@@ -106,6 +106,32 @@ export function fromAppointment(appointment: ServiceAppointment): BookingItem {
 }
 
 /**
+ * The customer's LIVE test drive on one vehicle, if they have one.
+ *
+ * Drives the car-details action button, which used to read "Test Drive" and
+ * route to the booking form whether or not one was already booked. The screen
+ * never acknowledged an existing booking, and the API has no duplicate guard
+ * on test drives the way it does on reservations — so tapping again quietly
+ * created a second booking and a second sales lead for one intention.
+ *
+ * "Live" is the same set that puts a booking under Upcoming. Completed and
+ * cancelled must NOT count: treating them as live would permanently block a
+ * customer from ever booking that car again, which is a worse bug than the one
+ * being fixed and would look identical from the outside — a button that will
+ * not let you do the thing.
+ */
+export function activeTestDriveFor(
+  bookings: TestDriveBooking[],
+  vehicleId: string,
+): TestDriveBooking | null {
+  return (
+    bookings.find(
+      (b) => b.vehicleId === vehicleId && UPCOMING_TEST_DRIVE.includes(b.status),
+    ) ?? null
+  );
+}
+
+/**
  * Both sources, filtered to one tab and ordered by date.
  *
  * Sorting is not cosmetic once two feeds are interleaved: unsorted, every test

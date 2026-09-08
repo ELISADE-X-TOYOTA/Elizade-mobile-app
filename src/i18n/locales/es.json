@@ -225,7 +225,11 @@
     "notifyMe": "Avisarme",
     "turnOffAlerts": "Desactivar avisos",
     "messageDealer": "Enviar mensaje al concesionario",
-    "callDealer": "Llamar al concesionario"
+    "callDealer": "Llamar al concesionario",
+    "testDriveBooked": "Prueba reservada",
+    "reserved": "Reservado",
+    "sold": "Vendido",
+    "unavailable": "No disponible"
   },
   "service": {
     "title": "Servicio",

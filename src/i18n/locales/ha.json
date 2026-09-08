@@ -225,7 +225,11 @@
     "notifyMe": "Sanar da ni",
     "turnOffAlerts": "Kashe sanarwa",
     "messageDealer": "Aika saƙo ga dila",
-    "callDealer": "Kira dila"
+    "callDealer": "Kira dila",
+    "testDriveBooked": "An Ajiye Gwajin Tuki",
+    "reserved": "An Ajiye",
+    "sold": "An Sayar",
+    "unavailable": "Babu"
   },
   "service": {
     "title": "Gyara",

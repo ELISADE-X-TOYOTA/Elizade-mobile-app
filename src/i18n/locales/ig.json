@@ -225,7 +225,11 @@
     "notifyMe": "Mee ka m mara",
     "turnOffAlerts": "Gbanyụọ ọkwa",
     "messageDealer": "Zigara onye na-ere ahịa ozi",
-    "callDealer": "Kpọọ onye na-ere ahịa"
+    "callDealer": "Kpọọ onye na-ere ahịa",
+    "testDriveBooked": "Edebela nnwale Ọkwụ",
+    "reserved": "Edobere",
+    "sold": "Erela ya",
+    "unavailable": "Ọ dịghị"
   },
   "service": {
     "title": "Nrụzi",

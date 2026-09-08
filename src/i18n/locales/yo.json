@@ -225,7 +225,11 @@
     "notifyMe": "Sọ fún mi",
     "turnOffAlerts": "Pa ìkìlọ̀ kúrò",
     "messageDealer": "Fi iṣẹ́ ránṣẹ́ sí olùtà",
-    "callDealer": "Pe olùtà"
+    "callDealer": "Pe olùtà",
+    "testDriveBooked": "A ti ṣe ìdanwò",
+    "reserved": "A ti fîsílẹ̀",
+    "sold": "A ti tà",
+    "unavailable": "Kò sí"
   },
   "service": {
     "title": "Àtúnṣe",

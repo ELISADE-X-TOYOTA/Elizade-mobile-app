@@ -225,7 +225,11 @@
     "notifyMe": "Notify Me",
     "turnOffAlerts": "Turn off alerts",
     "messageDealer": "Message dealer",
-    "callDealer": "Call dealer"
+    "callDealer": "Call dealer",
+    "testDriveBooked": "Test Drive Booked",
+    "reserved": "Reserved",
+    "sold": "Sold",
+    "unavailable": "Unavailable"
   },
   "service": {
     "title": "Service",

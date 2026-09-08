@@ -225,7 +225,11 @@
     "notifyMe": "أبلغني",
     "turnOffAlerts": "إيقاف التنبيهات",
     "messageDealer": "مراسلة الوكيل",
-    "callDealer": "الاتصال بالوكيل"
+    "callDealer": "الاتصال بالوكيل",
+    "testDriveBooked": "تم حجز قيادة تجريبية",
+    "reserved": "محجوز",
+    "sold": "مباع",
+    "unavailable": "غير متاح"
   },
   "service": {
     "title": "الصيانة",

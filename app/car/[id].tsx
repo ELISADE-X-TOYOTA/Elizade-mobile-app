@@ -1,8 +1,8 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { LinearGradient } from 'expo-linear-gradient';
-import { router, useLocalSearchParams } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   Dimensions,
@@ -23,6 +23,8 @@ import { Txt } from '../../src/components/Txt';
 import { Vehicle360Viewer } from '../../src/components/Vehicle360Viewer';
 import { ON_DARK_INK, OVERLAY_CHIP, OVERLAY_CHIP_INK, solid, tint } from '../../src/theme/colors';
 import { vehicleSubtitle, vehicleTitle, Vehicle } from '../../src/domain/types';
+import { activeTestDriveFor } from '../../src/domain/bookings';
+import { useTestDrives } from '../../src/hooks/useTestDrives';
 import { useVehicle } from '../../src/hooks/useVehicles';
 import { useNotifyMeStore } from '../../src/store/useNotifyMeStore';
 import { useStore } from '../../src/store/useStore';
@@ -78,6 +80,35 @@ export default function CarDetails() {
     if (id) loadNotifyStatus(id);
   }, [id, loadNotifyStatus]);
 
+  /*
+    Does this customer already have a test drive booked on THIS car?
+
+    The action bar asked every time. It read "Test Drive" and routed to the
+    booking form whether or not one was already booked, so the screen gave a
+    customer no way to tell — and the backend has no duplicate guard on test
+    drives the way it does on reservations, so booking the same car twice
+    simply worked, opening a second sales lead for one customer's one
+    intention.
+
+    Reloaded on focus, not just on mount: the booking form is pushed on top of
+    this screen, so returning from it does not remount and a mount-only fetch
+    would leave the button still inviting a booking that had just been made.
+  */
+  const { bookings: myTestDrives, reload: reloadTestDrives } = useTestDrives();
+  useFocusEffect(
+    useCallback(() => {
+      reloadTestDrives();
+    }, [reloadTestDrives]),
+  );
+  // The "which booking counts" rule lives in `src/domain/bookings.ts` and is
+  // tested there: counting a completed or cancelled one would permanently
+  // block rebooking, which looks identical from the outside to the bug this
+  // fixes — a button that will not let you do the thing.
+  const bookedTestDrive = useMemo(
+    () => activeTestDriveFor(myTestDrives, id ?? ''),
+    [myTestDrives, id],
+  );
+
   /**
    * Hands off to the native dialer.
    *
@@ -121,12 +152,19 @@ export default function CarDetails() {
   const isAvailable = v.availability === 'available';
   const availabilityLabel =
     v.availability === 'reserved'
-      ? 'Reserved'
+      ? tr('shop.reserved')
       : v.availability === 'sold'
-        ? 'Sold'
+        ? tr('shop.sold')
         : isAvailable
-          ? 'Available'
-          : 'Unavailable';
+          ? tr('shop.available')
+          : tr('shop.unavailable');
+  const availabilityIcon: keyof typeof Ionicons.glyphMap =
+    v.availability === 'sold' ? 'close-circle' : isAvailable ? 'checkmark-circle' : 'time';
+  // A sold car cannot be test driven or reserved — the API rejects both with a
+  // 400. Leaving the buttons live would make them one more control that looks
+  // ready and does nothing. `reserved` is deliberately NOT included: the API
+  // still accepts both actions on a reserved vehicle.
+  const salesActionsDisabled = v.availability === 'sold' || v.availability === 'unavailable';
   const availabilityFill = v.availability === 'sold' ? t.colors.error : isAvailable ? t.colors.success : t.colors.warning;
   const availabilityText = v.availability === 'sold' ? t.colors.errorText : isAvailable ? t.colors.successText : t.colors.warningText;
 
@@ -310,21 +348,61 @@ export default function CarDetails() {
               {priceCompact(v.price)}
             </Txt>
           </View>
-          <View style={[styles.availChip, { backgroundColor: tint(t.colors.success, 0.12) }]}>
-            <Ionicons name="checkmark-circle" size={14} color={t.colors.successText} />
-            <Txt variant="labelSmall" color={t.colors.successText} style={{ marginLeft: 4 }}>{tr('shop.available')}</Txt>
+          {/*
+            THIS CHIP SAID "Available" ON EVERY CAR. It was hardcoded to the
+            success colours and the `available` string, while the three
+            variables computed for it — label, fill and text colour — sat
+            unused a hundred lines above. A sold or reserved vehicle showed a
+            green tick and the word Available in the one place a buyer looks
+            before acting.
+          */}
+          <View style={[styles.availChip, { backgroundColor: tint(availabilityFill, 0.12) }]}>
+            <Ionicons name={availabilityIcon} size={14} color={availabilityText} />
+            <Txt variant="labelSmall" color={availabilityText} style={{ marginLeft: 4 }}>{availabilityLabel}</Txt>
           </View>
         </View>
         <View style={{ flexDirection: 'row', gap: 12, marginTop: 12 }}>
           <View style={{ flex: 1 }}>
-            <PrimaryButton label={tr('shop.reserve')} variant="outline" onPress={() => setSale('reserve')} />
+            <PrimaryButton
+              label={tr('shop.reserve')}
+              variant="outline"
+              disabled={salesActionsDisabled}
+              onPress={() => setSale('reserve')}
+            />
           </View>
           <View style={{ flex: 1 }}>
-            <PrimaryButton
-              label={tr('shop.testDrive')}
-              icon="car-sport"
-              onPress={() => router.push(`/book-test-drive?vehicleId=${v.id}`)}
-            />
+            {/*
+              Once a test drive is booked, the button says so and opens it.
+
+              It used to read "Test Drive" and route to the booking form
+              regardless, so the screen never acknowledged a booking the
+              customer had already made — and with no duplicate guard on the
+              API, tapping again quietly created a second booking and a second
+              sales lead for one customer's one intention.
+            */}
+            {bookedTestDrive ? (
+              <PrimaryButton
+                label={tr('shop.testDriveBooked')}
+                icon="checkmark-circle"
+                onPress={() =>
+                  bookedTestDrive.leadId
+                    ? router.push({
+                        pathname: '/lead/[id]',
+                        params: { id: bookedTestDrive.leadId, kind: 'testDrive' },
+                      })
+                    : // Pre-dates lead linking: there is no tracker to open, so
+                      // send them to the list, which at least shows the date.
+                      router.push('/(tabs)/bookings')
+                }
+              />
+            ) : (
+              <PrimaryButton
+                label={tr('shop.testDrive')}
+                icon="car-sport"
+                disabled={salesActionsDisabled}
+                onPress={() => router.push(`/book-test-drive?vehicleId=${v.id}`)}
+              />
+            )}
           </View>
         </View>
       </View>

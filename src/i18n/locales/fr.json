@@ -225,7 +225,11 @@
     "notifyMe": "Me prévenir",
     "turnOffAlerts": "Désactiver les alertes",
     "messageDealer": "Contacter le concessionnaire",
-    "callDealer": "Appeler le concessionnaire"
+    "callDealer": "Appeler le concessionnaire",
+    "testDriveBooked": "Essai réservé",
+    "reserved": "Réservé",
+    "sold": "Vendu",
+    "unavailable": "Indisponible"
   },
   "service": {
     "title": "Entretien",

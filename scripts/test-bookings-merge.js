@@ -55,7 +55,7 @@ try {
   process.exit(1);
 }
 
-const { selectBookings, fromTestDrive, fromAppointment } = require(
+const { selectBookings, fromTestDrive, fromAppointment, activeTestDriveFor } = require(
   path.join(out, 'domain', 'bookings.js'),
 );
 
@@ -233,6 +233,46 @@ console.log('\nthe live lead stage wins over the frozen booking status');
   const item = fromTestDrive(drive({ status: 'requested', leadStageLabel: null }));
   check('falling back to the status when there is no lead stage',
     item.statusLabel === 'Requested', item.statusLabel);
+}
+
+// ── The car-details action button ────────────────────────────────────
+console.log('\nthe live test drive on one vehicle');
+{
+  const mine = [
+    drive({ id: 'other-car', vehicleId: 'v-other', status: 'confirmed' }),
+    drive({ id: 'this-car', vehicleId: 'v-this', status: 'requested' }),
+  ];
+  const found = activeTestDriveFor(mine, 'v-this');
+  check('finds the booking for THIS car', found && found.id === 'this-car', found && found.id);
+  check('ignores a booking on another car', activeTestDriveFor(mine, 'v-none') === null);
+}
+{
+  // THE ONE THAT MATTERS. Counting a finished booking as live would leave the
+  // button reading "Booked" for ever and block rebooking permanently — which
+  // from the outside looks identical to the bug being fixed.
+  for (const status of ['completed', 'cancelled']) {
+    check(
+      `a ${status} booking does not block booking again`,
+      activeTestDriveFor([drive({ vehicleId: 'v1', status })], 'v1') === null,
+    );
+  }
+  for (const status of ['requested', 'confirmed']) {
+    check(
+      `a ${status} booking counts as live`,
+      activeTestDriveFor([drive({ vehicleId: 'v1', status })], 'v1') !== null,
+    );
+  }
+}
+{
+  // Booked, completed, booked again: the live one must win, not the finished
+  // one that happens to come first in the list.
+  const mine = [
+    drive({ id: 'old', vehicleId: 'v1', status: 'completed' }),
+    drive({ id: 'new', vehicleId: 'v1', status: 'confirmed' }),
+  ];
+  const found = activeTestDriveFor(mine, 'v1');
+  check('the live booking wins over an older finished one', found && found.id === 'new', found && found.id);
+  check('no bookings at all', activeTestDriveFor([], 'v1') === null);
 }
 
 console.log('\nempty and one-sided inputs');
