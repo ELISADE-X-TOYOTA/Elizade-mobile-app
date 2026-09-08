@@ -387,10 +387,14 @@
   },
   "bookings": {
     "title": "Bookings",
-    "subtitle": "Your scheduled test drives",
+    "subtitle": "Your test drives and service visits",
     "viewProgress": "View progress",
     "typeTestDrive": "Test Drive",
-    "typeService": "Servicing"
+    "typeService": "Servicing",
+    "viewDetails": "View details",
+    "emptyUpcoming": "No upcoming bookings",
+    "emptyPast": "No past bookings",
+    "emptyBody": "Book a test drive from any vehicle, or schedule a service for a car in your garage."
   },
   "tradeIn": {
     "title": "Trade-in Valuation",

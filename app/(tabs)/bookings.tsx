@@ -6,35 +6,16 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Skeleton } from '../../src/components/Skeleton';
 import { Txt } from '../../src/components/Txt';
-import {
-  TEST_DRIVE_STATUS_META,
-  TestDriveBooking,
-  TestDriveStatus,
-} from '../../src/domain/types';
+import { BookingItem, BookingKind, selectBookings } from '../../src/domain/bookings';
+import { Tone } from '../../src/domain/types';
+import { useAppointments } from '../../src/hooks/useService';
 import { useTestDrives } from '../../src/hooks/useTestDrives';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
 
 const TABS = ['Upcoming', 'Past'] as const;
-const UPCOMING: TestDriveStatus[] = ['requested', 'confirmed'];
-const PAST: TestDriveStatus[] = ['completed', 'cancelled'];
 
-/**
- * What kind of booking a card is showing.
- *
- * A customer's bookings are not all the same thing, and the card gave no clue
- * which was which — the same generic car icon and the same layout regardless.
- * The kind now drives the icon and a labelled chip, so it is legible at a
- * glance rather than inferred from the vehicle name.
- *
- * NOTE: only `testDrive` reaches this screen today. The tab is backed solely
- * by `GET /sales/test-drives`; service appointments live in the Service tab
- * and are not merged in here. `service` is defined because the card is now
- * genuinely kind-driven and that is the single place a merge would plug into
- * — not because servicing currently appears.
- */
-type BookingKind = 'testDrive' | 'service';
-
+/** Presentation for each kind: the icon and the chip's label. */
 const BOOKING_KIND_META: Record<
   BookingKind,
   { icon: keyof typeof Ionicons.glyphMap; labelKey: string }
@@ -43,13 +24,58 @@ const BOOKING_KIND_META: Record<
   service: { icon: 'construct', labelKey: 'bookings.typeService' },
 };
 
-/** My test-drive bookings — backed by GET /sales/test-drives. */
+/** Where a row opens, and what the link is called. Navigation lives here, not
+ *  in `src/domain/bookings.ts`, which stays free of the navigator so its rules
+ *  can be tested in plain node. */
+function openBooking(item: BookingItem): (() => void) | null {
+  if (!item.targetId) return null;
+  const targetId = item.targetId;
+  if (item.kind === 'service') return () => router.push(`/service-detail/${targetId}`);
+  // The lead tracker that already exists — `app/lead/[id].tsx` renders the
+  // full step-by-step progress and the staff timeline. No second detail
+  // screen: one place where a customer is told where things stand. The kind
+  // travels with it, because the lead does not record which customer action
+  // created it in any renderable form.
+  return () => router.push({ pathname: '/lead/[id]', params: { id: targetId, kind: item.kind } });
+}
+
+const OPEN_LABEL_KEY: Record<BookingKind, string> = {
+  testDrive: 'bookings.viewProgress',
+  service: 'bookings.viewDetails',
+};
+
+/**
+ * Everything the customer has booked — test drives AND service visits.
+ *
+ * The tab used to be backed solely by `GET /sales/test-drives`, so a service
+ * appointment simply was not here: it lived in the Service tab, and a customer
+ * looking at a screen called "Bookings" saw half of theirs. Both sources are
+ * merged now, each row labelled with its kind and routed to the tracker that
+ * belongs to it.
+ */
 export default function Bookings() {
   const t = useTheme();
   const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const [tab, setTab] = useState(0);
-  const { bookings, loading, error, reload } = useTestDrives();
+
+  const {
+    bookings,
+    loading: loadingTestDrives,
+    error: testDriveError,
+    reload: reloadTestDrives,
+  } = useTestDrives();
+  const {
+    appointments,
+    loading: loadingAppointments,
+    error: appointmentError,
+    reload: reloadAppointments,
+  } = useAppointments();
+
+  const reload = useCallback(() => {
+    reloadTestDrives();
+    reloadAppointments();
+  }, [reloadTestDrives, reloadAppointments]);
 
   useFocusEffect(
     useCallback(() => {
@@ -57,19 +83,37 @@ export default function Bookings() {
     }, [reload]),
   );
 
+  const loading = loadingTestDrives || loadingAppointments;
+  const loadedNothing = bookings.length === 0 && appointments.length === 0;
+
   const filtered = useMemo(
-    () => bookings.filter((b) => (tab === 0 ? UPCOMING.includes(b.status) : PAST.includes(b.status))),
-    [bookings, tab],
+    () => selectBookings(bookings, appointments, tab === 0),
+    [bookings, appointments, tab],
   );
 
   // *Text variants: this drives both the badge tint AND its label, so it has
   // to be the readable value — the base fills are 2–3:1 as type.
-  const toneColor = (tone: 'info' | 'success' | 'warning' | 'error') => {
+  const toneColor = (tone: Tone) => {
     if (tone === 'success') return t.colors.successText;
     if (tone === 'warning') return t.colors.warningText;
     if (tone === 'error') return t.colors.errorText;
+    if (tone === 'muted') return t.colors.textSecondary;
     return t.colors.infoText;
   };
+
+  /*
+    Each source is reported separately and BY NAME.
+
+    Either endpoint can fail on its own, and the other list still renders. A
+    single generic error above a half-populated list would be worse than
+    useless — it looks like a complete list with a warning attached, so a
+    customer would conclude a booking had vanished rather than that one feed
+    was down.
+  */
+  const failures = [
+    testDriveError ? `${tr('bookings.typeTestDrive')}: ${testDriveError}` : null,
+    appointmentError ? `${tr('bookings.typeService')}: ${appointmentError}` : null,
+  ].filter((line): line is string => Boolean(line));
 
   return (
     <View style={{ flex: 1, backgroundColor: 'transparent', paddingTop: insets.top }}>
@@ -102,13 +146,13 @@ export default function Bookings() {
               colors={[t.colors.primary]}
               progressBackgroundColor={t.colors.surface} />}
       >
-        {error ? (
-          <Txt color={t.colors.errorText} style={{ marginBottom: spacing.md }}>
-            {error}
+        {failures.map((line) => (
+          <Txt key={line} color={t.colors.errorText} style={{ marginBottom: spacing.sm }}>
+            {line}
           </Txt>
-        ) : null}
+        ))}
 
-        {loading && bookings.length === 0 ? (
+        {loading && loadedNothing ? (
           <>
             <Skeleton height={96} radius={radius.lg} />
             <View style={{ height: 12 }} />
@@ -116,45 +160,26 @@ export default function Bookings() {
           </>
         ) : filtered.length === 0 ? (
           <EmptyState
-            title={tab === 0 ? 'No upcoming test drives' : 'No past test drives'}
-            body="Browse the showroom and book a test drive from any vehicle."
+            title={tab === 0 ? tr('bookings.emptyUpcoming') : tr('bookings.emptyPast')}
+            body={tr('bookings.emptyBody')}
             onBrowse={() => router.push('/(tabs)/shop')}
           />
         ) : (
-          filtered.map((b) => <BookingCard key={b.id} booking={b} statusColor={toneColor(TEST_DRIVE_STATUS_META[b.status].tone)} />)
+          filtered.map((item) => (
+            <BookingCard key={item.key} item={item} statusColor={toneColor(item.tone)} />
+          ))
         )}
       </ScrollView>
     </View>
   );
 }
 
-function BookingCard({
-  booking,
-  statusColor,
-  kind = 'testDrive',
-}: {
-  booking: TestDriveBooking;
-  statusColor: string;
-  kind?: BookingKind;
-}) {
+function BookingCard({ item, statusColor }: { item: BookingItem; statusColor: string }) {
   const t = useTheme();
   const { t: tr } = useTranslation();
-  const when = new Date(booking.scheduledAt);
-  const kindMeta = BOOKING_KIND_META[kind];
-
-  /*
-    THE LIVE STAGE, NOT `booking.status`.
-
-    `status` is written once when the booking is created and never advanced —
-    there is no admin endpoint for test drive bookings at all. Sales staff move
-    the LEAD through the pipeline, which is why a customer watched their
-    request sit on "Requested" while it was actually being worked.
-
-    Falls back to the frozen status only for rows that predate lead linking,
-    which is the one case where there is nothing better to show.
-  */
-  const label = booking.leadStageLabel ?? TEST_DRIVE_STATUS_META[booking.status].label;
-  const trackable = Boolean(booking.leadId);
+  const when = new Date(item.scheduledAt);
+  const kindMeta = BOOKING_KIND_META[item.kind];
+  const open = openBooking(item);
 
   const body = (
     <View style={[styles.card, { backgroundColor: t.colors.surface, borderColor: t.colors.border }, t.shadows.soft]}>
@@ -164,13 +189,13 @@ function BookingCard({
         </View>
         <View style={{ flex: 1, marginLeft: 12 }}>
           <Txt variant="titleMedium" numberOfLines={1}>
-            {booking.vehicleLabel}
+            {item.title}
           </Txt>
           {/*
             The kind, stated rather than implied. The card previously showed
             only the vehicle and the branch, which is identical whether you
-            booked a test drive or a service — a customer had no way to tell
-            their bookings apart except by remembering.
+            booked a test drive or a service — and with both kinds now in one
+            list, inferring it is not even possible.
           */}
           <View style={styles.kindRow}>
             <View style={[styles.kindChip, { backgroundColor: t.colors.primary + '14' }]}>
@@ -184,13 +209,13 @@ function BookingCard({
               numberOfLines={1}
               style={{ marginLeft: 6, flex: 1 }}
             >
-              {booking.branchName}
+              {item.branchName}
             </Txt>
           </View>
         </View>
         <View style={[styles.badge, { backgroundColor: statusColor + '22' }]}>
           <Txt variant="labelSmall" color={statusColor}>
-            {label}
+            {item.statusLabel}
           </Txt>
         </View>
       </View>
@@ -201,11 +226,11 @@ function BookingCard({
           {' · '}
           {when.toLocaleTimeString('en', { hour: 'numeric', minute: '2-digit' })}
         </Txt>
-        {trackable ? (
+        {open ? (
           <>
             <View style={{ flex: 1 }} />
             <Txt variant="labelSmall" color={t.colors.primary}>
-              {tr('bookings.viewProgress')}
+              {tr(OPEN_LABEL_KEY[item.kind])}
             </Txt>
             <Ionicons name="chevron-forward" size={14} color={t.colors.primary} />
           </>
@@ -214,20 +239,12 @@ function BookingCard({
     </View>
   );
 
-  // Routes to the lead tracker that already exists — `app/lead/[id].tsx`
-  // renders the full step-by-step progress and the staff timeline. No second
-  // detail screen: one place where a customer is told where things stand.
-  if (!trackable) return body;
+  if (!open) return body;
   return (
     <Pressable
-      // The kind travels with the booking. The lead itself does not record
-      // which customer action created it in any form worth rendering, and the
-      // card already knows — so passing it beats inferring it there.
-      onPress={() =>
-        router.push({ pathname: '/lead/[id]', params: { id: booking.leadId!, kind } })
-      }
+      onPress={open}
       accessibilityRole="button"
-      accessibilityLabel={tr('bookings.viewProgress')}
+      accessibilityLabel={`${tr(kindMeta.labelKey)} — ${item.title}`}
       style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
     >
       {body}

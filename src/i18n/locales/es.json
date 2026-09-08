@@ -387,10 +387,14 @@
   },
   "bookings": {
     "title": "Reservas",
-    "subtitle": "Tus pruebas de manejo programadas",
+    "subtitle": "Tus pruebas de manejo y mantenimientos",
     "viewProgress": "Ver progreso",
     "typeTestDrive": "Prueba de manejo",
-    "typeService": "Mantenimiento"
+    "typeService": "Mantenimiento",
+    "viewDetails": "Ver detalles",
+    "emptyUpcoming": "No hay reservas próximas",
+    "emptyPast": "No hay reservas anteriores",
+    "emptyBody": "Reserva una prueba de manejo desde cualquier vehículo, o programa un mantenimiento para un coche de tu garaje."
   },
   "tradeIn": {
     "title": "Tasación de entrega a cuenta",

@@ -387,10 +387,14 @@
   },
   "bookings": {
     "title": "Réservations",
-    "subtitle": "Vos essais programmés",
+    "subtitle": "Vos essais routiers et vos entretiens",
     "viewProgress": "Voir la progression",
     "typeTestDrive": "Essai routier",
-    "typeService": "Entretien"
+    "typeService": "Entretien",
+    "viewDetails": "Voir les détails",
+    "emptyUpcoming": "Aucune réservation à venir",
+    "emptyPast": "Aucune réservation passée",
+    "emptyBody": "Réservez un essai routier depuis n'importe quel véhicule, ou planifiez un entretien pour une voiture de votre garage."
   },
   "tradeIn": {
     "title": "Estimation de reprise",

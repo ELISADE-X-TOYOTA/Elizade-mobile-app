@@ -387,10 +387,14 @@
   },
   "bookings": {
     "title": "Ìfiṣọ̀wọ̀",
-    "subtitle": "Àwọn ìdánwò ìwakọ̀ tí o ṣètò",
+    "subtitle": "Ìdanwò āyòkèlè àti ìtójú rẹ",
     "viewProgress": "Wo ìlọsíwájú",
     "typeTestDrive": "Ìdanwò Āyòkèlè",
-    "typeService": "Ìtójú Āyòkèlè"
+    "typeService": "Ìtójú Āyòkèlè",
+    "viewDetails": "Wo àlayé",
+    "emptyUpcoming": "Kò sí ìwé ìfọwọsí tó ṣẹẽ bọ̀",
+    "emptyPast": "Kò sí ìwé ìfọwọsí tó ti kọjá",
+    "emptyBody": "Ṣe ìdanwò āyòkèlè láti ọkọ̀ èyíkéyìí, tàbí ṣe ìtójú fún ọkọ̀ tó wà nínú garẹ́jì rẹ."
   },
   "tradeIn": {
     "title": "Ìgbéléwọ̀n ìpààrọ̀",

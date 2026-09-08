@@ -387,10 +387,14 @@
   },
   "bookings": {
     "title": "Ajiye wuri",
-    "subtitle": "Gwajin tuƙi da ka shirya",
+    "subtitle": "Gwajin tuki da ziyarar gyara naka",
     "viewProgress": "Duba ci gaba",
     "typeTestDrive": "Gwajin Tuki",
-    "typeService": "Gyara"
+    "typeService": "Gyara",
+    "viewDetails": "Duba cikakken bayani",
+    "emptyUpcoming": "Babu ajiye mai zuwa",
+    "emptyPast": "Babu ajiye da ya wuce",
+    "emptyBody": "Ka yi ajiyen gwajin tuki daga kowace mota, ko ka tsara gyara don mota da ke gareji naka."
   },
   "tradeIn": {
     "title": "Kimanta musanya",
