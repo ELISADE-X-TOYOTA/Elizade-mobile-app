@@ -68,6 +68,8 @@
     "otpSubtitle": "Mun aika lamba mai lambobi 6 zuwa {{target}}",
     "resendCode": "Sake aika lamba",
     "resendIn": "Sake aikawa cikin {{time}}",
+    "codeExpiresIn": "Wannan lambar za ta ƙare cikin {{time}}",
+    "codeExpired": "Wannan lambar ta ƙare. Nemi sabuwa.",
     "verify": "Tabbatar",
     "alreadyHaveAccount": "Kana da asusu?",
     "noAccount": "Ba ka da asusu?",
@@ -128,9 +130,15 @@
     "serviceHistory": "Tarihin gyara",
     "personalDetails": "Bayanan kai",
     "language": "Harshe",
-    "privacySecurity": "Sirri da tsaro",
     "helpCenter": "Cibiyar taimako",
-    "appearanceNote": "Yana bin salon na'urar ka"
+    "appearanceNote": "Yana bin salon na'urar ka",
+    "personalDetailsSubtitle": "Sabunta sunanka, imel da birninka.",
+    "city": "Birni",
+    "saveFailed": "An kasa ajiye canje-canjenka.",
+    "firstNameRequired": "Da fatan shigar da sunanka na farko.",
+    "lastNameRequired": "Da fatan shigar da sunan mahaifinka.",
+    "emailInvalid": "Shigar da ingantaccen adireshin imel.",
+    "emailChangeNotice": "Wannan shine adireshin shiga naka. Za mu sanar da tsohon da sabon adireshi idan ya canza."
   },
   "leads": {
     "title": "Buƙatuna",
@@ -210,7 +218,7 @@
     "loadError": "An kasa loda wannan mota",
     "loadCarsError": "An kasa loda motoci. {{message}}",
     "loadVehiclesError": "An kasa loda motoci. {{message}}",
-    "verifiedDealerOwners": "Wakili da aka tabbatar · masu mallaka {{count}}",
+    "verifiedDealer": "Wakili da aka tabbatar",
     "imageViewer": "Mai duba hotunan mota",
     "prevAngle": "Kusurwar da ta gabata",
     "nextAngle": "Kusurwa ta gaba",
@@ -223,7 +231,11 @@
     "notifyMe": "Sanar da ni",
     "turnOffAlerts": "Kashe sanarwa",
     "messageDealer": "Aika saƙo ga dila",
-    "callDealer": "Kira dila"
+    "callDealer": "Kira dila",
+    "testDriveBooked": "An Ajiye Gwajin Tuki",
+    "reserved": "An Ajiye",
+    "sold": "An Sayar",
+    "unavailable": "Babu"
   },
   "service": {
     "title": "Gyara",
@@ -381,12 +393,21 @@
     "batteryExpired": "Baturi: warantin ya ƙare a watanni {{months}}.",
     "adviserConfirms": "Mai ba da shawara kan gyara zai tabbatar da sakamakon ƙarshe.",
     "loadError": "An kasa loda waranti. {{message}}",
-    "reviewWithin48": "Ƙungiyar warantinmu za ta duba buƙatarka ta {{category}} kuma ta amsa cikin awanni 48."
+    "reviewWithin48": "Ƙungiyar warantinmu za ta duba buƙatarka ta {{category}} kuma ta amsa cikin awanni 48.",
+    "describeIssueHint": "Akalla haruffa {{count}} — me ya faru, kuma yaushe?",
+    "notEligible": "Bai cancanta ba",
+    "submitClaim": "Aika Da'awa"
   },
   "bookings": {
     "title": "Ajiye wuri",
-    "subtitle": "Gwajin tuƙi da ka shirya",
-    "viewProgress": "Duba ci gaba"
+    "subtitle": "Gwajin tuki da ziyarar gyara naka",
+    "viewProgress": "Duba ci gaba",
+    "typeTestDrive": "Gwajin Tuki",
+    "typeService": "Gyara",
+    "viewDetails": "Duba cikakken bayani",
+    "emptyUpcoming": "Babu ajiye mai zuwa",
+    "emptyPast": "Babu ajiye da ya wuce",
+    "emptyBody": "Ka yi ajiyen gwajin tuki daga kowace mota, ko ka tsara gyara don mota da ke gareji naka."
   },
   "tradeIn": {
     "title": "Kimanta musanya",
@@ -401,7 +422,9 @@
     "finalValueNote": "Za a tabbatar da darajar ƙarshe bayan dubawa",
     "addPhotos": "Ƙara hotunan motarka",
     "valuationRequested": "An nemi kimantawa",
-    "specialistConfirms": "Ƙwararren Elizade zai tabbatar da darajar musanya ta {{make}} {{model}} bayan gwaji na zahiri cikin sauri."
+    "specialistConfirms": "Ƙwararren Elizade zai tabbatar da darajar musanya ta {{make}} {{model}} bayan gwaji na zahiri cikin sauri.",
+    "trackedUnderLeads": "Za ka iya bin wannan bukata a Bayani › Bukatuna.",
+    "trackRequest": "Bi wannan bukata"
   },
   "watchlist": {
     "subtitle": "Samfuran da kake bi",

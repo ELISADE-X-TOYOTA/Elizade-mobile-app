@@ -173,6 +173,7 @@ export default function RootLayout() {
           <Stack.Screen name="warranty" />
           <Stack.Screen name="new-ticket" />
           <Stack.Screen name="ticket/[id]" />
+          <Stack.Screen name="edit-profile" />
           <Stack.Screen name="garage" />
           <Stack.Screen name="garage-vehicle/[id]" />
           <Stack.Screen name="notifications" />

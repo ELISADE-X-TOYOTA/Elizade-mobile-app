@@ -43,14 +43,19 @@ export default function Login() {
 
     const startedAt = Date.now();
     try {
-      await requestOtp({ email, purpose: 'login' });
+      const expiresInMinutes = await requestOtp({ email, purpose: 'login' });
       // Let the animation finish its beat before handing over.
       const elapsed = Date.now() - startedAt;
       if (elapsed < MIN_ANIMATION_MS) {
         await new Promise((r) => setTimeout(r, MIN_ANIMATION_MS - elapsed));
       }
       setSending(false);
-      router.push({ pathname: '/(auth)/otp', params: { email } });
+      // The lifetime travels with the email so the next screen can show the
+      // same number the code's email does, rather than guessing.
+      router.push({
+        pathname: '/(auth)/otp',
+        params: { email, expiresInMinutes: String(expiresInMinutes) },
+      });
     } catch (e) {
       setSending(false);
       setError(e instanceof Error ? e.message : tr('auth.couldNotSendCode'));

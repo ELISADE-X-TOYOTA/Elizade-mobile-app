@@ -94,6 +94,27 @@ interface AppState {
   swapNotice: string | null;
   dismissSwapNotice: () => void;
 
+  /**
+   * Height of the sticky bar the current screen owns, so the compare tray can
+   * dock ABOVE it instead of on top of it.
+   *
+   * The tray is mounted once at the root and offsets itself by the tab bar on
+   * the grid — but a car's details page has its own sticky action bar, which
+   * the tray knew nothing about and covered: at ~50pt from the bottom against
+   * a bar around 165pt tall, the tray sat squarely over Reserve and Test
+   * Drive. Staging a car for comparison made the screen's two main buttons
+   * untappable.
+   *
+   * MEASURED, not assumed. The bar's height is its content plus
+   * `insets.bottom`, which differs between a device with a gesture bar and one
+   * without — the same reason that screen already measures its own scroll
+   * padding rather than hardcoding it. Transient: never persisted (see
+   * `partialize`), and reset to 0 when the owning screen unmounts, or the
+   * tray would float above nothing on the next screen.
+   */
+  stickyBarHeight: number;
+  setStickyBarHeight: (height: number) => void;
+
   categoryFilter: VehicleCategory | null;
   setCategoryFilter: (c: VehicleCategory | null) => void;
 
@@ -165,6 +186,9 @@ export const useStore = create<AppState>()(
       clearCompare: () => set({ compare: [], swapNotice: null }),
       swapNotice: null,
       dismissSwapNotice: () => set({ swapNotice: null }),
+
+      stickyBarHeight: 0,
+      setStickyBarHeight: (stickyBarHeight) => set({ stickyBarHeight }),
       isComparing: (id) => get().compare.some((c) => c.id === id),
 
       categoryFilter: null,

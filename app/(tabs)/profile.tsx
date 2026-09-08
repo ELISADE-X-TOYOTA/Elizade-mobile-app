@@ -157,7 +157,18 @@ export default function Profile() {
         </Group>
 
         <Group title={t('profile.groupAccount')}>
-          <Row icon="person-outline" label={t('profile.personalDetails')} last />
+          {/*
+            This row had no `onPress` and no screen behind it, which QA
+            reported as "personal detail updates fail to save". Nothing failed
+            to save — there was nowhere to type them. `PATCH /users/me` has
+            been available the whole time.
+          */}
+          <Row
+            icon="person-outline"
+            label={t('profile.personalDetails')}
+            onPress={() => router.push('/edit-profile')}
+            last
+          />
         </Group>
 
         <Group title={t('profile.groupPreferences')}>
@@ -172,8 +183,24 @@ export default function Profile() {
         </Group>
 
         <Group title={t('profile.groupSupport')}>
-          <Row icon="shield-checkmark-outline" label={t('profile.privacySecurity')} />
-          <Row icon="help-circle-outline" label={t('profile.helpCenter')} />
+          {/*
+            "Privacy & Security" IS GONE, and that is the honest fix.
+
+            It had no handler and no screen, and there is nothing behind it to
+            open: the biometric gate was deliberately removed, there is no
+            account-deletion endpoint, and notification preferences already
+            have their own row above. A menu item that opens an empty page is
+            not an improvement on one that does nothing — it is the same lie
+            with more steps. It comes back when there is something real to put
+            in it.
+          */}
+          <Row
+            icon="help-circle-outline"
+            label={t('profile.helpCenter')}
+            // Help means Support: tickets, and the call and WhatsApp buttons.
+            // A real destination that matches the label, rather than a stub.
+            onPress={() => router.push('/(tabs)/support')}
+          />
           <Row icon="log-out-outline" label={t('auth.signOut')} danger last onPress={signOut} />
         </Group>
       </ScrollView>

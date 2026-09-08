@@ -9,6 +9,8 @@ import { Txt } from '../../src/components/Txt';
 import { touchActivity } from '../../src/api/session';
 import { requestOtp, verifyOtp } from '../../src/data/authRepository';
 import { registerForPush } from '../../src/data/pushRepository';
+import { useOtpCountdown } from '../../src/hooks/useOtpCountdown';
+import { OTP_KEYBOARD_TYPE } from '../../src/constants/otpKeyboard';
 import { useStore } from '../../src/store/useStore';
 import { useWatchlistStore } from '../../src/store/useWatchlistStore';
 import { radius, spacing } from '../../src/theme/spacing';
@@ -16,13 +18,16 @@ import { useTheme } from '../../src/theme/useTheme';
 import { solid } from '../../src/theme/colors';
 
 const LEN = 6;
-/** Seconds before "Resend code" becomes available again. */
-const RESEND_SECONDS = 60;
 
 export default function Otp() {
   const t = useTheme();
   const { t: tr } = useTranslation();
-  const { email, purpose } = useLocalSearchParams<{ email?: string; purpose?: string }>();
+  const { email, purpose, expiresInMinutes } = useLocalSearchParams<{
+    email?: string;
+    purpose?: string;
+    /** The code's real lifetime, handed over by whichever screen sent it. */
+    expiresInMinutes?: string;
+  }>();
   const setCurrentUser = useStore((s) => s.setCurrentUser);
   const completeOnboarding = useStore((s) => s.completeOnboarding);
   const loadWatchlist = useWatchlistStore((s) => s.load);
@@ -31,21 +36,27 @@ export default function Otp() {
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
   const [error, setError] = useState<string>();
-  const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
 
   const inputs = useRef<(TextInput | null)[]>([]);
   /** Guards against the auto-submit firing twice for one completed code. */
   const submitted = useRef(false);
   const code = digits.join('');
 
-  // ── Resend countdown ────────────────────────────────────────────────
-  useEffect(() => {
-    if (secondsLeft <= 0) return;
-    const id = setInterval(() => setSecondsLeft((s) => (s <= 1 ? 0 : s - 1)), 1000);
-    return () => clearInterval(id);
-  }, [secondsLeft]);
+  // ── Countdowns ──────────────────────────────────────────────────────
+  // Two separate clocks: how long the code lives (shown to the user) and how
+  // long until it can be resent (an internal rate limit). Showing only the
+  // second is what made the app read as "expires in 60 seconds".
+  const countdown = useOtpCountdown();
+  const { restart } = countdown;
 
-  const mmss = `${Math.floor(secondsLeft / 60)}:${String(secondsLeft % 60).padStart(2, '0')}`;
+  // Seed the expiry from the screen that sent the code. The screen is reached
+  // immediately after `/auth/otp/request` returns, so this is the same lifetime
+  // the email states.
+  useEffect(() => {
+    restart(Number(expiresInMinutes));
+    // Only on arrival — a resend restarts it explicitly.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // ── Shake on a rejected code ────────────────────────────────────────
   const shakeX = useSharedValue(0);
@@ -150,14 +161,18 @@ export default function Otp() {
   };
 
   const resend = async () => {
-    if (secondsLeft > 0 || !email) return;
+    if (!countdown.canResend || !email) return;
     setResending(true);
     setError(undefined);
     try {
-      await requestOtp({ email, purpose: purpose === 'register' ? 'register' : 'login' });
+      const minutes = await requestOtp({
+        email,
+        purpose: purpose === 'register' ? 'register' : 'login',
+      });
       setDigits(Array(LEN).fill(''));
       submitted.current = false;
-      setSecondsLeft(RESEND_SECONDS);
+      // Both clocks restart from the new code's own lifetime.
+      restart(minutes);
       inputs.current[0]?.focus();
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not resend the code');
@@ -184,7 +199,7 @@ export default function Otp() {
             value={d}
             onChangeText={(v) => onChange(i, v)}
             onKeyPress={(e) => onKey(i, e)}
-            keyboardType="numbers-and-punctuation"
+            keyboardType={OTP_KEYBOARD_TYPE}
             // Numbers first (a real OTP is six digits) but letters reachable,
             // so the reviewer's alphanumeric code can actually be typed.
             autoCapitalize="none"
@@ -219,9 +234,17 @@ export default function Otp() {
         <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: 10 }}>
           {error}
         </Txt>
+      ) : countdown.expired ? (
+        // The code on screen is dead. Say so rather than letting someone type
+        // it out and collect a 400 for their trouble.
+        <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: 10 }}>
+          {tr('auth.codeExpired')}
+        </Txt>
       ) : (
         <Txt variant="bodySmall" tone="tertiary" style={{ marginTop: 10 }}>
-          {loading ? 'Verifying…' : 'Verification starts automatically once all six digits are in.'}
+          {loading
+            ? 'Verifying…'
+            : tr('auth.codeExpiresIn', { time: countdown.expiryLabel })}
         </Txt>
       )}
 
@@ -235,11 +258,11 @@ export default function Otp() {
       />
 
       <View style={{ marginTop: spacing.lg, alignItems: 'center' }}>
-        {secondsLeft > 0 ? (
+        {!countdown.canResend ? (
           <Txt tone="secondary">
             {tr('auth.didntReceiveIt')}{'  '}
             <Txt variant="titleSmall" tone="tertiary">
-              {tr('auth.resendIn', { time: mmss })}
+              {tr('auth.resendIn', { time: countdown.resendLabel })}
             </Txt>
           </Txt>
         ) : (

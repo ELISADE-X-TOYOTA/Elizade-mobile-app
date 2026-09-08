@@ -68,6 +68,8 @@
     "otpSubtitle": "Nous avons envoyé un code à 6 chiffres à {{target}}",
     "resendCode": "Renvoyer le code",
     "resendIn": "Renvoyer dans {{time}}",
+    "codeExpiresIn": "Ce code expire dans {{time}}",
+    "codeExpired": "Ce code a expiré. Demandez-en un nouveau.",
     "verify": "Vérifier",
     "alreadyHaveAccount": "Vous avez déjà un compte ?",
     "noAccount": "Vous n'avez pas de compte ?",
@@ -128,9 +130,15 @@
     "serviceHistory": "Historique d'entretien",
     "personalDetails": "Informations personnelles",
     "language": "Langue",
-    "privacySecurity": "Confidentialité et sécurité",
     "helpCenter": "Centre d'aide",
-    "appearanceNote": "Suit le thème de votre appareil"
+    "appearanceNote": "Suit le thème de votre appareil",
+    "personalDetailsSubtitle": "Modifiez votre nom, e-mail et ville.",
+    "city": "Ville",
+    "saveFailed": "Impossible d'enregistrer vos modifications.",
+    "firstNameRequired": "Veuillez saisir votre prénom.",
+    "lastNameRequired": "Veuillez saisir votre nom.",
+    "emailInvalid": "Saisissez une adresse e-mail valide.",
+    "emailChangeNotice": "C'est votre adresse de connexion. Nous alerterons votre ancienne et votre nouvelle adresse lors du changement."
   },
   "leads": {
     "title": "Mes demandes",
@@ -210,7 +218,7 @@
     "loadError": "Impossible de charger ce véhicule",
     "loadCarsError": "Impossible de charger les voitures. {{message}}",
     "loadVehiclesError": "Impossible de charger les véhicules. {{message}}",
-    "verifiedDealerOwners": "Concessionnaire vérifié · {{count}} propriétaire",
+    "verifiedDealer": "Concessionnaire vérifié",
     "imageViewer": "Visionneuse d'images du véhicule",
     "prevAngle": "Angle précédent",
     "nextAngle": "Angle suivant",
@@ -223,7 +231,11 @@
     "notifyMe": "Me prévenir",
     "turnOffAlerts": "Désactiver les alertes",
     "messageDealer": "Contacter le concessionnaire",
-    "callDealer": "Appeler le concessionnaire"
+    "callDealer": "Appeler le concessionnaire",
+    "testDriveBooked": "Essai réservé",
+    "reserved": "Réservé",
+    "sold": "Vendu",
+    "unavailable": "Indisponible"
   },
   "service": {
     "title": "Entretien",
@@ -381,12 +393,21 @@
     "batteryExpired": "Batterie : la couverture a pris fin à {{months}} mois.",
     "adviserConfirms": "Votre conseiller service confirme la décision finale.",
     "loadError": "Impossible de charger la garantie. {{message}}",
-    "reviewWithin48": "Notre équipe garantie examinera votre demande {{category}} et vous répondra sous 48 heures."
+    "reviewWithin48": "Notre équipe garantie examinera votre demande {{category}} et vous répondra sous 48 heures.",
+    "describeIssueHint": "Au moins {{count}} caractères — que s'est-il passé, et quand ?",
+    "notEligible": "Non éligible",
+    "submitClaim": "Envoyer la réclamation"
   },
   "bookings": {
     "title": "Réservations",
-    "subtitle": "Vos essais programmés",
-    "viewProgress": "Voir la progression"
+    "subtitle": "Vos essais routiers et vos entretiens",
+    "viewProgress": "Voir la progression",
+    "typeTestDrive": "Essai routier",
+    "typeService": "Entretien",
+    "viewDetails": "Voir les détails",
+    "emptyUpcoming": "Aucune réservation à venir",
+    "emptyPast": "Aucune réservation passée",
+    "emptyBody": "Réservez un essai routier depuis n'importe quel véhicule, ou planifiez un entretien pour une voiture de votre garage."
   },
   "tradeIn": {
     "title": "Estimation de reprise",
@@ -401,7 +422,9 @@
     "finalValueNote": "Valeur définitive confirmée après inspection",
     "addPhotos": "Ajouter des photos de votre véhicule",
     "valuationRequested": "Estimation demandée",
-    "specialistConfirms": "Un spécialiste Elizade confirmera la valeur de reprise de votre {{make}} {{model}} après une inspection physique rapide."
+    "specialistConfirms": "Un spécialiste Elizade confirmera la valeur de reprise de votre {{make}} {{model}} après une inspection physique rapide.",
+    "trackedUnderLeads": "Suivez cette demande dans Profil › Mes pistes.",
+    "trackRequest": "Suivre la demande"
   },
   "watchlist": {
     "subtitle": "Modèles que vous suivez",

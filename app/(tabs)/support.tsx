@@ -13,6 +13,7 @@ import {
   Tone,
 } from '../../src/domain/types';
 import { useTickets } from '../../src/hooks/useSupport';
+import { callSupport, openWhatsApp } from '../../src/utils/contact';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
 import { solid } from '../../src/theme/colors';
@@ -44,8 +45,16 @@ export default function Support() {
       >
         {/* Quick contact */}
         <View style={{ flexDirection: 'row', gap: 12 }}>
-          <QuickAction icon="call" label={tr('support.callElizade')} />
-          <QuickAction icon="logo-whatsapp" label={tr('support.whatsapp')} />
+          <QuickAction
+            icon="call"
+            label={tr('support.callElizade')}
+            onPress={() => callSupport(tr('support.callElizade'))}
+          />
+          <QuickAction
+            icon="logo-whatsapp"
+            label={tr('support.whatsapp')}
+            onPress={() => openWhatsApp(tr('support.whatsapp'))}
+          />
         </View>
 
         <Txt variant="titleLarge" style={{ marginTop: spacing.md }}>{tr('support.yourTickets')}</Txt>
@@ -69,16 +78,43 @@ function toneColorOf(t: ReturnType<typeof useTheme>, tone: Tone) {
   return tone === 'success' ? t.colors.successText : tone === 'warning' ? t.colors.warningText : tone === 'error' ? t.colors.errorText : tone === 'info' ? t.colors.infoText : t.colors.textSecondary;
 }
 
-function QuickAction({ icon, label }: { icon: keyof typeof Ionicons.glyphMap; label: string }) {
+/**
+ * Call / WhatsApp.
+ *
+ * THIS WAS A PLAIN `View`. Both cards carried the surface, border, shadow and
+ * icon chip of a button, sat at the top of the Support tab as the first thing
+ * a customer with a problem reaches for, and had no `onPress` at all — not a
+ * broken handler, no handler. Someone trying to reach Elizade tapped the
+ * obvious thing, nothing happened, and there was nothing on screen to suggest
+ * why. The identical bug was fixed on the car-details dealer card; this copy
+ * was missed.
+ */
+function QuickAction({
+  icon,
+  label,
+  onPress,
+}: {
+  icon: keyof typeof Ionicons.glyphMap;
+  label: string;
+  onPress: () => void;
+}) {
   const t = useTheme();
-  const { t: tr } = useTranslation();
   return (
-    <View style={[styles.quick, { backgroundColor: t.colors.surface, borderColor: t.colors.border }, t.shadows.soft]}>
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      style={({ pressed }) => [
+        styles.quick,
+        { backgroundColor: t.colors.surface, borderColor: t.colors.border, opacity: pressed ? 0.7 : 1 },
+        t.shadows.soft,
+      ]}
+    >
       <View style={[styles.quickIcon, { backgroundColor: t.colors.primary + '14' }]}>
         <Ionicons name={icon} size={20} color={t.colors.primary} />
       </View>
       <Txt variant="titleSmall">{label}</Txt>
-    </View>
+    </Pressable>
   );
 }
 

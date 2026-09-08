@@ -24,7 +24,25 @@ export default function LeadDetailScreen() {
   const theme = useTheme();
   const { t, i18n } = useTranslation();
   const insets = useSafeAreaInsets();
-  const { id } = useLocalSearchParams<{ id: string }>();
+  /**
+   * `kind` is passed by whichever card opened this tracker.
+   *
+   * The lead itself does not record which customer action created it in any
+   * form worth rendering — `source` is "Mobile app" for every one — so a
+   * customer arriving here saw the model and the pipeline stage with nothing
+   * saying whether this was the test drive or the service they booked. The
+   * caller knows, so it says.
+   *
+   * Optional: absent simply renders no chip, so a future entry point that
+   * cannot say does not have to invent one.
+   */
+  const { id, kind } = useLocalSearchParams<{ id: string; kind?: string }>();
+  const kindLabelKey =
+    kind === 'service'
+      ? 'bookings.typeService'
+      : kind === 'testDrive'
+        ? 'bookings.typeTestDrive'
+        : null;
 
   const [lead, setLead] = useState<LeadDetailDto | null>(null);
   const [loading, setLoading] = useState(true);
@@ -105,6 +123,18 @@ export default function LeadDetailScreen() {
           <>
             {/* Summary */}
             <Card>
+              {kindLabelKey ? (
+                <View
+                  style={[
+                    styles.pill,
+                    { backgroundColor: tint(theme.colors.accent, 0.12), marginBottom: spacing.sm },
+                  ]}
+                >
+                  <Txt variant="labelSmall" color={theme.colors.accentText}>
+                    {t(kindLabelKey)}
+                  </Txt>
+                </View>
+              ) : null}
               <Txt variant="labelMedium" tone="secondary">
                 {t('leads.interestedIn')}
               </Txt>

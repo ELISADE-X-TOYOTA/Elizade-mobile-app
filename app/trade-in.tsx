@@ -120,9 +120,35 @@ export default function TradeIn() {
               Indicative: {price(estimate.low)} – {price(estimate.high)}
             </Txt>
           )}
+          {/*
+            WHERE IT WENT, said out loud.
+
+            The request is recorded — it creates a trade-in row AND a lead, and
+            production holds every one that has been submitted. But the app
+            never showed it back: `listTradeIns` exists in the API client and
+            no screen calls it, and this sheet said only that a specialist
+            would be in touch. So a customer submitted, saw a number, and had
+            nowhere to check it again, which reads exactly like a submission
+            that went nowhere.
+
+            It is tracked under My Leads, so that is what this now says and
+            where the button goes.
+          */}
+          <Txt variant="bodySmall" tone="tertiary" center style={{ marginTop: spacing.lg }}>
+            {tr('tradeIn.trackedUnderLeads')}
+          </Txt>
         </View>
-        <View style={{ paddingBottom: insets.bottom + spacing.md }}>
-          <PrimaryButton label={tr('common.done')} icon="arrow-forward" onPress={() => router.back()} />
+        <View style={{ paddingBottom: insets.bottom + spacing.md, gap: spacing.sm }}>
+          <PrimaryButton
+            label={tr('tradeIn.trackRequest')}
+            icon="trending-up"
+            onPress={() => router.replace('/leads')}
+          />
+          <PrimaryButton
+            label={tr('common.done')}
+            variant="outline"
+            onPress={() => router.back()}
+          />
         </View>
       </View>
     );

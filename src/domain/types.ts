@@ -52,7 +52,6 @@ export interface Vehicle {
    */
   specs: Record<string, string>;
   listingTypes: ListingType[];
-  ownerHistory: number;
   isVerified: boolean;
   dealerName: string;
 }

@@ -68,6 +68,8 @@
     "otpSubtitle": "We sent a 6-digit code to {{target}}",
     "resendCode": "Resend code",
     "resendIn": "Resend in {{time}}",
+    "codeExpiresIn": "This code expires in {{time}}",
+    "codeExpired": "This code has expired. Request a new one.",
     "verify": "Verify",
     "alreadyHaveAccount": "Already have an account?",
     "noAccount": "Don't have an account?",
@@ -128,9 +130,15 @@
     "serviceHistory": "Service History",
     "personalDetails": "Personal Details",
     "language": "Language",
-    "privacySecurity": "Privacy & Security",
     "helpCenter": "Help Center",
-    "appearanceNote": "Follows your device theme"
+    "appearanceNote": "Follows your device theme",
+    "personalDetailsSubtitle": "Update your name, email and city.",
+    "city": "City",
+    "saveFailed": "Could not save your changes.",
+    "firstNameRequired": "Please enter your first name.",
+    "lastNameRequired": "Please enter your last name.",
+    "emailInvalid": "Enter a valid email address.",
+    "emailChangeNotice": "This is your sign-in address. We'll alert both your old and new address when it changes."
   },
   "leads": {
     "title": "My Leads",
@@ -210,7 +218,7 @@
     "loadError": "Couldn't load this vehicle",
     "loadCarsError": "Couldn't load cars. {{message}}",
     "loadVehiclesError": "Couldn't load vehicles. {{message}}",
-    "verifiedDealerOwners": "Verified Dealer · {{count}} owner",
+    "verifiedDealer": "Verified Dealer",
     "imageViewer": "Vehicle image viewer",
     "prevAngle": "Previous vehicle angle",
     "nextAngle": "Next vehicle angle",
@@ -223,7 +231,11 @@
     "notifyMe": "Notify Me",
     "turnOffAlerts": "Turn off alerts",
     "messageDealer": "Message dealer",
-    "callDealer": "Call dealer"
+    "callDealer": "Call dealer",
+    "testDriveBooked": "Test Drive Booked",
+    "reserved": "Reserved",
+    "sold": "Sold",
+    "unavailable": "Unavailable"
   },
   "service": {
     "title": "Service",
@@ -381,12 +393,21 @@
     "batteryExpired": "Battery: cover ended at {{months}} months.",
     "adviserConfirms": "Your service adviser confirms the final outcome.",
     "loadError": "Couldn't load warranty. {{message}}",
-    "reviewWithin48": "Our warranty team will review your {{category}} claim and get back to you within 48 hours."
+    "reviewWithin48": "Our warranty team will review your {{category}} claim and get back to you within 48 hours.",
+    "describeIssueHint": "At least {{count}} characters — what happened, and when?",
+    "notEligible": "Not eligible",
+    "submitClaim": "Submit Claim"
   },
   "bookings": {
     "title": "Bookings",
-    "subtitle": "Your scheduled test drives",
-    "viewProgress": "View progress"
+    "subtitle": "Your test drives and service visits",
+    "viewProgress": "View progress",
+    "typeTestDrive": "Test Drive",
+    "typeService": "Servicing",
+    "viewDetails": "View details",
+    "emptyUpcoming": "No upcoming bookings",
+    "emptyPast": "No past bookings",
+    "emptyBody": "Book a test drive from any vehicle, or schedule a service for a car in your garage."
   },
   "tradeIn": {
     "title": "Trade-in Valuation",
@@ -401,7 +422,9 @@
     "finalValueNote": "Final value confirmed after inspection",
     "addPhotos": "Add photos of your vehicle",
     "valuationRequested": "Valuation Requested",
-    "specialistConfirms": "An Elizade specialist will confirm your {{make}} {{model}} trade-in value after a quick physical inspection."
+    "specialistConfirms": "An Elizade specialist will confirm your {{make}} {{model}} trade-in value after a quick physical inspection.",
+    "trackedUnderLeads": "You can follow this request under Profile › My Leads.",
+    "trackRequest": "Track this request"
   },
   "watchlist": {
     "subtitle": "Models you are tracking",

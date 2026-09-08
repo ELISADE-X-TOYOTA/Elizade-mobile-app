@@ -68,6 +68,8 @@
     "otpSubtitle": "A ti fi kóòdù oní nọ́mbà mẹ́fà ránṣẹ́ sí {{target}}",
     "resendCode": "Tún kóòdù ránṣẹ́",
     "resendIn": "Fi ránṣẹ́ lẹ́ẹ̀kansí ní {{time}}",
+    "codeExpiresIn": "Kóòdù yìí yóò pari ní {{time}}",
+    "codeExpired": "Kóòdù yìí ti pari. Béèrè fún tuntun.",
     "verify": "Ṣàyẹ̀wò",
     "alreadyHaveAccount": "Ṣé o ti ní àkàǹtì?",
     "noAccount": "Ṣé o kò ní àkàǹtì?",
@@ -128,9 +130,15 @@
     "serviceHistory": "Ìtàn àtúnṣe",
     "personalDetails": "Àlàyé ara ẹni",
     "language": "Èdè",
-    "privacySecurity": "Ìpamọ́ àti ààbò",
     "helpCenter": "Ibùdó ìrànlọ́wọ́",
-    "appearanceNote": "Ó ń tẹ̀lé àwọ̀ ẹ̀rọ rẹ"
+    "appearanceNote": "Ó ń tẹ̀lé àwọ̀ ẹ̀rọ rẹ",
+    "personalDetailsSubtitle": "Ṣe ìmúdojfúo orúkọ, íméìlì àti ilu rẹ.",
+    "city": "Ìlú",
+    "saveFailed": "Kò lè fi àwọn ìyipàdà rẹ pamọ́.",
+    "firstNameRequired": "Jọwọ tẹ orúkọ àkọ́kọ́ rẹ.",
+    "lastNameRequired": "Jọwọ tẹ orúkọ ìdílẹ̀ rẹ.",
+    "emailInvalid": "Tẹ àdírẹ́sì íméìlì tó tọ́.",
+    "emailChangeNotice": "Èyí ni àdírẹ́sì ìwọlé rẹ. A ó ṣe ìkilọ̀ fún àdírẹ́sì atì jò àti tí tuntun."
   },
   "leads": {
     "title": "Àwọn ìbéèrè mi",
@@ -210,7 +218,7 @@
     "loadError": "A kò lè gbé ọkọ̀ yìí wọlé",
     "loadCarsError": "A kò lè gbé àwọn ọkọ̀ wọlé. {{message}}",
     "loadVehiclesError": "A kò lè gbé àwọn ọkọ̀ wọlé. {{message}}",
-    "verifiedDealerOwners": "Olùtajà tí a jẹ́rìí sí · onílé {{count}}",
+    "verifiedDealer": "Olùtàjà tí a jẹ́rìí sí",
     "imageViewer": "Ẹ̀rọ ìwo àwòrán ọkọ̀",
     "prevAngle": "Igun tí ó ṣáájú",
     "nextAngle": "Igun tí ó kàn",
@@ -223,7 +231,11 @@
     "notifyMe": "Sọ fún mi",
     "turnOffAlerts": "Pa ìkìlọ̀ kúrò",
     "messageDealer": "Fi iṣẹ́ ránṣẹ́ sí olùtà",
-    "callDealer": "Pe olùtà"
+    "callDealer": "Pe olùtà",
+    "testDriveBooked": "A ti ṣe ìdanwò",
+    "reserved": "A ti fîsílẹ̀",
+    "sold": "A ti tà",
+    "unavailable": "Kò sí"
   },
   "service": {
     "title": "Àtúnṣe",
@@ -381,12 +393,21 @@
     "batteryExpired": "Bátìrì: ìdánilójú parí ní oṣù {{months}}.",
     "adviserConfirms": "Olùdámọ̀ràn àtúnṣe rẹ yóò jẹ́rìí sí àbájáde ìkẹyìn.",
     "loadError": "A kò lè gbé ìdánilójú wọlé. {{message}}",
-    "reviewWithin48": "Ẹgbẹ́ ìdánilójú wa yóò ṣàyẹ̀wò ìbéèrè {{category}} rẹ, wọn yóò sì dáhùn láàárín wákàtí 48."
+    "reviewWithin48": "Ẹgbẹ́ ìdánilójú wa yóò ṣàyẹ̀wò ìbéèrè {{category}} rẹ, wọn yóò sì dáhùn láàárín wákàtí 48.",
+    "describeIssueHint": "O kéré tán àmì {{count}} — kín ni ó ṣẹlẹ, àti ìgbà wo?",
+    "notEligible": "Kò yẹ",
+    "submitClaim": "Fì ẹ̀bẹ̀ ranṣẹ́"
   },
   "bookings": {
     "title": "Ìfiṣọ̀wọ̀",
-    "subtitle": "Àwọn ìdánwò ìwakọ̀ tí o ṣètò",
-    "viewProgress": "Wo ìlọsíwájú"
+    "subtitle": "Ìdanwò āyòkèlè àti ìtójú rẹ",
+    "viewProgress": "Wo ìlọsíwájú",
+    "typeTestDrive": "Ìdanwò Āyòkèlè",
+    "typeService": "Ìtójú Āyòkèlè",
+    "viewDetails": "Wo àlayé",
+    "emptyUpcoming": "Kò sí ìwé ìfọwọsí tó ṣẹẽ bọ̀",
+    "emptyPast": "Kò sí ìwé ìfọwọsí tó ti kọjá",
+    "emptyBody": "Ṣe ìdanwò āyòkèlè láti ọkọ̀ èyíkéyìí, tàbí ṣe ìtójú fún ọkọ̀ tó wà nínú garẹ́jì rẹ."
   },
   "tradeIn": {
     "title": "Ìgbéléwọ̀n ìpààrọ̀",
@@ -401,7 +422,9 @@
     "finalValueNote": "A ó jẹ́rìí sí iye ìkẹyìn lẹ́yìn àyẹ̀wò",
     "addPhotos": "Fi àwòrán ọkọ̀ rẹ kún un",
     "valuationRequested": "A ti béèrè ìgbéléwọ̀n",
-    "specialistConfirms": "Ọ̀jọ̀gbọ́n Elizade yóò jẹ́rìí sí iye ìpààrọ̀ {{make}} {{model}} rẹ lẹ́yìn àyẹ̀wò kíákíá."
+    "specialistConfirms": "Ọ̀jọ̀gbọ́n Elizade yóò jẹ́rìí sí iye ìpààrọ̀ {{make}} {{model}} rẹ lẹ́yìn àyẹ̀wò kíákíá.",
+    "trackedUnderLeads": "O le tọpinsẹ́ ìbéèrè yìí nínú Profaili › Àwọn ìbéèrè mi.",
+    "trackRequest": "Tọpinsẹ́ ìbéèrè yìí"
   },
   "watchlist": {
     "subtitle": "Àwọn àwòṣe tí o ń tọpasẹ̀",

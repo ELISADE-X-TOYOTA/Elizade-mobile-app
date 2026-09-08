@@ -68,6 +68,8 @@
     "otpSubtitle": "Enviamos un código de 6 dígitos a {{target}}",
     "resendCode": "Reenviar código",
     "resendIn": "Reenviar en {{time}}",
+    "codeExpiresIn": "Este código caduca en {{time}}",
+    "codeExpired": "Este código ha caducado. Solicita uno nuevo.",
     "verify": "Verificar",
     "alreadyHaveAccount": "¿Ya tienes una cuenta?",
     "noAccount": "¿No tienes una cuenta?",
@@ -128,9 +130,15 @@
     "serviceHistory": "Historial de servicio",
     "personalDetails": "Datos personales",
     "language": "Idioma",
-    "privacySecurity": "Privacidad y seguridad",
     "helpCenter": "Centro de ayuda",
-    "appearanceNote": "Sigue el tema de tu dispositivo"
+    "appearanceNote": "Sigue el tema de tu dispositivo",
+    "personalDetailsSubtitle": "Actualiza tu nombre, correo y ciudad.",
+    "city": "Ciudad",
+    "saveFailed": "No se pudieron guardar los cambios.",
+    "firstNameRequired": "Introduce tu nombre.",
+    "lastNameRequired": "Introduce tus apellidos.",
+    "emailInvalid": "Introduce un correo válido.",
+    "emailChangeNotice": "Es tu dirección de acceso. Avisaremos a tu dirección anterior y a la nueva cuando cambie."
   },
   "leads": {
     "title": "Mis solicitudes",
@@ -210,7 +218,7 @@
     "loadError": "No se pudo cargar este vehículo",
     "loadCarsError": "No se pudieron cargar los coches. {{message}}",
     "loadVehiclesError": "No se pudieron cargar los vehículos. {{message}}",
-    "verifiedDealerOwners": "Concesionario verificado · {{count}} propietario",
+    "verifiedDealer": "Concesionario verificado",
     "imageViewer": "Visor de imágenes del vehículo",
     "prevAngle": "Ángulo anterior",
     "nextAngle": "Ángulo siguiente",
@@ -223,7 +231,11 @@
     "notifyMe": "Avisarme",
     "turnOffAlerts": "Desactivar avisos",
     "messageDealer": "Enviar mensaje al concesionario",
-    "callDealer": "Llamar al concesionario"
+    "callDealer": "Llamar al concesionario",
+    "testDriveBooked": "Prueba reservada",
+    "reserved": "Reservado",
+    "sold": "Vendido",
+    "unavailable": "No disponible"
   },
   "service": {
     "title": "Servicio",
@@ -381,12 +393,21 @@
     "batteryExpired": "Batería: la cobertura terminó a los {{months}} meses.",
     "adviserConfirms": "Tu asesor de servicio confirma el resultado final.",
     "loadError": "No se pudo cargar la garantía. {{message}}",
-    "reviewWithin48": "Nuestro equipo de garantía revisará tu reclamación de {{category}} y te responderá en 48 horas."
+    "reviewWithin48": "Nuestro equipo de garantía revisará tu reclamación de {{category}} y te responderá en 48 horas.",
+    "describeIssueHint": "Al menos {{count}} caracteres: ¿qué ocurrió y cuándo?",
+    "notEligible": "No elegible",
+    "submitClaim": "Enviar reclamación"
   },
   "bookings": {
     "title": "Reservas",
-    "subtitle": "Tus pruebas de manejo programadas",
-    "viewProgress": "Ver progreso"
+    "subtitle": "Tus pruebas de manejo y mantenimientos",
+    "viewProgress": "Ver progreso",
+    "typeTestDrive": "Prueba de manejo",
+    "typeService": "Mantenimiento",
+    "viewDetails": "Ver detalles",
+    "emptyUpcoming": "No hay reservas próximas",
+    "emptyPast": "No hay reservas anteriores",
+    "emptyBody": "Reserva una prueba de manejo desde cualquier vehículo, o programa un mantenimiento para un coche de tu garaje."
   },
   "tradeIn": {
     "title": "Tasación de entrega a cuenta",
@@ -401,7 +422,9 @@
     "finalValueNote": "Valor final confirmado tras la inspección",
     "addPhotos": "Añade fotos de tu vehículo",
     "valuationRequested": "Tasación solicitada",
-    "specialistConfirms": "Un especialista de Elizade confirmará el valor de entrega de tu {{make}} {{model}} tras una inspección física rápida."
+    "specialistConfirms": "Un especialista de Elizade confirmará el valor de entrega de tu {{make}} {{model}} tras una inspección física rápida.",
+    "trackedUnderLeads": "Puedes seguir esta solicitud en Perfil › Mis oportunidades.",
+    "trackRequest": "Seguir la solicitud"
   },
   "watchlist": {
     "subtitle": "Modelos que sigues",

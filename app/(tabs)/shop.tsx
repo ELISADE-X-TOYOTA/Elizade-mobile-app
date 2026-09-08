@@ -17,6 +17,7 @@ import { CarCardSkeleton } from '../../src/components/Skeleton';
 import { FilterSheet, VehicleFilters } from '../../src/components/FilterSheet';
 import { Txt } from '../../src/components/Txt';
 import { CATEGORY_META, VehicleCategory } from '../../src/domain/types';
+import { availableCategories } from '../../src/domain/categories';
 import { useVehicles } from '../../src/hooks/useVehicles';
 import { useStore } from '../../src/store/useStore';
 import { radius, spacing } from '../../src/theme/spacing';
@@ -24,7 +25,6 @@ import { useTheme } from '../../src/theme/useTheme';
 import { clean } from '../../src/utils/sanitize';
 
 const SCREEN_W = Dimensions.get('window').width;
-const CATEGORIES = Object.keys(CATEGORY_META) as VehicleCategory[];
 
 /** Elizade showroom — browse new Toyota / Jetour / JAC inventory. */
 export default function Shop() {
@@ -51,6 +51,15 @@ export default function Shop() {
 
   const list = useMemo(
     () => (category ? vehicles.filter((v) => v.category === category) : vehicles),
+    [vehicles, category],
+  );
+
+  // Only categories the catalogue can actually satisfy. Offering all seven
+  // meant Truck, Sports, Luxury and Electric always answered "No vehicles
+  // match your search" — the app's `category` is guessed from make and model,
+  // and Elizade sells Toyota passenger cars.
+  const categories = useMemo(
+    () => availableCategories(vehicles, category),
     [vehicles, category],
   );
 
@@ -110,7 +119,7 @@ export default function Shop() {
       <FlatList
         horizontal
         showsHorizontalScrollIndicator={false}
-        data={[null, ...CATEGORIES]}
+        data={[null, ...categories]}
         keyExtractor={(c) => c ?? 'all'}
         contentContainerStyle={{ paddingHorizontal: spacing.screenH, gap: 10, paddingVertical: spacing.md }}
         renderItem={({ item }) => (

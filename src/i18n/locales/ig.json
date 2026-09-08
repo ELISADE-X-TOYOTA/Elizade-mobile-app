@@ -68,6 +68,8 @@
     "otpSubtitle": "Anyị zigaara {{target}} koodu nwere ọnụọgụ isii",
     "resendCode": "Zipu koodu ọzọ",
     "resendIn": "Zipughachi na {{time}}",
+    "codeExpiresIn": "Koodu a ga-agwụ na {{time}}",
+    "codeExpired": "Koodu a agwụla. Rịọ maka ọhụrụ.",
     "verify": "Nyochaa",
     "alreadyHaveAccount": "Ị nwere akaụntụ?",
     "noAccount": "Ị nweghị akaụntụ?",
@@ -128,9 +130,15 @@
     "serviceHistory": "Akụkọ nrụzi",
     "personalDetails": "Nkọwa onwe gị",
     "language": "Asụsụ",
-    "privacySecurity": "Nzuzo na nchekwa",
     "helpCenter": "Ebe enyemaka",
-    "appearanceNote": "Ọ na-eso ụdị ngwaọrụ gị"
+    "appearanceNote": "Ọ na-eso ụdị ngwaọrụ gị",
+    "personalDetailsSubtitle": "Melite aha gị, ozi-e na obodo gị.",
+    "city": "Obodo",
+    "saveFailed": "Enweghị ike ịchekwa mgbanwe gị.",
+    "firstNameRequired": "Biko tinye aha mbụ gị.",
+    "lastNameRequired": "Biko tinye aha ikpeazụ gị.",
+    "emailInvalid": "Tinye adresị ozi-e ziri ezi.",
+    "emailChangeNotice": "Nke a bụ adresị nbanye gị. Anyị ga-adọ adresị ochie na nke ọhụrụ aka na ntị ma ọ gbanwee."
   },
   "leads": {
     "title": "Arịrịọ m",
@@ -210,7 +218,7 @@
     "loadError": "Enweghị ike ibubata ụgbọala a",
     "loadCarsError": "Enweghị ike ibubata ụgbọala. {{message}}",
     "loadVehiclesError": "Enweghị ike ibubata ụgbọala. {{message}}",
-    "verifiedDealerOwners": "Onye na-ere akwadoro · onye nwe {{count}}",
+    "verifiedDealer": "Onye na-ere akwadoro",
     "imageViewer": "Ihe nlele foto ụgbọala",
     "prevAngle": "Akụkụ gara aga",
     "nextAngle": "Akụkụ ọzọ",
@@ -223,7 +231,11 @@
     "notifyMe": "Mee ka m mara",
     "turnOffAlerts": "Gbanyụọ ọkwa",
     "messageDealer": "Zigara onye na-ere ahịa ozi",
-    "callDealer": "Kpọọ onye na-ere ahịa"
+    "callDealer": "Kpọọ onye na-ere ahịa",
+    "testDriveBooked": "Edebela nnwale Ọkwụ",
+    "reserved": "Edobere",
+    "sold": "Erela ya",
+    "unavailable": "Ọ dịghị"
   },
   "service": {
     "title": "Nrụzi",
@@ -381,12 +393,21 @@
     "batteryExpired": "Batrị: mkpuchi kwụsịrị na ọnwa {{months}}.",
     "adviserConfirms": "Onye ndụmọdụ nrụzi gị ga-akwado mkpebi ikpeazụ.",
     "loadError": "Enweghị ike ibubata akwụkwọ nkwa. {{message}}",
-    "reviewWithin48": "Ndị otu akwụkwọ nkwa anyị ga-enyocha arịrịọ {{category}} gị ma zaghachi n'ime awa 48."
+    "reviewWithin48": "Ndị otu akwụkwọ nkwa anyị ga-enyocha arịrịọ {{category}} gị ma zaghachi n'ime awa 48.",
+    "describeIssueHint": "Opụ nta mkpụrụedemede {{count}} — gịnị mere, na mgbe ole?",
+    "notEligible": "Erughị eru",
+    "submitClaim": "Zipụ Nkwupụta"
   },
   "bookings": {
     "title": "Ndebe oche",
-    "subtitle": "Nnwale ịnya ụgbọala i haziri",
-    "viewProgress": "Lee ọganihu"
+    "subtitle": "Nnwale Ọkwụ ụgbọ na ọrụ nlekọta gị",
+    "viewProgress": "Lee ọganihu",
+    "typeTestDrive": "Nnwale Ọkwụ ụgbọ",
+    "typeService": "ọrụ nlekọta",
+    "viewDetails": "Lee nkọwa",
+    "emptyUpcoming": "Enweghị ndebe na-abịa",
+    "emptyPast": "Enweghị ndebe gara aga",
+    "emptyBody": "Debe nnwale Ọkwụ ụgbọ site n'ụgbọ ọ bụla, ma ọ bụ hazie ọrụ nlekọta maka ụgbọ dị na garẹjị gị."
   },
   "tradeIn": {
     "title": "Nleba anya mgbanwe",
@@ -401,7 +422,9 @@
     "finalValueNote": "A ga-akwado uru ikpeazụ mgbe enyochachara ya",
     "addPhotos": "Tinye foto ụgbọala gị",
     "valuationRequested": "Arịọla nleba anya",
-    "specialistConfirms": "Ọkachamara Elizade ga-akwado uru mgbanwe {{make}} {{model}} gị mgbe enyochachara ya ngwa ngwa."
+    "specialistConfirms": "Ọkachamara Elizade ga-akwado uru mgbanwe {{make}} {{model}} gị mgbe enyochachara ya ngwa ngwa.",
+    "trackedUnderLeads": "Ị nwere ike iso arịrịọ a na Profaịl › Arịrịọ m.",
+    "trackRequest": "Soro arịrịọ a"
   },
   "watchlist": {
     "subtitle": "Ụdị ị na-eso",

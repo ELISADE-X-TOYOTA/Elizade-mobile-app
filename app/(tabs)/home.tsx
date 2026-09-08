@@ -13,6 +13,7 @@ import { SectionHeader } from '../../src/components/SectionHeader';
 import { clean } from '../../src/utils/sanitize';
 import { Txt } from '../../src/components/Txt';
 import { CATEGORY_META, Vehicle, VehicleCategory, vehicleTitle } from '../../src/domain/types';
+import { availableCategories } from '../../src/domain/categories';
 import { Avatar } from '../../src/components/Avatar';
 import { DashboardPanel } from '../../src/components/DashboardPanel';
 import { FilterSheet, VehicleFilters } from '../../src/components/FilterSheet';
@@ -28,7 +29,6 @@ import { useTheme } from '../../src/theme/useTheme';
 import { greeting, priceCompact } from '../../src/utils/format';
 import { solid } from '../../src/theme/colors';
 
-const CATEGORIES = Object.keys(CATEGORY_META) as VehicleCategory[];
 
 /** Carousel card width + gap — used by getItemLayout to avoid measuring. */
 const CAROUSEL_W = 280;
@@ -116,6 +116,13 @@ export default function Home() {
   }, [vehicles, category, query]);
 
   /** Only offer filter options the loaded inventory actually contains. */
+  // Only categories the catalogue can actually satisfy — see
+  // `availableCategories`. Four of the seven matched nothing at all.
+  const categories = useMemo(
+    () => availableCategories(vehicles, category),
+    [vehicles, category],
+  );
+
   const fuelTypes = useMemo(
     () => [...new Set(vehicles.map((v) => v.fuelType).filter(Boolean))].sort(),
     [vehicles],
@@ -228,7 +235,7 @@ export default function Home() {
           contentContainerStyle={{ paddingHorizontal: spacing.screenH, gap: 10, paddingVertical: spacing.lg }}
         >
           <Chip label={tr('common.all')} icon="grid" active={category === null} onPress={() => setCategory(null)} />
-          {CATEGORIES.map((c) => (
+          {categories.map((c) => (
             <Chip
               key={c}
               label={CATEGORY_META[c].label}
