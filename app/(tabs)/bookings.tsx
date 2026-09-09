@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
-import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Skeleton } from '../../src/components/Skeleton';
@@ -9,6 +9,7 @@ import { Txt } from '../../src/components/Txt';
 import { BookingItem, BookingKind, selectBookings } from '../../src/domain/bookings';
 import { Tone } from '../../src/domain/types';
 import { useAppointments } from '../../src/hooks/useService';
+import { cancelTestDrive } from '../../src/data/salesRepository';
 import { useTestDrives } from '../../src/hooks/useTestDrives';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
@@ -102,6 +103,41 @@ export default function Bookings() {
   };
 
   /*
+    Confirm before cancelling, and only ever from an explicit tap.
+
+    Cancelling frees the slot at the branch and cannot be undone from here —
+    a booking cancelled by a misplaced thumb is worse than one that took two
+    taps.
+  */
+  const confirmCancel = useCallback(
+    (item: BookingItem) => {
+      Alert.alert(
+        tr('bookings.cancelBooking'),
+        tr('bookings.cancelConfirm', { title: item.title }),
+        [
+          { text: tr('common.back'), style: 'cancel' },
+          {
+            text: tr('bookings.cancelBooking'),
+            style: 'destructive',
+            onPress: async () => {
+              try {
+                await cancelTestDrive(item.sourceId);
+                reload();
+              } catch (e) {
+                Alert.alert(
+                  tr('bookings.cancelBooking'),
+                  e instanceof Error ? e.message : tr('bookings.cancelFailed'),
+                );
+              }
+            },
+          },
+        ],
+      );
+    },
+    [tr, reload],
+  );
+
+  /*
     Each source is reported separately and BY NAME.
 
     Either endpoint can fail on its own, and the other list still renders. A
@@ -166,7 +202,17 @@ export default function Bookings() {
           />
         ) : (
           filtered.map((item) => (
-            <BookingCard key={item.key} item={item} statusColor={toneColor(item.tone)} />
+            <BookingCard
+              key={item.key}
+              item={item}
+              statusColor={toneColor(item.tone)}
+              // Only a test drive that is still ahead of you. Service
+              // appointments have their own cancel on the detail screen, and a
+              // finished booking has nothing to call off.
+              onCancel={
+                item.kind === 'testDrive' && item.upcoming ? () => confirmCancel(item) : undefined
+              }
+            />
           ))
         )}
       </ScrollView>
@@ -174,7 +220,15 @@ export default function Bookings() {
   );
 }
 
-function BookingCard({ item, statusColor }: { item: BookingItem; statusColor: string }) {
+function BookingCard({
+  item,
+  statusColor,
+  onCancel,
+}: {
+  item: BookingItem;
+  statusColor: string;
+  onCancel?: () => void;
+}) {
   const t = useTheme();
   const { t: tr } = useTranslation();
   const when = new Date(item.scheduledAt);
@@ -236,6 +290,31 @@ function BookingCard({ item, statusColor }: { item: BookingItem; statusColor: st
           </>
         ) : null}
       </View>
+      {/*
+        CANCELLING WAS IMPOSSIBLE. Service appointments have had cancel and
+        reschedule since they were built; test drives had neither, so someone
+        who could no longer make it had no way to say so and the branch went
+        on holding the slot. The endpoint exists now, and this is how a
+        customer reaches it.
+
+        Rendered inside the card but OUTSIDE the pressable wrapper below, so
+        cancelling cannot be triggered by a stray tap meant to open the
+        booking.
+      */}
+      {onCancel ? (
+        <Pressable
+          onPress={onCancel}
+          accessibilityRole="button"
+          accessibilityLabel={`${tr('bookings.cancelBooking')} — ${item.title}`}
+          hitSlop={6}
+          style={({ pressed }) => [styles.cancelRow, { opacity: pressed ? 0.6 : 1 }]}
+        >
+          <Ionicons name="close-circle-outline" size={15} color={t.colors.errorText} />
+          <Txt variant="labelSmall" color={t.colors.errorText} style={{ marginLeft: 5 }}>
+            {tr('bookings.cancelBooking')}
+          </Txt>
+        </Pressable>
+      ) : null}
     </View>
   );
 
@@ -282,6 +361,7 @@ const styles = StyleSheet.create({
   kindRow: { flexDirection: 'row', alignItems: 'center', marginTop: 3 },
   kindChip: { paddingHorizontal: 7, paddingVertical: 2, borderRadius: radius.pill },
   badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: radius.pill },
+  cancelRow: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', marginTop: 10 },
   metaRow: { flexDirection: 'row', alignItems: 'center', marginTop: 12, paddingTop: 12, borderTopWidth: StyleSheet.hairlineWidth },
   emptyIcon: { width: 72, height: 72, borderRadius: 36, alignItems: 'center', justifyContent: 'center' },
   browseBtn: { paddingHorizontal: 20, height: 44, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },

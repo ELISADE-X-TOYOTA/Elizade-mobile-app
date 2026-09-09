@@ -367,7 +367,9 @@
     "vinPlaceholder": "misali JTMBBREV50D123456",
     "notFound": "Ba a sami motar ba",
     "warrantyActive": "Waranti yana aiki",
-    "noServiceRecords": "Babu tarihin gyara tukuna."
+    "noServiceRecords": "Babu tarihin gyara tukuna.",
+    "emptyTitle": "Babu motoci tukuna",
+    "emptyBody": "Ṡara motarka da lambar VIN don bin gyara, garanti da kira."
   },
   "warranty": {
     "title": "Waranti da kiran gyara",
@@ -407,7 +409,10 @@
     "viewDetails": "Duba cikakken bayani",
     "emptyUpcoming": "Babu ajiye mai zuwa",
     "emptyPast": "Babu ajiye da ya wuce",
-    "emptyBody": "Ka yi ajiyen gwajin tuki daga kowace mota, ko ka tsara gyara don mota da ke gareji naka."
+    "emptyBody": "Ka yi ajiyen gwajin tuki daga kowace mota, ko ka tsara gyara don mota da ke gareji naka.",
+    "cancelBooking": "Soke ajiye",
+    "cancelConfirm": "Soke gwajin tuki na {{title}}? Reshen zai saki lokacin.",
+    "cancelFailed": "An kasa soke wannan ajiye."
   },
   "tradeIn": {
     "title": "Kimanta musanya",
@@ -451,7 +456,7 @@
     "title": "Nemi farashi",
     "pickupShowroom": "Wurin ɗaukar mota",
     "addOns": "Ƙarin abubuwa na zaɓi",
-    "willBeSent": "Za a aika farashi na hukuma don {{vehicle}} zuwa imel ɗin ka kuma ya bayyana a Taimako nan ba da jimawa ba."
+    "willBeSent": "Farashin {{vehicle}} yana kan hanya ta imel. Za ka iya binsa a Bayani › Bukatuna."
   },
   "testDrive": {
     "booked": "An yi rijistar gwajin tuƙi!",

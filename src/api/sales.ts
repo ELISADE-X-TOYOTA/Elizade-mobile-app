@@ -38,6 +38,9 @@ export interface TradeInBody {
 
 export const salesApi = {
   listTestDrives: () => apiFetch<TestDriveDto[]>('/sales/test-drives'),
+  /** Call off a booking. The branch stops holding the slot. */
+  cancelTestDrive: (bookingId: string) =>
+    apiFetch<TestDriveDto>(`/sales/test-drives/${bookingId}/cancel`, { method: 'POST' }),
   bookTestDrive: (body: TestDriveBody) =>
     apiFetch<TestDriveDto>('/sales/test-drives', { method: 'POST', body }),
 

@@ -367,7 +367,9 @@
     "vinPlaceholder": "ex. JTMBBREV50D123456",
     "notFound": "Véhicule introuvable",
     "warrantyActive": "Garantie active",
-    "noServiceRecords": "Aucun entretien enregistré."
+    "noServiceRecords": "Aucun entretien enregistré.",
+    "emptyTitle": "Aucun véhicule",
+    "emptyBody": "Ajoutez une voiture avec son VIN pour suivre l'entretien, la garantie et les rappels."
   },
   "warranty": {
     "title": "Garantie et rappels",
@@ -407,7 +409,10 @@
     "viewDetails": "Voir les détails",
     "emptyUpcoming": "Aucune réservation à venir",
     "emptyPast": "Aucune réservation passée",
-    "emptyBody": "Réservez un essai routier depuis n'importe quel véhicule, ou planifiez un entretien pour une voiture de votre garage."
+    "emptyBody": "Réservez un essai routier depuis n'importe quel véhicule, ou planifiez un entretien pour une voiture de votre garage.",
+    "cancelBooking": "Annuler la réservation",
+    "cancelConfirm": "Annuler votre essai du {{title}} ? La succursale libérera le créneau.",
+    "cancelFailed": "Impossible d'annuler cette réservation."
   },
   "tradeIn": {
     "title": "Estimation de reprise",
@@ -451,7 +456,7 @@
     "title": "Demander un devis",
     "pickupShowroom": "Showroom de retrait",
     "addOns": "Options supplémentaires",
-    "willBeSent": "Un devis officiel pour votre {{vehicle}} sera envoyé par e-mail et apparaîtra dans Assistance sous peu."
+    "willBeSent": "Votre devis pour le {{vehicle}} arrive par e-mail. Suivez-le dans Profil › Mes pistes."
   },
   "testDrive": {
     "booked": "Essai réservé !",

@@ -367,7 +367,9 @@
     "vinPlaceholder": "p. ej. JTMBBREV50D123456",
     "notFound": "Vehículo no encontrado",
     "warrantyActive": "Garantía activa",
-    "noServiceRecords": "Aún no hay registros de servicio."
+    "noServiceRecords": "Aún no hay registros de servicio.",
+    "emptyTitle": "Aún no hay vehículos",
+    "emptyBody": "Añade un coche con su VIN para seguir mantenimiento, garantía y llamadas a revisión."
   },
   "warranty": {
     "title": "Garantía y llamadas a revisión",
@@ -407,7 +409,10 @@
     "viewDetails": "Ver detalles",
     "emptyUpcoming": "No hay reservas próximas",
     "emptyPast": "No hay reservas anteriores",
-    "emptyBody": "Reserva una prueba de manejo desde cualquier vehículo, o programa un mantenimiento para un coche de tu garaje."
+    "emptyBody": "Reserva una prueba de manejo desde cualquier vehículo, o programa un mantenimiento para un coche de tu garaje.",
+    "cancelBooking": "Cancelar reserva",
+    "cancelConfirm": "¿Cancelar tu prueba del {{title}}? La sucursal liberará el turno.",
+    "cancelFailed": "No se pudo cancelar esta reserva."
   },
   "tradeIn": {
     "title": "Tasación de entrega a cuenta",
@@ -451,7 +456,7 @@
     "title": "Solicitar una cotización",
     "pickupShowroom": "Showroom de recogida",
     "addOns": "Extras opcionales",
-    "willBeSent": "Se enviará una cotización formal de tu {{vehicle}} a tu correo y aparecerá en Soporte en breve."
+    "willBeSent": "Tu cotización para el {{vehicle}} va por correo. Puedes seguirla en Perfil › Mis oportunidades."
   },
   "testDrive": {
     "booked": "¡Prueba de manejo reservada!",
