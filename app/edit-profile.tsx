@@ -12,7 +12,8 @@ import { profileApi } from '../src/api/profile';
 import { useStore } from '../src/store/useStore';
 import { radius, spacing } from '../src/theme/spacing';
 import { useTheme } from '../src/theme/useTheme';
-import { clean, cleanEmail, cleanName, isValidEmail } from '../src/utils/sanitize';
+import { clean, cleanName } from '../src/utils/sanitize';
+import { APP } from '../src/constants/app';
 
 /**
  * Editing your own details.
@@ -35,19 +36,27 @@ export default function EditProfile() {
 
   const [firstName, setFirstName] = useState(currentUser?.firstName ?? '');
   const [lastName, setLastName] = useState(currentUser?.lastName ?? '');
-  const [email, setEmail] = useState(currentUser?.email ?? '');
   const [city, setCity] = useState(currentUser?.city ?? '');
+  /*
+    THE EMAIL IS READ-ONLY, and the API refuses to change it too.
+
+    This address is the sign-in credential — the code goes to it, so whoever
+    controls it controls the account. Editable from an ordinary session, a
+    borrowed or hijacked phone could transfer the account outright, and the
+    real owner would learn about it from an alert sent to a mailbox they no
+    longer read.
+
+    Shown rather than hidden: people need to check which address they signed up
+    with, and a missing field invites a support ticket asking where it went.
+  */
+  const email = currentUser?.email ?? '';
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string>();
   const [saved, setSaved] = useState(false);
 
-  const emailChanged = email.trim().toLowerCase() !== (currentUser?.email ?? '').toLowerCase();
-
   const save = async () => {
     if (!firstName.trim()) return setError(tr('profile.firstNameRequired'));
     if (!lastName.trim()) return setError(tr('profile.lastNameRequired'));
-    if (!isValidEmail(email)) return setError(tr('profile.emailInvalid'));
-
     setSaving(true);
     setError(undefined);
     try {
@@ -58,7 +67,6 @@ export default function EditProfile() {
       const body: Record<string, string> = {};
       if (firstName.trim() !== currentUser?.firstName) body.firstName = cleanName(firstName);
       if (lastName.trim() !== currentUser?.lastName) body.lastName = cleanName(lastName);
-      if (emailChanged) body.email = email.trim();
       if (city.trim() !== (currentUser?.city ?? '')) body.city = clean(city, 100);
 
       if (Object.keys(body).length === 0) {
@@ -120,11 +128,16 @@ export default function EditProfile() {
             label={tr('auth.email')}
             icon="mail-outline"
             value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
+            onChangeText={() => {}}
+            editable={false}
             autoCapitalize="none"
-            maxLength={255}
           />
+          <View style={[styles.locked, { backgroundColor: t.colors.surfaceAlt, borderColor: t.colors.border }]}>
+            <Ionicons name="lock-closed" size={16} color={t.colors.textTertiary} />
+            <Txt variant="bodySmall" tone="tertiary" style={{ flex: 1, marginLeft: 8 }}>
+              {tr('profile.emailLocked', { support: APP.supportEmail })}
+            </Txt>
+          </View>
           <AppTextField
             label={tr('profile.city')}
             icon="location-outline"
@@ -134,21 +147,6 @@ export default function EditProfile() {
             autoCapitalize="words"
           />
         </View>
-
-        {/*
-          Said BEFORE the change, not after. Your email address is your sign-in
-          credential here, so moving it is not the same kind of edit as
-          correcting a city — the customer should know that before they save,
-          not discover it from the alert that lands afterwards.
-        */}
-        {emailChanged ? (
-          <View style={[styles.notice, { backgroundColor: t.colors.surfaceAlt, borderColor: t.colors.border }]}>
-            <Ionicons name="information-circle" size={20} color={t.colors.primary} />
-            <Txt variant="bodySmall" tone="secondary" style={{ flex: 1, marginLeft: 10 }}>
-              {tr('profile.emailChangeNotice')}
-            </Txt>
-          </View>
-        ) : null}
 
         {error ? (
           <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: spacing.md }}>
@@ -170,6 +168,14 @@ export default function EditProfile() {
 
 const styles = StyleSheet.create({
   backBtn: { width: 42, height: 42, borderRadius: 21, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  locked: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    marginTop: -spacing.sm,
+  },
   notice: {
     flexDirection: 'row',
     alignItems: 'center',

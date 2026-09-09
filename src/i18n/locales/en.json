@@ -138,7 +138,9 @@
     "firstNameRequired": "Please enter your first name.",
     "lastNameRequired": "Please enter your last name.",
     "emailInvalid": "Enter a valid email address.",
-    "emailChangeNotice": "This is your sign-in address. We'll alert both your old and new address when it changes."
+    "emailChangeNotice": "This is your sign-in address. We'll alert both your old and new address when it changes.",
+    "privacySecurity": "Privacy & Security",
+    "emailLocked": "Your sign-in email can only be changed by us. Contact {{support}} and we'll verify it with you."
   },
   "leads": {
     "title": "My Leads",
@@ -504,5 +506,22 @@
     "uploadFailed": "Could not upload that document.",
     "notFound": "We couldn't find that request.",
     "loadError": "Could not load that request."
+  },
+  "privacy": {
+    "subtitle": "How your account is protected, and what you can control.",
+    "howYouSignIn": "How you sign in",
+    "signInFact": "You sign in with a one-time code sent to your email. There is no password to lose.",
+    "emailLockedFact": "Your registered email is locked. Only we can change it, after verifying your identity.",
+    "alertsFact": "You are alerted at both addresses if your email is ever changed.",
+    "yourDevices": "Your devices",
+    "signOutAll": "Sign out on all devices",
+    "signOutAllDetail": "Ends every session, not just this one.",
+    "signOutAllConfirm": "This signs you out everywhere, including this device. You'll need a new code to sign back in.",
+    "signOutAllFailed": "Couldn't sign out. Please try again.",
+    "yourData": "Your data",
+    "privacyPolicy": "Privacy policy",
+    "requestYourData": "Request a copy of your data",
+    "deleteAccount": "Delete my account",
+    "deleteAccountDetail": "We'll confirm with you by email first."
   }
 }

@@ -184,16 +184,16 @@ export default function Profile() {
 
         <Group title={t('profile.groupSupport')}>
           {/*
-            "Privacy & Security" IS GONE, and that is the honest fix.
-
-            It had no handler and no screen, and there is nothing behind it to
-            open: the biometric gate was deliberately removed, there is no
-            account-deletion endpoint, and notification preferences already
-            have their own row above. A menu item that opens an empty page is
-            not an improvement on one that does nothing — it is the same lie
-            with more steps. It comes back when there is something real to put
-            in it.
+            BACK, with something behind it. It was removed when it had no
+            handler and no screen — a menu item opening an empty page is the
+            same dead end with an extra tap. Everything on it now does
+            something that already exists.
           */}
+          <Row
+            icon="shield-checkmark-outline"
+            label={t('profile.privacySecurity')}
+            onPress={() => router.push('/privacy-security')}
+          />
           <Row
             icon="help-circle-outline"
             label={t('profile.helpCenter')}

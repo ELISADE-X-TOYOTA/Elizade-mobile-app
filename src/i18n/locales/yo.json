@@ -138,7 +138,9 @@
     "firstNameRequired": "Jọwọ tẹ orúkọ àkọ́kọ́ rẹ.",
     "lastNameRequired": "Jọwọ tẹ orúkọ ìdílẹ̀ rẹ.",
     "emailInvalid": "Tẹ àdírẹ́sì íméìlì tó tọ́.",
-    "emailChangeNotice": "Èyí ni àdírẹ́sì ìwọlé rẹ. A ó ṣe ìkilọ̀ fún àdírẹ́sì atì jò àti tí tuntun."
+    "emailChangeNotice": "Èyí ni àdírẹ́sì ìwọlé rẹ. A ó ṣe ìkilọ̀ fún àdírẹ́sì atì jò àti tí tuntun.",
+    "privacySecurity": "Aṣírì àti Ààbò",
+    "emailLocked": "Àwa nikan ni a le yi íméìlì ìwọlé rẹ pada. Kan si {{support}}."
   },
   "leads": {
     "title": "Àwọn ìbéèrè mi",
@@ -504,5 +506,22 @@
     "uploadFailed": "A kò lè gbé ìwé yẹn sókè.",
     "notFound": "A kò rí ìbéèrè náà.",
     "loadError": "A kò lè gbé ìbéèrè náà wọlé."
+  },
+  "privacy": {
+    "subtitle": "Bí a ṣe ń dáàbò bo àkántì rẹ, àti ohun tí o lè ṣàkóso.",
+    "howYouSignIn": "Bí o ṣe ń wọlé",
+    "signInFact": "O ń wọlé pẹ̀lú kóòdù ìgbà kan tí a fi ránṣẹ́ sí ímeèlì rẹ. Kò sí ọ̀rọ̀ ìpamọ́ láti sọnù.",
+    "emailLockedFact": "Ímeèlì rẹ tí a forúkọsílẹ̀ ti tì. Àwa nìkan ni a lè yí i padà lẹ́yìn tí a bá jẹ́rìí rẹ.",
+    "alertsFact": "A ó ṣe ìkìlọ̀ fún àdírẹ́sì méjèèjì tí ímeèlì rẹ bá yípadà.",
+    "yourDevices": "Àwọn ẹrọ rẹ",
+    "signOutAll": "Jáde nínú gbogbo ẹrọ",
+    "signOutAllDetail": "Ó parí gbogbo ìjókòó, kì í ṣe èyí nìkan.",
+    "signOutAllConfirm": "A ó mú ọ jáde níbigbogbo, pẹ̀lú ẹrọ yìí. Wàá nílò kóòdù tuntun.",
+    "signOutAllFailed": "Kò lè jáde. Gbìyànjú lẹ́ẹ̀kansí.",
+    "yourData": "Dátà rẹ",
+    "privacyPolicy": "Ìlànà àṣírí",
+    "requestYourData": "Béèrè ẹ̀dà dátà rẹ",
+    "deleteAccount": "Pa àkántì mi rẹ́",
+    "deleteAccountDetail": "A ó jẹ́rìí pẹ̀lú rẹ nínú ímeèlì náà kọ́kọ́."
   }
 }
