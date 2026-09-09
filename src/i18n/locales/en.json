@@ -367,7 +367,9 @@
     "vinPlaceholder": "e.g. JTMBBREV50D123456",
     "notFound": "Vehicle not found",
     "warrantyActive": "Warranty active",
-    "noServiceRecords": "No service records yet."
+    "noServiceRecords": "No service records yet.",
+    "emptyTitle": "No vehicles yet",
+    "emptyBody": "Add a car you own with its VIN to track service, warranty and recalls."
   },
   "warranty": {
     "title": "Warranty & Recalls",
@@ -407,7 +409,10 @@
     "viewDetails": "View details",
     "emptyUpcoming": "No upcoming bookings",
     "emptyPast": "No past bookings",
-    "emptyBody": "Book a test drive from any vehicle, or schedule a service for a car in your garage."
+    "emptyBody": "Book a test drive from any vehicle, or schedule a service for a car in your garage.",
+    "cancelBooking": "Cancel booking",
+    "cancelConfirm": "Cancel your test drive of the {{title}}? The branch will release the slot.",
+    "cancelFailed": "Could not cancel this booking."
   },
   "tradeIn": {
     "title": "Trade-in Valuation",
@@ -451,7 +456,7 @@
     "title": "Request a Quote",
     "pickupShowroom": "Pickup showroom",
     "addOns": "Optional add-ons",
-    "willBeSent": "A formal quotation for your {{vehicle}} will be sent to your email and appear in Support shortly."
+    "willBeSent": "Your quotation for the {{vehicle}} is on its way by email. You can follow it under Profile › My Leads."
   },
   "testDrive": {
     "booked": "Test Drive Booked!",

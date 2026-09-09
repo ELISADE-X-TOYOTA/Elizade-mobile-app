@@ -275,6 +275,36 @@ console.log('\nthe live test drive on one vehicle');
   check('no bookings at all', activeTestDriveFor([], 'v1') === null);
 }
 
+// ── Cancelling acts on the booking, not the lead ─────────────────────
+console.log('\nthe booking id is kept separate from the lead id');
+{
+  // A test drive OPENS its lead but CANCELS the booking. Conflating the two
+  // sends a cancel to the wrong resource — and both are UUIDs, so nothing
+  // would fail loudly; it would 404, or worse, hit an unrelated record.
+  const item = fromTestDrive(drive({ id: 'booking-1', leadId: 'lead-1' }));
+  check('sourceId is the booking', item.sourceId === 'booking-1', item.sourceId);
+  check('targetId is the lead', item.targetId === 'lead-1', item.targetId);
+  check('they are not the same value', item.sourceId !== item.targetId);
+}
+{
+  // A booking with no lead still has to be cancellable.
+  const item = fromTestDrive(drive({ id: 'booking-2', leadId: null }));
+  check('sourceId survives a missing lead', item.sourceId === 'booking-2', item.sourceId);
+  check('targetId is null', item.targetId === null);
+}
+{
+  const item = fromAppointment(appt({ id: 'appt-9' }));
+  check('a service carries its own id too', item.sourceId === 'appt-9', item.sourceId);
+}
+{
+  const items = selectBookings([drive({ id: 'shared' })], [appt({ id: 'shared' })], true);
+  check(
+    'sourceId is the raw id, unprefixed, even when the two collide',
+    items.every((i) => i.sourceId === 'shared'),
+    items.map((i) => i.sourceId).join(','),
+  );
+}
+
 console.log('\nempty and one-sided inputs');
 {
   check('nothing booked', selectBookings([], [], true).length === 0);

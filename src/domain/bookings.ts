@@ -59,6 +59,15 @@ export interface BookingItem {
   upcoming: boolean;
   /** Lead id for a test drive, appointment id for a service. `null` = nothing to open. */
   targetId: string | null;
+  /**
+   * The BOOKING's own id, which is not the same thing as `targetId`.
+   *
+   * A test drive opens its LEAD, so `targetId` is the lead id — but cancelling
+   * acts on the booking. Keeping both means neither has to be reconstructed
+   * from the other, which is the kind of shortcut that works until an id
+   * format changes.
+   */
+  sourceId: string;
 }
 
 export function fromTestDrive(booking: TestDriveBooking): BookingItem {
@@ -68,6 +77,7 @@ export function fromTestDrive(booking: TestDriveBooking): BookingItem {
     // they differ; an unprefixed key would let one row silently replace
     // another in the list.
     key: `test-drive-${booking.id}`,
+    sourceId: booking.id,
     kind: 'testDrive',
     title: booking.vehicleLabel,
     branchName: booking.branchName,
@@ -94,6 +104,7 @@ export function fromAppointment(appointment: ServiceAppointment): BookingItem {
   const meta = APPOINTMENT_STATUS_META[appointment.status];
   return {
     key: `service-${appointment.id}`,
+    sourceId: appointment.id,
     kind: 'service',
     title: appointment.vehicleTitle,
     branchName: appointment.branchName,

@@ -367,7 +367,9 @@
     "vinPlaceholder": "dịka JTMBBREV50D123456",
     "notFound": "Achọtaghị ụgbọala",
     "warrantyActive": "Akwụkwọ nkwa na-arụ ọrụ",
-    "noServiceRecords": "Enwebeghị ndekọ nrụzi."
+    "noServiceRecords": "Enwebeghị ndekọ nrụzi.",
+    "emptyTitle": "Enweghị ụgbọ ma",
+    "emptyBody": "Tinye ụgbọ gị na VIN ya iji soro ọrụ nlekọta, akwakwa na ọkụ nlaghachi."
   },
   "warranty": {
     "title": "Akwụkwọ nkwa na ịkpọghachi",
@@ -407,7 +409,10 @@
     "viewDetails": "Lee nkọwa",
     "emptyUpcoming": "Enweghị ndebe na-abịa",
     "emptyPast": "Enweghị ndebe gara aga",
-    "emptyBody": "Debe nnwale Ọkwụ ụgbọ site n'ụgbọ ọ bụla, ma ọ bụ hazie ọrụ nlekọta maka ụgbọ dị na garẹjị gị."
+    "emptyBody": "Debe nnwale Ọkwụ ụgbọ site n'ụgbọ ọ bụla, ma ọ bụ hazie ọrụ nlekọta maka ụgbọ dị na garẹjị gị.",
+    "cancelBooking": "Kagbuo ndebe",
+    "cancelConfirm": "Kagbuo nnwale Ọkwụ {{title}} gị? Alaka ahụ ga-ahapụ oge ahụ.",
+    "cancelFailed": "Enweghị ike ịkagbu ndebe a."
   },
   "tradeIn": {
     "title": "Nleba anya mgbanwe",
@@ -451,7 +456,7 @@
     "title": "Rịọ ọnụahịa",
     "pickupShowroom": "Ụlọ ngosi mbubata",
     "addOns": "Ihe mgbakwunye nhọrọ",
-    "willBeSent": "A ga-eziga ọnụahịa gọọmenti maka {{vehicle}} gị na ozi-e gị, ọ ga-apụtakwa na Nkwado n'oge na-adịghị anya."
+    "willBeSent": "Ọnụ ahịa {{vehicle}} na-abịa site na ozi-e. Ị nwere ike iso ya na Profaịl › Arịrịọ m."
   },
   "testDrive": {
     "booked": "Edebela nnwale ịnya ụgbọala!",

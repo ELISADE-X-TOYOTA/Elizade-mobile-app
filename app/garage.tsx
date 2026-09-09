@@ -36,6 +36,28 @@ export default function Garage() {
       <ScrollView contentContainerStyle={{ padding: spacing.screenH, paddingTop: spacing.sm, paddingBottom: 40, gap: 14 }} showsVerticalScrollIndicator={false}>
         {loading ? (
           [0, 1].map((i) => <Skeleton key={i} height={150} radius={radius.xl} />)
+        ) : vehicles.length === 0 ? (
+          /*
+            AN EMPTY GARAGE SAID NOTHING AT ALL.
+
+            With no vehicles the list simply rendered nothing, leaving the
+            "Add vehicle" card floating under a heading — which reads as a
+            screen that failed to load rather than one with nothing in it yet.
+            QA reported "My Vehicles" showing an empty-search message; that
+            exact string is not on this screen, but a silent blank is the same
+            complaint, and silence is the part worth fixing either way.
+          */
+          <View style={{ alignItems: 'center', paddingTop: spacing.xl, paddingBottom: spacing.md }}>
+            <View style={[styles.emptyIcon, { backgroundColor: t.colors.surfaceAlt }]}>
+              <Ionicons name="car-outline" size={34} color={t.colors.textTertiary} />
+            </View>
+            <Txt variant="titleLarge" center style={{ marginTop: spacing.md }}>
+              {tr('garage.emptyTitle')}
+            </Txt>
+            <Txt tone="secondary" center style={{ marginTop: spacing.sm }}>
+              {tr('garage.emptyBody')}
+            </Txt>
+          </View>
         ) : (
           vehicles.map((v) => <VehicleCard key={v.id} vehicle={v} />)
         )}
@@ -177,6 +199,7 @@ function AddVehicleModal({ visible, onClose, onAdded }: { visible: boolean; onCl
 }
 
 const styles = StyleSheet.create({
+  emptyIcon: { width: 72, height: 72, borderRadius: 36, alignItems: 'center', justifyContent: 'center' },
   backBtn: { width: 42, height: 42, borderRadius: 21, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   card: { borderRadius: radius.xl, borderWidth: 1, overflow: 'hidden' },
   reg: { position: 'absolute', top: 12, left: 12, paddingHorizontal: 10, paddingVertical: 5, borderRadius: radius.pill },

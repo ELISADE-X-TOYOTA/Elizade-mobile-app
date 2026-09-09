@@ -22,6 +22,7 @@ import { migrateLegacyToken } from '../src/api/session';
 import { restoreLanguage } from '../src/i18n';
 import { ErrorBoundary } from '../src/components/ErrorBoundary';
 import { SessionTimeoutWatcher } from '../src/components/SessionTimeoutWatcher';
+import { installApiErrorReporter } from '../src/api/errorReporter';
 import { CompareTray } from '../src/components/CompareTray';
 import { PatternBackground } from '../src/components/PatternBackground';
 import { useStore } from '../src/store/useStore';
@@ -33,6 +34,16 @@ SplashScreen.preventAutoHideAsync().catch(() => {});
 // launch never flashes white. Once mounted, the effect below hands this over to
 // the active theme.
 SystemUI.setBackgroundColorAsync('#000000').catch(() => {});
+
+/*
+  Installed once, at module load, BEFORE any screen can make a request.
+
+  `setApiErrorReporter` has been in the API client from the start, its comment
+  said this file registers the real reporter, and nothing ever did — so every
+  client-side failure was shown to the customer and thrown away. That is why a
+  reported outage across the warranty screens could not be explained afterwards.
+*/
+installApiErrorReporter();
 
 export default function RootLayout() {
   const t = useTheme();

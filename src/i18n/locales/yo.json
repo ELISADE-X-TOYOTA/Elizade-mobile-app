@@ -367,7 +367,9 @@
     "vinPlaceholder": "àpẹẹrẹ JTMBBREV50D123456",
     "notFound": "A kò rí ọkọ̀ náà",
     "warrantyActive": "Ìdánilójú ṣì wà",
-    "noServiceRecords": "Kò sí àkọsílẹ̀ àtúnṣe síbẹ̀."
+    "noServiceRecords": "Kò sí àkọsílẹ̀ àtúnṣe síbẹ̀.",
+    "emptyTitle": "Kò sí ọkọ̀ síbẹ̀",
+    "emptyBody": "Fú́n ọkọ̀ rẹ kún pẹ̀lú VIN rẹ̀ láti tọpinsẹ́ ìtójú, ìdáṣẹ àti ìpè."
   },
   "warranty": {
     "title": "Ìdánilójú àti ìpè padà",
@@ -407,7 +409,10 @@
     "viewDetails": "Wo àlayé",
     "emptyUpcoming": "Kò sí ìwé ìfọwọsí tó ṣẹẽ bọ̀",
     "emptyPast": "Kò sí ìwé ìfọwọsí tó ti kọjá",
-    "emptyBody": "Ṣe ìdanwò āyòkèlè láti ọkọ̀ èyíkéyìí, tàbí ṣe ìtójú fún ọkọ̀ tó wà nínú garẹ́jì rẹ."
+    "emptyBody": "Ṣe ìdanwò āyòkèlè láti ọkọ̀ èyíkéyìí, tàbí ṣe ìtójú fún ọkọ̀ tó wà nínú garẹ́jì rẹ.",
+    "cancelBooking": "Fagilé ìwé ìfọwọsí",
+    "cancelConfirm": "Fagilé ìdanwò {{title}} rẹ? Ọfììsì yóò tú àkókò nàà silẹ̀.",
+    "cancelFailed": "Kò lè fagilé ìwé ìfọwọsí yìí."
   },
   "tradeIn": {
     "title": "Ìgbéléwọ̀n ìpààrọ̀",
@@ -451,7 +456,7 @@
     "title": "Béèrè iye owó",
     "pickupShowroom": "Ibi gbígbé ọkọ̀",
     "addOns": "Àfikún tí kì í ṣe dandan",
-    "willBeSent": "A ó fi iye owó ìṣèdéédé fún {{vehicle}} rẹ ránṣẹ́ sí ímeèlì rẹ, yóò sì hàn nínú Ìrànlọ́wọ́ láìpẹ́."
+    "willBeSent": "Ìhìrè owo fún {{vehicle}} ṣì lọ̀ nínú íméìlì. O le tọpinsẹ́ rẹ̀ nínú Profaili › Àwọn ìbéèrè mi."
   },
   "testDrive": {
     "booked": "A ti ṣètò ìdánwò ìwakọ̀!",

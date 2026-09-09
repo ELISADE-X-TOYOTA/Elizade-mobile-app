@@ -74,6 +74,21 @@ export async function listTestDrives(): Promise<TestDriveBooking[]> {
   return rows.map(mapTestDrive);
 }
 
+/**
+ * Call off a test drive.
+ *
+ * Service appointments have had cancel and reschedule since they were built;
+ * test drives had neither, so a customer who could no longer make it had no
+ * way to say so and the branch went on holding the slot.
+ */
+export async function cancelTestDrive(bookingId: string): Promise<TestDriveBooking> {
+  if (APP.useMock) {
+    await delay(400);
+    throw new Error('Cancelling is not available in the offline demo.');
+  }
+  return mapTestDrive(await salesApi.cancelTestDrive(bookingId));
+}
+
 export async function reserveVehicle(body: ReservationBody): Promise<{ reference: string }> {
   if (APP.useMock) {
     await delay(700);
