@@ -138,7 +138,9 @@
     "firstNameRequired": "Introduce tu nombre.",
     "lastNameRequired": "Introduce tus apellidos.",
     "emailInvalid": "Introduce un correo válido.",
-    "emailChangeNotice": "Es tu dirección de acceso. Avisaremos a tu dirección anterior y a la nueva cuando cambie."
+    "emailChangeNotice": "Es tu dirección de acceso. Avisaremos a tu dirección anterior y a la nueva cuando cambie.",
+    "privacySecurity": "Privacidad y seguridad",
+    "emailLocked": "Solo nosotros podemos cambiar tu correo de acceso. Escribe a {{support}} y lo verificaremos contigo."
   },
   "leads": {
     "title": "Mis solicitudes",
@@ -504,5 +506,22 @@
     "uploadFailed": "No se pudo subir ese documento.",
     "notFound": "No encontramos esa solicitud.",
     "loadError": "No se pudo cargar esa solicitud."
+  },
+  "privacy": {
+    "subtitle": "Cómo se protege tu cuenta y qué puedes controlar.",
+    "howYouSignIn": "Cómo accedes",
+    "signInFact": "Accedes con un código de un solo uso enviado a tu correo. No hay contraseña que perder.",
+    "emailLockedFact": "Tu correo registrado está bloqueado. Solo nosotros podemos cambiarlo, tras verificar tu identidad.",
+    "alertsFact": "Te avisamos en ambas direcciones si tu correo cambia.",
+    "yourDevices": "Tus dispositivos",
+    "signOutAll": "Cerrar sesión en todos",
+    "signOutAllDetail": "Termina todas las sesiones, no solo esta.",
+    "signOutAllConfirm": "Se cerrará la sesión en todas partes, incluido este dispositivo. Necesitarás un código nuevo.",
+    "signOutAllFailed": "No se pudo cerrar la sesión. Inténtalo de nuevo.",
+    "yourData": "Tus datos",
+    "privacyPolicy": "Política de privacidad",
+    "requestYourData": "Solicitar una copia de tus datos",
+    "deleteAccount": "Eliminar mi cuenta",
+    "deleteAccountDetail": "Lo confirmaremos contigo por correo."
   }
 }

@@ -138,7 +138,9 @@
     "firstNameRequired": "Da fatan shigar da sunanka na farko.",
     "lastNameRequired": "Da fatan shigar da sunan mahaifinka.",
     "emailInvalid": "Shigar da ingantaccen adireshin imel.",
-    "emailChangeNotice": "Wannan shine adireshin shiga naka. Za mu sanar da tsohon da sabon adireshi idan ya canza."
+    "emailChangeNotice": "Wannan shine adireshin shiga naka. Za mu sanar da tsohon da sabon adireshi idan ya canza.",
+    "privacySecurity": "Sirri da Tsaro",
+    "emailLocked": "Mu kadai za mu iya canza imel din shiga naka. Tuntuɓi {{support}}."
   },
   "leads": {
     "title": "Buƙatuna",
@@ -504,5 +506,22 @@
     "uploadFailed": "An kasa loda wannan takarda.",
     "notFound": "Ba mu sami wannan buƙata ba.",
     "loadError": "An kasa loda wannan buƙata."
+  },
+  "privacy": {
+    "subtitle": "Yadda ake kare asusunka, da abin da za ka iya sarrafawa.",
+    "howYouSignIn": "Yadda kake shiga",
+    "signInFact": "Kana shiga da lambar sau daya da aka aika imel. Babu kalmar sirri da za a rasa.",
+    "emailLockedFact": "Imel dinka da aka yi rijista a kulle yake. Mu kadai za mu canza shi bayan tabbatar da kai.",
+    "alertsFact": "Za a sanar da kai a adireshin biyu idan imel dinka ya canza.",
+    "yourDevices": "Na'urorinka",
+    "signOutAll": "Fita daga dukkan na'urori",
+    "signOutAllDetail": "Yana kawo karshen kowace zama, ba wannan kadai ba.",
+    "signOutAllConfirm": "Za a fitar da kai ko'ina, har da wannan na'urar. Kana bukatar sabuwar lamba.",
+    "signOutAllFailed": "An kasa fita. Sake gwadawa.",
+    "yourData": "Bayananka",
+    "privacyPolicy": "Manufar sirri",
+    "requestYourData": "Nemi kwafin bayananka",
+    "deleteAccount": "Share asusuna",
+    "deleteAccountDetail": "Za mu tabbatar da kai ta imel tukuna."
   }
 }

@@ -138,7 +138,9 @@
     "firstNameRequired": "Veuillez saisir votre prénom.",
     "lastNameRequired": "Veuillez saisir votre nom.",
     "emailInvalid": "Saisissez une adresse e-mail valide.",
-    "emailChangeNotice": "C'est votre adresse de connexion. Nous alerterons votre ancienne et votre nouvelle adresse lors du changement."
+    "emailChangeNotice": "C'est votre adresse de connexion. Nous alerterons votre ancienne et votre nouvelle adresse lors du changement.",
+    "privacySecurity": "Confidentialité et sécurité",
+    "emailLocked": "Votre e-mail de connexion ne peut être modifié que par nous. Contactez {{support}} et nous le vérifierons avec vous."
   },
   "leads": {
     "title": "Mes demandes",
@@ -504,5 +506,22 @@
     "uploadFailed": "Impossible de téléverser ce document.",
     "notFound": "Demande introuvable.",
     "loadError": "Impossible de charger cette demande."
+  },
+  "privacy": {
+    "subtitle": "Comment votre compte est protégé, et ce que vous contrôlez.",
+    "howYouSignIn": "Votre connexion",
+    "signInFact": "Vous vous connectez avec un code à usage unique envoyé par e-mail. Aucun mot de passe à perdre.",
+    "emailLockedFact": "Votre e-mail enregistré est verrouillé. Nous seuls pouvons le modifier, après vérification de votre identité.",
+    "alertsFact": "Vous êtes alerté aux deux adresses si votre e-mail change.",
+    "yourDevices": "Vos appareils",
+    "signOutAll": "Se déconnecter partout",
+    "signOutAllDetail": "Met fin à toutes les sessions, pas seulement celle-ci.",
+    "signOutAllConfirm": "Vous serez déconnecté partout, y compris sur cet appareil. Un nouveau code sera nécessaire.",
+    "signOutAllFailed": "Déconnexion impossible. Réessayez.",
+    "yourData": "Vos données",
+    "privacyPolicy": "Politique de confidentialité",
+    "requestYourData": "Demander une copie de vos données",
+    "deleteAccount": "Supprimer mon compte",
+    "deleteAccountDetail": "Nous confirmerons d'abord par e-mail."
   }
 }

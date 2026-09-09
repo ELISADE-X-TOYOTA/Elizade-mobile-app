@@ -26,6 +26,14 @@ interface Props {
   maxLength?: number;
   /** Normalises each keystroke, e.g. cleanEmail / cleanPhone / cleanVin. */
   sanitize?: (v: string) => string;
+  /**
+   * Shown but not editable — used for the registered email, which is the
+   * sign-in credential and can only be changed with identity verified.
+   *
+   * Rendered greyed rather than hidden: people need to check which address
+   * they signed up with, and a missing field just invites a support ticket.
+   */
+  editable?: boolean;
 }
 
 /** Labeled, rounded input with optional password reveal. */
@@ -41,6 +49,7 @@ export function AppTextField({
   autoCapitalize,
   maxLength = 120,
   sanitize,
+  editable = true,
 }: Props) {
   const t = useTheme();
   const [hidden, setHidden] = useState(!!secure);
@@ -57,6 +66,7 @@ export function AppTextField({
           {
             backgroundColor: t.colors.surfaceAlt,
             borderColor: error ? solid(t.colors.error) : focused ? t.colors.primary : t.colors.border,
+            opacity: editable ? 1 : 0.6,
           },
         ]}
       >
@@ -67,6 +77,7 @@ export function AppTextField({
           // iOS renders a LIGHT keyboard in dark mode without this.
           keyboardAppearance={t.isDark ? 'dark' : 'light'}
           value={value}
+          editable={editable}
           onChangeText={(v) => onChangeText(sanitize ? sanitize(v) : v)}
           placeholder={placeholder}
           placeholderTextColor={t.colors.textTertiary}

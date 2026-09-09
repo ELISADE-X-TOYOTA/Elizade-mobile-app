@@ -138,7 +138,9 @@
     "firstNameRequired": "Biko tinye aha mbụ gị.",
     "lastNameRequired": "Biko tinye aha ikpeazụ gị.",
     "emailInvalid": "Tinye adresị ozi-e ziri ezi.",
-    "emailChangeNotice": "Nke a bụ adresị nbanye gị. Anyị ga-adọ adresị ochie na nke ọhụrụ aka na ntị ma ọ gbanwee."
+    "emailChangeNotice": "Nke a bụ adresị nbanye gị. Anyị ga-adọ adresị ochie na nke ọhụrụ aka na ntị ma ọ gbanwee.",
+    "privacySecurity": "Nzuzo na Nchekwa",
+    "emailLocked": "Ọ bụ nanị anyị nwere ike ịgbanwe ozi-e nbanye gị. Kpọtụrụ {{support}}."
   },
   "leads": {
     "title": "Arịrịọ m",
@@ -504,5 +506,22 @@
     "uploadFailed": "Enweghị ike ibulite akwụkwọ ahụ.",
     "notFound": "Anyị achọtaghị arịrịọ ahụ.",
     "loadError": "Enweghị ike ibubata arịrịọ ahụ."
+  },
+  "privacy": {
+    "subtitle": "Ka esi echebe akaụntụ gị, na ihe ị nwere ike ịchịkwa.",
+    "howYouSignIn": "Ka ị si abanye",
+    "signInFact": "Ị na-abanye site na koodu otu oge e zitere na ozi-e gị. Enweghị okwuntughe ị ga-efunahụ.",
+    "emailLockedFact": "Ozi-e gị edebanyere aha akpọchiri. Ọ bụ naanị anyị nwere ike ịgbanwe ya mgbe anyị kwadoro gị.",
+    "alertsFact": "A ga-adọ gị aka na ntị na adresị abụọ ma ọ bụrụ na ozi-e gị agbanwee.",
+    "yourDevices": "Ngwa gị",
+    "signOutAll": "Pụọ na ngwa niile",
+    "signOutAllDetail": "Na-akwụsị nnọkụ niile, ọ bụghị naanị nke a.",
+    "signOutAllConfirm": "A ga-ewepụ gị ebe niile, gụnyere ngwa a. Ị ga-achọrọ koodu ọhụrụ.",
+    "signOutAllFailed": "Enweghị ike ịpụ. Nwaa ọzọ.",
+    "yourData": "Data gị",
+    "privacyPolicy": "Amụmihe nzuzo",
+    "requestYourData": "Rịọ maka ndọrọ data gị",
+    "deleteAccount": "Hichapụ akaụntụ m",
+    "deleteAccountDetail": "Anyị ga-ebu ụzọ kwado site na ozi-e."
   }
 }
