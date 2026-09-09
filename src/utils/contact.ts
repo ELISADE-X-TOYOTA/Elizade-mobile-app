@@ -1,7 +1,7 @@
 import { Alert, Linking } from 'react-native';
 
 import { APP } from '../constants/app';
-import { telUrl, whatsappUrl } from './contactLinks';
+import { mailtoUrl, telUrl, whatsappUrl } from './contactLinks';
 
 /**
  * Reaching a human at Elizade.
@@ -41,6 +41,35 @@ export async function callSupport(title = 'Call Elizade'): Promise<void> {
  * with nothing shown. The https form is a universal link: WhatsApp takes it
  * when installed, the browser handles it when not.
  */
+/**
+ * Open a mail composer to the support inbox.
+ *
+ * Falls back to showing the address, because a device with no mail account
+ * configured cannot open `mailto:` at all — and an address on screen can still
+ * be sent from a phone.
+ */
+export async function emailSupport(title = 'Email Elizade', subject?: string): Promise<void> {
+  try {
+    await Linking.openURL(mailtoUrl(APP.supportEmail, subject));
+  } catch {
+    Alert.alert(title, APP.supportEmail);
+  }
+}
+
+/**
+ * Open any of the official links — website or a social account.
+ *
+ * Shows the URL rather than failing silently, so a blocked or missing browser
+ * still leaves the customer something they can act on.
+ */
+export async function openLink(url: string, title = 'Elizade'): Promise<void> {
+  try {
+    await Linking.openURL(url);
+  } catch {
+    Alert.alert(title, url);
+  }
+}
+
 export async function openWhatsApp(title = 'WhatsApp'): Promise<void> {
   try {
     await Linking.openURL(whatsappUrl(APP.supportWhatsApp));

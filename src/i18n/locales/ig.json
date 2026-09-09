@@ -315,7 +315,9 @@
     "agentTyping": "Nkwado na-ede ihe…",
     "loadTicketsError": "Enweghị ike ibubata arịrịọ. {{message}}",
     "expectedResponse": "A na-atụ anya nzaghachi mbụ n'ime awa {{hours}}",
-    "typicalResponse": "Nzaghachi nkịtị n'ime awa {{hours}}"
+    "typicalResponse": "Nzaghachi nkịtị n'ime awa {{hours}}",
+    "emailElizade": "Zitere Elizade ozi-e",
+    "followElizade": "Soro Elizade"
   },
   "notifications": {
     "title": "Ọkwa",

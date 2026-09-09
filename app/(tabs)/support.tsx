@@ -13,7 +13,8 @@ import {
   Tone,
 } from '../../src/domain/types';
 import { useTickets } from '../../src/hooks/useSupport';
-import { callSupport, openWhatsApp } from '../../src/utils/contact';
+import { callSupport, emailSupport, openLink, openWhatsApp } from '../../src/utils/contact';
+import { SOCIALS, SUPPORT_EMAIL, SUPPORT_PHONE } from '../../src/constants/contact';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
 import { solid } from '../../src/theme/colors';
@@ -48,6 +49,7 @@ export default function Support() {
           <QuickAction
             icon="call"
             label={tr('support.callElizade')}
+            sublabel={SUPPORT_PHONE}
             onPress={() => callSupport(tr('support.callElizade'))}
           />
           <QuickAction
@@ -56,6 +58,17 @@ export default function Support() {
             onPress={() => openWhatsApp(tr('support.whatsapp'))}
           />
         </View>
+        {/*
+          Email was missing entirely. It is the channel a customer uses when
+          the matter is not urgent enough to ring about, and the only one that
+          leaves them a written record on their side.
+        */}
+        <QuickAction
+          icon="mail"
+          label={tr('support.emailElizade')}
+          sublabel={SUPPORT_EMAIL}
+          onPress={() => emailSupport(tr('support.emailElizade'))}
+        />
 
         <Txt variant="titleLarge" style={{ marginTop: spacing.md }}>{tr('support.yourTickets')}</Txt>
 
@@ -68,6 +81,40 @@ export default function Support() {
         ) : (
           <Empty />
         )}
+
+        {/*
+          The official accounts, in one place a customer can actually reach.
+          Verified links only — a wrong social handle on a dealership app is
+          how somebody ends up messaging an impersonator.
+        */}
+        <Txt variant="titleLarge" style={{ marginTop: spacing.xl }}>{tr('support.followElizade')}</Txt>
+        <View style={[styles.socials, { backgroundColor: t.colors.surface, borderColor: t.colors.border }]}>
+          {SOCIALS.map((social, i) => (
+            <Pressable
+              key={social.key}
+              onPress={() => openLink(social.url, social.label)}
+              accessibilityRole="link"
+              accessibilityLabel={`${social.label} — ${social.handle}`}
+              style={({ pressed }) => [
+                styles.socialRow,
+                {
+                  borderTopWidth: i === 0 ? 0 : StyleSheet.hairlineWidth,
+                  borderTopColor: t.colors.border,
+                  opacity: pressed ? 0.6 : 1,
+                },
+              ]}
+            >
+              <View style={[styles.socialIcon, { backgroundColor: t.colors.primary + '14' }]}>
+                <Ionicons name={social.icon} size={17} color={t.colors.primary} />
+              </View>
+              <View style={{ flex: 1, marginLeft: 12 }}>
+                <Txt variant="titleSmall">{social.label}</Txt>
+                <Txt variant="bodySmall" tone="secondary" numberOfLines={1}>{social.handle}</Txt>
+              </View>
+              <Ionicons name="open-outline" size={16} color={t.colors.textTertiary} />
+            </Pressable>
+          ))}
+        </View>
       </ScrollView>
     </View>
   );
@@ -92,10 +139,13 @@ function toneColorOf(t: ReturnType<typeof useTheme>, tone: Tone) {
 function QuickAction({
   icon,
   label,
+  sublabel,
   onPress,
 }: {
   icon: keyof typeof Ionicons.glyphMap;
   label: string;
+  /** The actual number or address, so it can be read even if the tap fails. */
+  sublabel?: string;
   onPress: () => void;
 }) {
   const t = useTheme();
@@ -113,7 +163,12 @@ function QuickAction({
       <View style={[styles.quickIcon, { backgroundColor: t.colors.primary + '14' }]}>
         <Ionicons name={icon} size={20} color={t.colors.primary} />
       </View>
-      <Txt variant="titleSmall">{label}</Txt>
+      <View style={{ flex: 1 }}>
+        <Txt variant="titleSmall">{label}</Txt>
+        {sublabel ? (
+          <Txt variant="bodySmall" tone="secondary" numberOfLines={1}>{sublabel}</Txt>
+        ) : null}
+      </View>
     </Pressable>
   );
 }
@@ -175,6 +230,9 @@ const styles = StyleSheet.create({
   quick: { flex: 1, flexDirection: 'row', alignItems: 'center', padding: 14, borderRadius: radius.lg, borderWidth: 1, gap: 10 },
   quickIcon: { width: 38, height: 38, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center' },
   card: { padding: 14, borderRadius: radius.lg, borderWidth: 1 },
+  socials: { borderRadius: radius.lg, borderWidth: 1, marginTop: spacing.sm, overflow: 'hidden' },
+  socialRow: { flexDirection: 'row', alignItems: 'center', padding: 14 },
+  socialIcon: { width: 34, height: 34, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center' },
   catIcon: { width: 44, height: 44, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
   pill: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: radius.pill },
   emptyIcon: { width: 88, height: 88, borderRadius: 44, alignItems: 'center', justifyContent: 'center' },

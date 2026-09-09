@@ -315,7 +315,9 @@
     "agentTyping": "الدعم يكتب…",
     "loadTicketsError": "تعذّر تحميل التذاكر. {{message}}",
     "expectedResponse": "الرد الأول المتوقع خلال {{hours}} ساعة",
-    "typicalResponse": "الرد المعتاد خلال {{hours}} ساعة"
+    "typicalResponse": "الرد المعتاد خلال {{hours}} ساعة",
+    "emailElizade": "راسل إليزادي",
+    "followElizade": "تابع إليزادي"
   },
   "notifications": {
     "title": "الإشعارات",

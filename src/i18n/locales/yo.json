@@ -315,7 +315,9 @@
     "agentTyping": "Ìrànlọ́wọ́ ń kọ̀wé…",
     "loadTicketsError": "A kò lè gbé àwọn ìbéèrè wọlé. {{message}}",
     "expectedResponse": "Ìdáhùn àkọ́kọ́ ní àkókò wákàtí {{hours}}",
-    "typicalResponse": "Ìdáhùn déédéé ní wákàtí {{hours}}"
+    "typicalResponse": "Ìdáhùn déédéé ní wákàtí {{hours}}",
+    "emailElizade": "Fì íméìlì sí Elizade",
+    "followElizade": "Tẹ̀lé Elizade"
   },
   "notifications": {
     "title": "Ìfitónilétí",

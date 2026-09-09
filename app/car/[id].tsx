@@ -24,6 +24,7 @@ import { Vehicle360Viewer } from '../../src/components/Vehicle360Viewer';
 import { ON_DARK_INK, OVERLAY_CHIP, OVERLAY_CHIP_INK, solid, tint } from '../../src/theme/colors';
 import { vehicleSubtitle, vehicleTitle, Vehicle } from '../../src/domain/types';
 import { activeTestDriveFor } from '../../src/domain/bookings';
+import { callSupport } from '../../src/utils/contact';
 import { useTestDrives } from '../../src/hooks/useTestDrives';
 import { useVehicle } from '../../src/hooks/useVehicles';
 import { useNotifyMeStore } from '../../src/store/useNotifyMeStore';
@@ -109,22 +110,12 @@ export default function CarDetails() {
     [myTestDrives, id],
   );
 
-  /**
-   * Hands off to the native dialer.
-   *
-   * `openURL` rejects on a device with no telephony (a tablet, an emulator),
-   * and an unhandled rejection there would surface as a silent no-op — the
-   * exact symptom being fixed. So the number is shown instead, which still
-   * lets someone call from another phone.
-   */
-  const callSupport = useCallback(async () => {
-    const url = `tel:${APP.supportPhone}`;
-    try {
-      await Linking.openURL(url);
-    } catch {
-      Alert.alert(tr('shop.callDealer'), APP.supportPhone);
-    }
-  }, [tr]);
+  /*
+    Dialling lives in `src/utils/contact.ts`. This screen had its own copy,
+    with its own hardcoded number, which is how the dealer card and the
+    Support tab came to dial different lines.
+  */
+  const callDealer = useCallback(() => callSupport(tr('shop.callDealer')), [tr]);
 
   const shareVehicle = useCallback(async (vehicle: Vehicle) => {
     const title = vehicleTitle(vehicle);
@@ -330,7 +321,7 @@ export default function CarDetails() {
             <RoundAction
               icon="call"
               accessibilityLabel={tr('shop.callDealer')}
-              onPress={callSupport}
+              onPress={callDealer}
             />
           </View>
         </View>
