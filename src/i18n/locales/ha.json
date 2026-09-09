@@ -315,7 +315,9 @@
     "agentTyping": "Tallafi yana rubutu…",
     "loadTicketsError": "An kasa loda buƙatun. {{message}}",
     "expectedResponse": "Ana sa ran amsa ta farko cikin awanni {{hours}}",
-    "typicalResponse": "Amsa ta yau da kullun cikin awanni {{hours}}"
+    "typicalResponse": "Amsa ta yau da kullun cikin awanni {{hours}}",
+    "emailElizade": "Aika imel zuwa Elizade",
+    "followElizade": "Bi Elizade"
   },
   "notifications": {
     "title": "Sanarwa",

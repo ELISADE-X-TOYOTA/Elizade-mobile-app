@@ -315,7 +315,9 @@
     "agentTyping": "Support is typing…",
     "loadTicketsError": "Couldn't load tickets. {{message}}",
     "expectedResponse": "Expected first response within {{hours}} hours",
-    "typicalResponse": "Typical response within {{hours}}h"
+    "typicalResponse": "Typical response within {{hours}}h",
+    "emailElizade": "Email Elizade",
+    "followElizade": "Follow Elizade"
   },
   "notifications": {
     "title": "Notifications",

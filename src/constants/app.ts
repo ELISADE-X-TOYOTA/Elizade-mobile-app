@@ -1,5 +1,7 @@
 import Constants from 'expo-constants';
 
+import { SUPPORT_EMAIL, SUPPORT_PHONE, SUPPORT_WHATSAPP, WEBSITE } from './contact';
+
 /**
  * Placeholder used when nothing has configured a real API host.
  *
@@ -9,6 +11,8 @@ const UNCONFIGURED_API = 'https://api.elizade.example.com/api/v1';
 
 const configuredUrl = process.env.EXPO_PUBLIC_API_URL?.trim();
 const configuredMock = process.env.EXPO_PUBLIC_USE_MOCK?.trim();
+/** Escape hatch if the WhatsApp account ever moves before a release. */
+const EXPO_WHATSAPP_OVERRIDE = process.env.EXPO_PUBLIC_SUPPORT_WHATSAPP?.trim();
 
 /**
  * Discard any stored session on launch and open at the login screen.
@@ -71,39 +75,26 @@ if (!__DEV__ && !useMock && (!configuredUrl || configuredUrl === UNCONFIGURED_AP
   );
 }
 
-/**
- * The customer support line, as printed in transactional email footers.
- *
- * NOT the branch's own number. Branches DO carry a phone in the backend
- * (`branches.phone`), but the vehicle payload does not expose it, so the app
- * has no way to dial the specific showroom a car sits in. Until that field is
- * added — and its data confirmed populated — dialling the main line is the
- * honest behaviour: it reaches a human who can transfer, rather than a button
- * that does nothing.
- */
-const SUPPORT_PHONE = '+2347003549233';
+/*
+  Contact details live in `src/constants/contact.ts` — one place for the phone
+  line, the WhatsApp account, the support inbox and the social links. They used
+  to be a lone constant here plus a hardcoded copy on the car screen, and both
+  held a 0700 number with no WhatsApp account behind it.
 
-/**
- * The number the WhatsApp button opens a chat with.
- *
- * SEPARATE FROM THE PHONE LINE, and defaulting to it only so the button works
- * out of the box. `wa.me` resolves against a WhatsApp ACCOUNT, not a dialable
- * number: a line with no account attached — which a 0700 service number very
- * likely is — answers "phone number shared via url is invalid", replacing a
- * dead button with a confusing one. Set EXPO_PUBLIC_SUPPORT_WHATSAPP to the
- * number the business actually answers WhatsApp on, in E.164.
- */
-const SUPPORT_WHATSAPP =
-  process.env.EXPO_PUBLIC_SUPPORT_WHATSAPP?.trim() || SUPPORT_PHONE;
-
+  Re-exported through `APP` so existing callers keep working.
+*/
 /** App-wide constants and feature flags. */
 export const APP = {
   name: 'Elizade',
   currency: '₦',
-  /** E.164, no spaces — `tel:` links are unreliable with formatting. */
+  /** Dialled as-is; `tel:` is unreliable with formatting. */
   supportPhone: SUPPORT_PHONE,
-  /** E.164. The WhatsApp ACCOUNT, which need not be the phone line. */
-  supportWhatsApp: SUPPORT_WHATSAPP,
+  /** The WhatsApp ACCOUNT, which is not the same string as the dial number. */
+  supportWhatsApp: EXPO_WHATSAPP_OVERRIDE || SUPPORT_WHATSAPP,
+  /** Reaches a human by email. */
+  supportEmail: SUPPORT_EMAIL,
+  /** Elizade's public site. */
+  website: WEBSITE,
   /** Shares the Elizade web backend. Set EXPO_PUBLIC_API_URL to override. */
   apiBaseUrl: configuredUrl || UNCONFIGURED_API,
   /** When true, bundled mock data powers the UI instead of the API. */

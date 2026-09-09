@@ -315,7 +315,9 @@
     "agentTyping": "Le support écrit…",
     "loadTicketsError": "Impossible de charger les tickets. {{message}}",
     "expectedResponse": "Première réponse attendue sous {{hours}} heures",
-    "typicalResponse": "Réponse habituelle sous {{hours}} h"
+    "typicalResponse": "Réponse habituelle sous {{hours}} h",
+    "emailElizade": "Écrire à Elizade",
+    "followElizade": "Suivre Elizade"
   },
   "notifications": {
     "title": "Notifications",
