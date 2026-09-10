@@ -41,7 +41,8 @@
     "total": "Total",
     "progress": "Progress",
     "price": "Price",
-    "dismiss": "Dismiss"
+    "dismiss": "Dismiss",
+    "vehicle": "Vehicle"
   },
   "nav": {
     "home": "Home",
@@ -140,7 +141,8 @@
     "emailInvalid": "Enter a valid email address.",
     "emailChangeNotice": "This is your sign-in address. We'll alert both your old and new address when it changes.",
     "privacySecurity": "Privacy & Security",
-    "emailLocked": "Your sign-in email can only be changed by us. Contact {{support}} and we'll verify it with you."
+    "emailLocked": "Your sign-in email can only be changed by us. Contact {{support}} and we'll verify it with you.",
+    "myReservations": "My Reservations"
   },
   "leads": {
     "title": "My Leads",
@@ -473,7 +475,9 @@
     "requestedDetail": "Your test drive of the {{vehicle}} at {{branch}} is requested. Our team will confirm shortly.",
     "reserveVehicle": "Reserve Vehicle",
     "depositCollectedLater": "No payment is taken now. Our sales team will contact you to arrange the deposit.",
-    "alreadyReserved": "You have already reserved this vehicle. See it under Reservations."
+    "alreadyReserved": "You have already reserved this vehicle. See it under Reservations.",
+    "reservedBody": "The {{vehicle}} is held for you at {{showroom}} for 7 days. We have emailed you the details — no payment has been taken yet.",
+    "depositDue": "Deposit due"
   },
   "home": {
     "openProfile": "Open your profile"
@@ -523,5 +527,19 @@
     "requestYourData": "Request a copy of your data",
     "deleteAccount": "Delete my account",
     "deleteAccountDetail": "We'll confirm with you by email first."
+  },
+  "reservations": {
+    "title": "My Reservations",
+    "subtitle": "Vehicles being held for you.",
+    "heldUntil": "Held until",
+    "loadError": "Couldn't load your reservations.",
+    "noPaymentTaken": "No payment has been taken. Our sales team will arrange the deposit with you.",
+    "emptyTitle": "No reservations yet",
+    "emptyBody": "Reserve a vehicle from the showroom and it will be held for you for 7 days.",
+    "statusHeld": "Held",
+    "statusDepositPaid": "Deposit paid",
+    "statusConfirmed": "Confirmed",
+    "statusCancelled": "Cancelled",
+    "statusExpired": "Expired"
   }
 }

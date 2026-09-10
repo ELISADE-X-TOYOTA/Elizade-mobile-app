@@ -8,6 +8,7 @@ import {
 import type { TestDriveDto } from '../api/dto';
 import { APP } from '../constants/app';
 import { TestDriveBooking, TestDriveStatus } from '../domain/types';
+import { RESERVATION_STATUS_META, ReservationStatus } from '../domain/reservations';
 
 /**
  * Buying-journey actions. Each returns a reference the confirmation screen
@@ -87,6 +88,42 @@ export async function cancelTestDrive(bookingId: string): Promise<TestDriveBooki
     throw new Error('Cancelling is not available in the offline demo.');
   }
   return mapTestDrive(await salesApi.cancelTestDrive(bookingId));
+}
+
+export interface Reservation {
+  id: string;
+  vehicleId: string;
+  vehicleLabel: string;
+  status: ReservationStatus;
+  depositAmount: string;
+  expiresAt: string;
+  createdAt: string;
+}
+
+/**
+ * The customer's held vehicles.
+ *
+ * `salesApi.listReservations` existed and no screen called it, so a customer
+ * who reserved a car had nowhere to see it again — while the success sheet
+ * told them to "See it under Reservations".
+ */
+export async function listReservations(): Promise<Reservation[]> {
+  if (APP.useMock) {
+    await delay(400);
+    return [];
+  }
+  const rows = await salesApi.listReservations();
+  return rows.map((d) => ({
+    id: d.id,
+    vehicleId: d.vehicleId,
+    vehicleLabel: d.vehicleLabel || 'Vehicle',
+    // An unknown status must not crash the list; treat it as a live hold,
+    // which is the least surprising thing to show.
+    status: (RESERVATION_STATUS_META[d.status as ReservationStatus] ? d.status : 'pending') as ReservationStatus,
+    depositAmount: d.depositAmount ?? '0',
+    expiresAt: d.expiresAt,
+    createdAt: d.createdAt,
+  }));
 }
 
 export async function reserveVehicle(body: ReservationBody): Promise<{ reference: string }> {

@@ -41,7 +41,8 @@
     "total": "Àpapọ̀",
     "progress": "Ìlọsíwájú",
     "price": "Iye owó",
-    "dismiss": "Tì í"
+    "dismiss": "Tì í",
+    "vehicle": "Ọkọ̀"
   },
   "nav": {
     "home": "Ilé",
@@ -140,7 +141,8 @@
     "emailInvalid": "Tẹ àdírẹ́sì íméìlì tó tọ́.",
     "emailChangeNotice": "Èyí ni àdírẹ́sì ìwọlé rẹ. A ó ṣe ìkilọ̀ fún àdírẹ́sì atì jò àti tí tuntun.",
     "privacySecurity": "Aṣírì àti Ààbò",
-    "emailLocked": "Àwa nikan ni a le yi íméìlì ìwọlé rẹ pada. Kan si {{support}}."
+    "emailLocked": "Àwa nikan ni a le yi íméìlì ìwọlé rẹ pada. Kan si {{support}}.",
+    "myReservations": "Àwọn ìpamọ́ mi"
   },
   "leads": {
     "title": "Àwọn ìbéèrè mi",
@@ -473,7 +475,9 @@
     "requestedDetail": "A ti béèrè ìdánwò ìwakọ̀ {{vehicle}} rẹ ní {{branch}}. Ẹgbẹ́ wa yóò jẹ́rìí sí i láìpẹ́.",
     "reserveVehicle": "Fi Ọkọ̀ Pamọ́",
     "depositCollectedLater": "A kò gba owó kankan báyìí. Àwọn òṣìṣẹ́ tà wa yóò kàn sí ọ láti ṣètò ìdógó.",
-    "alreadyReserved": "O ti fi ọkọ̀ yìí pamọ́ tẹ́lẹ̀. Wò ó lábẹ́ Ìfipamọ́."
+    "alreadyReserved": "O ti fi ọkọ̀ yìí pamọ́ tẹ́lẹ̀. Wò ó lábẹ́ Ìfipamọ́.",
+    "reservedBody": "A ti pamọ́ {{vehicle}} fún ọ ní {{showroom}} fun ọjọ́ 7. A ti fi àlayé ranṣẹ́ sí íméìlì rẹ — a kò tìí gba owo kankan.",
+    "depositDue": "Owo ìdìmú tó yẹ kí a san"
   },
   "home": {
     "openProfile": "Ṣí àkọọ́lẹ̀ rẹ"
@@ -523,5 +527,19 @@
     "requestYourData": "Béèrè ẹ̀dà dátà rẹ",
     "deleteAccount": "Pa àkántì mi rẹ́",
     "deleteAccountDetail": "A ó jẹ́rìí pẹ̀lú rẹ nínú ímeèlì náà kọ́kọ́."
+  },
+  "reservations": {
+    "title": "Àwọn ìpamọ́ mi",
+    "subtitle": "Àwọn ọkọ̀ tí a pamọ́ fún ọ.",
+    "heldUntil": "A pamọ́ títí di",
+    "loadError": "Kò lè ṣí àwọn ìpamọ́ rẹ.",
+    "noPaymentTaken": "A kò tíì gba owó kankan. Ẹgbẹ́ tà wa yóò bá ọ sọ̀rọ̀ nípa owó ìdìmú.",
+    "emptyTitle": "Kò sí ìpamọ́ síbẹ̀",
+    "emptyBody": "Pa ọkọ̀ mọ́ láti inú ilé ìtàjà, a ó pa á mọ́ fún ọ fún ọjọ́ 7.",
+    "statusHeld": "A ti pamọ́",
+    "statusDepositPaid": "A ti san owó ìdìmú",
+    "statusConfirmed": "A ti jẹ́rìí",
+    "statusCancelled": "A ti fagilé",
+    "statusExpired": "Ó ti parí"
   }
 }

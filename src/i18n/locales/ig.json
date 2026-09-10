@@ -41,7 +41,8 @@
     "total": "Ngụkọta",
     "progress": "Ọganihu",
     "price": "Ọnụahịa",
-    "dismiss": "Mechie"
+    "dismiss": "Mechie",
+    "vehicle": "Ụgbọ"
   },
   "nav": {
     "home": "Ụlọ",
@@ -140,7 +141,8 @@
     "emailInvalid": "Tinye adresị ozi-e ziri ezi.",
     "emailChangeNotice": "Nke a bụ adresị nbanye gị. Anyị ga-adọ adresị ochie na nke ọhụrụ aka na ntị ma ọ gbanwee.",
     "privacySecurity": "Nzuzo na Nchekwa",
-    "emailLocked": "Ọ bụ nanị anyị nwere ike ịgbanwe ozi-e nbanye gị. Kpọtụrụ {{support}}."
+    "emailLocked": "Ọ bụ nanị anyị nwere ike ịgbanwe ozi-e nbanye gị. Kpọtụrụ {{support}}.",
+    "myReservations": "Ndebe m"
   },
   "leads": {
     "title": "Arịrịọ m",
@@ -473,7 +475,9 @@
     "requestedDetail": "Arịọla nnwale ịnya {{vehicle}} gị na {{branch}}. Ndị otu anyị ga-akwado ya n'oge na-adịghị anya.",
     "reserveVehicle": "Debe Ụgbọala",
     "depositCollectedLater": "A naghị anara ụgwọ ugbu a. Ndị otu ahịa anyị ga-akpọtụrụ gị iji hazie ego nchekwa.",
-    "alreadyReserved": "Ị debeelarị ụgbọala a. Lelee ya n'okpuru Ndebe."
+    "alreadyReserved": "Ị debeelarị ụgbọala a. Lelee ya n'okpuru Ndebe.",
+    "reservedBody": "Edobere {{vehicle}} maka gị na {{showroom}} ruo ụbọchị 7. Anyị ezitela nkọwa na ozi-e gị — anatabeghị anyị ego ọ bụla.",
+    "depositDue": "Ego ndebe a ga-akwụ"
   },
   "home": {
     "openProfile": "Mepee profaịlụ gị"
@@ -523,5 +527,19 @@
     "requestYourData": "Rịọ maka ndọrọ data gị",
     "deleteAccount": "Hichapụ akaụntụ m",
     "deleteAccountDetail": "Anyị ga-ebu ụzọ kwado site na ozi-e."
+  },
+  "reservations": {
+    "title": "Ndebe m",
+    "subtitle": "Ụgbọ e debere maka gị.",
+    "heldUntil": "Edobere ruo",
+    "loadError": "Enweghị ike ibudata ndebe gị.",
+    "noPaymentTaken": "Anatabeghị anyị ego ọ bụla. Ndị ahịa anyị ga-akpọtụrụ gị maka ego ndebe.",
+    "emptyTitle": "Enweghị ndebe ma",
+    "emptyBody": "Debe ụgbọ site n'ụlọ ngosi, anyị ga-edobere gị ya ụbọchị 7.",
+    "statusHeld": "Edobere",
+    "statusDepositPaid": "Akwụọla ego ndebe",
+    "statusConfirmed": "Ekwadoro",
+    "statusCancelled": "Akagburu",
+    "statusExpired": "Agwụla"
   }
 }

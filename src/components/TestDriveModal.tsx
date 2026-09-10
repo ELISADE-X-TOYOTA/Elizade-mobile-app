@@ -331,7 +331,7 @@ function Success({
       <Txt tone="secondary" center style={{ marginTop: 8 }}>
         {mode === 'testdrive'
           ? `Your test drive of the ${vehicleTitle(vehicle)} at ${showroom} is confirmed. Our team will be in touch shortly.`
-          : `The ${vehicleTitle(vehicle)} is held for you at ${showroom} for 7 days. A confirmation has been sent to your email.`}
+          : tr('testDrive.reservedBody', { vehicle: vehicleTitle(vehicle), showroom })}
       </Txt>
       <View style={[styles.receipt, { backgroundColor: t.colors.surfaceAlt }]}>
         <View>
@@ -339,8 +339,15 @@ function Success({
           <Txt variant="titleMedium">{ref}</Txt>
         </View>
         <View style={{ alignItems: 'flex-end' }}>
+          {/*
+            "Deposit Paid" WAS A LIE, and it contradicted the screen before it,
+            which says no payment is taken now. Nothing is charged at this
+            point: the hold is real, the deposit is arranged with the branch
+            afterwards. A receipt claiming otherwise is the worst place for it,
+            because a receipt is what people keep.
+          */}
           <Txt variant="bodySmall" tone="secondary">
-            {mode === 'testdrive' ? 'Vehicle' : 'Deposit Paid'}
+            {mode === 'testdrive' ? tr('common.vehicle') : tr('testDrive.depositDue')}
           </Txt>
           <Txt variant="titleMedium" color={t.colors.primary}>
             {mode === 'testdrive' ? vehicle.make : price(deposit)}
