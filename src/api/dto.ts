@@ -291,8 +291,12 @@ export interface TestDriveDto {
 export interface ReservationDto {
   id: string;
   vehicleId: string;
+  /** The API has always sent these; the client's type simply never listed them. */
+  vehicleLabel: string;
   depositAmount: string | null;
   status: string;
+  expiresAt: string;
+  confirmedAt?: string | null;
   createdAt: string;
 }
 

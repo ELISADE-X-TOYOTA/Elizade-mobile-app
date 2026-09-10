@@ -41,7 +41,8 @@
     "total": "Total",
     "progress": "Progression",
     "price": "Prix",
-    "dismiss": "Fermer"
+    "dismiss": "Fermer",
+    "vehicle": "Véhicule"
   },
   "nav": {
     "home": "Accueil",
@@ -140,7 +141,8 @@
     "emailInvalid": "Saisissez une adresse e-mail valide.",
     "emailChangeNotice": "C'est votre adresse de connexion. Nous alerterons votre ancienne et votre nouvelle adresse lors du changement.",
     "privacySecurity": "Confidentialité et sécurité",
-    "emailLocked": "Votre e-mail de connexion ne peut être modifié que par nous. Contactez {{support}} et nous le vérifierons avec vous."
+    "emailLocked": "Votre e-mail de connexion ne peut être modifié que par nous. Contactez {{support}} et nous le vérifierons avec vous.",
+    "myReservations": "Mes réservations"
   },
   "leads": {
     "title": "Mes demandes",
@@ -473,7 +475,9 @@
     "requestedDetail": "Votre essai de la {{vehicle}} à {{branch}} est demandé. Notre équipe confirmera sous peu.",
     "reserveVehicle": "Réserver le véhicule",
     "depositCollectedLater": "Aucun paiement n'est prélevé maintenant. Notre équipe commerciale vous contactera pour organiser l'acompte.",
-    "alreadyReserved": "Vous avez déjà réservé ce véhicule. Retrouvez-le dans Réservations."
+    "alreadyReserved": "Vous avez déjà réservé ce véhicule. Retrouvez-le dans Réservations.",
+    "reservedBody": "Le {{vehicle}} vous est réservé chez {{showroom}} pendant 7 jours. Les détails vous ont été envoyés par e-mail — aucun paiement n’a encore été prélevé.",
+    "depositDue": "Acompte à payer"
   },
   "home": {
     "openProfile": "Ouvrir votre profil"
@@ -523,5 +527,19 @@
     "requestYourData": "Demander une copie de vos données",
     "deleteAccount": "Supprimer mon compte",
     "deleteAccountDetail": "Nous confirmerons d'abord par e-mail."
+  },
+  "reservations": {
+    "title": "Mes réservations",
+    "subtitle": "Véhicules réservés pour vous.",
+    "heldUntil": "Réservé jusqu'au",
+    "loadError": "Impossible de charger vos réservations.",
+    "noPaymentTaken": "Aucun paiement n'a été prélevé. Notre équipe commerciale organisera l'acompte avec vous.",
+    "emptyTitle": "Aucune réservation",
+    "emptyBody": "Réservez un véhicule depuis le showroom et il vous sera gardé 7 jours.",
+    "statusHeld": "Réservé",
+    "statusDepositPaid": "Acompte payé",
+    "statusConfirmed": "Confirmé",
+    "statusCancelled": "Annulé",
+    "statusExpired": "Expiré"
   }
 }

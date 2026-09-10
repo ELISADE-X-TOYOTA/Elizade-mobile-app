@@ -41,7 +41,8 @@
     "total": "Jimla",
     "progress": "Ci gaba",
     "price": "Farashi",
-    "dismiss": "Rufe"
+    "dismiss": "Rufe",
+    "vehicle": "Mota"
   },
   "nav": {
     "home": "Gida",
@@ -140,7 +141,8 @@
     "emailInvalid": "Shigar da ingantaccen adireshin imel.",
     "emailChangeNotice": "Wannan shine adireshin shiga naka. Za mu sanar da tsohon da sabon adireshi idan ya canza.",
     "privacySecurity": "Sirri da Tsaro",
-    "emailLocked": "Mu kadai za mu iya canza imel din shiga naka. Tuntuɓi {{support}}."
+    "emailLocked": "Mu kadai za mu iya canza imel din shiga naka. Tuntuɓi {{support}}.",
+    "myReservations": "Ajiyena"
   },
   "leads": {
     "title": "Buƙatuna",
@@ -473,7 +475,9 @@
     "requestedDetail": "An nemi gwajin tuƙi na {{vehicle}} a {{branch}}. Ƙungiyarmu za ta tabbatar nan ba da jimawa ba.",
     "reserveVehicle": "Ajiye Mota",
     "depositCollectedLater": "Ba a karɓar biyan kuɗi yanzu. Ƙungiyar tallace-tallacenmu za ta tuntuɓe ka don shirya ajiya.",
-    "alreadyReserved": "Ka riga ka ajiye wannan motar. Duba ta a ƙarƙashin Ajiya."
+    "alreadyReserved": "Ka riga ka ajiye wannan motar. Duba ta a ƙarƙashin Ajiya.",
+    "reservedBody": "An ajiye maka {{vehicle}} a {{showroom}} na kwanaki 7. Mun aika maka bayanai ta imel — ba a karbi kudi ba tukuna.",
+    "depositDue": "Ajiyar da za a biya"
   },
   "home": {
     "openProfile": "Buɗe bayanan ka"
@@ -523,5 +527,19 @@
     "requestYourData": "Nemi kwafin bayananka",
     "deleteAccount": "Share asusuna",
     "deleteAccountDetail": "Za mu tabbatar da kai ta imel tukuna."
+  },
+  "reservations": {
+    "title": "Ajiyena",
+    "subtitle": "Motocin da aka ajiye maka.",
+    "heldUntil": "An ajiye har zuwa",
+    "loadError": "An kasa loda ajiyenka.",
+    "noPaymentTaken": "Ba a karbi kudi ba. Tawagar sayarwa za ta tuntube ka game da ajiyar.",
+    "emptyTitle": "Babu ajiye tukuna",
+    "emptyBody": "Ka yi ajiyen mota daga dakin nuni, za mu ajiye maka na kwanaki 7.",
+    "statusHeld": "An ajiye",
+    "statusDepositPaid": "An biya ajiya",
+    "statusConfirmed": "An tabbatar",
+    "statusCancelled": "An soke",
+    "statusExpired": "Ya kare"
   }
 }

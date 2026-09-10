@@ -150,6 +150,7 @@ export default function Profile() {
 
         <Group title={t('profile.groupGarage')}>
           <Row icon="car-sport-outline" label={t('profile.myVehicles')} onPress={() => router.push('/garage')} />
+          <Row icon="bookmark-outline" label={t('profile.myReservations')} onPress={() => router.push('/reservations')} />
           <Row icon="heart-outline" label={t('profile.watchlist')} onPress={() => router.push('/watchlist')} />
           <Row icon="trending-up-outline" label={t('profile.myLeads')} onPress={() => router.push('/leads')} />
           <Row icon="shield-checkmark-outline" label={t('profile.warrantyRecalls')} onPress={() => router.push('/warranty')} />

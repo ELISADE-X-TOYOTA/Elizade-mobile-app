@@ -41,7 +41,8 @@
     "total": "الإجمالي",
     "progress": "التقدّم",
     "price": "السعر",
-    "dismiss": "إغلاق"
+    "dismiss": "إغلاق",
+    "vehicle": "المركبة"
   },
   "nav": {
     "home": "الرئيسية",
@@ -140,7 +141,8 @@
     "emailInvalid": "أدخل بريدًا إلكترونيًا صالحًا.",
     "emailChangeNotice": "هذا عنوان تسجيل دخولك. سننبّه عنوانيك القديم والجديد عند التغيير.",
     "privacySecurity": "الخصوصية والأمان",
-    "emailLocked": "لا يمكن تغيير بريد تسجيل الدخول إلا من قبلنا. راسل {{support}}."
+    "emailLocked": "لا يمكن تغيير بريد تسجيل الدخول إلا من قبلنا. راسل {{support}}.",
+    "myReservations": "حجوزاتي"
   },
   "leads": {
     "title": "طلباتي",
@@ -473,7 +475,9 @@
     "requestedDetail": "تم طلب تجربة قيادة {{vehicle}} في {{branch}}. سيؤكد فريقنا قريبًا.",
     "reserveVehicle": "احجز المركبة",
     "depositCollectedLater": "لا يتم تحصيل أي دفعة الآن. سيتواصل معك فريق المبيعات لترتيب العربون.",
-    "alreadyReserved": "لقد حجزت هذه المركبة بالفعل. يمكنك رؤيتها ضمن الحجوزات."
+    "alreadyReserved": "لقد حجزت هذه المركبة بالفعل. يمكنك رؤيتها ضمن الحجوزات.",
+    "reservedBody": "تم حجز {{vehicle}} لك في {{showroom}} لمدة 7 أيام. أرسلنا لك التفاصيل — لم يُستوف أي مبلغ بعد.",
+    "depositDue": "العربون المستحق"
   },
   "home": {
     "openProfile": "افتح ملفك الشخصي"
@@ -523,5 +527,19 @@
     "requestYourData": "اطلب نسخة من بياناتك",
     "deleteAccount": "حذف حسابي",
     "deleteAccountDetail": "سنؤكّد معك عبر البريد أولاً."
+  },
+  "reservations": {
+    "title": "حجوزاتي",
+    "subtitle": "مركبات محجوزة لك.",
+    "heldUntil": "محجوزة حتى",
+    "loadError": "تعذّر تحميل حجوزاتك.",
+    "noPaymentTaken": "لم يُستوف أي مبلغ. سيتواصل فريق المبيعات لترتيب العربون.",
+    "emptyTitle": "لا توجد حجوزات بعد",
+    "emptyBody": "احجز مركبة من المعرض وسنحتفظ بها لك لمدة 7 أيام.",
+    "statusHeld": "محجوزة",
+    "statusDepositPaid": "تم دفع العربون",
+    "statusConfirmed": "مؤكدة",
+    "statusCancelled": "ملغاة",
+    "statusExpired": "منتهية"
   }
 }

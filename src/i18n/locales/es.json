@@ -41,7 +41,8 @@
     "total": "Total",
     "progress": "Progreso",
     "price": "Precio",
-    "dismiss": "Cerrar"
+    "dismiss": "Cerrar",
+    "vehicle": "Vehículo"
   },
   "nav": {
     "home": "Inicio",
@@ -140,7 +141,8 @@
     "emailInvalid": "Introduce un correo válido.",
     "emailChangeNotice": "Es tu dirección de acceso. Avisaremos a tu dirección anterior y a la nueva cuando cambie.",
     "privacySecurity": "Privacidad y seguridad",
-    "emailLocked": "Solo nosotros podemos cambiar tu correo de acceso. Escribe a {{support}} y lo verificaremos contigo."
+    "emailLocked": "Solo nosotros podemos cambiar tu correo de acceso. Escribe a {{support}} y lo verificaremos contigo.",
+    "myReservations": "Mis reservas"
   },
   "leads": {
     "title": "Mis solicitudes",
@@ -473,7 +475,9 @@
     "requestedDetail": "Tu prueba de manejo del {{vehicle}} en {{branch}} está solicitada. Nuestro equipo lo confirmará en breve.",
     "reserveVehicle": "Reservar vehículo",
     "depositCollectedLater": "No se cobra ningún pago ahora. Nuestro equipo de ventas le contactará para gestionar el depósito.",
-    "alreadyReserved": "Ya ha reservado este vehículo. Puede verlo en Reservas."
+    "alreadyReserved": "Ya ha reservado este vehículo. Puede verlo en Reservas.",
+    "reservedBody": "El {{vehicle}} queda reservado para ti en {{showroom}} durante 7 días. Te enviamos los detalles por correo — aún no se ha cobrado nada.",
+    "depositDue": "Depósito a pagar"
   },
   "home": {
     "openProfile": "Abrir tu perfil"
@@ -523,5 +527,19 @@
     "requestYourData": "Solicitar una copia de tus datos",
     "deleteAccount": "Eliminar mi cuenta",
     "deleteAccountDetail": "Lo confirmaremos contigo por correo."
+  },
+  "reservations": {
+    "title": "Mis reservas",
+    "subtitle": "Vehículos reservados para ti.",
+    "heldUntil": "Reservado hasta",
+    "loadError": "No se pudieron cargar tus reservas.",
+    "noPaymentTaken": "No se ha cobrado nada. Nuestro equipo de ventas acordará el depósito contigo.",
+    "emptyTitle": "Aún no hay reservas",
+    "emptyBody": "Reserva un vehículo desde el showroom y te lo guardaremos 7 días.",
+    "statusHeld": "Reservado",
+    "statusDepositPaid": "Depósito pagado",
+    "statusConfirmed": "Confirmado",
+    "statusCancelled": "Cancelado",
+    "statusExpired": "Caducado"
   }
 }
