@@ -404,7 +404,11 @@
     "reviewWithin48": "Nuestro equipo de garantía revisará tu reclamación de {{category}} y te responderá en 48 horas.",
     "describeIssueHint": "Al menos {{count}} caracteres: ¿qué ocurrió y cuándo?",
     "notEligible": "No elegible",
-    "submitClaim": "Enviar reclamación"
+    "submitClaim": "Enviar reclamación",
+    "vehicle": "Vehículo",
+    "noVehiclesTitle": "No hay vehículo para reclamar",
+    "noVehiclesBody": "Una reclamación de garantía se presenta sobre un coche de tu garaje. Añade el tuyo primero y vuelve aquí.",
+    "goToGarage": "Ir a Mis vehículos"
   },
   "bookings": {
     "title": "Reservas",

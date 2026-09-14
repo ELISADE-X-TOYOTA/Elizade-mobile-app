@@ -3,7 +3,6 @@ import { CreateClaimBody, warrantyApi } from '../api/warranty';
 import { APP } from '../constants/app';
 import { RecallNotice, WarrantyCertificate, WarrantyClaim, WarrantyEligibility } from '../domain/types';
 import { RECALLS, WARRANTY_CERTIFICATES, WARRANTY_CLAIMS, ownedVehicleById } from './mock';
-import { fetchOwnedVehicles } from './garageRepository';
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -14,15 +13,7 @@ export async function fetchCertificates(): Promise<WarrantyCertificate[]> {
     await delay(400);
     return WARRANTY_CERTIFICATES;
   }
-  // Certificates don't carry the VIN, so pair them with the garage by label.
-  const [certs, vehicles] = await Promise.all([
-    warrantyApi.certificates(),
-    fetchOwnedVehicles().catch(() => []),
-  ]);
-  return certs.map((c) => {
-    const v = vehicles.find((ov) => `${ov.year} ${ov.make} ${ov.model}` === c.vehicleLabel);
-    return mapCertificate(c, v?.vin ?? '');
-  });
+  return (await warrantyApi.certificates()).map(mapCertificate);
 }
 
 export async function fetchRecalls(): Promise<RecallNotice[]> {

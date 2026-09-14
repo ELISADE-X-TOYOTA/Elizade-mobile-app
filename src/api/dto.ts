@@ -138,6 +138,9 @@ export interface WarrantyCertificateDto {
   certificateNumber: string;
   type: string;
   status: string;
+  /** The garage vehicle this certificate covers — what a claim is filed against. */
+  ownedVehicleId: string;
+  vin: string;
   vehicleLabel: string;
   coverageStart: string;
   coverageEnd: string;

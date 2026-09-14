@@ -404,7 +404,11 @@
     "reviewWithin48": "Our warranty team will review your {{category}} claim and get back to you within 48 hours.",
     "describeIssueHint": "At least {{count}} characters — what happened, and when?",
     "notEligible": "Not eligible",
-    "submitClaim": "Submit Claim"
+    "submitClaim": "Submit Claim",
+    "vehicle": "Vehicle",
+    "noVehiclesTitle": "No vehicle to claim on",
+    "noVehiclesBody": "A warranty claim is filed against a car in your garage. Add yours first and come back here.",
+    "goToGarage": "Go to My Vehicles"
   },
   "bookings": {
     "title": "Bookings",

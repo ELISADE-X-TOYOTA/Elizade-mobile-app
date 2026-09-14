@@ -404,7 +404,11 @@
     "reviewWithin48": "Notre équipe garantie examinera votre demande {{category}} et vous répondra sous 48 heures.",
     "describeIssueHint": "Au moins {{count}} caractères — que s'est-il passé, et quand ?",
     "notEligible": "Non éligible",
-    "submitClaim": "Envoyer la réclamation"
+    "submitClaim": "Envoyer la réclamation",
+    "vehicle": "Véhicule",
+    "noVehiclesTitle": "Aucun véhicule pour la demande",
+    "noVehiclesBody": "Une demande de garantie concerne une voiture de votre garage. Ajoutez la vôtre d'abord, puis revenez ici.",
+    "goToGarage": "Aller à Mes véhicules"
   },
   "bookings": {
     "title": "Réservations",

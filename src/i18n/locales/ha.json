@@ -404,7 +404,11 @@
     "reviewWithin48": "Ƙungiyar warantinmu za ta duba buƙatarka ta {{category}} kuma ta amsa cikin awanni 48.",
     "describeIssueHint": "Akalla haruffa {{count}} — me ya faru, kuma yaushe?",
     "notEligible": "Bai cancanta ba",
-    "submitClaim": "Aika Da'awa"
+    "submitClaim": "Aika Da'awa",
+    "vehicle": "Mota",
+    "noVehiclesTitle": "Babu mota da za a nema garanti a kai",
+    "noVehiclesBody": "Ana neman garanti ne a kan mota da ke cikin garejinka. Fara ƙara motarka, sannan ka dawo nan.",
+    "goToGarage": "Je zuwa Motocina"
   },
   "bookings": {
     "title": "Ajiye wuri",

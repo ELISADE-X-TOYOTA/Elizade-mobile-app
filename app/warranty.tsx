@@ -9,7 +9,6 @@ import { Skeleton } from '../src/components/Skeleton';
 import { Txt } from '../src/components/Txt';
 import { WarrantyClaimModal } from '../src/components/WarrantyClaimModal';
 import { SecureAttachment } from '../src/components/SecureAttachment';
-import { OWNED_VEHICLES } from '../src/data/mock';
 import {
   CLAIM_STATUS_META,
   RECALL_SEVERITY_META,
@@ -19,6 +18,7 @@ import {
   WarrantyCertificate,
   WarrantyClaim,
 } from '../src/domain/types';
+import { useOwnedVehicles } from '../src/hooks/useGarage';
 import { useWarranty } from '../src/hooks/useWarranty';
 import { radius, spacing } from '../src/theme/spacing';
 import { useTheme } from '../src/theme/useTheme';
@@ -29,6 +29,9 @@ export default function Warranty() {
   const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const { certificates, recalls, claims, loading, error, reload } = useWarranty();
+  // The claim is filed against a car from the garage — the REAL garage. This
+  // screen used to hand the sheet `OWNED_VEHICLES[0].id` from the mock data.
+  const { vehicles: ownedVehicles } = useOwnedVehicles();
   const [claimOpen, setClaimOpen] = useState(false);
 
   const openRecalls = recalls.filter((r) => r.status !== 'resolved');
@@ -91,7 +94,8 @@ export default function Warranty() {
 
       <WarrantyClaimModal
         visible={claimOpen}
-        vehicleId={OWNED_VEHICLES[0].id}
+        vehicles={ownedVehicles}
+        certificates={certificates}
         onClose={() => setClaimOpen(false)}
         onSubmitted={reload}
       />

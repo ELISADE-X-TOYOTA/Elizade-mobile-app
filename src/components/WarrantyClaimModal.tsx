@@ -5,9 +5,11 @@ import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, TextInput,
 import Animated, { ZoomIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MAX_TICKET_ATTACHMENTS } from '../api/support';
+import { router } from 'expo-router';
 import { createClaim, fetchEligibility } from '../data/warrantyRepository';
 import { pickTicketAttachment, PickedAttachment } from '../data/supportRepository';
-import { WARRANTY_CLAIM_CATEGORIES, WarrantyEligibility } from '../domain/types';
+import { OwnedVehicle, WARRANTY_CLAIM_CATEGORIES, WarrantyCertificate, WarrantyEligibility } from '../domain/types';
+import { preferredClaimVehicleIndex } from '../domain/warranty';
 import { radius, spacing } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
 import { useKeyboardHeight } from './KeyboardAware';
@@ -20,17 +22,28 @@ import { tint } from '../theme/colors';
 
 interface Props {
   visible: boolean;
-  vehicleId: string;
+  /**
+   * The customer's garage — the claim is filed against one of THESE.
+   *
+   * This used to be a single `vehicleId`, and the only caller passed
+   * `OWNED_VEHICLES[0].id` from the mock data: the literal string 'ov1', on
+   * every phone, in production. The API rejected it as "not a valid
+   * identifier" and no claim was ever filed from the app.
+   */
+  vehicles: OwnedVehicle[];
+  certificates: WarrantyCertificate[];
   onClose: () => void;
   onSubmitted: () => void;
 }
 
-/** File a warranty claim: pick a category, describe the issue, attach media. */
-export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }: Props) {
+/** File a warranty claim: pick a vehicle and category, describe the issue, attach media. */
+export function WarrantyClaimModal({ visible, vehicles, certificates, onClose, onSubmitted }: Props) {
   const t = useTheme();
   const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const keyboardHeight = useKeyboardHeight();
+  const [vehicleIndex, setVehicleIndex] = useState(-1);
+  const vehicleId = vehicles[vehicleIndex]?.id;
   const [category, setCategory] = useState(WARRANTY_CLAIM_CATEGORIES[0]);
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
@@ -49,6 +62,12 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
     Submit — and only then learns the car was never eligible. Checking up front
     turns that into a statement they can read before typing anything.
   */
+  // Re-chosen each time the sheet opens, because the garage can change
+  // between openings and a stale index would point at the wrong car.
+  useEffect(() => {
+    if (visible) setVehicleIndex(preferredClaimVehicleIndex(vehicles, certificates));
+  }, [visible, vehicles, certificates]);
+
   useEffect(() => {
     if (!visible || !vehicleId) return;
     let alive = true;
@@ -105,6 +124,7 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
   };
 
   const submit = async () => {
+    if (!vehicleId) return;
     setLoading(true);
     setError(undefined);
     try {
@@ -149,10 +169,59 @@ export function WarrantyClaimModal({ visible, vehicleId, onClose, onSubmitted }:
               <View style={{ height: 20 }} />
               <PrimaryButton label={tr('common.done')} onPress={close} style={{ width: '100%' }} />
             </View>
+          ) : vehicles.length === 0 ? (
+            /*
+              Nothing to file against. Say so and point at the garage, rather
+              than showing a form whose submit can only fail.
+            */
+            <View style={{ padding: spacing.xl, alignItems: 'center' }}>
+              <View style={[styles.successIcon, { backgroundColor: t.colors.surfaceAlt }]}>
+                <Ionicons name="car-outline" size={52} color={t.colors.textTertiary} />
+              </View>
+              <Txt variant="headlineMedium" center style={{ marginTop: 20 }}>{tr('warranty.noVehiclesTitle')}</Txt>
+              <Txt tone="secondary" center style={{ marginTop: 8 }}>{tr('warranty.noVehiclesBody')}</Txt>
+              <View style={{ height: 20 }} />
+              <PrimaryButton
+                label={tr('warranty.goToGarage')}
+                icon="car-sport"
+                onPress={() => {
+                  close();
+                  router.push('/garage');
+                }}
+                style={{ width: '100%' }}
+              />
+            </View>
           ) : (
             <>
               <Txt variant="titleLarge" style={{ paddingHorizontal: spacing.lg, paddingTop: 8 }}>{tr('warranty.fileClaim')}</Txt>
               <ScrollView style={{ maxHeight: 400 }} contentContainerStyle={{ padding: spacing.lg }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+                <Txt variant="titleMedium" style={{ marginBottom: spacing.sm }}>{tr('warranty.vehicle')}</Txt>
+                <View style={{ gap: 8, marginBottom: spacing.lg }}>
+                  {vehicles.map((v, i) => {
+                    const active = vehicleIndex === i;
+                    return (
+                      <Pressable
+                        key={v.id}
+                        onPress={() => setVehicleIndex(i)}
+                        accessibilityRole="radio"
+                        accessibilityState={{ selected: active }}
+                        style={[styles.vehicleRow, { backgroundColor: active ? t.colors.primary + '14' : t.colors.surfaceAlt, borderColor: active ? t.colors.primary : t.colors.border }]}
+                      >
+                        <Ionicons name="car-sport-outline" size={20} color={active ? t.colors.primary : t.colors.textSecondary} />
+                        <View style={{ flex: 1, marginLeft: 10 }}>
+                          <Txt variant="titleSmall" numberOfLines={1}>{`${v.year} ${v.make} ${v.model}`}</Txt>
+                          <Txt variant="bodySmall" tone="secondary" numberOfLines={1}>{v.registrationNumber || v.vin}</Txt>
+                        </View>
+                        <Ionicons
+                          name={active ? 'radio-button-on' : 'radio-button-off'}
+                          size={20}
+                          color={active ? t.colors.primary : t.colors.textTertiary}
+                        />
+                      </Pressable>
+                    );
+                  })}
+                </View>
+
                 {checking ? (
                   <View style={[styles.cover, { backgroundColor: t.colors.surfaceAlt }]}>
                     <ActivityIndicator size="small" color={t.colors.textSecondary} />
@@ -348,6 +417,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   chip: { paddingHorizontal: 14, height: 40, borderRadius: radius.pill, borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  vehicleRow: { flexDirection: 'row', alignItems: 'center', padding: 12, borderRadius: radius.md, borderWidth: 1 },
   attach: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 52, borderRadius: radius.md, borderWidth: 1, borderStyle: 'dashed', marginTop: 14 },
   successIcon: { width: 96, height: 96, borderRadius: 48, alignItems: 'center', justifyContent: 'center' },
 });

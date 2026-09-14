@@ -52,24 +52,23 @@ export async function fetchVehicleRecords(
     };
   }
 
-  const [historyRes, certs, vehicles] = await Promise.all([
+  const [historyRes, certs] = await Promise.all([
     // Filtered server-side; fetching everything and filtering here dropped
     // this vehicle's older records once total history passed one page.
     serviceApi.history({ vehicleId }).catch(() => ({ items: [] as never[] })),
     warrantyApi.certificates().catch(() => []),
-    fetchOwnedVehicles().catch(() => [] as OwnedVehicle[]),
   ]);
 
-  const vehicle = vehicles.find((v) => v.id === vehicleId);
   const history = (historyRes.items ?? []).map(mapServiceHistory);
 
-  // Certificates identify their vehicle by label, not id.
-  const label = vehicle ? `${vehicle.year} ${vehicle.make} ${vehicle.model}` : '';
-  const certDto = certs.find((c) => c.vehicleLabel === label) ?? certs[0];
+  // By id, and THIS vehicle's only. The previous match was by label with a
+  // fallback to `certs[0]`, so a two-car garage showed the second car wearing
+  // the first car's warranty whenever the labels differed.
+  const certDto = certs.find((c) => c.ownedVehicleId === vehicleId);
 
   return {
     history,
-    warranty: certDto ? mapCertificate(certDto, vehicle?.vin ?? '') : undefined,
+    warranty: certDto ? mapCertificate(certDto) : undefined,
   };
 }
 
