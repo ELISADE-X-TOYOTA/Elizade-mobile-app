@@ -404,7 +404,11 @@
     "reviewWithin48": "Ẹgbẹ́ ìdánilójú wa yóò ṣàyẹ̀wò ìbéèrè {{category}} rẹ, wọn yóò sì dáhùn láàárín wákàtí 48.",
     "describeIssueHint": "O kéré tán àmì {{count}} — kín ni ó ṣẹlẹ, àti ìgbà wo?",
     "notEligible": "Kò yẹ",
-    "submitClaim": "Fì ẹ̀bẹ̀ ranṣẹ́"
+    "submitClaim": "Fì ẹ̀bẹ̀ ranṣẹ́",
+    "vehicle": "Ọkọ̀",
+    "noVehiclesTitle": "Kò sí ọkọ̀ láti bèèrè ìdánilójú lórí",
+    "noVehiclesBody": "A máa ń bèèrè ìdánilójú lórí ọkọ̀ tó wà nínú gáréèjì rẹ. Kọ́kọ́ fi tìrẹ kún un, kí o sì padà wá síbí.",
+    "goToGarage": "Lọ sí Àwọn ọkọ̀ mi"
   },
   "bookings": {
     "title": "Ìfiṣọ̀wọ̀",

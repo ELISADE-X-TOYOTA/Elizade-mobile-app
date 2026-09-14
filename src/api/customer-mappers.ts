@@ -163,12 +163,12 @@ export function mapServiceHistory(d: ServiceHistoryDto): ServiceHistoryItem {
 
 const WARRANTY_STATUSES: WarrantyStatus[] = ['active', 'expired', 'extended'];
 
-export function mapCertificate(d: WarrantyCertificateDto, vin = ''): WarrantyCertificate {
+export function mapCertificate(d: WarrantyCertificateDto): WarrantyCertificate {
   return {
     id: d.id,
-    vehicleId: '',
+    vehicleId: d.ownedVehicleId,
     vehicleTitle: d.vehicleLabel,
-    vin,
+    vin: d.vin,
     coverageType: d.type === 'standard' ? 'Toyota Manufacturer Warranty' : d.type,
     status: WARRANTY_STATUSES.includes(d.status as WarrantyStatus)
       ? (d.status as WarrantyStatus)

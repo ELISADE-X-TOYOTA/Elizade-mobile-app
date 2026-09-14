@@ -404,7 +404,11 @@
     "reviewWithin48": "Ndị otu akwụkwọ nkwa anyị ga-enyocha arịrịọ {{category}} gị ma zaghachi n'ime awa 48.",
     "describeIssueHint": "Opụ nta mkpụrụedemede {{count}} — gịnị mere, na mgbe ole?",
     "notEligible": "Erughị eru",
-    "submitClaim": "Zipụ Nkwupụta"
+    "submitClaim": "Zipụ Nkwupụta",
+    "vehicle": "Ụgbọ",
+    "noVehiclesTitle": "Enweghị ụgbọ a ga-arịọ mkpuchi na ya",
+    "noVehiclesBody": "A na-arịọ mkpuchi ụgbọ maka ụgbọ dị na gareeji gị. Buru ụzọ tinye nke gị, wee lọghachi ebe a.",
+    "goToGarage": "Gaa na Ụgbọ m"
   },
   "bookings": {
     "title": "Ndebe oche",
