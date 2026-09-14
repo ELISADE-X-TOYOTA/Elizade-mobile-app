@@ -33,7 +33,8 @@
       },
       "ios": {
         "resourceClass": "m-medium"
-      }
+      },
+      "autoIncrement": true
     },
     "production": {
       "android": {
@@ -47,7 +48,8 @@
       },
       "ios": {
         "resourceClass": "m-medium"
-      }
+      },
+      "autoIncrement": true
     },
     "preview-simulator": {
       "extends": "preview",
