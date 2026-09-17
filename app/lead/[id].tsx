@@ -1,11 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { LeadTracker, stageLabel } from '../../src/components/LeadTracker';
+import { ScreenHeader } from '../../src/components/ScreenHeader';
 import { Skeleton } from '../../src/components/Skeleton';
 import { Txt } from '../../src/components/Txt';
 import { leadsApi, type LeadDetailDto } from '../../src/api/leads';
@@ -81,10 +82,11 @@ export default function LeadDetailScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.canvas }}>
-      <Stack.Screen options={{ title: t('leads.detailTitle') }} />
+      <ScreenHeader title={t('leads.detailTitle')} />
       <ScrollView
         contentContainerStyle={{
           padding: spacing.screenH,
+          paddingTop: spacing.md,
           paddingBottom: insets.bottom + spacing.xl,
         }}
         refreshControl={

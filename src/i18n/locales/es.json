@@ -239,7 +239,8 @@
     "testDriveBooked": "Prueba reservada",
     "reserved": "Reservado",
     "sold": "Vendido",
-    "unavailable": "No disponible"
+    "unavailable": "No disponible",
+    "reservationBooked": "Reserva realizada"
   },
   "service": {
     "title": "Servicio",

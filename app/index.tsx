@@ -11,9 +11,10 @@ import Animated, {
   withDelay,
   withTiming,
 } from 'react-native-reanimated';
-import { clearSession } from '../src/api/session';
+import { clearSession, getToken, readCachedUser, readLastActive } from '../src/api/session';
 import { APP } from '../src/constants/app';
 import { restoreSession } from '../src/data/authRepository';
+import { decideOnLaunch } from '../src/security/lockPolicy';
 import { useStore } from '../src/store/useStore';
 import { Txt } from '../src/components/Txt';
 import { brand, solid } from '../src/theme/colors';
@@ -61,18 +62,49 @@ export default function Splash() {
       requests — and signing in again would stack a second session on top of
       one that was never ended.
     */
+    /*
+      The five-minute background rule, applied at cold start.
+
+      The resume watcher only knows about backgrounds that happened in THIS
+      process. iOS ends backgrounded apps routinely, so a customer who left
+      the app for an afternoon usually comes back to a fresh launch — which
+      used to restore the session unconditionally. The same rule now runs
+      here against the stamp the watcher persists, and a stale session is
+      cleared BEFORE the token could be used for anything.
+    */
+    type Launch = { user: Awaited<ReturnType<typeof restoreSession>>; timedOut: boolean; email?: string };
+    const restore = async (): Promise<Launch> => {
+      if (APP.startSignedOut) {
+        await clearSession();
+        return { user: null, timedOut: false };
+      }
+      const [token, lastActiveAt] = await Promise.all([getToken(), readLastActive()]);
+      const action = decideOnLaunch({ hasStoredSession: !!token, lastActiveAt, now: Date.now() });
+      if (action === 'signOut') {
+        const cached = await readCachedUser().catch(() => null);
+        await clearSession();
+        return { user: null, timedOut: true, email: cached?.email };
+      }
+      return { user: await restoreSession().catch(() => null), timedOut: false };
+    };
+
     const settle = Promise.all([
-      APP.startSignedOut
-        ? clearSession().then(() => null)
-        : restoreSession().catch(() => null),
+      restore().catch((): Launch => ({ user: null, timedOut: false })),
       new Promise((resolve) => setTimeout(resolve, SPLASH_MS)),
     ]);
 
-    settle.then(([user]) => {
+    settle.then(([result]) => {
       if (cancelled) return;
-      if (user) {
-        useStore.getState().setCurrentUser(user);
+      if (result.user) {
+        useStore.getState().setCurrentUser(result.user);
         router.replace('/(tabs)/home');
+      } else if (result.timedOut) {
+        // A returning customer, not a new one: straight to sign-in, told why,
+        // with their address filled in — the same landing the resume path uses.
+        router.replace({
+          pathname: '/(auth)/login',
+          params: { ...(result.email ? { email: result.email } : {}), reason: 'timeout' },
+        });
       } else {
         router.replace('/onboarding');
       }

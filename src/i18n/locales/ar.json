@@ -239,7 +239,8 @@
     "testDriveBooked": "تم حجز قيادة تجريبية",
     "reserved": "محجوز",
     "sold": "مباع",
-    "unavailable": "غير متاح"
+    "unavailable": "غير متاح",
+    "reservationBooked": "تم الحجز"
   },
   "service": {
     "title": "الصيانة",

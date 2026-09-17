@@ -1,10 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Stack, router } from 'expo-router';
 import { useState } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { ScreenHeader } from '../src/components/ScreenHeader';
 import { Txt } from '../src/components/Txt';
 import i18n, { LANGUAGES, changeLanguage, findLanguage, type Language } from '../src/i18n';
 import { solid, tint } from '../src/theme/colors';
@@ -44,15 +44,11 @@ export default function LanguageScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.canvas }}>
-      <Stack.Screen options={{ title: t('language.title'), headerBackTitle: t('common.back') }} />
+      <ScreenHeader title={t('language.title')} subtitle={t('language.subtitle')} />
       <ScrollView
-        contentContainerStyle={{ padding: spacing.screenH, paddingBottom: insets.bottom + spacing.xl }}
+        contentContainerStyle={{ padding: spacing.screenH, paddingTop: spacing.md, paddingBottom: insets.bottom + spacing.xl }}
         showsVerticalScrollIndicator={false}
       >
-        <Txt variant="bodyMedium" tone="secondary" style={{ marginBottom: spacing.md }}>
-          {t('language.subtitle')}
-        </Txt>
-
         <View style={[styles.group, { backgroundColor: theme.colors.surface, borderColor: theme.colors.border }]}>
           {LANGUAGES.map((lang, i) => {
             const selected = lang.code === active;

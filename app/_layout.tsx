@@ -160,6 +160,11 @@ export default function RootLayout() {
         <Stack
           screenOptions={{
             headerShown: false,
+            // With the native header hidden, every pushed screen draws its own
+            // back button (`ScreenHeader`). The iOS edge swipe is the fallback
+            // for the day one forgets — stated here so nobody turns it off
+            // for a single screen and takes it from all of them.
+            gestureEnabled: true,
             // Transparent so the wallpaper above is visible behind each route.
             contentStyle: { backgroundColor: 'transparent' },
             animation: 'slide_from_right',
