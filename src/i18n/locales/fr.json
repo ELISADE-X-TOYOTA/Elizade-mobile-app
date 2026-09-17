@@ -239,7 +239,8 @@
     "testDriveBooked": "Essai réservé",
     "reserved": "Réservé",
     "sold": "Vendu",
-    "unavailable": "Indisponible"
+    "unavailable": "Indisponible",
+    "reservationBooked": "Réservation confirmée"
   },
   "service": {
     "title": "Entretien",

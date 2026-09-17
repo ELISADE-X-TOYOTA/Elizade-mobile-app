@@ -239,7 +239,8 @@
     "testDriveBooked": "Test Drive Booked",
     "reserved": "Reserved",
     "sold": "Sold",
-    "unavailable": "Unavailable"
+    "unavailable": "Unavailable",
+    "reservationBooked": "Reservation Booked"
   },
   "service": {
     "title": "Service",

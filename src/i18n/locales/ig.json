@@ -239,7 +239,8 @@
     "testDriveBooked": "Edebela nnwale Ọkwụ",
     "reserved": "Edobere",
     "sold": "Erela ya",
-    "unavailable": "Ọ dịghị"
+    "unavailable": "Ọ dịghị",
+    "reservationBooked": "Edobela"
   },
   "service": {
     "title": "Nrụzi",

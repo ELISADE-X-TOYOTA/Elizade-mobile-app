@@ -24,7 +24,9 @@ import { Vehicle360Viewer } from '../../src/components/Vehicle360Viewer';
 import { ON_DARK_INK, OVERLAY_CHIP, OVERLAY_CHIP_INK, solid, tint } from '../../src/theme/colors';
 import { vehicleSubtitle, vehicleTitle, Vehicle } from '../../src/domain/types';
 import { activeTestDriveFor } from '../../src/domain/bookings';
+import { activeReservationFor, reserveActionFor } from '../../src/domain/reservations';
 import { callSupport } from '../../src/utils/contact';
+import { useReservations } from '../../src/hooks/useReservations';
 import { useTestDrives } from '../../src/hooks/useTestDrives';
 import { useVehicle } from '../../src/hooks/useVehicles';
 import { useNotifyMeStore } from '../../src/store/useNotifyMeStore';
@@ -111,6 +113,22 @@ export default function CarDetails() {
   );
 
   /*
+    Same again for reservations. The deposit sheet lives ON this screen, so
+    a successful hold does not change focus — the reload is wired to the
+    sheet closing instead, and the button flips as the sheet comes down.
+  */
+  const { reservations: myReservations, reload: reloadReservations } = useReservations();
+  useFocusEffect(
+    useCallback(() => {
+      reloadReservations();
+    }, [reloadReservations]),
+  );
+  const myReservation = useMemo(
+    () => activeReservationFor(myReservations, id ?? ''),
+    [myReservations, id],
+  );
+
+  /*
     Dialling lives in `src/utils/contact.ts`. This screen had its own copy,
     with its own hardcoded number, which is how the dealer card and the
     Support tab came to dial different lines.
@@ -153,9 +171,13 @@ export default function CarDetails() {
     v.availability === 'sold' ? 'close-circle' : isAvailable ? 'checkmark-circle' : 'time';
   // A sold car cannot be test driven or reserved — the API rejects both with a
   // 400. Leaving the buttons live would make them one more control that looks
-  // ready and does nothing. `reserved` is deliberately NOT included: the API
-  // still accepts both actions on a reserved vehicle.
+  // ready and does nothing. `reserved` is NOT included here because a test
+  // drive on a reserved car is still accepted; reserving one is not (409),
+  // which `reserveAction` handles separately below.
   const salesActionsDisabled = v.availability === 'sold' || v.availability === 'unavailable';
+  // Three states: reserve it, you already hold it, or somebody else does.
+  // The rule is in `src/domain/reservations.ts` and tested there.
+  const reserveAction = reserveActionFor(v.availability, myReservation);
   const availabilityFill = v.availability === 'sold' ? t.colors.error : isAvailable ? t.colors.success : t.colors.warning;
   const availabilityText = v.availability === 'sold' ? t.colors.errorText : isAvailable ? t.colors.successText : t.colors.warningText;
 
@@ -239,7 +261,13 @@ export default function CarDetails() {
             )}
           </View>
 
-          {!isAvailable && (
+          {/*
+            Not when the hold is THIS customer's. "Get an alert when this
+            vehicle becomes available to reserve" makes no sense to the
+            person who just reserved it — and it sat directly above a live
+            Reserve button on the same screen.
+          */}
+          {!isAvailable && !myReservation && (
             <NotifyMeCard
               vehicle={v}
               status={notifyStatus}
@@ -354,12 +382,27 @@ export default function CarDetails() {
         </View>
         <View style={{ flexDirection: 'row', gap: 12, marginTop: 12 }}>
           <View style={{ flex: 1 }}>
-            <PrimaryButton
-              label={tr('shop.reserve')}
-              variant="outline"
-              disabled={salesActionsDisabled}
-              onPress={() => setSale('reserve')}
-            />
+            {/*
+              Once this customer holds the car, the button says so and opens
+              My Reservations — the same acknowledgement the test-drive button
+              gives. It used to read "Reserve" regardless, and on a reserved
+              car that was a dead control: the API refuses a second hold.
+            */}
+            {reserveAction === 'booked' ? (
+              <PrimaryButton
+                label={tr('shop.reservationBooked')}
+                icon="checkmark-circle"
+                variant="outline"
+                onPress={() => router.push('/reservations')}
+              />
+            ) : (
+              <PrimaryButton
+                label={tr('shop.reserve')}
+                variant="outline"
+                disabled={reserveAction === 'blocked'}
+                onPress={() => setSale('reserve')}
+              />
+            )}
           </View>
           <View style={{ flex: 1 }}>
             {/*
@@ -398,7 +441,16 @@ export default function CarDetails() {
         </View>
       </View>
 
-      <TestDriveModal visible={sale === 'reserve'} mode="reserve" vehicle={v} onClose={() => setSale(null)} />
+      <TestDriveModal
+        visible={sale === 'reserve'}
+        mode="reserve"
+        vehicle={v}
+        onClose={() => {
+          setSale(null);
+          // The hold may have just been placed; the button must know.
+          reloadReservations();
+        }}
+      />
       <FinancingModal visible={financeOpen} vehiclePrice={v.price} vehicleTitle={vehicleTitle(v)} onClose={() => setFinanceOpen(false)} />
       <QuoteModal visible={quoteOpen} vehicle={v} onClose={() => setQuoteOpen(false)} />
     </View>

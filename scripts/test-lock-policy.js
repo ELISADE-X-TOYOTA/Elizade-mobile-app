@@ -33,7 +33,7 @@ try {
   process.exit(1);
 }
 
-const { BACKGROUND_TIMEOUT_MS, hasBackgroundTimedOut, decideOnResume, remainingMs } =
+const { BACKGROUND_TIMEOUT_MS, hasBackgroundTimedOut, decideOnResume, decideOnLaunch, remainingMs } =
   require(path.join(out, 'lockPolicy.js'));
 
 let pass = 0;
@@ -89,6 +89,40 @@ const MIN = 60 * 1000;
     'a background time in the future counts as expired',
     hasBackgroundTimedOut({ backgroundedAt: NOW + 60 * MIN, now: NOW }) === true,
     'the device clock is user-writable; winding it forward must not skip the timeout',
+  );
+}
+
+// ── The same rule at cold start ─────────────────────────────────────────
+//
+// The resume check lived in memory, and iOS ends backgrounded apps as a
+// matter of routine — so a relaunch restored the session unconditionally,
+// however long it had been away. This is the check the splash screen runs.
+{
+  check(
+    'no stored credentials means nothing to judge',
+    decideOnLaunch({ hasStoredSession: false, lastActiveAt: NOW - 60 * MIN, now: NOW }) === 'restore',
+  );
+  check(
+    'a stored session used a minute ago restores',
+    decideOnLaunch({ hasStoredSession: true, lastActiveAt: NOW - MIN, now: NOW }) === 'restore',
+  );
+  check(
+    'a stored session last used an hour ago signs out',
+    decideOnLaunch({ hasStoredSession: true, lastActiveAt: NOW - 60 * MIN, now: NOW }) === 'signOut',
+    'the whole point: a relaunch is not a free pass',
+  );
+  check(
+    'the boundary signs out at launch too',
+    decideOnLaunch({ hasStoredSession: true, lastActiveAt: NOW - 5 * MIN, now: NOW }) === 'signOut',
+  );
+  check(
+    'a stored session with NO stamp signs out',
+    decideOnLaunch({ hasStoredSession: true, lastActiveAt: null, now: NOW }) === 'signOut',
+    'fail closed: an unstamped handset could have sat open for a month',
+  );
+  check(
+    'a stamp from the future signs out',
+    decideOnLaunch({ hasStoredSession: true, lastActiveAt: NOW + 60 * MIN, now: NOW }) === 'signOut',
   );
 }
 

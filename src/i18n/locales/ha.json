@@ -239,7 +239,8 @@
     "testDriveBooked": "An Ajiye Gwajin Tuki",
     "reserved": "An Ajiye",
     "sold": "An Sayar",
-    "unavailable": "Babu"
+    "unavailable": "Babu",
+    "reservationBooked": "An ajiye"
   },
   "service": {
     "title": "Gyara",

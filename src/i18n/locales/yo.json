@@ -239,7 +239,8 @@
     "testDriveBooked": "A ti ṣe ìdanwò",
     "reserved": "A ti fîsílẹ̀",
     "sold": "A ti tà",
-    "unavailable": "Kò sí"
+    "unavailable": "Kò sí",
+    "reservationBooked": "A ti pamọ́"
   },
   "service": {
     "title": "Àtúnṣe",

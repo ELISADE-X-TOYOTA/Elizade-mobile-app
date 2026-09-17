@@ -1,10 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Stack, router, useFocusEffect } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { ScreenHeader } from '../src/components/ScreenHeader';
 import { Skeleton } from '../src/components/Skeleton';
 import { Txt } from '../src/components/Txt';
 import { stageLabel } from '../src/components/LeadTracker';
@@ -57,15 +58,17 @@ export default function LeadsScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.canvas }}>
-      <Stack.Screen options={{ title: t('leads.title') }} />
+      {/*
+        The native header is hidden app-wide, so the `Stack.Screen` title this
+        screen used to set never rendered — and neither did a back button. The
+        earlier fix paid the top inset so the content cleared the notch, but
+        left the screen with no way back except the iOS edge swipe.
+      */}
+      <ScreenHeader title={t('leads.title')} subtitle={t('leads.subtitle')} />
       <ScrollView
         contentContainerStyle={{
           padding: spacing.screenH,
-          // `headerShown` is false app-wide, so the `Stack.Screen` title above
-          // never renders and this content starts at y=0 — under the status
-          // bar and notch. Every other screen pays its own top inset; this one
-          // did not, which is what pushed the header off the top of the display.
-          paddingTop: insets.top + spacing.md,
+          paddingTop: spacing.md,
           paddingBottom: insets.bottom + spacing.xl,
         }}
         refreshControl={
@@ -73,10 +76,6 @@ export default function LeadsScreen() {
         }
         showsVerticalScrollIndicator={false}
       >
-        <Txt variant="bodyMedium" tone="secondary" style={{ marginBottom: spacing.md }}>
-          {t('leads.subtitle')}
-        </Txt>
-
         {loading ? (
           <View style={{ gap: spacing.sm }}>
             <Skeleton height={96} radius={radius.lg} />

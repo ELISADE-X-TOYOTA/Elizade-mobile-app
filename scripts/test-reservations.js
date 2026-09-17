@@ -56,7 +56,7 @@ if (!compiled) {
   console.error('compiled reservations.js not found under', out);
   process.exit(1);
 }
-const { reservationReference, isActiveReservation, RESERVATION_STATUS_META } = require(compiled);
+const { reservationReference, isActiveReservation, activeReservationFor, reserveActionFor, RESERVATION_STATUS_META } = require(compiled);
 
 let pass = 0;
 let fail = 0;
@@ -97,6 +97,32 @@ console.log('\nwhich holds are still live');
   check('a confirmed sale is active', isActiveReservation('confirmed'));
   check('cancelled is not', !isActiveReservation('cancelled'));
   check('expired is not', !isActiveReservation('expired'));
+}
+
+
+console.log('\nthe car page must know whose hold it is');
+{
+  const car = 'a1b2c3d4-0000-4000-8000-000000000001';
+  const mine = (status) => [{ id: 'r1', vehicleId: car, status }];
+  check('a pending hold on this car is mine', activeReservationFor(mine('pending'), car) !== null);
+  check('a confirmed hold on this car is mine', activeReservationFor(mine('confirmed'), car) !== null);
+  check('a cancelled hold does not count', activeReservationFor(mine('cancelled'), car) === null);
+  check('an expired hold does not count — the car can be reserved again',
+    activeReservationFor(mine('expired'), car) === null);
+  check('a hold on a different car is not this one',
+    activeReservationFor(mine('pending'), 'some-other-car') === null);
+  check('no reservations at all', activeReservationFor([], car) === null);
+}
+
+console.log('\nthree states, not two');
+{
+  check('available and not mine: reserve', reserveActionFor('available', null) === 'reserve');
+  check('I hold it: booked', reserveActionFor('reserved', { id: 'r1' }) === 'booked');
+  check('somebody else holds it: blocked — the API refuses a second hold',
+    reserveActionFor('reserved', null) === 'blocked');
+  check('sold: blocked', reserveActionFor('sold', null) === 'blocked');
+  check('my hold wins even if the vehicle still reads available',
+    reserveActionFor('available', { id: 'r1' }) === 'booked');
 }
 
 fs.rmSync(out, { recursive: true, force: true });

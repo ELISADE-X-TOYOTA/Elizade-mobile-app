@@ -42,3 +42,46 @@ export function reservationReference(reservationId: string): string {
 export function isActiveReservation(status: ReservationStatus): boolean {
   return status === 'pending' || status === 'deposit_paid' || status === 'confirmed';
 }
+
+/**
+ * This customer's live hold on a vehicle, if they have one.
+ *
+ * Drives the car page's Reserve button, which used to read "Reserve" and open
+ * the deposit sheet whether or not this customer had already reserved the
+ * car. Worse, the page's own note claimed the API "still accepts" a reservation
+ * on a reserved vehicle — it does not: a second live hold is refused with a
+ * 409. So the button was a dead control on every reserved car, including the
+ * customer's own.
+ *
+ * Cancelled and expired holds must NOT count, for the same reason completed
+ * test drives do not: a lapsed hold would otherwise block reserving the car
+ * again, which looks identical to the bug being fixed.
+ */
+export function activeReservationFor<T extends { vehicleId: string; status: ReservationStatus }>(
+  reservations: T[],
+  vehicleId: string,
+): T | null {
+  return reservations.find((r) => r.vehicleId === vehicleId && isActiveReservation(r.status)) ?? null;
+}
+
+/** What the car page's Reserve slot should do. */
+export type ReserveAction =
+  /** Open the deposit sheet. */
+  | 'reserve'
+  /** This customer holds it — show "Reservation Booked" and open My Reservations. */
+  | 'booked'
+  /** Someone else holds it, or the car is sold — nothing to press. */
+  | 'blocked';
+
+/**
+ * Three states, not two. `reserved` on the vehicle means SOMEBODY holds it;
+ * only this customer's own reservations say whether that somebody is them.
+ */
+export function reserveActionFor(
+  availability: 'available' | 'reserved' | 'sold' | 'unavailable' | string,
+  ownReservation: unknown | null,
+): ReserveAction {
+  if (ownReservation) return 'booked';
+  if (availability === 'available') return 'reserve';
+  return 'blocked';
+}

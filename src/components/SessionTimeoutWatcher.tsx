@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
 import { useEffect, useRef } from 'react';
 import { AppState, type AppStateStatus } from 'react-native';
-import { clearSession } from '../api/session';
+import { clearSession, touchActivity } from '../api/session';
 import { decideOnResume } from '../security/lockPolicy';
 import { useStore } from '../store/useStore';
 
@@ -16,6 +16,11 @@ import { useStore } from '../store/useStore';
  * The timestamp lives in a ref rather than state on purpose: writing it would
  * re-render the whole tree on every background transition, and nothing renders
  * from it.
+ *
+ * It is ALSO persisted. The ref only survives while the process does, and iOS
+ * ends backgrounded processes routinely — so a relaunch used to restore the
+ * session with no idea how long it had been away. The stamp written here is
+ * what the splash screen reads to apply the same rule at cold start.
  */
 export function SessionTimeoutWatcher() {
   const backgroundedAt = useRef<number | null>(null);
@@ -35,7 +40,13 @@ export function SessionTimeoutWatcher() {
           Only the FIRST transition is recorded — iOS fires inactive → background
           as a pair, and overwriting would restart the clock on the second.
         */
-        if (backgroundedAt.current === null) backgroundedAt.current = Date.now();
+        if (backgroundedAt.current === null) {
+          const now = Date.now();
+          backgroundedAt.current = now;
+          // Persisted for the cold-start check. Only while signed in — a
+          // stamp with no session behind it is noise the next sign-in clears.
+          if (useStore.getState().currentUser) void touchActivity(now);
+        }
         return;
       }
       if (next !== 'active') return;
@@ -49,7 +60,12 @@ export function SessionTimeoutWatcher() {
         backgroundedAt: startedAt,
         now: Date.now(),
       });
-      if (action === 'restore') return;
+      if (action === 'restore') {
+        // Back in use: move the stamp forward so a later crash in the
+        // foreground is judged from now, not from the last background.
+        if (user) void touchActivity();
+        return;
+      }
       if (signingOut.current) return;
       signingOut.current = true;
 
