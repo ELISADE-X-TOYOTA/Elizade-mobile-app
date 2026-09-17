@@ -21,6 +21,23 @@ export function clean(input: string, maxLength = 500): string {
     .slice(0, maxLength);
 }
 
+/**
+ * `clean` for a value that is STILL BEING TYPED.
+ *
+ * Same stripping and cap, but no trim. A controlled input that trims on
+ * every keystroke can never hold a trailing space: type "Toyota", press
+ * space, and the value snaps back to "Toyota" before the next letter
+ * arrives — so "Toyota Camry" came out as "ToyotaCamry" and matched
+ * nothing. Both search boxes did this. Trim when the value is USED, not
+ * while it is being entered.
+ */
+export function cleanTyping(input: string, maxLength = 500): string {
+  return input
+    .replace(CONTROL_CHARS, ' ')
+    .replace(/\s{2,}/g, ' ')
+    .slice(0, maxLength);
+}
+
 /** Free-text notes / descriptions. */
 export const cleanText = (v: string) => clean(v, 1000);
 
