@@ -22,7 +22,7 @@ import { useVehicles } from '../../src/hooks/useVehicles';
 import { useStore } from '../../src/store/useStore';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
-import { clean } from '../../src/utils/sanitize';
+import { cleanTyping } from '../../src/utils/sanitize';
 
 const SCREEN_W = Dimensions.get('window').width;
 
@@ -88,7 +88,7 @@ export default function Shop() {
           <TextInput
             keyboardAppearance={t.isDark ? 'dark' : 'light'}
             value={search}
-            onChangeText={(v) => setSearch(clean(v, 60))}
+            onChangeText={(v) => setSearch(cleanTyping(v, 60))}
             placeholder={tr('shop.searchPlaceholder')}
             placeholderTextColor={t.colors.textTertiary}
             returnKeyType="search"

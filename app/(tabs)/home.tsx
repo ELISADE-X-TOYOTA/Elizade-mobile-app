@@ -10,7 +10,7 @@ import { CarCard } from '../../src/components/CarCard';
 import { IMAGE_FALLBACK, NetworkCarImage } from '../../src/components/NetworkCarImage';
 import { CarCardSkeleton } from '../../src/components/Skeleton';
 import { SectionHeader } from '../../src/components/SectionHeader';
-import { clean } from '../../src/utils/sanitize';
+import { cleanTyping } from '../../src/utils/sanitize';
 import { Txt } from '../../src/components/Txt';
 import { CATEGORY_META, Vehicle, VehicleCategory, vehicleTitle } from '../../src/domain/types';
 import { availableCategories } from '../../src/domain/categories';
@@ -192,7 +192,7 @@ export default function Home() {
           // iOS renders a LIGHT keyboard in dark mode without this.
           keyboardAppearance={t.isDark ? 'dark' : 'light'}
               value={search}
-              onChangeText={(v) => setSearch(clean(v, 60))}
+              onChangeText={(v) => setSearch(cleanTyping(v, 60))}
               placeholder={tr('shop.whatCarLooking')}
               placeholderTextColor={t.colors.textTertiary}
               returnKeyType="search"

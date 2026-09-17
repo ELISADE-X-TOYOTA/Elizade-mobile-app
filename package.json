@@ -9,7 +9,7 @@
     "web": "expo start --web",
     "check:theme": "node scripts/check-theme.js",
     "typecheck": "tsc --noEmit",
-    "verify": "npm run typecheck && npm run check:theme && npm run check:i18n && npm run check:untranslated && npm run test:singleflight && npm run test:sse && npm run test:socket && npm run test:booking && npm run test:compare && npm run test:otp && npm run test:contact && npm run test:tray && npm run test:bookings && npm run test:media && npm run test:categories && npm run test:reservations && npm run test:warranty && npm run test:lock",
+    "verify": "npm run typecheck && npm run check:theme && npm run check:i18n && npm run check:untranslated && npm run test:singleflight && npm run test:sse && npm run test:socket && npm run test:booking && npm run test:compare && npm run test:otp && npm run test:contact && npm run test:tray && npm run test:bookings && npm run test:media && npm run test:categories && npm run test:reservations && npm run test:warranty && npm run test:lock && npm run test:sanitize",
     "check:i18n": "node scripts/check-i18n.js",
     "check:untranslated": "node scripts/find-untranslated.js",
     "test:singleflight": "node scripts/test-singleflight.js",
@@ -26,7 +26,8 @@
     "test:categories": "node scripts/test-categories.js",
     "test:reservations": "node scripts/test-reservations.js",
     "test:warranty": "node scripts/test-warranty.js",
-    "test:lock": "node scripts/test-lock-policy.js"
+    "test:lock": "node scripts/test-lock-policy.js",
+    "test:sanitize": "node scripts/test-sanitize.js"
   },
   "dependencies": {
     "@expo-google-fonts/outfit": "^0.4.3",
