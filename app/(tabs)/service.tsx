@@ -184,6 +184,7 @@ function AppointmentCard({ appt, onUpdated }: { appt: ServiceAppointment; onUpda
           )}
         </View>
       </Pressable>
+      <ServiceAppointmentActions appointment={appt} onUpdated={() => onUpdated()} />
     </View>
   );
 }

@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -355,7 +356,14 @@ function Success({
         </View>
       </View>
       <View style={{ height: 24 }} />
-      <PrimaryButton label={tr('common.done')} onPress={onDone} style={{ width: '100%' }} />
+      <PrimaryButton
+        label={mode === 'reserve' ? tr('profile.myReservations') : tr('common.done')}
+        onPress={() => {
+          onDone();
+          if (mode === 'reserve') router.push('/reservations');
+        }}
+        style={{ width: '100%' }}
+      />
     </View>
   );
 }

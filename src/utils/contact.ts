@@ -63,10 +63,13 @@ export async function emailSupport(title = 'Email Elizade', subject?: string): P
  * still leaves the customer something they can act on.
  */
 export async function openLink(url: string, title = 'Elizade'): Promise<void> {
+  // Trailing slashes on facebook.com pages fail in the in-app browser while
+  // the same path without one opens. Strip them for every social URL.
+  const target = url.replace(/\/+$/, '');
   try {
-    await Linking.openURL(url);
+    await Linking.openURL(target);
   } catch {
-    Alert.alert(title, url);
+    Alert.alert(title, target);
   }
 }
 

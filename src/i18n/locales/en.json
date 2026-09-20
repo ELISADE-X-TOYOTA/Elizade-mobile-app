@@ -131,6 +131,14 @@
     "serviceHistory": "Service History",
     "personalDetails": "Personal Details",
     "language": "Language",
+    "appearance": "Appearance",
+    "appearanceSubtitle": "Choose Light, Dark, or follow your device.",
+    "themeSystem": "System default",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystemHint": "Match the phone's Light or Dark setting.",
+    "themeLightHint": "Always use the light palette.",
+    "themeDarkHint": "Always use the dark palette.",
     "helpCenter": "Help Center",
     "appearanceNote": "Follows your device theme",
     "personalDetailsSubtitle": "Update your name, email and city.",
@@ -318,6 +326,7 @@
     "sendReply": "Send reply",
     "document": "Document",
     "agentTyping": "Support is typing…",
+    "noRepliesYet": "No replies on this ticket yet.",
     "loadTicketsError": "Couldn't load tickets. {{message}}",
     "expectedResponse": "Expected first response within {{hours}} hours",
     "typicalResponse": "Typical response within {{hours}}h",
@@ -356,7 +365,8 @@
   },
   "filters": {
     "title": "Filters",
-    "transmission": "Transmission"
+    "transmission": "Transmission",
+    "year": "Year"
   },
   "compare": {
     "title": "Compare",

@@ -46,7 +46,7 @@ export default function CarDetails() {
   const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { vehicle, loading, error } = useVehicle(id ?? '');
+  const { vehicle, loading, error, reload } = useVehicle(id ?? '');
   const isFav = useWatchlistStore((s) =>
     vehicle ? s.items.some((i) => i.model === vehicle.model) : false,
   );
@@ -98,10 +98,13 @@ export default function CarDetails() {
     would leave the button still inviting a booking that had just been made.
   */
   const { bookings: myTestDrives, reload: reloadTestDrives } = useTestDrives();
+  const { reservations: myReservations, reload: reloadReservations } = useReservations();
   useFocusEffect(
     useCallback(() => {
+      reload();
       reloadTestDrives();
-    }, [reloadTestDrives]),
+      reloadReservations();
+    }, [reload, reloadTestDrives, reloadReservations]),
   );
   // The "which booking counts" rule lives in `src/domain/bookings.ts` and is
   // tested there: counting a completed or cancelled one would permanently
@@ -117,12 +120,6 @@ export default function CarDetails() {
     a successful hold does not change focus — the reload is wired to the
     sheet closing instead, and the button flips as the sheet comes down.
   */
-  const { reservations: myReservations, reload: reloadReservations } = useReservations();
-  useFocusEffect(
-    useCallback(() => {
-      reloadReservations();
-    }, [reloadReservations]),
-  );
   const myReservation = useMemo(
     () => activeReservationFor(myReservations, id ?? ''),
     [myReservations, id],
@@ -447,8 +444,8 @@ export default function CarDetails() {
         vehicle={v}
         onClose={() => {
           setSale(null);
-          // The hold may have just been placed; the button must know.
           reloadReservations();
+          reload();
         }}
       />
       <FinancingModal visible={financeOpen} vehiclePrice={v.price} vehicleTitle={vehicleTitle(v)} onClose={() => setFinanceOpen(false)} />

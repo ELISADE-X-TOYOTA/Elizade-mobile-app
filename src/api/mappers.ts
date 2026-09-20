@@ -19,7 +19,9 @@ function hash(id: string): number {
   return Math.abs(h);
 }
 
-/** The backend has no "category" concept — derive one for the mobile UI. */
+const CATEGORIES: VehicleCategory[] = ['suv', 'sedan', 'electric', 'luxury', 'sports', 'pickup', 'truck'];
+
+/** Guess a body type when the listing has no admin-set `category`. */
 function deriveCategory(make: string, model: string, fuelType: string): VehicleCategory {
   const s = `${make} ${model} ${fuelType}`.toLowerCase();
   if (/electric|ev|tesla/.test(s)) return 'electric';
@@ -29,6 +31,17 @@ function deriveCategory(make: string, model: string, fuelType: string): VehicleC
   if (/911|gt3|gt-r|supra|coupe|mustang|corvette|sport/.test(s)) return 'sports';
   if (/range rover|s-class|maybach|bentley|rolls|lexus ls|luxury/.test(s)) return 'luxury';
   return 'sedan';
+}
+
+function resolveCategory(
+  raw: string | null | undefined,
+  make: string,
+  model: string,
+  fuelType: string,
+): VehicleCategory {
+  const value = raw?.trim().toLowerCase();
+  if (value && CATEGORIES.includes(value as VehicleCategory)) return value as VehicleCategory;
+  return deriveCategory(make, model, fuelType);
 }
 
 const SEATS: Record<VehicleCategory, number> = { suv: 7, truck: 3, pickup: 5, sports: 2, luxury: 5, sedan: 5, electric: 5 };
@@ -61,7 +74,7 @@ const mapAvailability = (value: string): VehicleAvailability =>
   AVAILABILITIES.includes(value as VehicleAvailability) ? (value as VehicleAvailability) : 'unavailable';
 
 export function mapListItemToVehicle(item: VehicleListItem, branches?: Map<string, Branch>): Vehicle {
-  const category = deriveCategory(item.make, item.model, item.fuelType);
+  const category = resolveCategory(item.category, item.make, item.model, item.fuelType);
   const branch = branches?.get(item.branchId);
   return {
     id: item.id,
@@ -89,7 +102,7 @@ export function mapListItemToVehicle(item: VehicleListItem, branches?: Map<strin
 }
 
 export function mapDetailToVehicle(d: VehicleDetail): Vehicle {
-  const category = deriveCategory(d.make, d.model, d.fuelType);
+  const category = resolveCategory(d.category, d.make, d.model, d.fuelType);
   const images = d.images?.length
     ? [...d.images].sort((a, b) => a.sortOrder - b.sortOrder).map((i) => resolveMediaUrl(i.url))
     : d.primaryImageUrl

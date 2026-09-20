@@ -57,7 +57,7 @@ export default function Home() {
 
   // Debounce typing so we filter on a pause, not on every keystroke.
   useEffect(() => {
-    const id = setTimeout(() => setQuery(search.trim().toLowerCase()), 250);
+    const id = setTimeout(() => setQuery(search.trim()), 250);
     return () => clearTimeout(id);
   }, [search]);
 
@@ -80,7 +80,10 @@ export default function Home() {
     if (signedInUser) completeOnboarding(signedInUser.id);
   }, [signedInUser, completeOnboarding]);
 
-  const { vehicles, loading, error, reload } = useVehicles(filters);
+  const { vehicles, loading, error, reload } = useVehicles({
+    ...filters,
+    ...(query ? { q: query } : {}),
+  });
   const { unread, reload: reloadNotifs } = useNotifications();
   const { summary, loading: summaryLoading, reload: reloadSummary } = useDashboard();
   const loadWatchlist = useWatchlistStore((s) => s.load);
@@ -102,18 +105,12 @@ export default function Home() {
   const unreadCount = unread;
 
   /**
-   * Category is derived client-side (the API has no category field), and the
-   * free-text query matches make, model, trim or location.
+   * Category chips stay client-side so guessed body types still match when
+   * staff have not set `specs.category`. Free-text search goes to `q`.
    */
   const list = useMemo(() => {
-    let out = category ? vehicles.filter((v) => v.category === category) : vehicles;
-    if (query) {
-      out = out.filter((v) =>
-        `${v.make} ${v.model} ${v.trim} ${v.location}`.toLowerCase().includes(query),
-      );
-    }
-    return out;
-  }, [vehicles, category, query]);
+    return category ? vehicles.filter((v) => v.category === category) : vehicles;
+  }, [vehicles, category]);
 
   /** Only offer filter options the loaded inventory actually contains. */
   // Only categories the catalogue can actually satisfy — see

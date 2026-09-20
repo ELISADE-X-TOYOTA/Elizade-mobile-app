@@ -3,6 +3,8 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { UserProfile, Vehicle, VehicleCategory, vehicleTitle } from '../domain/types';
 
+export type ThemeMode = 'system' | 'light' | 'dark';
+
 
 /** Side-by-side comparison holds exactly two vehicles. */
 export const COMPARE_LIMIT = 2;
@@ -120,6 +122,9 @@ interface AppState {
 
   marketTab: 0 | 1 | 2;
   setMarketTab: (t: 0 | 1 | 2) => void;
+
+  themeMode: ThemeMode;
+  setThemeMode: (mode: ThemeMode) => void;
 }
 
 export const useStore = create<AppState>()(
@@ -196,11 +201,12 @@ export const useStore = create<AppState>()(
 
       marketTab: 0,
       setMarketTab: (marketTab) => set({ marketTab }),
+
+      themeMode: 'system',
+      setThemeMode: (themeMode) => set({ themeMode }),
     }),
     {
-      // Bumped to -v3: the persisted `themeMode` was dropped when the app
-      // moved to following the OS appearance setting. Devices carrying a v2
-      // payload would otherwise keep a stale key that nothing reads.
+      // v3 dropped a stale theme key; themeMode is persisted again on the same store.
       name: 'elizade-store-v3',
       storage: createJSONStorage(() => AsyncStorage),
       // SECURITY: only non-sensitive preferences are persisted. `currentUser`
@@ -211,6 +217,7 @@ export const useStore = create<AppState>()(
         favorites: s.favorites,
         onboardedUserIds: s.onboardedUserIds,
         readLocalNotificationIds: s.readLocalNotificationIds,
+        themeMode: s.themeMode,
       }),
     },
   ),

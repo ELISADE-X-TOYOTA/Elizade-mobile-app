@@ -13,6 +13,7 @@ export interface VehicleFilters {
   fuelType?: string;
   transmission?: string;
   maxPrice?: number;
+  year?: number;
   sort?: string;
 }
 
@@ -90,6 +91,17 @@ export function FilterSheet({ visible, value, fuelTypes, transmissions, onApply,
                   label={`Under ${price(p).replace(/,000,000$/, 'M')}`}
                   active={value.maxPrice === p}
                   onPress={() => toggle('maxPrice', p)}
+                />
+              ))}
+            </Section>
+
+            <Section title={tr('filters.year')}>
+              {Array.from({ length: 16 }, (_, i) => new Date().getFullYear() - i).map((year) => (
+                <Chip
+                  key={year}
+                  label={String(year)}
+                  active={value.year === year}
+                  onPress={() => toggle('year', year)}
                 />
               ))}
             </Section>
