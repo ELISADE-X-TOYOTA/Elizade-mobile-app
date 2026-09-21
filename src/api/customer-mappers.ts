@@ -255,7 +255,7 @@ export function mapTicket(d: TicketListDto | TicketDetailDto, lastMessage = ''):
 }
 
 export function mapTicketMessage(m: TicketMessageDto, ticketId: string): TicketMessage {
-  const isCustomer = m.senderType === 'customer';
+  const isCustomer = (m.senderType ?? '').toLowerCase() === 'customer';
   return {
     id: m.id,
     ticketId,

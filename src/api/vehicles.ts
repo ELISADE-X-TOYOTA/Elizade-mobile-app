@@ -26,6 +26,7 @@ export interface VehicleListItem {
   transmission: string;
   availability: string;
   branchId: string;
+  category?: string | null;
   primaryImageUrl?: string | null;
   createdAt: string;
 }
@@ -68,6 +69,8 @@ export interface ListVehiclesParams {
   fuelType?: string;
   transmission?: string;
   availability?: string;
+  year?: number;
+  category?: string;
   page?: number;
   limit?: number;
   sort?: string;

@@ -24,17 +24,16 @@ export interface Theme {
 }
 
 /**
- * Resolves the active palette from the device's appearance setting.
+ * Resolves the active palette from the in-app theme preference.
  *
- * There is deliberately no in-app override. The OS already owns this
- * preference — including its schedule, so a phone that turns dark at sunset
- * takes the app with it — and a second switch inside the app can only
- * disagree with the one the user already set. `useColorScheme` re-renders on
- * change, so switching the system theme updates every screen live.
+ * `system` follows the device appearance (including scheduled dark mode).
+ * `light` and `dark` pin the app independently of the OS.
  */
 export function useTheme(): Theme {
   const fontsReady = useStore((s) => s.fontsReady);
-  const isDark = useColorScheme() === 'dark';
+  const themeMode = useStore((s) => s.themeMode);
+  const systemDark = useColorScheme() === 'dark';
+  const isDark = themeMode === 'dark' || (themeMode === 'system' && systemDark);
   const gradients: Gradients = {
     accent: ['#F5B301', '#E0A000'],
     primary: isDark ? ['#33333A', '#1C1C20'] : ['#20262E', '#0C1116'],

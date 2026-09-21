@@ -3,12 +3,12 @@ import { CATEGORY_META, Vehicle, VehicleCategory } from './types';
 /**
  * Which category chips are worth offering.
  *
- * THE BUG: the showroom offered all seven categories unconditionally, and the
- * app's `category` is not a real field — it is GUESSED in `src/api/mappers.ts`
- * by running a regex over make, model and fuel type. Elizade's catalogue is
- * Toyota passenger cars, so across all 30 vehicles in production the guess
- * produces only suv, sedan and pickup. Truck, Sports, Luxury and Electric
- * match nothing at all, and those are exactly the four QA tapped: every one
+ * THE BUG: the showroom offered all seven categories unconditionally. Listings
+ * without an admin-set `category` are still guessed in `src/api/mappers.ts`
+ * from make, model and fuel type. Elizade's catalogue is Toyota passenger
+ * cars, so the guess produces only suv, sedan and pickup unless staff set a
+ * different body type on the vehicle. Truck, Sports, Luxury and Electric
+ * matched nothing at all, and those are exactly the four QA tapped: every one
  * answered "No vehicles match your search".
  *
  * A filter that cannot return a result should not be on screen. Deriving the

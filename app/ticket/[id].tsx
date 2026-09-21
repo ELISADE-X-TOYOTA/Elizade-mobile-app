@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
-import { router, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { ActivityIndicator, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -36,12 +36,18 @@ export default function TicketDetail() {
   const { t: tr } = useTranslation();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { ticket, messages, loading, setMessages, setTicket } = useTicket(id ?? '');
+  const { ticket, messages, loading, error, reload, setMessages, setTicket } = useTicket(id ?? '');
   const [text, setText] = useState('');
   const [sending, setSending] = useState(false);
   const [drafts, setDrafts] = useState<PickedAttachment[]>([]);
   const [attaching, setAttaching] = useState(false);
   const [attachError, setAttachError] = useState<string>();
+
+  useFocusEffect(
+    useCallback(() => {
+      reload();
+    }, [reload]),
+  );
 
   // Live thread: agent replies, typing, and status arrive without a refresh.
   const realtime = useTicketRealtime(id ?? '', messages, setMessages);
@@ -96,8 +102,12 @@ export default function TicketDetail() {
   const effectiveStatus = (realtime.liveStatus as SupportTicket['status'] | undefined) ?? ticket?.status;
   const status = effectiveStatus ? TICKET_STATUS_META[effectiveStatus] : null;
   const cat = ticket ? TICKET_CATEGORY_META[ticket.category] : null;
-  const canReply = ticket?.status === 'open' || ticket?.status === 'in_progress';
-  const showRating = ticket?.status === 'resolved' || ticket?.status === 'closed';
+  const canReply =
+    effectiveStatus === 'open' ||
+    effectiveStatus === 'assigned' ||
+    effectiveStatus === 'in_progress' ||
+    effectiveStatus === 'waiting_customer';
+  const showRating = effectiveStatus === 'resolved' || effectiveStatus === 'closed';
 
   return (
     <View style={{ flex: 1, backgroundColor: 'transparent' }}>
@@ -132,6 +142,10 @@ export default function TicketDetail() {
               <Skeleton height={60} radius={radius.lg} />
               <Skeleton height={60} radius={radius.lg} style={{ alignSelf: 'flex-end', width: '70%' }} />
             </>
+          ) : error ? (
+            <Txt variant="bodyLarge" color={t.colors.errorText}>
+              {error}
+            </Txt>
           ) : (
             <>
               {canReply && cat && (
@@ -146,6 +160,11 @@ export default function TicketDetail() {
               {messages.map((m) => (
                 <Bubble key={m.id} message={m} />
               ))}
+              {!loading && !error && messages.length === 0 && (
+                <Txt variant="bodySmall" tone="secondary">
+                  {tr('support.noRepliesYet')}
+                </Txt>
+              )}
 
               {/* Sits where the reply will appear, so it reads as the agent
                   composing rather than as a status message. */}

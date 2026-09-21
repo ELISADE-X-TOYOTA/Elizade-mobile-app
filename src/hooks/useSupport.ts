@@ -24,17 +24,21 @@ export function useTicket(id: string) {
   const [ticket, setTicket] = useState<SupportTicket>();
   const [messages, setMessages] = useState<TicketMessage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string>();
 
   const load = useCallback(() => {
+    if (!id) return;
     setLoading(true);
+    setError(undefined);
     fetchTicket(id)
       .then((r) => {
         setTicket(r.ticket);
         setMessages(r.messages);
       })
+      .catch((e) => setError(e?.message ?? 'Failed to load'))
       .finally(() => setLoading(false));
   }, [id]);
 
   useEffect(() => load(), [load]);
-  return { ticket, messages, loading, reload: load, setMessages, setTicket };
+  return { ticket, messages, loading, error, reload: load, setMessages, setTicket };
 }

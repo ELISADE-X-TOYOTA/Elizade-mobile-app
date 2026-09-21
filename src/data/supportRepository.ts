@@ -132,7 +132,14 @@ export async function fetchTicket(
     return { ticket: tickets.find((t) => t.id === id), messages: messages[id] ?? [] };
   }
   const detail = await supportApi.get(id);
-  const msgs = (detail.messages ?? []).map((m) => mapTicketMessage(m, id));
+  const extra = await supportApi.messagesSince(id).catch(() => []);
+  const byId = new Map<string, (typeof extra)[number]>();
+  for (const message of [...(detail.messages ?? []), ...extra]) {
+    byId.set(message.id, message);
+  }
+  const msgs = [...byId.values()]
+    .sort((a, b) => a.createdAt.localeCompare(b.createdAt))
+    .map((m) => mapTicketMessage(m, id));
   return {
     ticket: mapTicket(detail, msgs[msgs.length - 1]?.body ?? ''),
     messages: msgs,

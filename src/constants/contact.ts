@@ -66,7 +66,7 @@ export const SOCIALS: SocialLink[] = [
     key: 'facebook',
     label: 'Facebook',
     handle: 'Elizade Nigeria Limited',
-    url: 'https://www.facebook.com/contactelizadenigeria/',
+    url: 'https://www.facebook.com/contactelizadenigeria',
     icon: 'logo-facebook',
   },
   {

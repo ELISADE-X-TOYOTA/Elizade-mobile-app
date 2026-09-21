@@ -40,9 +40,10 @@ interface DetailState {
 export function useVehicle(id: string) {
   const [state, setState] = useState<DetailState>({ loading: true });
 
-  useEffect(() => {
+  const load = useCallback(() => {
+    if (!id) return;
     let alive = true;
-    setState({ loading: true });
+    setState((s) => ({ ...s, loading: !s.vehicle, error: undefined }));
     fetchVehicle(id)
       .then((vehicle) => alive && setState({ vehicle, loading: false }))
       .catch((e) => alive && setState({ loading: false, error: e?.message ?? 'Failed to load' }));
@@ -51,5 +52,7 @@ export function useVehicle(id: string) {
     };
   }, [id]);
 
-  return state;
+  useEffect(() => load(), [load]);
+
+  return { ...state, reload: load };
 }

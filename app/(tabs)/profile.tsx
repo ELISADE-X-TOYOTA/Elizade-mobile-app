@@ -26,6 +26,7 @@ export default function Profile() {
   const clearWatchlist = useWatchlistStore((s) => s.clear);
   const user = useSignedInUser();
   const setCurrentUser = useStore((s) => s.setCurrentUser);
+  const themeMode = useStore((s) => s.themeMode);
 
   const [photoOpen, setPhotoOpen] = useState(false);
   const [avatarBusy, setAvatarBusy] = useState(false);
@@ -174,6 +175,18 @@ export default function Profile() {
 
         <Group title={t('profile.groupPreferences')}>
           <Row icon="notifications-outline" label={t('profile.notifications')} onPress={() => router.push('/notification-settings')} />
+          <Row
+            icon="color-palette-outline"
+            label={t('profile.appearance')}
+            trailing={t(
+              themeMode === 'light'
+                ? 'profile.themeLight'
+                : themeMode === 'dark'
+                  ? 'profile.themeDark'
+                  : 'profile.themeSystem',
+            )}
+            onPress={() => router.push('/appearance')}
+          />
           <Row
             icon="language-outline"
             label={t('profile.language')}

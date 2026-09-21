@@ -25,6 +25,7 @@ export interface VehicleQuery {
   fuelType?: string;
   transmission?: string;
   maxPrice?: number;
+  year?: number;
   sort?: string;
 }
 
@@ -37,6 +38,7 @@ export async function fetchVehicles(query: VehicleQuery = {}): Promise<Vehicle[]
       if (query.fuelType && v.fuelType !== query.fuelType) return false;
       if (query.transmission && v.transmission !== query.transmission) return false;
       if (query.maxPrice && v.price > query.maxPrice) return false;
+      if (query.year && v.year !== query.year) return false;
       if (q) {
         const haystack = `${v.make} ${v.model} ${v.trim} ${v.color} ${v.year}`.toLowerCase();
         return q.split(/\s+/).every((token) => haystack.includes(token));
