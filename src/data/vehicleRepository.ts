@@ -46,11 +46,17 @@ export async function fetchVehicles(query: VehicleQuery = {}): Promise<Vehicle[]
       return true;
     });
   }
-  const [res, branches] = await Promise.all([
-    listPublicVehicles({ limit: 50, ...query }),
-    branchMap(),
-  ]);
-  return res.items.map((item) => mapListItemToVehicle(item, branches));
+  const branches = await branchMap();
+  const pageSize = 100;
+  let page = 1;
+  const items = [];
+  for (;;) {
+    const res = await listPublicVehicles({ ...query, page, limit: pageSize });
+    items.push(...res.items);
+    if (page >= res.totalPages || res.items.length === 0) break;
+    page += 1;
+  }
+  return items.map((item) => mapListItemToVehicle(item, branches));
 }
 
 export async function fetchVehicle(id: string): Promise<Vehicle> {
