@@ -1,6 +1,7 @@
 import { Alert, Linking } from 'react-native';
 
 import { APP } from '../constants/app';
+import { FACEBOOK_PAGE_URL } from '../constants/contact';
 import { mailtoUrl, telUrl, whatsappUrl } from './contactLinks';
 
 /**
@@ -62,14 +63,36 @@ export async function emailSupport(title = 'Email Elizade', subject?: string): P
  * Shows the URL rather than failing silently, so a blocked or missing browser
  * still leaves the customer something they can act on.
  */
+function normalizeOpenUrl(url: string): string {
+  if (/facebook\.com/i.test(url)) {
+    return FACEBOOK_PAGE_URL;
+  }
+  return url.replace(/\/+$/, '');
+}
+
 export async function openLink(url: string, title = 'Elizade'): Promise<void> {
-  // Trailing slashes on facebook.com pages fail in the in-app browser while
-  // the same path without one opens. Strip them for every social URL.
-  const target = url.replace(/\/+$/, '');
+  const primary = normalizeOpenUrl(url);
+  const fallbacks =
+    /facebook\.com/i.test(url)
+      ? [primary, 'https://m.facebook.com/elizadenigeria', 'https://www.facebook.com/elizadenigeria']
+      : [primary];
+
+  for (const target of fallbacks) {
+    try {
+      const canOpen = await Linking.canOpenURL(target);
+      if (canOpen) {
+        await Linking.openURL(target);
+        return;
+      }
+    } catch {
+      // try next fallback
+    }
+  }
+
   try {
-    await Linking.openURL(target);
+    await Linking.openURL(primary);
   } catch {
-    Alert.alert(title, target);
+    Alert.alert(title, primary);
   }
 }
 

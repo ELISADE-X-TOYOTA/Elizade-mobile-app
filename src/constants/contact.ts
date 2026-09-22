@@ -25,6 +25,9 @@ export const SUPPORT_EMAIL = 'info@elizade.net';
 
 export const WEBSITE = 'https://www.elizade.net';
 
+/** Official Facebook page — use for social links and `Linking.openURL`. */
+export const FACEBOOK_PAGE_URL = 'https://www.facebook.com/elizadenigeria/';
+
 /**
  * Official accounts, in the order they are shown.
  *
@@ -66,7 +69,7 @@ export const SOCIALS: SocialLink[] = [
     key: 'facebook',
     label: 'Facebook',
     handle: 'Elizade Nigeria Limited',
-    url: 'https://www.facebook.com/contactelizadenigeria',
+    url: FACEBOOK_PAGE_URL,
     icon: 'logo-facebook',
   },
   {

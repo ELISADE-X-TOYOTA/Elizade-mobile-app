@@ -24,11 +24,16 @@ const CATEGORIES: VehicleCategory[] = ['suv', 'sedan', 'electric', 'luxury', 'sp
 /** Guess a body type when the listing has no admin-set `category`. */
 function deriveCategory(make: string, model: string, fuelType: string): VehicleCategory {
   const s = `${make} ${model} ${fuelType}`.toLowerCase();
-  if (/electric|ev|tesla/.test(s)) return 'electric';
-  if (/hilux|f-150|raptor|pickup|tacoma|ranger|amarok/.test(s)) return 'pickup';
-  if (/truck|lorry|dyna|canter/.test(s)) return 'truck';
-  if (/land ?cruiser|rav4|highlander|fortuner|prado|suv|q7|x5|gle|prado/.test(s)) return 'suv';
-  if (/911|gt3|gt-r|supra|coupe|mustang|corvette|sport/.test(s)) return 'sports';
+  if (/electric|ev|tesla|bz4x|ioniq|leaf/.test(s)) return 'electric';
+  if (/hilux|f-150|raptor|pickup|tacoma|ranger|amarok|d-max/.test(s)) return 'pickup';
+  if (/truck|lorry|dyna|canter|howo/.test(s)) return 'truck';
+  if (
+    /land ?cruiser|rav4|highlander|fortuner|prado|suv|q7|x5|gle|venza|alphard|sienna|harrier|4runner|jetour|dashing|x70|x90|t2|urvan|crossover|4x4/.test(
+      s,
+    )
+  )
+    return 'suv';
+  if (/911|gt3|gt-r|supra|coupe|mustang|corvette|sport|gr86|type r/.test(s)) return 'sports';
   if (/range rover|s-class|maybach|bentley|rolls|lexus ls|luxury/.test(s)) return 'luxury';
   return 'sedan';
 }
