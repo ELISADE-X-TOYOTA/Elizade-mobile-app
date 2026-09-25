@@ -55,7 +55,7 @@ const check = (name, cond, detail) => {
   }
 };
 
-const API = 'https://elizade-backend-api-production.up.railway.app/api/v1';
+const API = 'https://elizade-backend-api-production-0daa.up.railway.app/api/v1';
 const SPACES =
   'https://elizade-connect-media-devv.lon1.digitaloceanspaces.com/customer/support/e96bbc2b0a174a6b80a47669a2066993.jpg';
 
@@ -77,7 +77,7 @@ check("a relative '/media/documents' path", mediaNeedsAuth('/media/documents/abc
 check(
   'the same file as an absolute URL on our API host',
   mediaNeedsAuth(
-    'https://elizade-backend-api-production.up.railway.app/media/documents/abc.jpg',
+    'https://elizade-backend-api-production-0daa.up.railway.app/media/documents/abc.jpg',
     API,
   ) === true,
 );
@@ -89,9 +89,9 @@ check(
 console.log('\nfails closed on anything unrecognised');
 for (const [label, url] of [
   ['an unrelated https host', 'https://attacker.example/pixel.png'],
-  ['a lookalike host', 'https://elizade-backend-api-production.up.railway.app.evil.test/media/x.jpg'],
+  ['a lookalike host', 'https://elizade-backend-api-production-0daa.up.railway.app.evil.test/media/x.jpg'],
   ['a bare path that is not /media', '/images/car.jpg'],
-  ['a protocol-relative URL', '//elizade-backend-api-production.up.railway.app/media/x.jpg'],
+  ['a protocol-relative URL', '//elizade-backend-api-production-0daa.up.railway.app/media/x.jpg'],
   ['a local file URI', 'file:///var/mobile/tmp/photo.jpg'],
   ['a data URI', 'data:image/png;base64,iVBORw0KGgo='],
   ['empty', ''],
@@ -126,7 +126,7 @@ console.log('\nhost matching is exact, not a prefix');
 console.log('\ncase and whitespace do not create a bypass');
 check(
   'an upper-case host still matches',
-  mediaNeedsAuth('https://ELIZADE-BACKEND-API-PRODUCTION.UP.RAILWAY.APP/media/x.jpg', API) === true,
+  mediaNeedsAuth('https://ELIZADE-BACKEND-API-PRODUCTION-0DAA.UP.RAILWAY.APP/media/x.jpg', API) === true,
 );
 check('surrounding whitespace is trimmed', mediaNeedsAuth('  /media/documents/a.jpg ', API) === true);
 
