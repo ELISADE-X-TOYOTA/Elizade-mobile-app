@@ -562,6 +562,10 @@
     "statusDepositPaid": "Akwụọla ego ndebe",
     "statusConfirmed": "Ekwadoro",
     "statusCancelled": "Akagburu",
-    "statusExpired": "Agwụla"
+    "statusExpired": "Agwụla",
+    "cancel": "Kagbuo ndebe",
+    "cancelTitle": "Hapụ ndebe a?",
+    "cancelBody": "Kagbuo ndebe gị nke {{vehicle}}? Ụgbọ ahụ ga-alaghachi n'ahịa ozugbo.",
+    "cancelFailed": "Enweghị ike ikagbu"
   }
 }

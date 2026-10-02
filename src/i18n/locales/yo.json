@@ -562,6 +562,10 @@
     "statusDepositPaid": "A ti san owó ìdìmú",
     "statusConfirmed": "A ti jẹ́rìí",
     "statusCancelled": "A ti fagilé",
-    "statusExpired": "Ó ti parí"
+    "statusExpired": "Ó ti parí",
+    "cancel": "Fagilé ìpamọ́",
+    "cancelTitle": "Fagilé ìpamọ́ yìí?",
+    "cancelBody": "Fagilé ìpamọ́ {{vehicle}} rẹ? Ọkọ̀ náà yóò padà sí ọjà lẹ́sẹ̀kẹsẹ̀.",
+    "cancelFailed": "Kò lè fagilé"
   }
 }

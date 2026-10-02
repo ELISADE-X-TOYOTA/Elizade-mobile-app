@@ -47,6 +47,9 @@ export const salesApi = {
   listReservations: () => apiFetch<ReservationDto[]>('/sales/reservations'),
   reserve: (body: ReservationBody) =>
     apiFetch<ReservationDto>('/sales/reservations', { method: 'POST', body }),
+  /** Release a hold. Only a `pending` one; the API answers 409 otherwise. */
+  cancelReservation: (id: string) =>
+    apiFetch<ReservationDto>(`/sales/reservations/${id}/cancel`, { method: 'POST' }),
 
   listQuotations: () => apiFetch<QuotationDto[]>('/sales/quotations'),
   requestQuote: (body: QuotationBody) =>

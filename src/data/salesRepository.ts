@@ -107,6 +107,21 @@ export interface Reservation {
  * who reserved a car had nowhere to see it again — while the success sheet
  * told them to "See it under Reservations".
  */
+/**
+ * Release a hold on a vehicle.
+ *
+ * Only a `pending` hold can be released from the app — the API answers 409
+ * for one with money against it, with an instruction to contact the branch,
+ * and that message is shown rather than swallowed.
+ */
+export async function cancelReservation(id: string): Promise<void> {
+  if (APP.useMock) {
+    await delay(400);
+    return;
+  }
+  await salesApi.cancelReservation(id);
+}
+
 export async function listReservations(): Promise<Reservation[]> {
   if (APP.useMock) {
     await delay(400);

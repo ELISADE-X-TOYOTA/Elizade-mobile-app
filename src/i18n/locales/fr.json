@@ -562,6 +562,10 @@
     "statusDepositPaid": "Acompte payé",
     "statusConfirmed": "Confirmé",
     "statusCancelled": "Annulé",
-    "statusExpired": "Expiré"
+    "statusExpired": "Expiré",
+    "cancel": "Annuler la réservation",
+    "cancelTitle": "Libérer cette réservation ?",
+    "cancelBody": "Annuler votre réservation du {{vehicle}} ? Le véhicule est remis en vente immédiatement.",
+    "cancelFailed": "Annulation impossible"
   }
 }

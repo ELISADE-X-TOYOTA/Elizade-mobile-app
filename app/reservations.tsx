@@ -1,14 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Skeleton } from '../src/components/Skeleton';
 import { Txt } from '../src/components/Txt';
-import { listReservations, Reservation } from '../src/data/salesRepository';
-import { RESERVATION_STATUS_META, reservationReference } from '../src/domain/reservations';
+import { cancelReservation, listReservations, Reservation } from '../src/data/salesRepository';
+import { isActiveReservation, RESERVATION_STATUS_META, reservationReference } from '../src/domain/reservations';
 import { price } from '../src/utils/format';
 import { radius, spacing } from '../src/theme/spacing';
 import { useTheme } from '../src/theme/useTheme';
@@ -82,14 +82,14 @@ export default function Reservations() {
         ) : rows.length === 0 ? (
           <Empty />
         ) : (
-          rows.map((r) => <Card key={r.id} reservation={r} />)
+          rows.map((r) => <Card key={r.id} reservation={r} onChanged={load} />)
         )}
       </ScrollView>
     </View>
   );
 }
 
-function Card({ reservation }: { reservation: Reservation }) {
+function Card({ reservation, onChanged }: { reservation: Reservation; onChanged: () => void }) {
   const t = useTheme();
   const { t: tr } = useTranslation();
   const meta = RESERVATION_STATUS_META[reservation.status];
@@ -102,6 +102,37 @@ function Card({ reservation }: { reservation: Reservation }) {
           ? t.colors.errorText
           : t.colors.textSecondary;
   const holdUntil = new Date(reservation.expiresAt);
+  const [busy, setBusy] = useState(false);
+
+  const confirmCancel = () =>
+    Alert.alert(
+      tr('reservations.cancelTitle'),
+      tr('reservations.cancelBody', { vehicle: reservation.vehicleLabel }),
+      [
+        { text: tr('common.back'), style: 'cancel' },
+        {
+          text: tr('reservations.cancel'),
+          style: 'destructive',
+          onPress: async () => {
+            setBusy(true);
+            try {
+              await cancelReservation(reservation.id);
+              onChanged();
+            } catch (e) {
+              // The API's own words — a paid hold is refused with an
+              // instruction to contact the branch, and that is the useful
+              // half of the message.
+              Alert.alert(
+                tr('reservations.cancelFailed'),
+                e instanceof Error ? e.message : tr('reservations.loadError'),
+              );
+            } finally {
+              setBusy(false);
+            }
+          },
+        },
+      ],
+    );
 
   return (
     <Pressable
@@ -152,6 +183,33 @@ function Card({ reservation }: { reservation: Reservation }) {
       <Txt variant="bodySmall" tone="tertiary" style={{ marginTop: 10 }}>
         {tr('reservations.noPaymentTaken')}
       </Txt>
+
+      {/*
+        RELEASING THE HOLD. Until now a reservation could only end by the
+        seven-day timeout, so a customer who changed their mind kept a car
+        off the showroom for a week with no way to say otherwise.
+
+        Shown only while the hold is live. `pending` is the only state the
+        API lets a customer release — once money is against it the answer is
+        a conversation with the branch, and its 409 says exactly that, which
+        is surfaced rather than swallowed.
+      */}
+      {isActiveReservation(reservation.status) && (
+        <Pressable
+          onPress={confirmCancel}
+          disabled={busy}
+          accessibilityRole="button"
+          hitSlop={6}
+          style={{ marginTop: 12, opacity: busy ? 0.5 : 1 }}
+        >
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Ionicons name="close-circle-outline" size={16} color={t.colors.errorText} />
+            <Txt variant="titleSmall" color={t.colors.errorText} style={{ marginLeft: 6 }}>
+              {tr('reservations.cancel')}
+            </Txt>
+          </View>
+        </Pressable>
+      )}
     </Pressable>
   );
 }

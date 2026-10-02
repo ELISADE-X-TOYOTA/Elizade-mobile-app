@@ -562,6 +562,10 @@
     "statusDepositPaid": "Depósito pagado",
     "statusConfirmed": "Confirmado",
     "statusCancelled": "Cancelado",
-    "statusExpired": "Caducado"
+    "statusExpired": "Caducado",
+    "cancel": "Cancelar reserva",
+    "cancelTitle": "¿Liberar esta reserva?",
+    "cancelBody": "¿Cancelar tu reserva del {{vehicle}}? El vehículo vuelve a la venta de inmediato.",
+    "cancelFailed": "No se pudo cancelar"
   }
 }

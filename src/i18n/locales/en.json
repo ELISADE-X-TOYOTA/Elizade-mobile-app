@@ -562,6 +562,10 @@
     "statusDepositPaid": "Deposit paid",
     "statusConfirmed": "Confirmed",
     "statusCancelled": "Cancelled",
-    "statusExpired": "Expired"
+    "statusExpired": "Expired",
+    "cancel": "Cancel reservation",
+    "cancelTitle": "Release this hold?",
+    "cancelBody": "Cancel your reservation of the {{vehicle}}? The vehicle goes back on sale straight away.",
+    "cancelFailed": "Couldn't cancel"
   }
 }

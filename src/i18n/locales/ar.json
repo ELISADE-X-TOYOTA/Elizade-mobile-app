@@ -562,6 +562,10 @@
     "statusDepositPaid": "تم دفع العربون",
     "statusConfirmed": "مؤكدة",
     "statusCancelled": "ملغاة",
-    "statusExpired": "منتهية"
+    "statusExpired": "منتهية",
+    "cancel": "إلغاء الحجز",
+    "cancelTitle": "هل تريد إلغاء هذا الحجز؟",
+    "cancelBody": "إلغاء حجزك لـ {{vehicle}}؟ ستعود المركبة للبيع فورًا.",
+    "cancelFailed": "تعذّر الإلغاء"
   }
 }

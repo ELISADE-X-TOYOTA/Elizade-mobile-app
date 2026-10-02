@@ -562,6 +562,10 @@
     "statusDepositPaid": "An biya ajiya",
     "statusConfirmed": "An tabbatar",
     "statusCancelled": "An soke",
-    "statusExpired": "Ya kare"
+    "statusExpired": "Ya kare",
+    "cancel": "Soke ajiyar",
+    "cancelTitle": "A soke wannan ajiyar?",
+    "cancelBody": "A soke ajiyar {{vehicle}}? Motar za ta koma kasuwa nan take.",
+    "cancelFailed": "An kasa sokewa"
   }
 }
