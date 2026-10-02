@@ -26,7 +26,7 @@ import { useStore } from '../../src/store/useStore';
 import { useWatchlistStore } from '../../src/store/useWatchlistStore';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
-import { greeting, priceCompact } from '../../src/utils/format';
+import { greeting } from '../../src/utils/format';
 import { solid } from '../../src/theme/colors';
 
 
@@ -397,9 +397,7 @@ const RecommendedTile = memo(function RecommendedTile({ vehicle }: { vehicle: Ve
             {v.rating} · {v.location}
           </Txt>
         </View>
-        <Txt variant="titleSmall" color={t.colors.primary} style={{ marginTop: 8 }}>
-          {priceCompact(v.price)}
-        </Txt>
+        {/* Price removed on Elizade's instruction — see CarCard. */}
       </View>
       <Ionicons name="chevron-forward" size={20} color={t.colors.textSecondary} />
     </Pressable>

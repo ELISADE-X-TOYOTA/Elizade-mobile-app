@@ -49,9 +49,16 @@ export interface LeadTrackerStepDto {
   current: boolean;
 }
 
+/** How the enquiry began. Resolved server-side from the row that created
+ *  the lead, so it cannot drift from what actually happened. */
+export type LeadKind = 'test_drive' | 'quotation' | 'reservation' | 'trade_in' | 'enquiry';
+
 export interface LeadDto {
   id: string;
   interestedModel: string;
+  kind: LeadKind;
+  /** Server-rendered English label; the app translates and falls back to it. */
+  kindLabel: string;
   stage: LeadStage;
   /** Server-rendered English label. The app prefers its own translation and
    *  falls back to this if a stage is ever added server-side first. */

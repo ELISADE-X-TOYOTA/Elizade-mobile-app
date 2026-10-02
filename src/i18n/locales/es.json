@@ -142,7 +142,15 @@
     "emailChangeNotice": "Es tu dirección de acceso. Avisaremos a tu dirección anterior y a la nueva cuando cambie.",
     "privacySecurity": "Privacidad y seguridad",
     "emailLocked": "Solo nosotros podemos cambiar tu correo de acceso. Escribe a {{support}} y lo verificaremos contigo.",
-    "myReservations": "Mis reservas"
+    "myReservations": "Mis reservas",
+    "appearance": "Apariencia",
+    "appearanceSubtitle": "Elige Claro, Oscuro o sigue tu dispositivo.",
+    "themeSystem": "Predeterminado del sistema",
+    "themeLight": "Claro",
+    "themeDark": "Oscuro",
+    "themeSystemHint": "Seguir el ajuste Claro u Oscuro del teléfono.",
+    "themeLightHint": "Usar siempre la paleta clara.",
+    "themeDarkHint": "Usar siempre la paleta oscura."
   },
   "leads": {
     "title": "Mis solicitudes",
@@ -174,7 +182,14 @@
       "converted": "Esta consulta está completa.",
       "closed": "Esta consulta se ha cerrado."
     },
-    "updateFrom": "Mensaje de tu asesor"
+    "updateFrom": "Mensaje de tu asesor",
+    "kind": {
+      "test_drive": "Prueba de conducción",
+      "quotation": "Presupuesto",
+      "reservation": "Reserva",
+      "trade_in": "Entrega a cuenta",
+      "enquiry": "Consulta"
+    }
   },
   "language": {
     "title": "Idioma",
@@ -322,7 +337,8 @@
     "expectedResponse": "Primera respuesta esperada en {{hours}} horas",
     "typicalResponse": "Respuesta habitual en {{hours}} h",
     "emailElizade": "Escribir a Elizade",
-    "followElizade": "Sigue a Elizade"
+    "followElizade": "Sigue a Elizade",
+    "noRepliesYet": "Aún no hay respuestas en este ticket."
   },
   "notifications": {
     "title": "Notificaciones",
@@ -356,7 +372,8 @@
   },
   "filters": {
     "title": "Filtros",
-    "transmission": "Transmisión"
+    "transmission": "Transmisión",
+    "year": "Año"
   },
   "compare": {
     "title": "Comparar",

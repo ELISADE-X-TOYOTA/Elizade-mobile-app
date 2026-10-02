@@ -234,6 +234,25 @@ console.log('\nthe live lead stage wins over the frozen booking status');
   check('falling back to the status when there is no lead stage',
     item.statusLabel === 'Requested', item.statusLabel);
 }
+{
+  // ...but once the booking ENDS, the booking is the authority.
+  //
+  // Preferring the lead stage unconditionally broke the ending: a cancelled
+  // test drive kept rendering whatever its lead said — "Submitted" — so Past
+  // Bookings listed cancelled drives as though they were still waiting to be
+  // looked at, which is the opposite of what happened.
+  const cancelled = fromTestDrive(drive({ status: 'cancelled', leadStageLabel: 'Submitted' }));
+  check('a cancelled booking says Cancelled, whatever the lead says',
+    cancelled.statusLabel === 'Cancelled', cancelled.statusLabel);
+
+  const completed = fromTestDrive(drive({ status: 'completed', leadStageLabel: 'Under Review' }));
+  check('a completed booking says Completed',
+    completed.statusLabel === 'Completed', completed.statusLabel);
+
+  const live = fromTestDrive(drive({ status: 'confirmed', leadStageLabel: 'In Progress' }));
+  check('a live booking still defers to the lead stage',
+    live.statusLabel === 'In Progress', live.statusLabel);
+}
 
 // ── The car-details action button ────────────────────────────────────
 console.log('\nthe live test drive on one vehicle');

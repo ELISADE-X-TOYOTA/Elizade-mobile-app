@@ -13,7 +13,6 @@ import { useCompareVehicles } from '../src/hooks/useCompareVehicles';
 import { useStore } from '../src/store/useStore';
 import { radius, spacing } from '../src/theme/spacing';
 import { useTheme } from '../src/theme/useTheme';
-import { priceCompact } from '../src/utils/format';
 import { solid, tint } from '../src/theme/colors';
 
 /**
@@ -100,7 +99,6 @@ export default function Compare() {
               image={a.images[0]}
               title={vehicleTitle(a)}
               trim={a.trim}
-              price={a.price}
             />
             <View style={[styles.vs, { backgroundColor: t.colors.surface, borderColor: t.colors.border }]}>
               <Txt variant="labelSmall" tone="tertiary">
@@ -111,7 +109,6 @@ export default function Compare() {
               image={b.images[0]}
               title={vehicleTitle(b)}
               trim={b.trim}
-              price={b.price}
             />
           </View>
 
@@ -159,17 +156,15 @@ export default function Compare() {
   );
 }
 
-/** One sticky column header: photo, name, trim, price. */
+/** One sticky column header: photo, name, trim. */
 function VehicleColumn({
   image,
   title,
   trim,
-  price,
 }: {
   image: string;
   title: string;
   trim: string;
-  price: number;
 }) {
   const t = useTheme();
   const { t: tr } = useTranslation();
@@ -183,9 +178,6 @@ function VehicleColumn({
       </Txt>
       <Txt variant="bodySmall" tone="secondary" numberOfLines={1} center>
         {trim || '—'}
-      </Txt>
-      <Txt variant="titleMedium" color={t.colors.accentText} center style={{ marginTop: 2 }}>
-        {priceCompact(price)}
       </Txt>
     </View>
   );

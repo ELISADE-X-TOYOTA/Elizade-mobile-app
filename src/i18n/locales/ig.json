@@ -142,7 +142,15 @@
     "emailChangeNotice": "Nke a bụ adresị nbanye gị. Anyị ga-adọ adresị ochie na nke ọhụrụ aka na ntị ma ọ gbanwee.",
     "privacySecurity": "Nzuzo na Nchekwa",
     "emailLocked": "Ọ bụ nanị anyị nwere ike ịgbanwe ozi-e nbanye gị. Kpọtụrụ {{support}}.",
-    "myReservations": "Ndebe m"
+    "myReservations": "Ndebe m",
+    "appearance": "Ọdịdị",
+    "appearanceSubtitle": "Họrọ Ìhè, Ọchịchịrị, ma ọ bụ soro ngwaọrụ gị.",
+    "themeSystem": "Ndabere sistemu",
+    "themeLight": "Ìhè",
+    "themeDark": "Ọchịchịrị",
+    "themeSystemHint": "Soro ntọala Ìhè ma ọ bụ Ọchịchịrị nke ekwentị.",
+    "themeLightHint": "Jiri agba ìhè mgbe niile.",
+    "themeDarkHint": "Jiri agba ọchịchịrị mgbe niile."
   },
   "leads": {
     "title": "Arịrịọ m",
@@ -174,7 +182,14 @@
       "converted": "Arịrịọ a emechaala.",
       "closed": "Emechiela arịrịọ a."
     },
-    "updateFrom": "Ozi sitere n'aka onye nnọchite anya gị"
+    "updateFrom": "Ozi sitere n'aka onye nnọchite anya gị",
+    "kind": {
+      "test_drive": "Nnwale ịnya",
+      "quotation": "Ọnụahịa",
+      "reservation": "Ndebe",
+      "trade_in": "Mgbanwe",
+      "enquiry": "Ajụjụ"
+    }
   },
   "language": {
     "title": "Asụsụ",
@@ -322,7 +337,8 @@
     "expectedResponse": "A na-atụ anya nzaghachi mbụ n'ime awa {{hours}}",
     "typicalResponse": "Nzaghachi nkịtị n'ime awa {{hours}}",
     "emailElizade": "Zitere Elizade ozi-e",
-    "followElizade": "Soro Elizade"
+    "followElizade": "Soro Elizade",
+    "noRepliesYet": "Enwebeghị nzaghachi na tiketi a."
   },
   "notifications": {
     "title": "Ọkwa",
@@ -356,7 +372,8 @@
   },
   "filters": {
     "title": "Nzacha",
-    "transmission": "Igbe ngbanwe"
+    "transmission": "Igbe ngbanwe",
+    "year": "Afọ"
   },
   "compare": {
     "title": "Tụnyere",

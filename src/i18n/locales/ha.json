@@ -142,7 +142,15 @@
     "emailChangeNotice": "Wannan shine adireshin shiga naka. Za mu sanar da tsohon da sabon adireshi idan ya canza.",
     "privacySecurity": "Sirri da Tsaro",
     "emailLocked": "Mu kadai za mu iya canza imel din shiga naka. Tuntuɓi {{support}}.",
-    "myReservations": "Ajiyena"
+    "myReservations": "Ajiyena",
+    "appearance": "Kamanni",
+    "appearanceSubtitle": "Zaɓi Haske, Duhu, ko bi na'urarka.",
+    "themeSystem": "Tsoho na na'ura",
+    "themeLight": "Haske",
+    "themeDark": "Duhu",
+    "themeSystemHint": "Bi saitin Haske ko Duhu na wayar.",
+    "themeLightHint": "Koyaushe yi amfani da launi mai haske.",
+    "themeDarkHint": "Koyaushe yi amfani da launi mai duhu."
   },
   "leads": {
     "title": "Buƙatuna",
@@ -174,7 +182,14 @@
       "converted": "An kammala wannan buƙata.",
       "closed": "An rufe wannan buƙata."
     },
-    "updateFrom": "Sabunta wa daga wakilin ka"
+    "updateFrom": "Sabunta wa daga wakilin ka",
+    "kind": {
+      "test_drive": "Gwajin tuƙi",
+      "quotation": "Farashi",
+      "reservation": "Ajiye",
+      "trade_in": "Musanya",
+      "enquiry": "Tambaya"
+    }
   },
   "language": {
     "title": "Harshe",
@@ -322,7 +337,8 @@
     "expectedResponse": "Ana sa ran amsa ta farko cikin awanni {{hours}}",
     "typicalResponse": "Amsa ta yau da kullun cikin awanni {{hours}}",
     "emailElizade": "Aika imel zuwa Elizade",
-    "followElizade": "Bi Elizade"
+    "followElizade": "Bi Elizade",
+    "noRepliesYet": "Babu amsa a kan wannan takarda tukuna."
   },
   "notifications": {
     "title": "Sanarwa",
@@ -356,7 +372,8 @@
   },
   "filters": {
     "title": "Tacewa",
-    "transmission": "Gearbox"
+    "transmission": "Gearbox",
+    "year": "Shekara"
   },
   "compare": {
     "title": "Kwatanta",

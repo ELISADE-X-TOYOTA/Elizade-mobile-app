@@ -26,6 +26,14 @@ export type BookingKind = 'testDrive' | 'service';
 /** Statuses that mean "still ahead of you", per kind. */
 export const UPCOMING_TEST_DRIVE: TestDriveStatus[] = ['requested', 'confirmed'];
 
+/**
+ * Statuses that are the END of the booking, whatever the lead went on to say.
+ *
+ * A cancelled booking is cancelled. A completed one is completed. Neither is
+ * a claim the sales pipeline gets to overrule — see `fromTestDrive`.
+ */
+export const TERMINAL_TEST_DRIVE: TestDriveStatus[] = ['cancelled', 'completed'];
+
 export const UPCOMING_SERVICE: AppointmentStatus[] = [
   'requested',
   'confirmed',
@@ -83,17 +91,23 @@ export function fromTestDrive(booking: TestDriveBooking): BookingItem {
     branchName: booking.branchName,
     scheduledAt: booking.scheduledAt,
     /*
-      THE LIVE STAGE, NOT `booking.status`.
+      THE LIVE STAGE WHILE IT IS LIVE — AND THE BOOKING'S OWN WORD ONCE IT ENDS.
 
-      `status` is written once when the booking is created and never advanced —
-      there is no admin endpoint for test drive bookings at all. Sales staff
-      move the LEAD through the pipeline, which is why a customer watched their
-      request sit on "Requested" while it was actually being worked.
+      `status` used to be written when the booking was created and never
+      advanced, because no admin endpoint for test drives existed: sales moved
+      the LEAD, so a customer watched their request sit on "Requested" while it
+      was actually being worked. Preferring the lead's stage fixed that.
 
-      Falls back to the frozen status only for rows that predate lead linking,
-      which is the one case where there is nothing better to show.
+      It also broke the ending. A cancelled booking kept rendering whatever its
+      lead said — "Submitted" — so Past Bookings listed cancelled test drives as
+      though they were still waiting to be looked at, which is the opposite of
+      what happened. Terminal statuses now win: the booking is the authority on
+      whether it took place, the lead is only the better narrator while it is
+      still ahead of you.
     */
-    statusLabel: booking.leadStageLabel ?? meta.label,
+    statusLabel: TERMINAL_TEST_DRIVE.includes(booking.status)
+      ? meta.label
+      : (booking.leadStageLabel ?? meta.label),
     tone: meta.tone,
     upcoming: UPCOMING_TEST_DRIVE.includes(booking.status),
     targetId: booking.leadId ?? null,

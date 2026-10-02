@@ -182,7 +182,14 @@
       "converted": "This enquiry is complete.",
       "closed": "This enquiry has been closed."
     },
-    "updateFrom": "Update from your representative"
+    "updateFrom": "Update from your representative",
+    "kind": {
+      "test_drive": "Test Drive",
+      "quotation": "Quote",
+      "reservation": "Reservation",
+      "trade_in": "Trade-In",
+      "enquiry": "Enquiry"
+    }
   },
   "language": {
     "title": "Language",

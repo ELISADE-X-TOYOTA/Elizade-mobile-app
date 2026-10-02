@@ -6,7 +6,6 @@ import { CATEGORY_META, Vehicle, vehicleTitle } from '../domain/types';
 import { useWatchlistStore } from '../store/useWatchlistStore';
 import { radius, spacing } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
-import { priceCompact } from '../utils/format';
 import { CompareButton } from './CompareButton';
 import { NetworkCarImage } from './NetworkCarImage';
 import { Txt } from './Txt';
@@ -87,9 +86,16 @@ function CarCardBase({ vehicle, onPress, wide, width }: Props) {
           {wide && <Spec icon="calendar" label={`${vehicle.year}`} />}
         </View>
 
+        {/*
+          NO PRICE ON THE CARD — Elizade's decision, not a layout accident.
+          The catalogue no longer quotes a figure; a customer who wants one
+          asks, and the quote flow still gives them a real document with real
+          numbers. The title moved up to carry the row on its own so the card
+          does not read as a price that failed to load.
+        */}
         <View style={[styles.rowBetween, { marginTop: 12 }]}>
-          <Txt variant="titleLarge" color={t.colors.primary}>
-            {priceCompact(vehicle.price)}
+          <Txt variant="titleSmall" tone="secondary" numberOfLines={1} style={{ flex: 1 }}>
+            {vehicle.location}
           </Txt>
           <View style={[styles.arrow, { backgroundColor: t.colors.primary }]}>
             <Ionicons name="arrow-forward" size={18} color={t.colors.onPrimary} />

@@ -142,7 +142,15 @@
     "emailChangeNotice": "C'est votre adresse de connexion. Nous alerterons votre ancienne et votre nouvelle adresse lors du changement.",
     "privacySecurity": "Confidentialité et sécurité",
     "emailLocked": "Votre e-mail de connexion ne peut être modifié que par nous. Contactez {{support}} et nous le vérifierons avec vous.",
-    "myReservations": "Mes réservations"
+    "myReservations": "Mes réservations",
+    "appearance": "Apparence",
+    "appearanceSubtitle": "Choisissez Clair, Sombre ou suivez votre appareil.",
+    "themeSystem": "Par défaut du système",
+    "themeLight": "Clair",
+    "themeDark": "Sombre",
+    "themeSystemHint": "Suivre le réglage Clair ou Sombre du téléphone.",
+    "themeLightHint": "Toujours utiliser la palette claire.",
+    "themeDarkHint": "Toujours utiliser la palette sombre."
   },
   "leads": {
     "title": "Mes demandes",
@@ -174,7 +182,14 @@
       "converted": "Cette demande est terminée.",
       "closed": "Cette demande a été clôturée."
     },
-    "updateFrom": "Message de votre conseiller"
+    "updateFrom": "Message de votre conseiller",
+    "kind": {
+      "test_drive": "Essai routier",
+      "quotation": "Devis",
+      "reservation": "Réservation",
+      "trade_in": "Reprise",
+      "enquiry": "Demande"
+    }
   },
   "language": {
     "title": "Langue",
@@ -322,7 +337,8 @@
     "expectedResponse": "Première réponse attendue sous {{hours}} heures",
     "typicalResponse": "Réponse habituelle sous {{hours}} h",
     "emailElizade": "Écrire à Elizade",
-    "followElizade": "Suivre Elizade"
+    "followElizade": "Suivre Elizade",
+    "noRepliesYet": "Aucune réponse sur ce ticket pour l'instant."
   },
   "notifications": {
     "title": "Notifications",
@@ -356,7 +372,8 @@
   },
   "filters": {
     "title": "Filtres",
-    "transmission": "Boîte de vitesses"
+    "transmission": "Boîte de vitesses",
+    "year": "Année"
   },
   "compare": {
     "title": "Comparer",

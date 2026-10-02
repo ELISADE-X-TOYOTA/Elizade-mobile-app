@@ -34,7 +34,7 @@ import { useStore } from '../../src/store/useStore';
 import { useWatchlistStore } from '../../src/store/useWatchlistStore';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
-import { mileage, priceCompact } from '../../src/utils/format';
+import { mileage } from '../../src/utils/format';
 import { FinancingModal } from '../../src/components/FinancingModal';
 import { QuoteModal } from '../../src/components/QuoteModal';
 import { SalesMode, TestDriveModal } from '../../src/components/TestDriveModal';
@@ -138,7 +138,9 @@ export default function CarDetails() {
       `Check out the ${title} at Elizade Connect.`,
       vehicle.year ? `Year: ${vehicle.year}` : null,
       vehicle.trim ? `Trim: ${vehicle.trim}` : null,
-      typeof vehicle.price === 'number' && vehicle.price > 0 ? `Price: ${priceCompact(vehicle.price)}` : null,
+      // No price in the shared text either — it would put the figure back in
+      // circulation on WhatsApp, which is where it would stick.
+      null,
       vehicle.location ? `Available at ${vehicle.location}` : null,
       '',
       'Contact Elizade to learn more or book a test drive.',
@@ -358,10 +360,15 @@ export default function CarDetails() {
         style={[styles.bottombar, { backgroundColor: t.colors.surface, paddingBottom: insets.bottom + 12 }, t.shadows.elevated]}
       >
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-          <View>
-            <Txt variant="bodySmall" tone="secondary">{tr('common.price')}</Txt>
-            <Txt variant="titleLarge" color={t.colors.primary}>
-              {priceCompact(v.price)}
+          {/*
+            THE PRICE USED TO SIT HERE. Removed on Elizade's instruction: the
+            catalogue does not quote a figure. "Get Quote" in Buying Tools
+            above is how a customer asks for one, and that still returns a
+            real quotation with the vehicle's actual price.
+          */}
+          <View style={{ flex: 1 }}>
+            <Txt variant="titleMedium" numberOfLines={1}>
+              {vehicleTitle(v)}
             </Txt>
           </View>
           {/*

@@ -142,7 +142,15 @@
     "emailChangeNotice": "Èyí ni àdírẹ́sì ìwọlé rẹ. A ó ṣe ìkilọ̀ fún àdírẹ́sì atì jò àti tí tuntun.",
     "privacySecurity": "Aṣírì àti Ààbò",
     "emailLocked": "Àwa nikan ni a le yi íméìlì ìwọlé rẹ pada. Kan si {{support}}.",
-    "myReservations": "Àwọn ìpamọ́ mi"
+    "myReservations": "Àwọn ìpamọ́ mi",
+    "appearance": "Ìrísí",
+    "appearanceSubtitle": "Yan Ìmọ́lẹ̀, Òkùnkùn, tàbí tẹ̀lé ẹ̀rọ rẹ.",
+    "themeSystem": "Àtòjọ ẹ̀rọ",
+    "themeLight": "Ìmọ́lẹ̀",
+    "themeDark": "Òkùnkùn",
+    "themeSystemHint": "Tẹ̀lé ètò Ìmọ́lẹ̀ tàbí Òkùnkùn ti fóònù.",
+    "themeLightHint": "Máa lo àwọ̀ ìmọ́lẹ̀ nígbà gbogbo.",
+    "themeDarkHint": "Máa lo àwọ̀ òkùnkùn nígbà gbogbo."
   },
   "leads": {
     "title": "Àwọn ìbéèrè mi",
@@ -174,7 +182,14 @@
       "converted": "Ìbéèrè yìí ti parí.",
       "closed": "A ti tì ìbéèrè yìí."
     },
-    "updateFrom": "Ìròyìn láti ọ̀dọ̀ aṣojú rẹ"
+    "updateFrom": "Ìròyìn láti ọ̀dọ̀ aṣojú rẹ",
+    "kind": {
+      "test_drive": "Ìwakọ̀ ìdánwò",
+      "quotation": "Ìdíyelé",
+      "reservation": "Ìpamọ́",
+      "trade_in": "Pàṣípààrọ̀",
+      "enquiry": "Ìbéèrè"
+    }
   },
   "language": {
     "title": "Èdè",
@@ -322,7 +337,8 @@
     "expectedResponse": "Ìdáhùn àkọ́kọ́ ní àkókò wákàtí {{hours}}",
     "typicalResponse": "Ìdáhùn déédéé ní wákàtí {{hours}}",
     "emailElizade": "Fì íméìlì sí Elizade",
-    "followElizade": "Tẹ̀lé Elizade"
+    "followElizade": "Tẹ̀lé Elizade",
+    "noRepliesYet": "Kò sí ìdáhùn lórí ìwé ẹ̀bẹ̀ yìí síbẹ̀."
   },
   "notifications": {
     "title": "Ìfitónilétí",
@@ -356,7 +372,8 @@
   },
   "filters": {
     "title": "Àyọkúrò",
-    "transmission": "Ẹ̀rọ ìyípadà"
+    "transmission": "Ẹ̀rọ ìyípadà",
+    "year": "Ọdún"
   },
   "compare": {
     "title": "Fi wéra",

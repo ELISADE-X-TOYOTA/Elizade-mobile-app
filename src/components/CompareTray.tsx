@@ -15,7 +15,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COMPARE_LIMIT, CompareEntry, useStore } from '../store/useStore';
 import { radius, spacing } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
-import { priceCompact } from '../utils/format';
 import { trayBottomOffset } from '../utils/trayLayout';
 import { Txt } from './Txt';
 import { solid } from '../theme/colors';
@@ -175,9 +174,7 @@ function Slot({ entry, onRemove }: { entry: CompareEntry; onRemove: () => void }
         <Txt variant="labelSmall" numberOfLines={1}>
           {entry.title}
         </Txt>
-        <Txt variant="bodySmall" tone="secondary" numberOfLines={1}>
-          {priceCompact(entry.price)}
-        </Txt>
+        {/* Price removed on Elizade's instruction — see CarCard. */}
       </View>
       <Pressable
         onPress={onRemove}

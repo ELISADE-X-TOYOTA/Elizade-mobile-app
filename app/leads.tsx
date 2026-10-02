@@ -114,9 +114,22 @@ export default function LeadsScreen() {
                   <StagePill lead={lead} />
                 </View>
 
-                <Txt variant="bodySmall" tone="secondary" style={{ marginTop: 4 }}>
-                  {t('leads.updatedOn', { date: dateFmt(lead.updatedAt) })}
-                </Txt>
+                {/*
+                  WHAT KIND OF ENQUIRY. Without it these rows differ only by
+                  vehicle: someone who booked a test drive, asked for a quote
+                  and reserved a car saw three identical-looking entries and
+                  had to open each to tell them apart.
+                */}
+                <View style={styles.cardMeta}>
+                  <View style={[styles.kindPill, { backgroundColor: theme.colors.surfaceAlt, borderColor: theme.colors.border }]}>
+                    <Txt variant="labelSmall" tone="secondary">
+                      {t(`leads.kind.${lead.kind}`, { defaultValue: lead.kindLabel })}
+                    </Txt>
+                  </View>
+                  <Txt variant="bodySmall" tone="secondary">
+                    {t('leads.updatedOn', { date: dateFmt(lead.updatedAt) })}
+                  </Txt>
+                </View>
 
                 {/* Compact progress: four segments, filled to the current step. */}
                 <View style={styles.segments}>
@@ -214,6 +227,8 @@ function Empty({
 const styles = StyleSheet.create({
   card: { borderRadius: radius.lg, borderWidth: 1, padding: spacing.md },
   cardHead: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  cardMeta: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 6, flexWrap: 'wrap' },
+  kindPill: { paddingHorizontal: 8, paddingVertical: 2, borderRadius: radius.pill, borderWidth: 1 },
   pill: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: radius.pill },
   segments: { flexDirection: 'row', gap: 4, marginTop: spacing.sm },
   segment: { flex: 1, height: 4, borderRadius: 2 },

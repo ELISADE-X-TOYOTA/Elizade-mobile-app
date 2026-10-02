@@ -142,7 +142,15 @@
     "emailChangeNotice": "هذا عنوان تسجيل دخولك. سننبّه عنوانيك القديم والجديد عند التغيير.",
     "privacySecurity": "الخصوصية والأمان",
     "emailLocked": "لا يمكن تغيير بريد تسجيل الدخول إلا من قبلنا. راسل {{support}}.",
-    "myReservations": "حجوزاتي"
+    "myReservations": "حجوزاتي",
+    "appearance": "المظهر",
+    "appearanceSubtitle": "اختر الفاتح أو الداكن أو اتبع جهازك.",
+    "themeSystem": "الإعداد الافتراضي للنظام",
+    "themeLight": "فاتح",
+    "themeDark": "داكن",
+    "themeSystemHint": "اتباع إعداد الهاتف الفاتح أو الداكن.",
+    "themeLightHint": "استخدام الألوان الفاتحة دائمًا.",
+    "themeDarkHint": "استخدام الألوان الداكنة دائمًا."
   },
   "leads": {
     "title": "طلباتي",
@@ -174,7 +182,14 @@
       "converted": "اكتمل هذا الاستفسار.",
       "closed": "تم إغلاق هذا الاستفسار."
     },
-    "updateFrom": "تحديث من مندوبك"
+    "updateFrom": "تحديث من مندوبك",
+    "kind": {
+      "test_drive": "قيادة تجريبية",
+      "quotation": "عرض سعر",
+      "reservation": "حجز",
+      "trade_in": "استبدال",
+      "enquiry": "استفسار"
+    }
   },
   "language": {
     "title": "اللغة",
@@ -322,7 +337,8 @@
     "expectedResponse": "الرد الأول المتوقع خلال {{hours}} ساعة",
     "typicalResponse": "الرد المعتاد خلال {{hours}} ساعة",
     "emailElizade": "راسل إليزادي",
-    "followElizade": "تابع إليزادي"
+    "followElizade": "تابع إليزادي",
+    "noRepliesYet": "لا توجد ردود على هذه التذكرة بعد."
   },
   "notifications": {
     "title": "الإشعارات",
@@ -356,7 +372,8 @@
   },
   "filters": {
     "title": "عوامل التصفية",
-    "transmission": "ناقل الحركة"
+    "transmission": "ناقل الحركة",
+    "year": "سنة الصنع"
   },
   "compare": {
     "title": "مقارنة",
