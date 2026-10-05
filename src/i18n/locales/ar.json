@@ -42,7 +42,8 @@
     "progress": "التقدّم",
     "price": "السعر",
     "dismiss": "إغلاق",
-    "vehicle": "المركبة"
+    "vehicle": "المركبة",
+    "attachLimit": "حتى {{count}} ملفات · الصور {{imageMb}} ميجابايت، الفيديو {{videoMb}} ميجابايت"
   },
   "nav": {
     "home": "الرئيسية",

@@ -158,6 +158,9 @@ export default function NewTicket() {
                 : 'Attach a photo or video'}
           </Txt>
         </Pressable>
+        <Txt variant="bodySmall" tone="tertiary" style={{ marginTop: 6 }}>
+          {tr('common.attachLimit', { count: MAX_TICKET_ATTACHMENTS, imageMb: 10, videoMb: 50 })}
+        </Txt>
 
         {formError ? (
           <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: 8 }}>

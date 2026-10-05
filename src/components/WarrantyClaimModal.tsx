@@ -322,6 +322,13 @@ export function WarrantyClaimModal({ visible, vehicles, certificates, onClose, o
                   <Ionicons name="camera-outline" size={20} color={t.colors.primary} />
                   <Txt variant="titleSmall" color={t.colors.primary} style={{ marginLeft: 8 }}>{tr('warranty.addPhotos')}</Txt>
                 </Pressable>
+                {/*
+                  STATE THE LIMIT UP FRONT. It existed only as a rejection:
+                  a customer picked a 20 MB photo, waited, and was told no.
+                */}
+                <Txt variant="bodySmall" tone="tertiary" style={{ marginTop: 6 }}>
+                  {tr('common.attachLimit', { count: MAX_TICKET_ATTACHMENTS, imageMb: 10, videoMb: 50 })}
+                </Txt>
                 <AttachmentDrafts
                   items={attachments}
                   onRemove={(url) => setAttachments((p) => p.filter((a) => a.url !== url))}

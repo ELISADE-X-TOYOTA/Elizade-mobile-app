@@ -42,7 +42,8 @@
     "progress": "Progression",
     "price": "Prix",
     "dismiss": "Fermer",
-    "vehicle": "Véhicule"
+    "vehicle": "Véhicule",
+    "attachLimit": "Jusqu'à {{count}} fichiers · images {{imageMb}} Mo, vidéo {{videoMb}} Mo"
   },
   "nav": {
     "home": "Accueil",

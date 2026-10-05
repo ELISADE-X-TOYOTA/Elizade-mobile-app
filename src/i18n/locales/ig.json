@@ -42,7 +42,8 @@
     "progress": "Ọganihu",
     "price": "Ọnụahịa",
     "dismiss": "Mechie",
-    "vehicle": "Ụgbọ"
+    "vehicle": "Ụgbọ",
+    "attachLimit": "Ruo faịlụ {{count}} · foto {{imageMb}} MB, vidiyo {{videoMb}} MB"
   },
   "nav": {
     "home": "Ụlọ",

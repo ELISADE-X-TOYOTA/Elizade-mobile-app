@@ -215,6 +215,9 @@ export default function TradeIn() {
           <Ionicons name="camera-outline" size={20} color={t.colors.primary} />
           <Txt variant="titleSmall" color={t.colors.primary} style={{ marginLeft: 8 }}>{tr('tradeIn.addPhotos')}</Txt>
         </Pressable>
+        <Txt variant="bodySmall" tone="tertiary" style={{ marginTop: 6 }}>
+          {tr('common.attachLimit', { count: MAX_TICKET_ATTACHMENTS, imageMb: 10, videoMb: 50 })}
+        </Txt>
         <AttachmentDrafts items={photos} onRemove={(url) => setPhotos((p) => p.filter((a) => a.url !== url))} />
         {attachError ? (
           <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: spacing.sm }}>

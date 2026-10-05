@@ -42,7 +42,8 @@
     "progress": "Ìlọsíwájú",
     "price": "Iye owó",
     "dismiss": "Tì í",
-    "vehicle": "Ọkọ̀"
+    "vehicle": "Ọkọ̀",
+    "attachLimit": "Tó bá fi {{count}} fáìlì · àwòrán {{imageMb}} MB, fídíò {{videoMb}} MB"
   },
   "nav": {
     "home": "Ilé",

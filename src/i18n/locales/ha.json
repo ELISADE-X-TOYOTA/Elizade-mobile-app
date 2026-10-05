@@ -42,7 +42,8 @@
     "progress": "Ci gaba",
     "price": "Farashi",
     "dismiss": "Rufe",
-    "vehicle": "Mota"
+    "vehicle": "Mota",
+    "attachLimit": "Har fayiloli {{count}} · hotuna {{imageMb}} MB, bidiyo {{videoMb}} MB"
   },
   "nav": {
     "home": "Gida",
