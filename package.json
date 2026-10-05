@@ -9,7 +9,7 @@
     "web": "expo start --web",
     "check:theme": "node scripts/check-theme.js",
     "typecheck": "tsc --noEmit",
-    "verify": "npm run typecheck && npm run check:theme && npm run check:i18n && npm run check:untranslated && npm run test:singleflight && npm run test:sse && npm run test:socket && npm run test:booking && npm run test:compare && npm run test:otp && npm run test:contact && npm run test:tray && npm run test:bookings && npm run test:media && npm run test:categories && npm run test:reservations && npm run test:warranty && npm run test:lock && npm run test:sanitize",
+    "verify": "npm run typecheck && npm run check:theme && npm run check:i18n && npm run check:untranslated && npm run test:singleflight && npm run test:sse && npm run test:socket && npm run test:booking && npm run test:compare && npm run test:otp && npm run test:contact && npm run test:tray && npm run test:bookings && npm run test:media && npm run test:categories && npm run test:reservations && npm run test:warranty && npm run test:lock && npm run test:sanitize && npm run test:imagefmt",
     "check:i18n": "node scripts/check-i18n.js",
     "check:untranslated": "node scripts/find-untranslated.js",
     "test:singleflight": "node scripts/test-singleflight.js",
@@ -27,7 +27,8 @@
     "test:reservations": "node scripts/test-reservations.js",
     "test:warranty": "node scripts/test-warranty.js",
     "test:lock": "node scripts/test-lock-policy.js",
-    "test:sanitize": "node scripts/test-sanitize.js"
+    "test:sanitize": "node scripts/test-sanitize.js",
+    "test:imagefmt": "node scripts/test-image-format.js"
   },
   "dependencies": {
     "@expo-google-fonts/outfit": "^0.4.3",
@@ -42,6 +43,7 @@
     "expo-document-picker": "~14.0.8",
     "expo-font": "~14.0.12",
     "expo-image": "~3.0.11",
+    "expo-image-manipulator": "~14.0.8",
     "expo-image-picker": "~17.0.11",
     "expo-linear-gradient": "~15.0.8",
     "expo-localization": "~17.0.9",

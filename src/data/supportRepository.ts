@@ -9,6 +9,7 @@ import {
   uploadMediaAttachment,
 } from '../api/support';
 import { APP } from '../constants/app';
+import { toUploadableImage } from './imageFormat';
 import { SupportTicket, TicketMessage } from '../domain/types';
 import { SUPPORT_TICKETS, TICKET_MESSAGES } from './mock';
 
@@ -85,13 +86,27 @@ export async function pickTicketAttachment(
   // guard below (`isUploadedAttachment`) stops that reaching the wire.
 
   try {
-    const url = await uploadMediaAttachment(
-      asset.uri,
-      name,
-      asset.mimeType ?? (kind === 'video' ? 'video/mp4' : 'image/jpeg'),
-      uploadPath,
-    );
-    return { ok: true, attachment: { url, previewUri: asset.uri, name, kind } };
+    /*
+      HEIC, converted before it reaches the wire.
+
+      iPhones shoot HEIC and `expo-image-picker` passes it through untouched
+      (its iOS source special-cases `UTType.heic` and returns the raw data),
+      while converting most other formats to JPEG. The upload endpoints do
+      not accept HEIC, so every camera-roll photo from an iPhone came back
+      415 — and the same action on Android, which shoots JPEG, worked. See
+      `toUploadableImage`.
+    */
+    const file =
+      kind === 'video'
+        ? { uri: asset.uri, name, mimeType: asset.mimeType ?? 'video/mp4' }
+        : await toUploadableImage({
+            uri: asset.uri,
+            name,
+            mimeType: asset.mimeType ?? 'image/jpeg',
+          });
+
+    const url = await uploadMediaAttachment(file.uri, file.name, file.mimeType, uploadPath);
+    return { ok: true, attachment: { url, previewUri: asset.uri, name: file.name, kind } };
   } catch (e) {
     return { ok: false, message: e instanceof Error ? e.message : 'Could not upload that file.' };
   }
