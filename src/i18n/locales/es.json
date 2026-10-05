@@ -296,7 +296,10 @@
     "rescheduleTitle": "Reprogramar la cita",
     "rescheduleSubtitle": "Elige una nueva fecha y hora.",
     "addAttachments": "Añadir fotos, vídeos o documentos",
-    "issueAttachments": "Archivos adjuntos"
+    "issueAttachments": "Archivos adjuntos",
+    "addVehicleFirst": "Añade un vehículo a tu garaje",
+    "needsVehicleHint": "Un servicio se reserva para uno de tus vehículos. Añade el tuyo y vuelve.",
+    "branchesUnavailable": "No se pudieron cargar los centros de servicio. Comprueba tu conexión y actualiza."
   },
   "servicePrices": {
     "title": "Precios de servicio",

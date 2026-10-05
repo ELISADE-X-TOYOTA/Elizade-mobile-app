@@ -282,13 +282,48 @@ export default function BookService() {
         ) : null}
 
         <View style={{ height: spacing.xl }} />
-        <PrimaryButton
-          label={tr('service.requestService')}
-          icon="construct"
-          loading={loading}
-          disabled={ownedVehicles.length === 0 || branches.length === 0 || attaching}
-          onPress={submit}
-        />
+        {/*
+          A DEAD BUTTON AT THE BOTTOM OF A FILLED-IN FORM.
+
+          A service booking is made against a vehicle you own, so with an
+          empty garage there is genuinely nothing to book for — the logic was
+          right. But the only explanation sat at the TOP of the screen, next
+          to the vehicle picker, and by the time someone had chosen a service
+          type, a branch, a date and written a note, it was long scrolled
+          away. Elizade reported this as "the request service is not active",
+          which is exactly how it reads.
+
+          So the button now carries the reason itself and goes where the
+          problem is fixed, rather than refusing and explaining nowhere.
+        */}
+        {ownedVehicles.length === 0 ? (
+          <>
+            <PrimaryButton
+              label={tr('service.addVehicleFirst')}
+              icon="car-sport"
+              onPress={() => router.push('/garage')}
+            />
+            <Txt variant="bodySmall" tone="secondary" center style={{ marginTop: spacing.sm }}>
+              {tr('service.needsVehicleHint')}
+            </Txt>
+          </>
+        ) : (
+          <PrimaryButton
+            label={tr('service.requestService')}
+            icon="construct"
+            loading={loading}
+            // Branches come from the API; an empty list is a load failure
+            // rather than something the customer can act on, so this stays a
+            // refusal — but one the hint below names.
+            disabled={branches.length === 0 || attaching}
+            onPress={submit}
+          />
+        )}
+        {ownedVehicles.length > 0 && branches.length === 0 ? (
+          <Txt variant="bodySmall" tone="secondary" center style={{ marginTop: spacing.sm }}>
+            {tr('service.branchesUnavailable')}
+          </Txt>
+        ) : null}
       </KeyboardAwareScrollView>
     </View>
   );

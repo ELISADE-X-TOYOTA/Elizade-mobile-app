@@ -296,7 +296,10 @@
     "rescheduleTitle": "Sake tsara alkawari",
     "rescheduleSubtitle": "Zaɓi sabon rana da lokaci.",
     "addAttachments": "Ƙara hotuna, bidiyo ko takardu",
-    "issueAttachments": "Abubuwan da aka haɗa"
+    "issueAttachments": "Abubuwan da aka haɗa",
+    "addVehicleFirst": "Ƙara mota a garejinka",
+    "needsVehicleHint": "Ana yin ajiyen gyara ne a kan motarka. Ƙara taka sannan ka dawo.",
+    "branchesUnavailable": "An kasa loda cibiyoyin gyara. Duba haɗinka sannan ka sabunta."
   },
   "servicePrices": {
     "title": "Farashin gyara",

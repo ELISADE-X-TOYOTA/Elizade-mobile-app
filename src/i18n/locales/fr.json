@@ -296,7 +296,10 @@
     "rescheduleTitle": "Reprogrammer le rendez-vous",
     "rescheduleSubtitle": "Choisissez une nouvelle date et heure.",
     "addAttachments": "Ajouter des photos, vidéos ou documents",
-    "issueAttachments": "Pièces jointes"
+    "issueAttachments": "Pièces jointes",
+    "addVehicleFirst": "Ajoutez un véhicule à votre garage",
+    "needsVehicleHint": "Un entretien se réserve pour l'un de vos véhicules. Ajoutez le vôtre puis revenez.",
+    "branchesUnavailable": "Impossible de charger les centres de service. Vérifiez votre connexion et actualisez."
   },
   "servicePrices": {
     "title": "Tarifs d'entretien",

@@ -296,7 +296,10 @@
     "rescheduleTitle": "Reschedule appointment",
     "rescheduleSubtitle": "Choose a new date and time.",
     "addAttachments": "Add photos, videos, or documents",
-    "issueAttachments": "Issue attachments"
+    "issueAttachments": "Issue attachments",
+    "addVehicleFirst": "Add a vehicle to your garage",
+    "needsVehicleHint": "A service is booked against one of your vehicles. Add yours and come back.",
+    "branchesUnavailable": "We couldn't load the service centres. Check your connection and pull to refresh."
   },
   "servicePrices": {
     "title": "Service prices",

@@ -296,7 +296,10 @@
     "rescheduleTitle": "Hazigharia oge nzute",
     "rescheduleSubtitle": "Họrọ ụbọchị na oge ọhụrụ.",
     "addAttachments": "Tinye foto, vidiyo ma ọ bụ akwụkwọ",
-    "issueAttachments": "Ihe ejikọrọ"
+    "issueAttachments": "Ihe ejikọrọ",
+    "addVehicleFirst": "Tinye ụgbọ na gareeji gị",
+    "needsVehicleHint": "A na-edebe ọrụ maka otu n'ime ụgbọ gị. Tinye nke gị wee lọghachi.",
+    "branchesUnavailable": "Enweghị ike ibudata ebe ọrụ. Lelee njikọ gị wee megharịa."
   },
   "servicePrices": {
     "title": "Ọnụahịa ọrụ ụgbọala",

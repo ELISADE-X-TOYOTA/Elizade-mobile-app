@@ -296,7 +296,10 @@
     "rescheduleTitle": "إعادة جدولة الموعد",
     "rescheduleSubtitle": "اختر تاريخًا ووقتًا جديدين.",
     "addAttachments": "أضف صورًا أو مقاطع فيديو أو مستندات",
-    "issueAttachments": "المرفقات"
+    "issueAttachments": "المرفقات",
+    "addVehicleFirst": "أضف مركبة إلى مرآبك",
+    "needsVehicleHint": "يُحجز الصيانة على إحدى مركباتك. أضف مركبتك ثم عُد.",
+    "branchesUnavailable": "تعذّر تحميل مراكز الخدمة. تحقّق من اتصالك ثم حدّث الصفحة."
   },
   "servicePrices": {
     "title": "أسعار الصيانة",

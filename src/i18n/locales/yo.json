@@ -296,7 +296,10 @@
     "rescheduleTitle": "Tún ìpàdé ṣètò",
     "rescheduleSubtitle": "Yan ọjọ́ àti àkókò tuntun.",
     "addAttachments": "Fi àwòrán, fídíò tàbí ìwé kún un",
-    "issueAttachments": "Àwọn ìwé àfikún"
+    "issueAttachments": "Àwọn ìwé àfikún",
+    "addVehicleFirst": "Fi ọkọ̀ kún gáréèjì rẹ",
+    "needsVehicleHint": "A máa ń ṣe ìtọ́jú lórí ọ̀kan nínú àwọn ọkọ̀ rẹ. Fi tìrẹ kún un kí o padà wá.",
+    "branchesUnavailable": "Kò lè ṣí àwọn ibùdó ìtọ́jú. Yẹ ìsopọ̀ rẹ wò kí o sì tún ṣí i."
   },
   "servicePrices": {
     "title": "Owó ìtọ́jú ọkọ̀",
