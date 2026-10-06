@@ -1,0 +1,22 @@
+# Local / alternate package managers — EAS must use package-lock.json + npm ci.
+bun.lock
+
+# Template and legacy folders not part of the shipped app ( confuse installs / bloat archive).
+example/
+src/app.legacy-onboarding/
+src/components/checkbox.tsx
+src/components/form-input.tsx
+src/components/get-started-button.tsx
+src/components/logo-splash.tsx
+src/components/pagination-dots.tsx
+src/components/skip-button.tsx
+src/components/welcome-text.tsx
+src/constants/theme.ts
+src/global.css
+
+# Local-only assets not referenced by committed app config.
+assets/expo.icon/
+assets/fonts/
+assets/images/
+assets/videos/
+expo-qr.png

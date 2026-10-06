@@ -1,4 +1,5 @@
 node_modules/
+bun.lock
 .expo/
 dist/
 web-build/
