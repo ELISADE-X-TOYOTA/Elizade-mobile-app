@@ -269,6 +269,13 @@ export default function BookService() {
           items={attachments}
           onRemove={(url) => setAttachments((prev) => prev.filter((attachment) => attachment.url !== url))}
         />
+        <Txt variant="bodySmall" tone="tertiary" style={{ marginTop: 6 }}>
+          {tr('common.attachLimitFormats', {
+            count: MAX_TICKET_ATTACHMENTS,
+            imageMb: 10,
+            videoMb: 50,
+          })}
+        </Txt>
         {attachError ? (
           <Txt variant="bodySmall" color={t.colors.errorText} style={{ marginTop: spacing.sm }}>
             {attachError}

@@ -43,7 +43,8 @@
     "price": "Prix",
     "dismiss": "Fermer",
     "vehicle": "Véhicule",
-    "attachLimit": "Jusqu'à {{count}} fichiers · images {{imageMb}} Mo, vidéo {{videoMb}} Mo"
+    "attachLimit": "Jusqu'à {{count}} fichiers · images {{imageMb}} Mo, vidéo {{videoMb}} Mo",
+    "attachLimitFormats": "Jusqu'à {{count}} fichiers : JPEG, PNG, WebP, PDF, MP4, MOV · images/PDF {{imageMb}} Mo max · vidéo {{videoMb}} Mo max"
   },
   "nav": {
     "home": "Accueil",

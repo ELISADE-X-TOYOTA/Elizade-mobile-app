@@ -58,8 +58,21 @@ export async function uploadMediaAttachment(
   });
 
   if (!res.ok) {
+    let detail: string | undefined;
+    try {
+      const body = (await res.json()) as { detail?: string | { msg?: string }[] };
+      if (typeof body.detail === 'string') detail = body.detail;
+      else if (Array.isArray(body.detail)) {
+        detail = body.detail.map((d) => (typeof d === 'object' && d?.msg ? d.msg : String(d))).join(' ');
+      }
+    } catch {
+      // ignore — fall back to status-based messages
+    }
+    if (detail) throw new Error(detail);
     if (res.status === 413) throw new Error('That file is too large or too long.');
     if (res.status === 415) throw new Error('Only JPEG, PNG, WebP, MP4, MOV, or PDF files can be attached.');
+    if (res.status === 401) throw new Error('Sign in again to upload attachments.');
+    if (res.status === 502) throw new Error('We could not store that file. Please try again.');
     throw new Error('Could not upload that file.');
   }
   const data = (await res.json()) as { url: string };

@@ -43,7 +43,8 @@
     "price": "Iye owó",
     "dismiss": "Tì í",
     "vehicle": "Ọkọ̀",
-    "attachLimit": "Tó bá fi {{count}} fáìlì · àwòrán {{imageMb}} MB, fídíò {{videoMb}} MB"
+    "attachLimit": "Tó bá fi {{count}} fáìlì · àwòrán {{imageMb}} MB, fídíò {{videoMb}} MB",
+    "attachLimitFormats": "Tó bá fi {{count}} fáìlì: JPEG, PNG, WebP, PDF, MP4, MOV · àwòrán/PDF {{imageMb}} MB · fídíò {{videoMb}} MB"
   },
   "nav": {
     "home": "Ilé",

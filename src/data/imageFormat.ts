@@ -1,4 +1,5 @@
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
+import { Platform } from 'react-native';
 
 /**
  * Re-encode a picked image to JPEG when the API would refuse its format.
@@ -40,8 +41,19 @@ export interface PickedImage {
  * returned so the upload can still be attempted and report its own error,
  * rather than the picker dying on a file that might have been fine.
  */
+function needsJpegConversion(input: PickedImage): boolean {
+  const mime = input.mimeType.toLowerCase();
+  if (/heic|heif/.test(mime)) return true;
+  if (/\.hei[cf](\?|$)/i.test(input.name) || /\.hei[cf](\?|$)/i.test(input.uri)) return true;
+  if (!ACCEPTED_IMAGE_TYPES.has(mime)) return true;
+  // iPhones often declare JPEG while the bytes are still HEIC, or the picker
+  // hands RN a URI fetch cannot read. Re-encoding on iOS keeps bytes, MIME, and
+  // extension aligned with what the API validates.
+  return Platform.OS === 'ios';
+}
+
 export async function toUploadableImage(input: PickedImage): Promise<PickedImage> {
-  if (ACCEPTED_IMAGE_TYPES.has(input.mimeType.toLowerCase())) return input;
+  if (!needsJpegConversion(input)) return input;
 
   try {
     const context = ImageManipulator.manipulate(input.uri);
