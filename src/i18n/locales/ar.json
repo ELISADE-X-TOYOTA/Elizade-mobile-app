@@ -43,7 +43,8 @@
     "price": "السعر",
     "dismiss": "إغلاق",
     "vehicle": "المركبة",
-    "attachLimit": "حتى {{count}} ملفات · الصور {{imageMb}} ميجابايت، الفيديو {{videoMb}} ميجابايت"
+    "attachLimit": "حتى {{count}} ملفات · الصور {{imageMb}} ميجابايت، الفيديو {{videoMb}} ميجابايت",
+    "attachLimitFormats": "حتى {{count}} ملفات: JPEG وPNG وWebP وPDF وMP4 وMOV · الصور/PDF حتى {{imageMb}} ميجابايت · الفيديو حتى {{videoMb}} ميجابايت"
   },
   "nav": {
     "home": "الرئيسية",

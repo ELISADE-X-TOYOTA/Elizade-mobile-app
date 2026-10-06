@@ -43,7 +43,8 @@
     "price": "Farashi",
     "dismiss": "Rufe",
     "vehicle": "Mota",
-    "attachLimit": "Har fayiloli {{count}} · hotuna {{imageMb}} MB, bidiyo {{videoMb}} MB"
+    "attachLimit": "Har fayiloli {{count}} · hotuna {{imageMb}} MB, bidiyo {{videoMb}} MB",
+    "attachLimitFormats": "Har fayiloli {{count}}: JPEG, PNG, WebP, PDF, MP4, MOV · hotuna/PDF {{imageMb}} MB · bidiyo {{videoMb}} MB"
   },
   "nav": {
     "home": "Gida",

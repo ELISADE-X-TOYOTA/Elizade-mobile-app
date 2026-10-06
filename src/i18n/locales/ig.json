@@ -43,7 +43,8 @@
     "price": "Ọnụahịa",
     "dismiss": "Mechie",
     "vehicle": "Ụgbọ",
-    "attachLimit": "Ruo faịlụ {{count}} · foto {{imageMb}} MB, vidiyo {{videoMb}} MB"
+    "attachLimit": "Ruo faịlụ {{count}} · foto {{imageMb}} MB, vidiyo {{videoMb}} MB",
+    "attachLimitFormats": "Ruo faịlụ {{count}}: JPEG, PNG, WebP, PDF, MP4, MOV · foto/PDF {{imageMb}} MB · vidiyo {{videoMb}} MB"
   },
   "nav": {
     "home": "Ụlọ",

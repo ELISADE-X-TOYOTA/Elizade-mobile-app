@@ -1,4 +1,6 @@
+import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
+import { Alert, Platform } from 'react-native';
 import { mapTicket, mapTicketMessage } from '../api/customer-mappers';
 import {
   CreateTicketBody,
@@ -35,12 +37,88 @@ export type PickResult =
  * Permissions are requested lazily, only once the user taps attach — asking on
  * screen load trains people to deny. Mirrors `pickAndUploadAvatar`.
  */
+const DOCUMENT_MIMES = [
+  'application/pdf',
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'video/mp4',
+  'video/quicktime',
+] as const;
+
+function promptAttachmentSource(): Promise<'library' | 'camera' | 'document' | null> {
+  return new Promise((resolve) => {
+    Alert.alert(
+      'Add attachment',
+      'Choose photos, videos, or a PDF document.',
+      [
+        { text: 'Photo library', onPress: () => resolve('library') },
+        { text: 'Take photo', onPress: () => resolve('camera') },
+        { text: 'Document (PDF)', onPress: () => resolve('document') },
+        { text: 'Cancel', style: 'cancel', onPress: () => resolve(null) },
+      ],
+      { cancelable: true, onDismiss: () => resolve(null) },
+    );
+  });
+}
+
+async function pickDocumentAttachment(uploadPath: string): Promise<PickResult> {
+  const result = await DocumentPicker.getDocumentAsync({
+    copyToCacheDirectory: true,
+    multiple: false,
+    type: [...DOCUMENT_MIMES],
+  });
+  if (result.canceled || !result.assets?.length) return null;
+
+  const asset = result.assets[0];
+  const mime = (asset.mimeType ?? 'application/octet-stream').toLowerCase();
+  const name = asset.name || `attachment-${Date.now()}`;
+  const isVideo = mime.startsWith('video/');
+  const isPdf = mime === 'application/pdf';
+  const isImage = mime.startsWith('image/');
+
+  if (!isVideo && !isPdf && !isImage) {
+    return { ok: false, message: 'Only JPEG, PNG, WebP, PDF, MP4, or MOV files can be attached.' };
+  }
+
+  const fileSize = asset.size ?? 0;
+  if (fileSize > (isVideo ? MAX_ATTACHMENT_BYTES : MAX_IMAGE_BYTES)) {
+    return {
+      ok: false,
+      message: isVideo ? 'Videos must be 50MB or smaller.' : 'Images and PDFs must be 10MB or smaller.',
+    };
+  }
+
+  if (APP.useMock) {
+    return { ok: true, attachment: { url: asset.uri, previewUri: asset.uri, name, kind: isPdf ? 'document' : isVideo ? 'video' : 'image' } };
+  }
+
+  try {
+    const file = isImage
+      ? await toUploadableImage({ uri: asset.uri, name, mimeType: mime })
+      : { uri: asset.uri, name, mimeType: isPdf ? 'application/pdf' : mime };
+    const url = await uploadMediaAttachment(file.uri, file.name, file.mimeType, uploadPath);
+    const kind = isPdf ? 'document' : isVideo ? 'video' : 'image';
+    return { ok: true, attachment: { url, previewUri: asset.uri, name: file.name, kind } };
+  } catch (e) {
+    return { ok: false, message: e instanceof Error ? e.message : 'Could not upload that file.' };
+  }
+}
+
 export async function pickTicketAttachment(
-  source: 'library' | 'camera' = 'library',
+  source: 'library' | 'camera' | 'choose' = 'choose',
   uploadPath = '/support/attachments/upload',
 ): Promise<PickResult> {
+  let pickSource = source;
+  if (source === 'choose') {
+    const choice = await promptAttachmentSource();
+    if (!choice) return null;
+    if (choice === 'document') return pickDocumentAttachment(uploadPath);
+    pickSource = choice;
+  }
+
   const perm =
-    source === 'camera'
+    pickSource === 'camera'
       ? await ImagePicker.requestCameraPermissionsAsync()
       : await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -48,16 +126,21 @@ export async function pickTicketAttachment(
     return {
       ok: false,
       message:
-        source === 'camera'
+        pickSource === 'camera'
           ? 'Camera access is needed to take a photo.'
           : 'Photo and video access is needed to attach media.',
     };
   }
 
   const result =
-    source === 'camera'
-      ? await ImagePicker.launchCameraAsync({ quality: 0.7 })
-      : await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images', 'videos'], quality: 0.7 });
+    pickSource === 'camera'
+      ? await ImagePicker.launchCameraAsync({ quality: 0.8, exif: false })
+      : await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ['images', 'videos'],
+          quality: 0.8,
+          exif: false,
+          ...(Platform.OS === 'ios' ? { preferredAssetRepresentationMode: ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Compatible } : {}),
+        });
 
   if (result.canceled || !result.assets?.length) return null;
   const asset = result.assets[0];
