@@ -9,7 +9,6 @@ import { useBranches } from '../hooks/useBranches';
 import { Vehicle, vehicleTitle } from '../domain/types';
 import { radius, spacing } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
-import { price } from '../utils/format';
 import { PrimaryButton } from './PrimaryButton';
 import { Txt } from './Txt';
 import { tint } from '../theme/colors';
@@ -88,7 +87,7 @@ export function QuoteModal({ visible, vehicle, onClose }: Props) {
             <>
               <Txt variant="titleLarge" style={{ paddingHorizontal: spacing.lg, paddingTop: 8 }}>{tr('quote.title')}</Txt>
               <Txt tone="secondary" style={{ paddingHorizontal: spacing.lg, marginTop: 2 }}>
-                {vehicleTitle(vehicle)} · {price(vehicle.price)}
+                {vehicleTitle(vehicle)}
               </Txt>
 
               <ScrollView style={{ maxHeight: 380 }} contentContainerStyle={{ padding: spacing.lg }} showsVerticalScrollIndicator={false}>

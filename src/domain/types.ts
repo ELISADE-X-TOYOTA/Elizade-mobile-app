@@ -275,6 +275,15 @@ export const SERVICE_TYPE_META: Record<
   recall: { label: 'Recall Service', icon: 'alert', description: 'Manufacturer recall work' },
 };
 
+/** Chosen under Repair. Sent with the booking so the workshop can see which one. */
+export const REPAIR_KINDS = [
+  { id: 'diagnosis', label: 'Diagnosis' },
+  { id: 'general', label: 'General Repairs' },
+  { id: 'body', label: 'Body Repairs' },
+] as const;
+
+export type RepairKindId = (typeof REPAIR_KINDS)[number]['id'];
+
 export const APPOINTMENT_STATUS_META: Record<
   AppointmentStatus,
   { label: string; tone: 'info' | 'success' | 'warning' | 'muted' }

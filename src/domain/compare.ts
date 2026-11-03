@@ -1,5 +1,5 @@
 import { Vehicle } from './types';
-import { mileageOrNull, price as fmtPrice } from '../utils/format';
+import { mileageOrNull } from '../utils/format';
 
 /**
  * Builds the side-by-side spec matrix for the vehicle comparison screen.
@@ -140,10 +140,9 @@ function extraRows(a: Vehicle, b: Vehicle): CompareRow[] {
 export function buildComparison(a: Vehicle, b: Vehicle): Comparison {
   const groups: CompareGroup[] = [
     {
-      title: 'Pricing & Trim',
+      title: 'Trim',
       icon: 'pricetag-outline',
       rows: [
-        row('Price', real(a.price) && fmtPrice(a.price), real(b.price) && fmtPrice(b.price)),
         row('Trim', real(a.trim), real(b.trim)),
         row('Model Year', real(a.year), real(b.year)),
         row('Colour', real(a.color), real(b.color)),

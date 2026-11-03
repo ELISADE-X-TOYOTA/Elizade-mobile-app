@@ -1,4 +1,5 @@
 import { APP } from '../constants/app';
+import { asOgba } from '../domain/places';
 import { ListingType, Vehicle, VehicleAvailability, VehicleCategory } from '../domain/types';
 import { Branch, VehicleDetail, VehicleListItem } from './vehicles';
 
@@ -95,13 +96,13 @@ export function mapListItemToVehicle(item: VehicleListItem, branches?: Map<strin
     transmission: item.transmission,
     engine: '',
     mileage: estMileage(item.year, item.id),
-    location: branch ? `${branch.city}, ${branch.state}` : 'Elizade Showroom',
+    location: branch ? asOgba(`${branch.city}, ${branch.state}`) : 'Elizade Showroom',
     images: item.primaryImageUrl ? [resolveMediaUrl(item.primaryImageUrl)] : [''],
     features: [],
     // The list endpoint carries no specs — the compare screen re-fetches each
     // vehicle's detail rather than comparing these empty bags.
     specs: {},
-    dealerName: branch?.name ?? 'Elizade Motors',
+    dealerName: asOgba(branch?.name) || 'Elizade Motors',
     ...derived(item.id, category),
   };
 }
@@ -129,7 +130,7 @@ export function mapDetailToVehicle(d: VehicleDetail): Vehicle {
     transmission: d.transmission,
     engine: d.engine || '—',
     mileage: d.mileage ?? estMileage(d.year, d.id),
-    location: [d.branchCity, d.branchState].filter(Boolean).join(', ') || 'Elizade Showroom',
+    location: asOgba([d.branchCity, d.branchState].filter(Boolean).join(', ')) || 'Elizade Showroom',
     images,
     features: featureKeys.length ? featureKeys : ['Bluetooth', 'Navigation', 'Air Conditioning'],
     // Values preserved (not just keys) so the compare matrix has real data.
@@ -138,7 +139,7 @@ export function mapDetailToVehicle(d: VehicleDetail): Vehicle {
         .filter(([, v]) => v != null && String(v).trim() !== '')
         .map(([k, v]) => [k, String(v).trim()]),
     ),
-    dealerName: d.branchName || 'Elizade Motors',
+    dealerName: asOgba(d.branchName) || 'Elizade Motors',
     ...derived(d.id, category),
   };
 }

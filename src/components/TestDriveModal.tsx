@@ -11,7 +11,6 @@ import { useBranches } from '../hooks/useBranches';
 import { Vehicle, vehicleTitle } from '../domain/types';
 import { radius, spacing } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
-import { price } from '../utils/format';
 import { PrimaryButton } from './PrimaryButton';
 import { Txt } from './Txt';
 import { tint } from '../theme/colors';
@@ -190,13 +189,10 @@ export function TestDriveModal({ visible, vehicle, mode, onClose }: Props) {
                   </>
                 ) : (
                   <>
-                    <Label text="Refundable deposit" />
+                    <Label text="Reservation" />
                     <View style={[styles.depositCard, { backgroundColor: t.colors.surfaceAlt }]}>
                       <View style={{ flex: 1 }}>
                         <Txt variant="bodySmall" tone="secondary">{tr('testDrive.holdingDeposit')}</Txt>
-                        <Txt variant="headlineSmall" color={t.colors.primary}>
-                          {price(deposit)}
-                        </Txt>
                         <Txt variant="bodySmall" tone="secondary" style={{ marginTop: 4 }}>{tr('testDrive.depositNote')}</Txt>
                       </View>
                     </View>
@@ -347,11 +343,9 @@ function Success({
             afterwards. A receipt claiming otherwise is the worst place for it,
             because a receipt is what people keep.
           */}
-          <Txt variant="bodySmall" tone="secondary">
-            {mode === 'testdrive' ? tr('common.vehicle') : tr('testDrive.depositDue')}
-          </Txt>
+          <Txt variant="bodySmall" tone="secondary">{tr('common.vehicle')}</Txt>
           <Txt variant="titleMedium" color={t.colors.primary}>
-            {mode === 'testdrive' ? vehicle.make : price(deposit)}
+            {vehicle.make}
           </Txt>
         </View>
       </View>

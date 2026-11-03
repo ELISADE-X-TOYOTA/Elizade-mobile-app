@@ -35,7 +35,6 @@ import { useWatchlistStore } from '../../src/store/useWatchlistStore';
 import { radius, spacing } from '../../src/theme/spacing';
 import { useTheme } from '../../src/theme/useTheme';
 import { mileage } from '../../src/utils/format';
-import { FinancingModal } from '../../src/components/FinancingModal';
 import { QuoteModal } from '../../src/components/QuoteModal';
 import { SalesMode, TestDriveModal } from '../../src/components/TestDriveModal';
 
@@ -52,7 +51,6 @@ export default function CarDetails() {
   );
   const toggleVehicle = useWatchlistStore((s) => s.toggleVehicle);
   const [sale, setSale] = useState<SalesMode | null>(null);
-  const [financeOpen, setFinanceOpen] = useState(false);
   const [quoteOpen, setQuoteOpen] = useState(false);
   /** Sticky-bar height, measured on layout. 140 is only the first-frame guess. */
   const [barHeight, setBarHeight] = useState(140);
@@ -313,7 +311,6 @@ export default function CarDetails() {
           {/* Buying tools */}
           <Txt variant="titleLarge" style={{ marginTop: spacing.xl, marginBottom: spacing.md }}>{tr('shop.buyingTools')}</Txt>
           <View style={{ flexDirection: 'row', gap: 12 }}>
-            <ToolBtn icon="calculator" label={tr('shop.financing')} onPress={() => setFinanceOpen(true)} />
             <ToolBtn icon="document-text" label={tr('shop.getQuote')} onPress={() => setQuoteOpen(true)} />
             <ToolBtn icon="swap-horizontal" label={tr('shop.tradeIn')} onPress={() => router.push('/trade-in')} />
           </View>
@@ -455,7 +452,6 @@ export default function CarDetails() {
           reload();
         }}
       />
-      <FinancingModal visible={financeOpen} vehiclePrice={v.price} vehicleTitle={vehicleTitle(v)} onClose={() => setFinanceOpen(false)} />
       <QuoteModal visible={quoteOpen} vehicle={v} onClose={() => setQuoteOpen(false)} />
     </View>
   );

@@ -31,6 +31,7 @@ import type {
   WarrantyCertificateDto,
   WarrantyClaimDto,
 } from './dto';
+import { asOgba } from '../domain/places';
 import { resolveMediaUrl } from './mappers';
 
 /**
@@ -90,7 +91,7 @@ export function mapAppointment(d: ServiceAppointmentDto, image = ''): ServiceApp
     vehicleId: d.vehicleId,
     vehicleTitle: d.vehicleLabel,
     vehicleImage: image,
-    branchName: d.branchName,
+    branchName: asOgba(d.branchName),
     serviceType: asServiceType(d.serviceType),
     scheduledAt: d.scheduledAt,
     status: d.status as ServiceAppointment['status'],
@@ -152,7 +153,7 @@ export function mapServiceHistory(d: ServiceHistoryDto): ServiceHistoryItem {
     vehicleId: d.ownedVehicleId,
     date: d.performedAt,
     type: d.serviceType,
-    branchName: d.branchName,
+    branchName: asOgba(d.branchName),
     mileage: d.mileage,
     description: d.description,
     cost: num(d.cost),

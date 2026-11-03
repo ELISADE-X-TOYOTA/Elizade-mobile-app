@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { listBranches } from '../api/vehicles';
 import { APP } from '../constants/app';
 import { SHOWROOMS, Showroom } from '../data/mock';
+import { asOgba } from '../domain/places';
 
 export type BranchOption = Showroom & { type?: string };
 
@@ -26,8 +27,8 @@ export function useBranches(opts?: { showroomsOnly?: boolean }) {
         setBranches(
           list.map((b) => ({
             id: b.id,
-            name: b.name,
-            city: b.city,
+            name: asOgba(b.name),
+            city: asOgba(b.city),
             state: b.state,
             type: b.type,
           })),

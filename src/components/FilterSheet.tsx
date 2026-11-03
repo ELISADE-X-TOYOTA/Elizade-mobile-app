@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { radius, spacing } from '../theme/spacing';
 import { useTheme } from '../theme/useTheme';
-import { price } from '../utils/format';
 import { PrimaryButton } from './PrimaryButton';
 import { Txt } from './Txt';
 
@@ -12,7 +11,6 @@ import { Txt } from './Txt';
 export interface VehicleFilters {
   fuelType?: string;
   transmission?: string;
-  maxPrice?: number;
   year?: number;
   sort?: string;
 }
@@ -27,12 +25,9 @@ interface Props {
   onClose: () => void;
 }
 
-const PRICE_CAPS = [25_000_000, 50_000_000, 100_000_000];
 /** Backend sort syntax: field name, prefixed with `-` for descending. */
 const SORTS = [
   { key: '-createdAt', label: 'Newest' },
-  { key: 'price', label: 'Price: low to high' },
-  { key: '-price', label: 'Price: high to low' },
   { key: '-year', label: 'Year: newest' },
 ];
 
@@ -83,17 +78,6 @@ export function FilterSheet({ visible, value, fuelTypes, transmissions, onApply,
                 ))}
               </Section>
             )}
-
-            <Section title={tr('shop.maxPrice')}>
-              {PRICE_CAPS.map((p) => (
-                <Chip
-                  key={p}
-                  label={`Under ${price(p).replace(/,000,000$/, 'M')}`}
-                  active={value.maxPrice === p}
-                  onPress={() => toggle('maxPrice', p)}
-                />
-              ))}
-            </Section>
 
             <Section title={tr('filters.year')}>
               {Array.from({ length: 16 }, (_, i) => new Date().getFullYear() - i).map((year) => (

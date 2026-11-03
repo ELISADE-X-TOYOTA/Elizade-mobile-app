@@ -9,7 +9,6 @@ import { Skeleton } from '../src/components/Skeleton';
 import { Txt } from '../src/components/Txt';
 import { cancelReservation, listReservations, Reservation } from '../src/data/salesRepository';
 import { isActiveReservation, RESERVATION_STATUS_META, reservationReference } from '../src/domain/reservations';
-import { price } from '../src/utils/format';
 import { radius, spacing } from '../src/theme/spacing';
 import { useTheme } from '../src/theme/useTheme';
 
@@ -165,17 +164,6 @@ function Card({ reservation, onChanged }: { reservation: Reservation; onChanged:
           <Txt variant="labelSmall" tone="tertiary">{tr('reservations.heldUntil')}</Txt>
           <Txt variant="titleSmall">
             {holdUntil.toLocaleDateString('en', { day: 'numeric', month: 'short', year: 'numeric' })}
-          </Txt>
-        </View>
-        <View style={{ alignItems: 'flex-end' }}>
-          {/*
-            DUE, not paid. Nothing is charged when a vehicle is reserved — the
-            success sheet used to say "Deposit Paid" beside this figure, and a
-            list the customer returns to must not repeat it.
-          */}
-          <Txt variant="labelSmall" tone="tertiary">{tr('testDrive.depositDue')}</Txt>
-          <Txt variant="titleSmall" color={t.colors.primary}>
-            {price(Number(reservation.depositAmount) || 0)}
           </Txt>
         </View>
       </View>

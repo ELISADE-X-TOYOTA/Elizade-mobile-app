@@ -42,7 +42,7 @@ export interface Showroom {
 export const SHOWROOMS: Showroom[] = [
   { id: 's1', name: 'Elizade Victoria Island', city: 'Victoria Island', state: 'Lagos' },
   { id: 's2', name: 'Elizade Lekki', city: 'Lekki', state: 'Lagos' },
-  { id: 's3', name: 'Elizade Ikeja', city: 'Ikeja', state: 'Lagos' },
+  { id: 's3', name: 'Elizade Ogba', city: 'Ogba', state: 'Lagos' },
   { id: 's4', name: 'Elizade Abuja', city: 'Central Area', state: 'Abuja' },
   { id: 's5', name: 'Elizade Port Harcourt', city: 'GRA', state: 'Rivers' },
 ];
@@ -136,7 +136,7 @@ export const VEHICLES: Vehicle[] = [
     horsepower: 203,
     rating: 4.7,
     reviewCount: 76,
-    location: 'Ikeja, Lagos',
+    location: 'Ogba, Lagos',
     images: [`${W}/6/68/2018_Toyota_Camry_%28ASV70R%29_Ascent_sedan_%282018-08-27%29_01.jpg/1280px-2018_Toyota_Camry_%28ASV70R%29_Ascent_sedan_%282018-08-27%29_01.jpg`],
   }),
   base({
@@ -313,7 +313,7 @@ export const SERVICE_APPOINTMENTS: ServiceAppointment[] = [
     vehicleId: 'ov1',
     vehicleTitle: 'Toyota Camry',
     vehicleImage: VEHICLES[2].images[0],
-    branchName: 'Elizade Ikeja',
+    branchName: 'Elizade Ogba',
     serviceType: 'repair',
     scheduledAt: iso(-40),
     status: 'completed',
@@ -359,7 +359,7 @@ export const SERVICE_HISTORY: ServiceHistoryItem[] = [
     vehicleId: 'ov1',
     date: iso(-40),
     type: 'Repair — AC Compressor',
-    branchName: 'Elizade Ikeja',
+    branchName: 'Elizade Ogba',
     mileage: 39_500,
     description: 'AC compressor clutch replaced, gas recharged.',
     cost: 145_000,

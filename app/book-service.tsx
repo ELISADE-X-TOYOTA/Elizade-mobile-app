@@ -14,7 +14,7 @@ import { pickTicketAttachment, type PickedAttachment } from '../src/data/support
 import { createAppointment } from '../src/data/serviceRepository';
 import { useBranches } from '../src/hooks/useBranches';
 import { useOwnedVehicles } from '../src/hooks/useGarage';
-import { SERVICE_TYPE_META, ServiceType } from '../src/domain/types';
+import { REPAIR_KINDS, SERVICE_TYPE_META, ServiceType } from '../src/domain/types';
 import { radius, spacing } from '../src/theme/spacing';
 import { useTheme } from '../src/theme/useTheme';
 import { cleanText } from '../src/utils/sanitize';
@@ -38,6 +38,8 @@ export default function BookService() {
   const [type, setType] = useState<ServiceType>(
     typeParam && (['periodic', 'repair', 'inspection', 'recall'] as ServiceType[]).includes(typeParam) ? typeParam : 'periodic',
   );
+  const [repairKind, setRepairKind] = useState(0);
+  const selectedRepair = REPAIR_KINDS[repairKind] ?? REPAIR_KINDS[0];
   const [branch, setBranch] = useState(0);
   const [dateIdx, setDateIdx] = useState(0);
   const [slot, setSlot] = useState(0);
@@ -104,7 +106,13 @@ export default function BookService() {
         branchId: centre.id,
         serviceType: type,
         scheduledAt: at.toISOString(),
-        issueDescription: cleanText(issue) || SERVICE_TYPE_META[type].label,
+        issueDescription:
+          [
+            type === 'repair' ? selectedRepair.label : null,
+            cleanText(issue),
+          ]
+            .filter(Boolean)
+            .join(': ') || SERVICE_TYPE_META[type].label,
         mileageAtBooking: owned.mileage,
         attachmentUrls: attachments.map((attachment) => attachment.url),
       });
@@ -125,7 +133,10 @@ export default function BookService() {
           </Animated.View>
           <Txt variant="headlineLarge" center style={{ marginTop: spacing.xl }}>{tr('service.serviceRequested')}</Txt>
           <Txt variant="bodyLarge" tone="secondary" center style={{ marginTop: spacing.sm }}>
-            {tr('service.requestedDetail', { service: SERVICE_TYPE_META[type].label.toLowerCase(), branch: branches[branch]?.name ?? 'Elizade' })}
+            {tr('service.requestedDetail', {
+              service: (type === 'repair' ? selectedRepair.label : SERVICE_TYPE_META[type].label).toLowerCase(),
+              branch: branches[branch]?.name ?? 'Elizade',
+            })}
           </Txt>
         </View>
         <View style={{ paddingBottom: insets.bottom + spacing.md }}>
@@ -185,6 +196,36 @@ export default function BookService() {
             );
           })}
         </View>
+        {type === 'repair' ? (
+          <View style={{ marginTop: 12, gap: 8 }}>
+            {REPAIR_KINDS.map((kind, i) => {
+              const active = repairKind === i;
+              return (
+                <Pressable
+                  key={kind.id}
+                  onPress={() => setRepairKind(i)}
+                  style={[
+                    styles.selectRow,
+                    {
+                      backgroundColor: active ? t.colors.primary : t.colors.surfaceAlt,
+                      borderColor: active ? t.colors.primary : t.colors.border,
+                      marginBottom: 0,
+                    },
+                  ]}
+                >
+                  <Txt variant="titleSmall" color={active ? t.colors.onPrimary : t.colors.textPrimary} style={{ flex: 1 }}>
+                    {kind.label}
+                  </Txt>
+                  <Ionicons
+                    name={active ? 'radio-button-on' : 'radio-button-off'}
+                    size={20}
+                    color={active ? t.colors.onPrimary : t.colors.textTertiary}
+                  />
+                </Pressable>
+              );
+            })}
+          </View>
+        ) : null}
 
         <Label text="Service centre" />
         {branches.map((s, i) => (
