@@ -1,6 +1,6 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Animated, { ZoomIn } from 'react-native-reanimated';
@@ -11,6 +11,7 @@ import { PrimaryButton } from '../src/components/PrimaryButton';
 import { Txt } from '../src/components/Txt';
 import { MAX_TICKET_ATTACHMENTS } from '../src/api/support';
 import { pickTicketAttachment, type PickedAttachment } from '../src/data/supportRepository';
+import { serviceApi } from '../src/api/service';
 import { createAppointment } from '../src/data/serviceRepository';
 import { useBranches } from '../src/hooks/useBranches';
 import { useOwnedVehicles } from '../src/hooks/useGarage';
@@ -39,6 +40,8 @@ export default function BookService() {
     typeParam && (['periodic', 'repair', 'inspection', 'recall'] as ServiceType[]).includes(typeParam) ? typeParam : 'periodic',
   );
   const [repairKind, setRepairKind] = useState(0);
+  const [recallEnabled, setRecallEnabled] = useState(true);
+  const bookableTypes = recallEnabled ? TYPES : TYPES.filter((ty) => ty !== 'recall');
   const selectedRepair = REPAIR_KINDS[repairKind] ?? REPAIR_KINDS[0];
   const [branch, setBranch] = useState(0);
   const [dateIdx, setDateIdx] = useState(0);
@@ -54,6 +57,26 @@ export default function BookService() {
   // Only days with something left on them. A day rendered greyed-out and
   // unselectable is worse than an absent one: the customer taps it, nothing
   // happens, and nothing explains why.
+  useEffect(() => {
+    let cancelled = false;
+    serviceApi
+      .offerings()
+      .then((offering) => {
+        if (cancelled) return;
+        setRecallEnabled(offering.recallBookingEnabled);
+        if (!offering.recallBookingEnabled) {
+          setType((current) => (current === 'recall' ? 'periodic' : current));
+        }
+      })
+      .catch(() => {
+        // Leave recall visible. A failed settings read must not hide a service
+        // the API would still accept; a turned-off switch still rejects the booking.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const dates = useMemo(() => bookableDays(7), []);
   const selectedDay = dates[dateIdx] ?? dates[0];
   // Same-day slots that have already passed (or fall inside the lead time)
@@ -176,7 +199,7 @@ export default function BookService() {
 
         <Label text="Service type" />
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
-          {TYPES.map((ty) => {
+          {bookableTypes.map((ty) => {
             const meta = SERVICE_TYPE_META[ty];
             const active = type === ty;
             return (

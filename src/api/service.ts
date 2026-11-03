@@ -22,6 +22,9 @@ export interface CreateAppointmentBody {
 }
 
 export const serviceApi = {
+  /** Public. Recall is bookable unless an admin has turned it off. */
+  offerings: () => apiFetch<{ recallBookingEnabled: boolean }>('/service/offerings', { auth: false }),
+
   listAppointments: () => apiFetch<ServiceAppointmentDto[]>('/service/appointments'),
 
   /** Appointment + live job (stages, additional work, invoice). */
