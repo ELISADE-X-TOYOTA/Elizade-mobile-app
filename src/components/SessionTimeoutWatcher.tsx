@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { useEffect, useRef } from 'react';
 import { AppState, type AppStateStatus } from 'react-native';
 import { clearSession, touchActivity } from '../api/session';
+import { readBiometricState } from '../security/biometrics';
 import { decideOnResume } from '../security/lockPolicy';
 import { useStore } from '../store/useStore';
 
@@ -55,21 +56,37 @@ export function SessionTimeoutWatcher() {
       backgroundedAt.current = null;
 
       const user = useStore.getState().currentUser;
-      const action = decideOnResume({
-        hasSession: !!user,
-        backgroundedAt: startedAt,
-        now: Date.now(),
-      });
-      if (action === 'restore') {
-        // Back in use: move the stamp forward so a later crash in the
-        // foreground is judged from now, not from the last background.
-        if (user) void touchActivity();
-        return;
-      }
+
+      // Already locked: the prompt belongs to the lock screen. Asking again
+      // from here is how the previous biometric attempt double-prompted.
+      if (useStore.getState().locked) return;
       if (signingOut.current) return;
-      signingOut.current = true;
 
       void (async () => {
+        const biometrics = await readBiometricState();
+        const action = decideOnResume({
+          hasSession: !!user,
+          backgroundedAt: startedAt,
+          now: Date.now(),
+          biometrics,
+        });
+
+        if (action === 'restore') {
+          // Back in use: move the stamp forward so a later crash in the
+          // foreground is judged from now, not from the last background.
+          if (user) void touchActivity();
+          return;
+        }
+
+        if (action === 'lock') {
+          // THE SESSION SURVIVES. Nothing is cleared and nothing navigates,
+          // so unlocking returns the customer to the screen they left —
+          // mid-form if they were typing — rather than the dashboard.
+          useStore.getState().setLocked(true);
+          return;
+        }
+
+        signingOut.current = true;
         try {
           // Order matters. The in-memory token is dropped by `clearSession`
           // BEFORE the store is cleared and the route changes, so no screen
@@ -80,8 +97,8 @@ export function SessionTimeoutWatcher() {
           useStore.getState().setCurrentUser(null);
           router.replace({
             pathname: '/(auth)/login',
-            // Prefilled, and told why — retyping your own address after the app
-            // logged you out is a small insult on top of an interruption.
+            // Prefilled, and told why — retyping your own address after the
+            // app logged you out is a small insult on top of an interruption.
             params: { ...(email ? { email } : {}), reason: 'timeout' },
           });
         } finally {

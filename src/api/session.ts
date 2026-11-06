@@ -18,6 +18,10 @@ const REFRESH_KEY = 'elizade_refresh_token';
 const USER_KEY = 'elizade_cached_user';
 /** Last time the app was demonstrably in use. */
 const ACTIVITY_KEY = 'elizade_last_active_at';
+//: Whether the customer wants Face ID / fingerprint to reopen a locked
+//: session. Absent means ON — the setting only ever records a refusal, so a
+//: device that can unlock does so without anyone opting in first.
+const BIOMETRIC_PREF_KEY = 'elizade_biometric_unlock';
 const useSecure = Platform.OS !== 'web';
 
 let cached: string | null | undefined;
@@ -166,6 +170,30 @@ async function writeRaw(key: string, value: string | null): Promise<void> {
   } else {
     await SecureStore.deleteItemAsync(key);
   }
+}
+
+/**
+ * Is biometric unlock switched on?
+ *
+ * Defaults TRUE when nothing is stored. The alternative — default off —
+ * would mean every existing customer keeps waiting for an OTP after a phone
+ * call until they find a setting they do not know exists, which is the
+ * complaint this feature answers.
+ *
+ * Never throws: storage can be unavailable on a locked device, and a read
+ * failure must not make the app behave as though the customer opted out.
+ */
+export async function readBiometricPreference(): Promise<boolean> {
+  try {
+    const raw = await readPlain(BIOMETRIC_PREF_KEY);
+    return raw === null ? true : raw === 'true';
+  } catch {
+    return true;
+  }
+}
+
+export async function setBiometricPreference(enabled: boolean): Promise<void> {
+  await writePlain(BIOMETRIC_PREF_KEY, String(enabled));
 }
 
 /** Stamp "the app was used just now". */

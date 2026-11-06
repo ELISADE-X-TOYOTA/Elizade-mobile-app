@@ -14,6 +14,7 @@ import Animated, {
 import { clearSession, getToken, readCachedUser, readLastActive } from '../src/api/session';
 import { APP } from '../src/constants/app';
 import { restoreSession } from '../src/data/authRepository';
+import { readBiometricState } from '../src/security/biometrics';
 import { decideOnLaunch } from '../src/security/lockPolicy';
 import { useStore } from '../src/store/useStore';
 import { Txt } from '../src/components/Txt';
@@ -78,8 +79,30 @@ export default function Splash() {
         await clearSession();
         return { user: null, timedOut: false };
       }
-      const [token, lastActiveAt] = await Promise.all([getToken(), readLastActive()]);
-      const action = decideOnLaunch({ hasStoredSession: !!token, lastActiveAt, now: Date.now() });
+      const [token, lastActiveAt, biometrics] = await Promise.all([
+        getToken(),
+        readLastActive(),
+        readBiometricState(),
+      ]);
+      const action = decideOnLaunch({
+        hasStoredSession: !!token,
+        lastActiveAt,
+        now: Date.now(),
+        biometrics,
+      });
+      if (action === 'lock') {
+        // Restore the session but open behind the lock. The customer proves
+        // who they are once, with their face, instead of waiting on an email
+        // that may be held up by SPF on its way to Outlook.
+        const user = await restoreSession().catch(() => null);
+        if (user) {
+          useStore.getState().setLocked(true);
+          return { user, timedOut: false };
+        }
+        // Nothing to restore after all — fall through to a clean sign-in.
+        await clearSession();
+        return { user: null, timedOut: true };
+      }
       if (action === 'signOut') {
         const cached = await readCachedUser().catch(() => null);
         await clearSession();

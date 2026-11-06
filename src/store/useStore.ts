@@ -66,6 +66,17 @@ interface AppState {
   currentUser: UserProfile | null;
   setCurrentUser: (u: UserProfile | null) => void;
 
+  /**
+   * The session is alive but the data is hidden behind a biometric prompt.
+   *
+   * NOT PERSISTED, deliberately. Persisting it would survive a reinstall and
+   * strand someone behind a lock their device may no longer be able to open;
+   * the lock is re-derived on every launch from the activity stamp instead,
+   * which is the fact that actually matters.
+   */
+  locked: boolean;
+  setLocked: (locked: boolean) => void;
+
   favorites: string[];
   toggleFavorite: (id: string) => void;
   isFavorite: (id: string) => boolean;
@@ -152,7 +163,13 @@ export const useStore = create<AppState>()(
       setFontsReady: (fontsReady) => set({ fontsReady }),
 
       currentUser: null,
-      setCurrentUser: (currentUser) => set({ currentUser }),
+      setCurrentUser: (currentUser) =>
+        // Signing out clears the lock with it: a lock over no session is a
+        // door in front of an empty room, and it would outlive the sign-out.
+        set({ currentUser, locked: currentUser ? get().locked : false }),
+
+      locked: false,
+      setLocked: (locked) => set({ locked }),
 
       favorites: ['v2'],
       toggleFavorite: (id) =>

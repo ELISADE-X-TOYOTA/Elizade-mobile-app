@@ -553,7 +553,15 @@
     "privacyPolicy": "Amụmihe nzuzo",
     "requestYourData": "Rịọ maka ndọrọ data gị",
     "deleteAccount": "Hichapụ akaụntụ m",
-    "deleteAccountDetail": "Anyị ga-ebu ụzọ kwado site na ozi-e."
+    "deleteAccountDetail": "Anyị ga-ebu ụzọ kwado site na ozi-e.",
+    "unlocking": "Mkpọghe",
+    "biometricDetail": "Kpọghee nnọkọ gị na-echereghị koodu site na email.",
+    "biometricTitle": {
+      "face": "Jiri Face ID kpọghee",
+      "fingerprint": "Jiri mkpịsị aka kpọghee",
+      "iris": "Jiri anya kpọghee",
+      "generic": "Jiri àmà ahụ kpọghee"
+    }
   },
   "reservations": {
     "title": "Ndebe m",
@@ -572,5 +580,18 @@
     "cancelTitle": "Hapụ ndebe a?",
     "cancelBody": "Kagbuo ndebe gị nke {{vehicle}}? Ụgbọ ahụ ga-alaghachi n'ahịa ozugbo.",
     "cancelFailed": "Enweghị ike ikagbu"
+  },
+  "lock": {
+    "title": "Nnọọ ọzọ",
+    "unlock": "Kpọghee",
+    "useEmail": "Jiri email m kama",
+    "failed": "Ọ dabaghị. Nwaa ọzọ ma ọ bụ jiri email gị.",
+    "prompt": "Kpọghee Elizade Connect",
+    "subtitle": {
+      "face": "Lee ekwentị gị ka ị gaa n'ihu ebe i kwụsịrị.",
+      "fingerprint": "Metụ ihe mmetụta ka ị gaa n'ihu.",
+      "iris": "Lee ekwentị gị ka ị gaa n'ihu.",
+      "generic": "Gosi na ọ bụ gị ka ị gaa n'ihu."
+    }
   }
 }

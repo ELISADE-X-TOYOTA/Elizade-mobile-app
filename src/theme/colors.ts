@@ -205,3 +205,23 @@ const dark: typeof light = {
 export type AppColors = typeof light;
 
 export const palette = { light, dark };
+
+/**
+ * The lock screen, which is theme-FIXED on purpose.
+ *
+ * It is the same black-and-gold moment as the splash: a security gate, not a
+ * themed surface. Letting it follow the light theme would hand someone who
+ * has just picked up a locked phone a white screen that looks like the app
+ * loading normally, when the entire point is that it is not.
+ *
+ * Pinned together for the same reason as OVERLAY_CHIP above — a fixed ground
+ * with themed ink is how text ends up invisible in one mode.
+ */
+export const LOCK_INK = '#FFFFFF';
+export const LOCK_INK_MUTED = 'rgba(255,255,255,0.65)';
+export const LOCK_INK_FAINT = 'rgba(255,255,255,0.75)';
+export const LOCK_GROUND = '#000000';
+/** The accent at low opacity, behind the Face ID glyph. */
+export const LOCK_BADGE = 'rgba(245,179,1,0.12)';
+/** Legible on black; the themed `errorText` is tuned for light surfaces. */
+export const LOCK_ERROR = '#FF8A8A';

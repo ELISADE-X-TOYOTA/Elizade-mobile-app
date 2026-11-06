@@ -33,7 +33,7 @@ try {
   process.exit(1);
 }
 
-const { BACKGROUND_TIMEOUT_MS, hasBackgroundTimedOut, decideOnResume, decideOnLaunch, remainingMs } =
+const { BACKGROUND_TIMEOUT_MS, hasBackgroundTimedOut, decideOnResume, decideOnLaunch, canUnlock, remainingMs } =
   require(path.join(out, 'lockPolicy.js'));
 
 let pass = 0;
@@ -161,23 +161,119 @@ const MIN = 60 * 1000;
   );
 }
 
-// ── Biometrics are gone, and must stay gone ──────────────────────────────
+// ── Lock, or sign out: what a stale session gets ────────────────────────
+//
+// Ending the session was the only option when the app could not re-identify
+// anyone, and it made the OTP compulsory: a customer who took a phone call
+// came back to a login screen and waited on an email.
+{
+  const ON = { available: true, enabled: true };
+  const OFF = { available: true, enabled: false };
+  const NONE = { available: false, enabled: true };
+  const stale = { hasSession: true, backgroundedAt: NOW - 10 * MIN, now: NOW };
+  const fresh = { hasSession: true, backgroundedAt: NOW - 30 * 1000, now: NOW };
+
+  check('a brief absence still just restores', decideOnResume({ ...fresh, biometrics: ON }) === 'restore');
+  check('a brief absence restores even with biometrics off',
+    decideOnResume({ ...fresh, biometrics: OFF }) === 'restore',
+    'the timeout decides WHETHER to gate; biometrics only decide which gate');
+
+  check('stale + biometrics on  -> lock', decideOnResume({ ...stale, biometrics: ON }) === 'lock');
+  check('stale + switched off   -> signOut',
+    decideOnResume({ ...stale, biometrics: OFF }) === 'signOut',
+    'opting out is choosing the OTP');
+  check('stale + none enrolled  -> signOut',
+    decideOnResume({ ...stale, biometrics: NONE }) === 'signOut',
+    'a phone with no face registered can never satisfy the prompt');
+  check('stale + nothing known  -> signOut',
+    decideOnResume(stale) === 'signOut',
+    'absent state must fail closed, not assume a capability');
+
+  check('no session is still nothing to gate',
+    decideOnResume({ hasSession: false, backgroundedAt: NOW - 60 * MIN, now: NOW, biometrics: ON }) === 'restore');
+}
+
+console.log('\nthe same rule at cold start');
+{
+  const ON = { available: true, enabled: true };
+  const OFF = { available: true, enabled: false };
+
+  check('fresh stamp restores', decideOnLaunch({ hasStoredSession: true, lastActiveAt: NOW - MIN, now: NOW, biometrics: ON }) === 'restore');
+  check('stale stamp + biometrics -> lock',
+    decideOnLaunch({ hasStoredSession: true, lastActiveAt: NOW - 60 * MIN, now: NOW, biometrics: ON }) === 'lock',
+    'the session survives a relaunch; the customer proves who they are once');
+  check('stale stamp without biometrics -> signOut',
+    decideOnLaunch({ hasStoredSession: true, lastActiveAt: NOW - 60 * MIN, now: NOW, biometrics: OFF }) === 'signOut');
+  check('NO stamp + biometrics -> lock rather than discard',
+    decideOnLaunch({ hasStoredSession: true, lastActiveAt: null, now: NOW, biometrics: ON }) === 'lock',
+    'still fails closed, but a provable device need only prove itself');
+  check('NO stamp without biometrics -> signOut',
+    decideOnLaunch({ hasStoredSession: true, lastActiveAt: null, now: NOW, biometrics: OFF }) === 'signOut');
+  check('no stored session is untouched',
+    decideOnLaunch({ hasStoredSession: false, lastActiveAt: null, now: NOW, biometrics: ON }) === 'restore');
+  check('a wound-forward clock still fails closed',
+    decideOnLaunch({ hasStoredSession: true, lastActiveAt: NOW + 60 * MIN, now: NOW, biometrics: ON }) === 'lock');
+}
+
+console.log('\ncanUnlock needs BOTH halves');
+{
+  check('available and enabled', canUnlock({ available: true, enabled: true }) === true);
+  check('enabled but nothing enrolled', canUnlock({ available: false, enabled: true }) === false);
+  check('available but opted out', canUnlock({ available: true, enabled: false }) === false);
+  check('undefined', canUnlock(undefined) === false);
+}
+
+// ── Biometrics are back — but only as a gate, never as storage ──────────
+//
+// They were removed once, for two distinct reasons, and only ONE of them has
+// been reversed. The feature is wanted again: ending the session after five
+// minutes made the email OTP compulsory, and with mail to Outlook dropped by
+// SPF that wait was sometimes permanent.
+//
+// What must NOT come back is binding credentials to biometrics with
+// `requireAuthentication`. That made every token read raise a system prompt —
+// including background reads — and kept prompting after the feature was
+// deleted, which is why the purge below exists. The prompt belongs in front
+// of the screen; the token stays an ordinary secure-store item.
 {
   const stripComments = (src) =>
     src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:])\/\/.*$/gm, '$1');
 
   check(
-    'expo-local-authentication is not a dependency',
-    !JSON.stringify(require(path.join(root, 'package.json')).dependencies).includes('local-authentication'),
+    'expo-local-authentication IS a dependency again',
+    JSON.stringify(require(path.join(root, 'package.json')).dependencies).includes('local-authentication'),
   );
-  for (const rel of ['src/api/session.ts', 'src/security/lockPolicy.ts', 'src/components/SessionTimeoutWatcher.tsx']) {
+
+  for (const rel of ['src/api/session.ts', 'src/security/lockPolicy.ts']) {
     const code = stripComments(fs.readFileSync(path.join(root, rel), 'utf8'));
     check(
-      `${rel} triggers no biometric prompt`,
-      !/LocalAuthentication|authenticateAsync|requireAuthentication/.test(code),
-      'repeated fingerprint prompts are what this change removed',
+      `${rel} still raises no prompt of its own`,
+      !/LocalAuthentication|authenticateAsync/.test(code),
+      'the policy stays pure and storage stays silent — only the UI may prompt',
     );
   }
+
+  for (const rel of ['src/api/session.ts', 'src/security/biometrics.ts']) {
+    const code = stripComments(fs.readFileSync(path.join(root, rel), 'utf8'));
+    check(
+      `${rel} binds nothing to biometrics`,
+      !/requireAuthentication/.test(code),
+      'a bound keystore entry prompts on every read and outlives the feature',
+    );
+  }
+
+  const watcher = stripComments(
+    fs.readFileSync(path.join(root, 'src/components/SessionTimeoutWatcher.tsx'), 'utf8'),
+  );
+  check(
+    'the resume watcher does not prompt — it only sets the lock',
+    !/authenticateAsync/.test(watcher) && /setLocked\(true\)/.test(watcher),
+    'two prompts seconds apart is what killed the first attempt',
+  );
+  check(
+    'the watcher stands down when the lock is already up',
+    /locked/.test(watcher),
+  );
 }
 
 // ── The biometric-bound credentials left on real devices ────────────────

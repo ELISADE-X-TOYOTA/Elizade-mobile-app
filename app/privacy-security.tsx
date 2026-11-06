@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { useState } from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Alert, Pressable, ScrollView, StyleSheet, Switch, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -10,6 +10,8 @@ import { APP } from '../src/constants/app';
 import { WEBSITE } from '../src/constants/contact';
 import { logout } from '../src/data/authRepository';
 import { useStore } from '../src/store/useStore';
+import { readBiometricPreference, setBiometricPreference } from '../src/api/session';
+import { describeBiometric, readBiometricState } from '../src/security/biometrics';
 import { emailSupport, openLink } from '../src/utils/contact';
 import { radius, spacing } from '../src/theme/spacing';
 import { useTheme } from '../src/theme/useTheme';
@@ -38,6 +40,38 @@ export default function PrivacySecurity() {
   const insets = useSafeAreaInsets();
   const setCurrentUser = useStore((s) => s.setCurrentUser);
   const [signingOut, setSigningOut] = useState(false);
+
+  /*
+    Biometric unlock. `available` decides whether the row is shown at all —
+    offering Face ID on a phone with nothing enrolled is a switch that
+    silently does nothing.
+  */
+  const [bioAvailable, setBioAvailable] = useState(false);
+  const [bioEnabled, setBioEnabled] = useState(true);
+  const [bioKind, setBioKind] = useState<'face' | 'fingerprint' | 'iris' | 'generic'>('generic');
+
+  useEffect(() => {
+    let alive = true;
+    void (async () => {
+      const [state, kind, pref] = await Promise.all([
+        readBiometricState(),
+        describeBiometric(),
+        readBiometricPreference(),
+      ]);
+      if (!alive) return;
+      setBioAvailable(state.available);
+      setBioKind(kind);
+      setBioEnabled(pref);
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const toggleBiometric = (next: boolean) => {
+    setBioEnabled(next);
+    void setBiometricPreference(next);
+  };
 
   const signOutEverywhere = () => {
     Alert.alert(
@@ -97,6 +131,31 @@ export default function PrivacySecurity() {
           <Fact icon="lock-closed-outline" text={tr('privacy.emailLockedFact')} />
           <Fact icon="notifications-outline" text={tr('privacy.alertsFact')} />
         </Section>
+
+        {bioAvailable ? (
+          <Section title={tr('privacy.unlocking')}>
+            <View style={styles.row}>
+              <Ionicons
+                name={bioKind === 'face' ? 'scan-outline' : 'finger-print'}
+                size={20}
+                color={t.colors.textSecondary}
+              />
+              <View style={{ flex: 1, marginLeft: 12 }}>
+                <Txt variant="titleSmall">
+                  {tr(`privacy.biometricTitle.${bioKind}`, { defaultValue: tr('privacy.biometricTitle.generic') })}
+                </Txt>
+                <Txt variant="bodySmall" tone="secondary" style={{ marginTop: 2 }}>
+                  {tr('privacy.biometricDetail')}
+                </Txt>
+              </View>
+              <Switch
+                value={bioEnabled}
+                onValueChange={toggleBiometric}
+                accessibilityLabel={tr('privacy.biometricTitle.generic')}
+              />
+            </View>
+          </Section>
+        ) : null}
 
         <Section title={tr('privacy.yourDevices')}>
           <Action

@@ -21,6 +21,7 @@ import { migrateLegacyToken } from '../src/api/session';
 // Side-effect import: configures i18next before any screen renders.
 import { restoreLanguage } from '../src/i18n';
 import { ErrorBoundary } from '../src/components/ErrorBoundary';
+import { LockScreen } from '../src/components/LockScreen';
 import { SessionTimeoutWatcher } from '../src/components/SessionTimeoutWatcher';
 import { installApiErrorReporter } from '../src/api/errorReporter';
 import { CompareTray } from '../src/components/CompareTray';
@@ -208,6 +209,8 @@ export default function RootLayout() {
           <CompareTray />
           {/* Renders nothing; owns the AppState subscription. */}
           <SessionTimeoutWatcher />
+          {/* Above every route: the lock covers whatever screen was open. */}
+          <LockScreen />
         </SafeAreaProvider>
         </ThemeProvider>
       </ErrorBoundary>

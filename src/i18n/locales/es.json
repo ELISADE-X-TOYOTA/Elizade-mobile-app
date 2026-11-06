@@ -553,7 +553,15 @@
     "privacyPolicy": "Política de privacidad",
     "requestYourData": "Solicitar una copia de tus datos",
     "deleteAccount": "Eliminar mi cuenta",
-    "deleteAccountDetail": "Lo confirmaremos contigo por correo."
+    "deleteAccountDetail": "Lo confirmaremos contigo por correo.",
+    "unlocking": "Desbloqueo",
+    "biometricDetail": "Reabre tu sesión sin esperar un código por correo.",
+    "biometricTitle": {
+      "face": "Desbloquear con Face ID",
+      "fingerprint": "Desbloquear con huella",
+      "iris": "Desbloquear con iris",
+      "generic": "Desbloquear con biometría"
+    }
   },
   "reservations": {
     "title": "Mis reservas",
@@ -572,5 +580,18 @@
     "cancelTitle": "¿Liberar esta reserva?",
     "cancelBody": "¿Cancelar tu reserva del {{vehicle}}? El vehículo vuelve a la venta de inmediato.",
     "cancelFailed": "No se pudo cancelar"
+  },
+  "lock": {
+    "title": "Bienvenido de nuevo",
+    "unlock": "Desbloquear",
+    "useEmail": "Usar mi correo",
+    "failed": "No coincidió. Inténtalo de nuevo o usa tu correo.",
+    "prompt": "Desbloquear Elizade Connect",
+    "subtitle": {
+      "face": "Mira tu teléfono para continuar donde lo dejaste.",
+      "fingerprint": "Toca el sensor para continuar donde lo dejaste.",
+      "iris": "Mira tu teléfono para continuar donde lo dejaste.",
+      "generic": "Confirma que eres tú para continuar."
+    }
   }
 }

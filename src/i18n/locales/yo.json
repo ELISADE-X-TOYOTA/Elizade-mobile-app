@@ -553,7 +553,15 @@
     "privacyPolicy": "Ìlànà àṣírí",
     "requestYourData": "Béèrè ẹ̀dà dátà rẹ",
     "deleteAccount": "Pa àkántì mi rẹ́",
-    "deleteAccountDetail": "A ó jẹ́rìí pẹ̀lú rẹ nínú ímeèlì náà kọ́kọ́."
+    "deleteAccountDetail": "A ó jẹ́rìí pẹ̀lú rẹ nínú ímeèlì náà kọ́kọ́.",
+    "unlocking": "Ṣíṣí",
+    "biometricDetail": "Ṣí ìjokòó rẹ láìdúró de kóòdù nípasẹ̀ ímeèlì.",
+    "biometricTitle": {
+      "face": "Ṣí pẹ̀lú Face ID",
+      "fingerprint": "Ṣí pẹ̀lú ìka rẹ",
+      "iris": "Ṣí pẹ̀lú ojú",
+      "generic": "Ṣí pẹ̀lú ara rẹ"
+    }
   },
   "reservations": {
     "title": "Àwọn ìpamọ́ mi",
@@ -572,5 +580,18 @@
     "cancelTitle": "Fagilé ìpamọ́ yìí?",
     "cancelBody": "Fagilé ìpamọ́ {{vehicle}} rẹ? Ọkọ̀ náà yóò padà sí ọjà lẹ́sẹ̀kẹsẹ̀.",
     "cancelFailed": "Kò lè fagilé"
+  },
+  "lock": {
+    "title": "Káàbọ̀ padà",
+    "unlock": "Ṣí i",
+    "useEmail": "Lo ímeèlì mi dípò",
+    "failed": "Kò bára mu. Gbìyànjú lẹ́ẹ̀kansí tàbí lo ímeèlì rẹ.",
+    "prompt": "Ṣí Elizade Connect",
+    "subtitle": {
+      "face": "Wo fóònù rẹ láti tẹ̀síwájú níbi tí o dúró sí.",
+      "fingerprint": "Fọwọ́ kan ẹ̀rọ náà láti tẹ̀síwájú.",
+      "iris": "Wo fóònù rẹ láti tẹ̀síwájú.",
+      "generic": "Jẹ́rìí sí ara rẹ láti tẹ̀síwájú."
+    }
   }
 }

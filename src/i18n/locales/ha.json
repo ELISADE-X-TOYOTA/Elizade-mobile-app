@@ -553,7 +553,15 @@
     "privacyPolicy": "Manufar sirri",
     "requestYourData": "Nemi kwafin bayananka",
     "deleteAccount": "Share asusuna",
-    "deleteAccountDetail": "Za mu tabbatar da kai ta imel tukuna."
+    "deleteAccountDetail": "Za mu tabbatar da kai ta imel tukuna.",
+    "unlocking": "Buɗewa",
+    "biometricDetail": "Buɗe zaman ka ba tare da jiran lamba ta imel ba.",
+    "biometricTitle": {
+      "face": "Buɗe da Face ID",
+      "fingerprint": "Buɗe da yatsa",
+      "iris": "Buɗe da ido",
+      "generic": "Buɗe da sifofin jiki"
+    }
   },
   "reservations": {
     "title": "Ajiyena",
@@ -572,5 +580,18 @@
     "cancelTitle": "A soke wannan ajiyar?",
     "cancelBody": "A soke ajiyar {{vehicle}}? Motar za ta koma kasuwa nan take.",
     "cancelFailed": "An kasa sokewa"
+  },
+  "lock": {
+    "title": "Barka da dawowa",
+    "unlock": "Buɗe",
+    "useEmail": "Yi amfani da imel ɗina",
+    "failed": "Bai yi daidai ba. Sake gwadawa ko amfani da imel.",
+    "prompt": "Buɗe Elizade Connect",
+    "subtitle": {
+      "face": "Dubi wayarka don ci gaba daga inda ka tsaya.",
+      "fingerprint": "Taɓa na'urar don ci gaba daga inda ka tsaya.",
+      "iris": "Dubi wayarka don ci gaba daga inda ka tsaya.",
+      "generic": "Tabbatar da kai don ci gaba."
+    }
   }
 }
