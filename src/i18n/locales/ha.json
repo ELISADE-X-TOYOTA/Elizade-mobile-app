@@ -563,6 +563,37 @@
       "generic": "Buɗe da sifofin jiki"
     }
   },
+  "deleteAccount": {
+    "title": "Goge asusuna",
+    "intro": "Wannan zai goge asusunka na Elizade Connect har abada. Ba za a iya mayar da shi ba.",
+    "deletedTitle": "Abin da muke gogewa",
+    "deleted": {
+      "profile": "Bayananka: suna, imel, lambar waya da hoto",
+      "vehicles": "Motocin da ke cikin Motocina da takardun mallakarsu",
+      "uploads": "Hotunan da ka loda don musayar mota da da'awar garanti",
+      "support": "Tikitin tallafinka, saƙonni da abubuwan da aka haɗa",
+      "saved": "Motocin da ka adana, jerin kallo da sanarwar samuwa",
+      "sessions": "Zaman shiganka da saitunan sanarwa"
+    },
+    "keptTitle": "Abin da muke ajiyewa",
+    "kept": {
+      "sales": "Bayanan sayarwa da biyan kuɗi (ƙididdiga, ajiya, rasit) na shekara 6, kamar yadda dokar Najeriya ta tanada",
+      "warranty": "Tarihin gyara da garanti, wanda yake tare da lambar VIN na motar"
+    },
+    "codeExplain": "Don tabbatar da cewa kai ne, za mu aika lambar sirri ta lokaci ɗaya zuwa {{email}}.",
+    "sendCode": "Aika lambar tabbatarwa",
+    "sendFailed": "Ba a iya aika lambar ba. Da fatan za a sake gwadawa.",
+    "enterCode": "Shigar da lambar lambobi 6 da muka aika zuwa {{email}}.",
+    "codeLabel": "Lambar tabbatarwa",
+    "confirm": "Goge asusuna",
+    "resend": "Aika sabuwar lamba",
+    "finalTitle": "Goge asusunka?",
+    "finalBody": "Za a goge asusunka da bayananka na sirri har abada. Ba za a iya mayar da shi ba.",
+    "finalConfirm": "Goge",
+    "doneTitle": "An goge asusu",
+    "doneBody": "An goge asusunka na Elizade Connect. Mun gode da kasancewa tare da mu.",
+    "failed": "Ba a iya goge asusunka ba. Da fatan za a sake gwadawa."
+  },
   "reservations": {
     "title": "Ajiyena",
     "subtitle": "Motocin da aka ajiye maka.",

@@ -563,6 +563,37 @@
       "generic": "Ṣí pẹ̀lú ara rẹ"
     }
   },
+  "deleteAccount": {
+    "title": "Pa àkọọ́lẹ̀ mi rẹ́",
+    "intro": "Èyí yóò pa àkọọ́lẹ̀ Elizade Connect rẹ rẹ́ pátápátá. A kò lè dá a padà.",
+    "deletedTitle": "Ohun tí a ń pa rẹ́",
+    "deleted": {
+      "profile": "Profáìlì rẹ: orúkọ, ímeèlì, nọ́mbà fóònù àti fọ́tò",
+      "vehicles": "Àwọn ọkọ̀ inú Àwọn Ọkọ̀ Mi àti ìwé ẹ̀rí níní wọn",
+      "uploads": "Àwọn fọ́tò tí o gbé sókè fún pàṣípààrọ̀ ọkọ̀ àti ẹ̀tọ́ ìdánilójú",
+      "support": "Àwọn tíkẹ́ẹ̀tì ìrànlọ́wọ́, ìfiránṣẹ́ àti àwọn àsomọ́ rẹ",
+      "saved": "Àwọn ọkọ̀ tí o fi pamọ́, àkójọ ìwòran àti ìkìlọ̀ wíwà",
+      "sessions": "Àwọn ìgbà ìwọlé rẹ àti ètò ìfitónilétí"
+    },
+    "keptTitle": "Ohun tí a ń tọ́jú",
+    "kept": {
+      "sales": "Àkọsílẹ̀ títà àti ìsanwó (ìdíyelé, ìfipamọ́, ìwé ẹ̀rí ìsanwó) fún ọdún 6, gẹ́gẹ́ bí òfin Nàìjíríà ṣe là á sílẹ̀",
+      "warranty": "Ìtàn iṣẹ́ àtúnṣe àti ìdánilójú, tí ó wà pẹ̀lú nọ́mbà VIN ọkọ̀ náà"
+    },
+    "codeExplain": "Láti fìdí rẹ̀ múlẹ̀ pé ìwọ ni, a ó fi kóòdù ẹ̀ẹ̀kan ránṣẹ́ sí {{email}}.",
+    "sendCode": "Fi kóòdù ìfìdímúlẹ̀ ránṣẹ́",
+    "sendFailed": "A kò lè fi kóòdù náà ránṣẹ́. Jọ̀wọ́ gbìyànjú lẹ́ẹ̀kan sí i.",
+    "enterCode": "Tẹ kóòdù oní-nọ́mbà 6 tí a fi ránṣẹ́ sí {{email}}.",
+    "codeLabel": "Kóòdù ìfìdímúlẹ̀",
+    "confirm": "Pa àkọọ́lẹ̀ mi rẹ́",
+    "resend": "Fi kóòdù tuntun ránṣẹ́",
+    "finalTitle": "Pa àkọọ́lẹ̀ rẹ rẹ́?",
+    "finalBody": "A ó pa àkọọ́lẹ̀ rẹ àti àwọn dátà ara ẹni rẹ rẹ́ pátápátá. A kò lè dá a padà.",
+    "finalConfirm": "Pa á rẹ́",
+    "doneTitle": "A ti pa àkọọ́lẹ̀ rẹ́",
+    "doneBody": "A ti pa àkọọ́lẹ̀ Elizade Connect rẹ rẹ́. A dúpẹ́ pé o wà pẹ̀lú wa.",
+    "failed": "A kò lè pa àkọọ́lẹ̀ rẹ rẹ́. Jọ̀wọ́ gbìyànjú lẹ́ẹ̀kan sí i."
+  },
   "reservations": {
     "title": "Àwọn ìpamọ́ mi",
     "subtitle": "Àwọn ọkọ̀ tí a pamọ́ fún ọ.",

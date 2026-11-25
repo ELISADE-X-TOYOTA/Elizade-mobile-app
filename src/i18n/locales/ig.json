@@ -563,6 +563,37 @@
       "generic": "Jiri àmà ahụ kpọghee"
     }
   },
+  "deleteAccount": {
+    "title": "Hichapụ akaụntụ m",
+    "intro": "Nke a ga-ehichapụ akaụntụ Elizade Connect gị kpamkpam. A gaghị enwe ike ịlaghachi ya.",
+    "deletedTitle": "Ihe anyị na-ehichapụ",
+    "deleted": {
+      "profile": "Profaịlụ gị: aha, email, nọmba ekwentị na foto",
+      "vehicles": "Ụgbọala ndị dị na Ụgbọala M na akwụkwọ nwe ha",
+      "uploads": "Foto ndị i bulitere maka mgbanwe ụgbọala na arịrịọ akwụkwọ nkwa",
+      "support": "Tiketi enyemaka gị, ozi na ihe ndị e jikọtara",
+      "saved": "Ụgbọala ndị i chekwara, ndepụta nlele na ọkwa ịdị",
+      "sessions": "Oge nbanye gị na ntọala ọkwa"
+    },
+    "keptTitle": "Ihe anyị na-edobe",
+    "kept": {
+      "sales": "Ndekọ ire na ịkwụ ụgwọ (ọnụahịa, ndoputa, akwụkwọ nnata) ruo afọ 6, dịka iwu Naịjirịa chọrọ",
+      "warranty": "Akụkọ ọrụ mmezi na akwụkwọ nkwa, nke na-anọgide na nọmba VIN nke ụgbọala ahụ"
+    },
+    "codeExplain": "Iji gosi na ọ bụ gị, anyị ga-ezite koodu otu oge na {{email}}.",
+    "sendCode": "Zite koodu nkwenye",
+    "sendFailed": "Anyị enweghị ike izite koodu ahụ. Biko nwaa ọzọ.",
+    "enterCode": "Tinye koodu nwere ọnụọgụ 6 anyị zitere na {{email}}.",
+    "codeLabel": "Koodu nkwenye",
+    "confirm": "Hichapụ akaụntụ m",
+    "resend": "Zite koodu ọhụrụ",
+    "finalTitle": "Hichapụ akaụntụ gị?",
+    "finalBody": "A ga-ehichapụ akaụntụ gị na data onwe gị kpamkpam. A gaghị enwe ike ịlaghachi ya.",
+    "finalConfirm": "Hichapụ",
+    "doneTitle": "E hichapụla akaụntụ",
+    "doneBody": "E hichapụla akaụntụ Elizade Connect gị. Daalụ maka ịnọnyere anyị.",
+    "failed": "Anyị enweghị ike ihichapụ akaụntụ gị. Biko nwaa ọzọ."
+  },
   "reservations": {
     "title": "Ndebe m",
     "subtitle": "Ụgbọ e debere maka gị.",

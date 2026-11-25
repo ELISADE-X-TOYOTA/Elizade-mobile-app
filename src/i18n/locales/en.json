@@ -563,6 +563,37 @@
       "generic": "Unlock with biometrics"
     }
   },
+  "deleteAccount": {
+    "title": "Delete my account",
+    "intro": "This permanently deletes your Elizade Connect account. It can't be undone.",
+    "deletedTitle": "What we delete",
+    "deleted": {
+      "profile": "Your profile: name, email, phone number and photo",
+      "vehicles": "Vehicles in My Vehicles and their ownership documents",
+      "uploads": "Photos you uploaded for trade-ins and warranty claims",
+      "support": "Your support tickets, messages and attachments",
+      "saved": "Saved vehicles, watchlist and availability alerts",
+      "sessions": "Your sign-in sessions and notification settings"
+    },
+    "keptTitle": "What we keep",
+    "kept": {
+      "sales": "Sales and payment records (quotes, reservations, receipts) for 6 years, as Nigerian law requires",
+      "warranty": "Service and warranty history, which stays with the vehicle's VIN"
+    },
+    "codeExplain": "To confirm it's you, we'll send a one-time code to {{email}}.",
+    "sendCode": "Send confirmation code",
+    "sendFailed": "Couldn't send the code. Please try again.",
+    "enterCode": "Enter the 6-digit code we sent to {{email}}.",
+    "codeLabel": "Confirmation code",
+    "confirm": "Delete my account",
+    "resend": "Send a new code",
+    "finalTitle": "Delete your account?",
+    "finalBody": "Your account and personal data will be permanently deleted. This can't be undone.",
+    "finalConfirm": "Delete",
+    "doneTitle": "Account deleted",
+    "doneBody": "Your Elizade Connect account has been deleted. Thank you for being with us.",
+    "failed": "Couldn't delete your account. Please try again."
+  },
   "reservations": {
     "title": "My Reservations",
     "subtitle": "Vehicles being held for you.",

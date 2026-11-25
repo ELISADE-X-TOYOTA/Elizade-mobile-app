@@ -29,10 +29,10 @@ import { useTheme } from '../src/theme/useTheme';
  *     would actually go looking;
  *   * data requests route to a real inbox rather than a form that goes nowhere.
  *
- * Account deletion is deliberately ABSENT rather than faked. There is no
- * endpoint for it, and a button that files a support ticket while claiming to
- * delete an account would be worse than not offering it. It is the next thing
- * this screen should gain.
+ * Account deletion is real: `/delete-account` confirms with a code sent to the
+ * account's email and the backend removes the personal data (Apple 5.1.1(v),
+ * Google Play). It used to open an email to support, because there was no
+ * endpoint; a button that only filed a request would not satisfy either store.
  */
 export default function PrivacySecurity() {
   const t = useTheme();
@@ -181,17 +181,13 @@ export default function PrivacySecurity() {
             detail={APP.supportEmail}
             onPress={() => emailSupport(tr('privacy.requestYourData'), 'Data request')}
           />
-          {/*
-            Deletion routes to a human because there is no endpoint for it. A
-            button that claimed to delete an account and quietly filed a ticket
-            would be a lie in the one place a lie is least acceptable.
-          */}
+          {/* Real deletion, confirmed by a code sent to the account's email. */}
           <Action
             icon="trash-outline"
             danger
             label={tr('privacy.deleteAccount')}
             detail={tr('privacy.deleteAccountDetail')}
-            onPress={() => emailSupport(tr('privacy.deleteAccount'), 'Account deletion request')}
+            onPress={() => router.push('/delete-account')}
           />
         </Section>
       </ScrollView>

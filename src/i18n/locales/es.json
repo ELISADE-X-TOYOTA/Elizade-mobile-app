@@ -563,6 +563,37 @@
       "generic": "Desbloquear con biometría"
     }
   },
+  "deleteAccount": {
+    "title": "Eliminar mi cuenta",
+    "intro": "Esto elimina permanentemente tu cuenta de Elizade Connect. No se puede deshacer.",
+    "deletedTitle": "Lo que eliminamos",
+    "deleted": {
+      "profile": "Tu perfil: nombre, correo, número de teléfono y foto",
+      "vehicles": "Los vehículos de Mis vehículos y sus documentos de propiedad",
+      "uploads": "Las fotos que subiste para permutas y reclamaciones de garantía",
+      "support": "Tus tickets de soporte, mensajes y archivos adjuntos",
+      "saved": "Vehículos guardados, lista de seguimiento y alertas de disponibilidad",
+      "sessions": "Tus sesiones iniciadas y ajustes de notificaciones"
+    },
+    "keptTitle": "Lo que conservamos",
+    "kept": {
+      "sales": "Los registros de ventas y pagos (cotizaciones, reservas, recibos) durante 6 años, como exige la ley nigeriana",
+      "warranty": "El historial de servicio y garantía, que permanece asociado al VIN del vehículo"
+    },
+    "codeExplain": "Para confirmar que eres tú, enviaremos un código de un solo uso a {{email}}.",
+    "sendCode": "Enviar código de confirmación",
+    "sendFailed": "No se pudo enviar el código. Inténtalo de nuevo.",
+    "enterCode": "Introduce el código de 6 dígitos que enviamos a {{email}}.",
+    "codeLabel": "Código de confirmación",
+    "confirm": "Eliminar mi cuenta",
+    "resend": "Enviar un código nuevo",
+    "finalTitle": "¿Eliminar tu cuenta?",
+    "finalBody": "Tu cuenta y tus datos personales se eliminarán de forma permanente. No se puede deshacer.",
+    "finalConfirm": "Eliminar",
+    "doneTitle": "Cuenta eliminada",
+    "doneBody": "Tu cuenta de Elizade Connect se ha eliminado. Gracias por haber estado con nosotros.",
+    "failed": "No se pudo eliminar tu cuenta. Inténtalo de nuevo."
+  },
   "reservations": {
     "title": "Mis reservas",
     "subtitle": "Vehículos reservados para ti.",

@@ -192,6 +192,7 @@ export default function RootLayout() {
           <Stack.Screen name="ticket/[id]" />
           <Stack.Screen name="edit-profile" />
           <Stack.Screen name="privacy-security" />
+          <Stack.Screen name="delete-account" />
           <Stack.Screen name="reservations" />
           <Stack.Screen name="garage" />
           <Stack.Screen name="garage-vehicle/[id]" />

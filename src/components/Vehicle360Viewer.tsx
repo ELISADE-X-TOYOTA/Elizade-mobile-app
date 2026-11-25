@@ -2,6 +2,7 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useMemo, useRef, useState } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   Dimensions,
   NativeScrollEvent,
@@ -36,6 +37,7 @@ interface Props {
 export function Vehicle360Viewer({ vehicle }: Props) {
   const t = useTheme();
   const { t: tr } = useTranslation();
+  const insets = useSafeAreaInsets();
   const frames = useMemo(() => (vehicle.images.length ? vehicle.images : ['']), [vehicle.images]);
   const scrollRef = useRef<ScrollView>(null);
   const [frameIndex, setFrameIndex] = useState(0);
@@ -82,7 +84,12 @@ export function Vehicle360Viewer({ vehicle }: Props) {
           pointerEvents="none"
         />
 
-        <View style={styles.viewerTop}>
+        {/*
+          Below the screen's own back / compare / share / save row, which sits
+          at insets.top + 4. A fixed 16pt put this chip under the status bar
+          and behind those buttons on every notched iPhone.
+        */}
+        <View style={[styles.viewerTop, { top: insets.top + TOPBAR_CLEARANCE }]}>
           <View style={styles.viewChip}>
             <MaterialCommunityIcons name="rotate-360" size={18} color={ON_DARK_INK} />
             <Txt variant="bodySmall" color={ON_DARK_INK} style={{ marginLeft: 6 }}>
@@ -206,6 +213,9 @@ export function Vehicle360Viewer({ vehicle }: Props) {
     </View>
   );
 }
+
+/** Height of the car screen's top button row plus a gap. */
+const TOPBAR_CLEARANCE = 56;
 
 const styles = StyleSheet.create({
   viewer: { height: VIEWER_HEIGHT, overflow: 'hidden' },

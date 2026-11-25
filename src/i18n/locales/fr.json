@@ -563,6 +563,37 @@
       "generic": "Déverrouiller par biométrie"
     }
   },
+  "deleteAccount": {
+    "title": "Supprimer mon compte",
+    "intro": "Cette action supprime définitivement votre compte Elizade Connect. Elle est irréversible.",
+    "deletedTitle": "Ce que nous supprimons",
+    "deleted": {
+      "profile": "Votre profil : nom, e-mail, numéro de téléphone et photo",
+      "vehicles": "Les véhicules de Mes véhicules et leurs documents de propriété",
+      "uploads": "Les photos envoyées pour les reprises et les demandes de garantie",
+      "support": "Vos demandes d'assistance, messages et pièces jointes",
+      "saved": "Véhicules enregistrés, liste de suivi et alertes de disponibilité",
+      "sessions": "Vos sessions de connexion et paramètres de notification"
+    },
+    "keptTitle": "Ce que nous conservons",
+    "kept": {
+      "sales": "Les dossiers de vente et de paiement (devis, réservations, reçus) pendant 6 ans, comme l'exige la loi nigériane",
+      "warranty": "L'historique d'entretien et de garantie, qui reste lié au numéro VIN du véhicule"
+    },
+    "codeExplain": "Pour confirmer qu'il s'agit bien de vous, nous enverrons un code à usage unique à {{email}}.",
+    "sendCode": "Envoyer le code de confirmation",
+    "sendFailed": "Impossible d'envoyer le code. Veuillez réessayer.",
+    "enterCode": "Saisissez le code à 6 chiffres envoyé à {{email}}.",
+    "codeLabel": "Code de confirmation",
+    "confirm": "Supprimer mon compte",
+    "resend": "Envoyer un nouveau code",
+    "finalTitle": "Supprimer votre compte ?",
+    "finalBody": "Votre compte et vos données personnelles seront définitivement supprimés. Cette action est irréversible.",
+    "finalConfirm": "Supprimer",
+    "doneTitle": "Compte supprimé",
+    "doneBody": "Votre compte Elizade Connect a été supprimé. Merci de nous avoir fait confiance.",
+    "failed": "Impossible de supprimer votre compte. Veuillez réessayer."
+  },
   "reservations": {
     "title": "Mes réservations",
     "subtitle": "Véhicules réservés pour vous.",
